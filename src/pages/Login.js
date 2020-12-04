@@ -1,14 +1,20 @@
 import React, { useState, useEffect } from "react";
-import {  useHistory } from 'react-router';
+import { useForm } from 'react-hook-form';
+import {  useHistory } from 'react-router'
 import axios from "axios";
 import { Button,  makeStyles, createStyles, Theme, Typography, TextField, Grid, Container, Autocomplete,Select, MenuItem, InputLabel,  NativeSelect, Checkbox, FormControl  } from '@material-ui/core';
 import countries_data from '../components/Countries';
+import LoginSidebar from '../components/LoginSidebar';
+
 import { SENDOTP_API, VERIFY_API } from '../components/Api';
 import $ from 'jquery';
 
 
 // Working on login functional component
 const Login = () => {
+
+  const history = useHistory();
+   const { register, handleSubmit, errors } = useForm(); // initialize the hook
 
 //  const config = {  
 //     headers: { Authorization: `Bearer ${token}` }
@@ -23,8 +29,6 @@ const Login = () => {
   const [otp_3,setOtp3] = useState('');
   const [otp_4,setOtp4] = useState('');
 
-   
-  
   const token = localStorage.getItem('token');
 
   const sendHandle = () =>{
@@ -60,8 +64,19 @@ const verifyHandle = () =>{
 
       axios.post(VERIFY_API,bodyParameters)
   .then((response) => { 
-    console.log(response);
     // history.push("/dashboard");
+    console.log(response);
+    // var to_check = response.data.to_check;
+    // if(to_check == true)
+    // {
+    //     localStorage.setItem('session_id', response.data.data.session_id);
+    //     history.push("/");
+    // }
+    // else
+    // {
+    //      localStorage.clear();
+    // }
+  
   }, (error) => {
     
   // localStorage.removeItem('token');
@@ -128,37 +143,7 @@ countryDropdown('#country');
           <div className="container">
             <div className="row justify-content-center align-items-center">
               <div className="col-md-4 mx-auto">
-                <div className="signup-wrapper__slider">
-                  <div className="owl-carousel owl-theme login-carousel">
-                    <div className="item text-center">
-                      <figure>
-                        <img src="/assets/images/dating-app-login.png" alt="Dating App" />
-                      </figure>
-                      <div className="signup-slider__content">
-                        <h4 className="theme-txt">Dating App</h4>
-                        <p>Mutual sympathy. Do not waste time and write to her</p>
-                      </div>
-                    </div>
-                    <div className="item text-center">
-                      <figure>
-                        <img src="/assets/images/find-friend-login.png" alt="Find Best Friend" />
-                      </figure>
-                      <div className="signup-slider__content">
-                        <h4 className="theme-txt">Find Best Friend</h4>
-                        <p>Mutual sympathy. Do not waste time and write to her</p>
-                      </div>
-                    </div>
-                    <div className="item text-center">
-                      <figure>
-                        <img src="/assets/images/live-login.png" alt="Live and Get Fan" />
-                      </figure>
-                      <div className="signup-slider__content">
-                        <h4 className="theme-txt">Find Best Friend</h4>
-                        <p>Mutual sympathy. Do not waste time and write to her</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+               <LoginSidebar/>
               </div>
               <div className="col-md-4 mx-auto">
                 <form action="#" method="post" >
@@ -181,10 +166,11 @@ countryDropdown('#country');
                               </ul>
                             </div>
                           </div>
-                          <input className="form-control" name="phone-number" type="text" placeholder="Enter Phone Number" value={phoneNumber} onChange={e => setPhone(e.target.value)} />
+                          <input className="form-control" name="phone_number" type="text" placeholder="Enter Phone Number" ref={register({ required: true, maxLength: 30 })} value={phoneNumber} onChange={e => setPhone(e.target.value)} />
+                             {errors.phone_number && 'Last name is required.'}
                         </div>
                         <p>You'll receive a verification code</p>
-                        <a className="btn bg-grd-clr d-block mb-4 btn-countinue-1" href="javascript:void(0)" onClick={sendHandle} >Continue</a>
+                        <a className="btn bg-grd-clr d-block mb-4 btn-countinue-1" href="javascript:void(0)" onClick={handleSubmit(sendHandle)} >Continue</a>
                         <p>Continue with</p>
                         <ul className="social-login">
                           <li>
@@ -220,33 +206,35 @@ countryDropdown('#country');
                         <a className="btn btn-trsp d-block" href="javascript:void(0)">Resend</a>
                       </div>
                       {/* Third Tab */}
-                      <div className="signup-inner" id="login-tab-3">
-                        <div className="signup-header mb-5">
-                          <a href="javascript:void(0)" className="login-back-2 btn-back"><i className="fas fa-chevron-left" /></a>
-                          <h4 className="theme-txt">Your Information</h4>
-                        </div>
-                        <div className="form-group">
-                          <input className="form-control bg-trsp" name="date-birth" type="text" placeholder="Your Date of birth" />
-                        </div>
-                        <div className="form-group">
-                          <input className="form-control bg-trsp" name="first-name" type="text" placeholder="First Name" />
-                        </div>
-                        <div className="form-group">
-                          <input className="form-control bg-trsp" name="last-name" type="text" placeholder="Last Name" />
-                        </div>
-                        <div className="choose-gender d-flex my-4">
-                          <div className="form-group">
-                            <input type="radio" id="female" name="gender" placeholder="Female" />
-                            <label htmlFor="female">Female</label>
-                          </div>
-                          <div className="form-group">
-                            <input type="radio" id="male" name="gender" placeholder="Male" />
-                            <label htmlFor="male">Male</label>
-                          </div>
-                          <div className="form-group">
-                            <input type="radio" id="more" name="gender" />
-                            <label htmlFor="more">More</label>
-                          </div>
+                      <div className="signup-inner" id="login-tab-3" >
+                    
+                            <div className="signup-header mb-5">
+                              <a href="javascript:void(0)" className="login-back-2 btn-back"><i className="fas fa-chevron-left" /></a>
+                              <h4 className="theme-txt">Your Information</h4>
+                            </div>
+                            <div className="form-group">
+                              <input className="form-control bg-trsp" name="date-birth" type="text" placeholder="Your Date of birth" />
+                            </div>
+                            <div className="form-group">
+                              <input className="form-control bg-trsp" name="first-name" type="text" placeholder="First Name" />
+                            </div>
+                            <div className="form-group">
+                              <input className="form-control bg-trsp" name="last-name" type="text" placeholder="Last Name" />
+                            </div>
+                            <div className="choose-gender d-flex my-4">
+                              <div className="form-group">
+                                <input type="radio" id="female" name="gender" placeholder="Female" />
+                                <label htmlFor="female">Female</label>
+                              </div>
+                              <div className="form-group">
+                                <input type="radio" id="male" name="gender" placeholder="Male" />
+                                <label htmlFor="male">Male</label>
+                              </div>
+                              <div className="form-group">
+                                <input type="radio" id="more" name="gender" />
+                                <label htmlFor="more">More</label>
+                            </div>
+                         
                         </div>
                         <a className="btn bg-grd-clr d-block mb-4 btn-countinue-3" href="javascript:void(0)">Next</a>
                       </div>
