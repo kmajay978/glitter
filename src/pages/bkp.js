@@ -35,30 +35,27 @@ const Login = () => {
     const [FirstName, setFirst] = useState(''); 
     const [LastName, setLast] = useState(''); 
     const [genderName, setGender] = useState('');  
-    const [picture, setPicture] = useState(null);
-    const [imgData, setImgData] = useState(null);
+    const [profilePic, setUploadFile] = useState([]);  
+
+
+
+      const config = {
+  headers: {
+      "Content-Type": "multipart/form-data",
+    },
+};
+     
 //  Setting value here radio button
    const handleChange = e => { 
         setGender(e.target.value);
     }
+
+  const handleFileChange = (e) => {
+    setUploadFile(e.target.files[0]);
+  }
  
-  // const handleFileChange = e =>{
-  //   setUploadFile(e.target.files[0]);
-  // }
-
-  const handleFileChange = e => {
-    if (e.target.files[0]) {
-      console.log("picture: ", e.target.files);
-      setPicture(e.target.files[0]);
-      const reader = new FileReader();
-      reader.addEventListener("load", () => {
-        setImgData(reader.result);
-      });
-      reader.readAsDataURL(e.target.files[0]);
-    }
-  };
-
-  const token = localStorage.getItem('token');
+console.log(profilePic);
+  //const token = localStorage.getItem('token');
 
   const sendHandle = () =>{
 
@@ -67,7 +64,7 @@ const Login = () => {
       country_code: '+'+cntCode
     };
 
-      axios.post(SENDOTP_API,bodyParameters)
+      axios.post(SENDOTP_API,bodyParameters,config)
   .then((response) => {
     
     // history.push("/dashboard");
@@ -92,72 +89,50 @@ const verifyHandle = () =>{
 
       axios.post(VERIFY_API,bodyParameters)
   .then((response) => { 
+    // history.push("/dashboard");
     console.log(response);
-   
+    // var to_check = response.data.to_check;
+    // if(to_check == true)
+    // {
+    //     localStorage.setItem('session_id', response.data.data.session_id);
+    //     history.push("/");
+    // }
+    // else
+    // {
+    //      localStorage.clear();
+    // }
+  
   }, (error) => {
     
+  // localStorage.removeItem('token');
   });
 }
   // End verify otp 
 
+
+
   // Register user here
-      const config = {
-      headers : {
-                Accept: "application/json",
-                "Content-Type": "multipart/form-data",
-            }
-      }
 
-
-    
   // Verify OTP Function 
 const registerHandle = () =>{
 
-     const data = new FormData();
-        data.append("first_name", "" + FirstName);
-        data.append("last_name", LastName);
-        data.append("dob", "" + Dob);
-        data.append("gender", "" + genderName);
-        data.append("device_token", "" + "null");
-        data.append("device_type", "" + 0);
-        data.append("country_code", "+"+cntCode);
-        data.append("phone", "" + phoneNumber);
-        data.append("latitude", "" + "30.704649");
-        data.append("longitude", "" + "76.717873");
-
-
-        // img.map((s, i) => {
-        //     if (s.uri == ‘’ || s.uri == null || s.uri == undefined) {
-        //        // s.uri = Platform.OS==‘ios’?s.uri.replace(“file://“, “/private”):s.uri
-        //         if (__DEV__) { console.log(‘Empty Image of Index’ + i) }
-        //     } else {
-        //         data.append(‘profile_photo’, s);
-        //        // data.append(‘profile_image’, s);
-        //     }
-        // })
-        
-                //data.append("profile_photo", s);
-               // data.append("profile_image", s);
-            
-        
-
-  //  const bodyParameters = {
+   const bodyParameters = {
      
-  //     first_name:FirstName,
-  //     last_name:LastName,
-  //     dob:Dob,
-  //     gender:genderName,
-  //     device_token:"null",
-  //     device_type:0,
-  //     country_code:"+"+cntCode,
-  //     profile_photo:picture,
-  //     phone:phoneNumber,
-  //     latitude:"30.704649",
-  //     longitude:"76.717873",
-  //   };
+      first_name:FirstName,
+      last_name:LastName,
+      dob:Dob,
+      gender:genderName,
+      device_token:"",
+      device_type:0,
+      profile_photo:profilePic,
+      country_code:"+"+cntCode,
+      phone:phoneNumber,
+      latitude:"30.704649",
+      longitude:"76.717873",
+    };
+console.log(bodyParameters);
 
-
-      axios.post(SIGNUP_API,data, config)
+      axios.post(SIGNUP_API,bodyParameters)
   .then((response) => { 
    
     console.log(response);
@@ -233,7 +208,7 @@ countryDropdown('#country');
                <LoginSidebar/>
               </div>
               <div className="col-md-4 mx-auto">
-                <form action="#" method="post" id="login_form" enctype="multipart/form-data" >
+                <form action="#" method="post" >
                   <div className="signup-wrapper__form">
                     <div className="signup-form text-center">
                       {/* First Tab */}
@@ -343,8 +318,8 @@ countryDropdown('#country');
                           <h4 className="theme-txt">Upload Profile Photo</h4>
                         </div>
                         <div className="form-group upload-field mb-5">
-                          <label htmlFor="profile-photo" id="PreviewPicture" style={{ backgroundImage: `url("${imgData}")` }}   />
-                          <input type="file" id="profile-photo" name="profile-photo" id="profile-photo" onChange={handleFileChange} accept="image/*" />
+                          <label htmlFor="profile-photo" id="PreviewPicture" />
+                          <input type="file" id="profile-photo" name="profile-photo" id="profile-photo" accept="image/*" onChange={handleFileChange} />
                           <span className="camera-icon">
                             <img src="/assets/images/Icon%20feather-camera.png" alt="Camera" />
                           </span>
