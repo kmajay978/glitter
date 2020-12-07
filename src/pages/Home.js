@@ -16,7 +16,7 @@ class Home extends React.Component{
                   </a>
                   <span className="chat-point">
                     <a href="javascript:void(0)">
-                      <i className="fas fa-comment" />
+                      <i className="fas fa-comment" /> 
                     </a>    
                   </span>                            
                 </div>

@@ -6,10 +6,11 @@ import { Button,  makeStyles, createStyles, Theme, Typography, TextField, Grid, 
 import countries_data from '../components/Countries';
 import LoginSidebar from '../components/LoginSidebar';
 
-import { SENDOTP_API, VERIFY_API } from '../components/Api';
+import { SENDOTP_API, VERIFY_API, SIGNUP_API } from '../components/Api';
 import $ from 'jquery';
 
 
+ 
 // Working on login functional component
 const Login = () => {
 
@@ -20,7 +21,7 @@ const Login = () => {
 //     headers: { Authorization: `Bearer ${token}` }
 //   };
 
-  const [phoneNumber, setPhone] = useState('');   //For past users
+   const [phoneNumber, setPhone] = useState('');   //For past users
   const [cntCode, setCntCode] = useState('');   //For past users
 
   // OTP fields in state
@@ -29,6 +30,17 @@ const Login = () => {
   const [otp_3,setOtp3] = useState('');
   const [otp_4,setOtp4] = useState('');
 
+  // All form fields
+    const [Dob, setDob] = useState(''); 
+    const [FirstName, setFirst] = useState(''); 
+    const [LastName, setLast] = useState(''); 
+     const [genderName, setGender] = useState(''); 
+ 
+   const handleChange = e => { 
+        setGender(e.target.value);
+    }
+ 
+  console.log(genderName);
   const token = localStorage.getItem('token');
 
   const sendHandle = () =>{
@@ -49,11 +61,10 @@ const Login = () => {
 
    }
 
+ var otp = otp_1+otp_2+otp_3+otp_4;
   // Verify OTP Function 
 const verifyHandle = () =>{
 
-   var otp = otp_1+otp_2+otp_3+otp_4;
-   
    const bodyParameters = {
       phone: phoneNumber,
       country_code: '+'+cntCode,
@@ -82,9 +93,43 @@ const verifyHandle = () =>{
   // localStorage.removeItem('token');
   });
 }
-
-
   // End verify otp 
+
+  // Register user here
+
+  // Verify OTP Function 
+const registerHandle = () =>{
+
+   const bodyParameters = {
+     
+      first_name:FirstName,
+      last_name:LastName,
+      dob:Dob,
+      gender:genderName,
+      device_token:"",
+      device_type:0,
+      profile_photo:"",
+      country_code:"+"+cntCode,
+      phone:phoneNumber,
+      latitude:"30.704649",
+      longitude:"76.717873",
+    };
+
+      axios.post(SIGNUP_API,bodyParameters)
+  .then((response) => { 
+   
+    console.log(response);
+   
+  
+  }, (error) => {
+    
+  // localStorage.removeItem('token');
+  });
+}
+
+
+
+  // End here 
 
 
   useEffect(() => {
@@ -166,8 +211,8 @@ countryDropdown('#country');
                               </ul>
                             </div>
                           </div>
-                          <input className="form-control" name="phone_number" type="text" placeholder="Enter Phone Number" ref={register({ required: true, maxLength: 30 })} value={phoneNumber} onChange={e => setPhone(e.target.value)} />
-                             {errors.phone_number && 'Last name is required.'}
+                          <input className="form-control" name="phone_number" id="phone_number" type="text" placeholder="Enter Phone Number" ref={register({ required: true, maxLength: 30 })} value={phoneNumber} onChange={e => setPhone(e.target.value)} />
+                             {errors.phone_number && 'Phone Number is required.'}
                         </div>
                         <p>You'll receive a verification code</p>
                         <a className="btn bg-grd-clr d-block mb-4 btn-countinue-1" href="javascript:void(0)" onClick={handleSubmit(sendHandle)} >Continue</a>
@@ -213,28 +258,30 @@ countryDropdown('#country');
                               <h4 className="theme-txt">Your Information</h4>
                             </div>
                             <div className="form-group">
-                              <input className="form-control bg-trsp" name="date-birth" type="text" placeholder="Your Date of birth" />
+                              <input className="form-control bg-trsp" name="date-birth" value={Dob} onChange={e => setDob(e.target.value)} type="text" placeholder="Your Date of birth" />
                             </div>
                             <div className="form-group">
-                              <input className="form-control bg-trsp" name="first-name" type="text" placeholder="First Name" />
+                              <input className="form-control bg-trsp" name="first-name" value={FirstName} onChange={e => setFirst(e.target.value)} id="first_name" type="text" placeholder="First Name" />
                             </div>
                             <div className="form-group">
-                              <input className="form-control bg-trsp" name="last-name" type="text" placeholder="Last Name" />
+                              <input className="form-control bg-trsp" name="last-name" value={LastName} onChange={e => setLast(e.target.value)} type="text" placeholder="Last Name" />
                             </div>
-                            <div className="choose-gender d-flex my-4">
-                              <div className="form-group">
-                                <input type="radio" id="female" name="gender" placeholder="Female" />
-                                <label htmlFor="female">Female</label>
-                              </div>
-                              <div className="form-group">
-                                <input type="radio" id="male" name="gender" placeholder="Male" />
-                                <label htmlFor="male">Male</label>
-                              </div>
-                              <div className="form-group">
-                                <input type="radio" id="more" name="gender" />
-                                <label htmlFor="more">More</label>
-                            </div>
-                         
+                            
+                                <div className="choose-gender d-flex my-4">
+                                  <div className="form-group">
+                                    <input type="radio" id="female" name="gender" value={1}  onChange={ handleChange }  placeholder="Female" />
+                                    <label htmlFor="female">Female</label>
+                                  </div>
+                                  <div className="form-group">
+                                    <input type="radio" id="male" name="gender" value={2} onChange={ handleChange } placeholder="Male" />
+                                    <label htmlFor="male">Male</label>
+                                  </div>
+                                    
+                                  <div className="form-group">
+                                    <input type="radio" id="more" value={3} onChange={ handleChange }  name="gender" />
+                                    <label htmlFor="more">More</label>
+                                </div>
+                             
                         </div>
                         <a className="btn bg-grd-clr d-block mb-4 btn-countinue-3" href="javascript:void(0)">Next</a>
                       </div>
@@ -254,13 +301,13 @@ countryDropdown('#country');
                           <h4 className="theme-txt">Upload Profile Photo</h4>
                         </div>
                         <div className="form-group upload-field mb-5">
-                          <label htmlFor="profile-photo" />
-                          <input type="file" id="profile-photo" name="profile-photo" accept="image/*" />
+                          <label htmlFor="profile-photo" id="PreviewPicture" />
+                          <input type="file" id="profile-photo" name="profile-photo" id="profile-photo" accept="image/*" />
                           <span className="camera-icon">
                             <img src="/assets/images/Icon%20feather-camera.png" alt="Camera" />
                           </span>
                         </div>
-                        <a className="btn bg-grd-clr d-block mb-4 btn-countinue-5" href="signup-completed.html">Next</a>
+                        <a className="btn bg-grd-clr d-block mb-4 btn-countinue-5" href="javascript:void(0)" onClick={registerHandle} >Next</a>
                       </div>
                     </div>
                   </div>
