@@ -1,16 +1,185 @@
 import React, { useState, useEffect } from "react";
-import {  useHistory } from 'react-router';
+import {  useHistory } from 'react-router'
 import axios from "axios";
-import { Button,  makeStyles, createStyles, Theme, Typography, TextField, Grid, Container, Autocomplete,Select, MenuItem, InputLabel,  NativeSelect, Checkbox, FormControl  } from '@material-ui/core';
+import { Button,  makeStyles, createStyles, Theme, Typography, TextField, Grid, Container, Autocomplete,Select, MenuItem, InputLabel,  NativeSelect, Checkbox, FormControl, Link  } from '@material-ui/core';
 import countries_data from '../components/Countries';
+import LoginSidebar from '../components/LoginSidebar';
+
+import { SENDOTP_API, VERIFY_API, SIGNUP_API } from '../components/Api';
 import $ from 'jquery';
 
 
+ 
+// Working on login functional component
+const Login = () => {
 
-class Login extends React.Component{
+  const history = useHistory();
+//  const config = {  
+//     headers: { Authorization: `Bearer ${token}` }
+//   };
 
-  componentDidMount() {
-   function countryDropdown(seletor) {
+   const [phoneNumber, setPhone] = useState('');   //For past users
+  const [cntCode, setCntCode] = useState('');   //For past users
+
+  // OTP fields in state
+  const [otp_1,setOtp1] = useState('');
+  const [otp_2,setOtp2] = useState('');
+  const [otp_3,setOtp3] = useState('');
+  const [otp_4,setOtp4] = useState('');
+
+  // All form fields
+    const [Dob, setDob] = useState(''); 
+    const [FirstName, setFirst] = useState(''); 
+    const [LastName, setLast] = useState(''); 
+    const [genderName, setGender] = useState('');  
+    const [picture, setPicture] = useState(null);
+    const [imgData, setImgData] = useState(null);
+
+    const [auth, setAuth] = useState({loggedIn : false})
+
+
+//  Setting value here radio button
+   const handleChange = e => { 
+        setGender(e.target.value);
+    }
+ 
+
+  const handleFileChange = e => {
+    if (e.target.files[0]) {
+      // console.log("picture: ", e.target.files);
+      setPicture(e.target.files[0]);
+      const reader = new FileReader();
+      reader.addEventListener("load", () => {
+        setImgData(reader.result);
+      });
+      reader.readAsDataURL(e.target.files[0]);
+    }
+  };
+
+// Managing token here 
+const tokencheck = () =>{
+
+ const token = localStorage.getItem('session_id');
+        if(token!=null)
+        {
+            history.push("/");
+        }
+        else
+        {
+          localStorage.removeItem('session_id');
+        }
+}
+ useEffect(() => {
+    tokencheck();
+  });
+
+// Send OTP handle
+  const sendHandle = (e) =>{
+
+    e.preventDefault();
+
+    const bodyParameters = {
+      phone: phoneNumber,
+      country_code: '+'+cntCode
+    };
+
+      axios.post(SENDOTP_API,bodyParameters)
+  .then((response) => {
+    
+    // history.push("/dashboard");
+  }, (error) => {
+    
+  // localStorage.removeItem('token');
+  });
+
+   }
+
+ var otp = otp_1+otp_2+otp_3+otp_4;
+  // Verify OTP Function 
+const verifyHandle = () =>{
+
+   const bodyParameters = {
+      phone: phoneNumber,
+      country_code: '+'+cntCode,
+      otp: otp,
+      device_type:0,
+      device_token:"",
+    };
+
+      axios.post(VERIFY_API,bodyParameters)
+  .then((response) => { 
+
+      
+    if(response.data.data != null)
+    {
+            let id = response.data.data.session_id;
+          setAuth( {loggedIn : true});
+
+         localStorage.setItem('session_id', response.data.data.session_id);
+         history.push("/");
+    }
+    else
+    {
+    localStorage.clear();
+     setAuth( {loggedIn : false});
+    }
+  
+  }, (error) => {
+    
+     localStorage.clear();
+  });
+}
+  // End verify otp 
+
+  // Register user here
+      const config = {
+      headers : {
+                Accept: "application/json",
+                "Content-Type": "multipart/form-data",
+            }
+      }
+
+
+    
+  // Verify OTP Function 
+const registerHandle = (e) =>{
+
+     const bodyParameters = new FormData();
+        bodyParameters.append("first_name", "" + FirstName);
+        bodyParameters.append("last_name", LastName);
+        bodyParameters.append("dob", "" + Dob);
+        bodyParameters.append("gender", "" + genderName);
+        bodyParameters.append("device_token", "" + "null");
+        bodyParameters.append("device_type", "" + 0);
+        bodyParameters.append("country_code", "+"+cntCode);
+        bodyParameters.append("phone", "" + phoneNumber);
+        bodyParameters.append("latitude", "" + "30.704649");
+        bodyParameters.append("longitude", "" + "76.717873");
+        bodyParameters.append('profile_photo', picture);
+
+      axios.post(SIGNUP_API,bodyParameters, config)
+        .then((response) => { 
+        
+        // Setting session id in local storage
+          setAuth( {loggedIn : true});
+          localStorage.setItem('session_id', response.data.data.session_id);
+          history.push("/");
+        
+        }, (error) => {
+          setAuth( {loggedIn : false});
+          localStorage.removeItem('session_id');
+        });
+}
+
+
+
+  // End here 
+
+
+  useEffect(() => {
+  
+  // Jquery code here 
+ function countryDropdown(seletor) {
     var Selected = $(seletor);
     var Drop = $(seletor + '-drop');
     var DropItem = Drop.find('li');
@@ -39,42 +208,12 @@ class Login extends React.Component{
 }
 
 countryDropdown('#country');
-}
+
+  }, []);
 
 
-// Fetching api data
-
-// const pastTime= ()=> {
-
-//     const config = {
-//     headers: { Authorization: `Bearer ${token}` }
-// };
-// const bodyParameters = {
-//    key: "value"
-// };
-
-//     axios.get('http://167.172.209.57:8080/api/ga/pastdata',config)
-// .then((response) => {
-  
-//   setPastTimeUser(response.data.totalsForAllResults);
-//   //console.log(response.data.totalsForAllResults);
-  
-// }, (error) => {
-  
-//   console.log(error);
-// });
-//   }
-
-
-
-
-
-// End api data 
-    render(){
         return(
-           <Grid item xs={12}>
-         
-                 <section className="signup-wrapper">
+            <section className="signup-wrapper">
         <img className="bg-mask" src="/assets/images/mask-bg.png" alt="Mask" />
         <div className="signup-page">
           <header>
@@ -90,73 +229,42 @@ countryDropdown('#country');
               </div>
             </div>
           </header>
-          
           <div className="container">
             <div className="row justify-content-center align-items-center">
               <div className="col-md-4 mx-auto">
-                <div className="signup-wrapper__slider">
-                  <div className="owl-carousel owl-theme login-carousel">
-                    <div className="item text-center">
-                      <figure>
-                        <img src="/assets/images/dating-app-login.png" alt="Dating App" />
-                      </figure>
-                      <div className="signup-slider__content">
-                        <h4 className="theme-txt">Dating App</h4>
-                        <Typography variant="p" component="p" >Mutual sympathy. Do not waste time and write to her</Typography>
-                      </div>
-                    </div>
-                    <div className="item text-center">
-                      <figure>
-                        <img src="/assets/images/find-friend-login.png" alt="Find Best Friend" />
-                      </figure>
-                      <div className="signup-slider__content">
-                        <h4 className="theme-txt">Find Best Friend</h4>
-                        <Typography variant="p" component="p" >Mutual sympathy. Do not waste time and write to her</Typography>
-                      </div>
-                    </div>
-                    <div className="item text-center">
-                      <figure>
-                        <img src="/assets/images/live-login.png" alt="Live and Get Fan" />
-                      </figure>
-                      <div className="signup-slider__content">
-                        <h4 className="theme-txt">Find Best Friend</h4>
-                        <Typography variant="p" component="p" >Mutual sympathy. Do not waste time and write to her</Typography>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+               <LoginSidebar/>
               </div>
-           
               <div className="col-md-4 mx-auto">
-                <form action="#" method="post">
+                <form action="#" method="post" id="login_form" enctype="multipart/form-data" >
                   <div className="signup-wrapper__form">
                     <div className="signup-form text-center">
                       {/* First Tab */}
                       <div className="signup-inner" id="login-tab-1">
                         <div className="signup-header">
-                        <Typography variant="h4" component="h4" className="theme-txt"> Glad to see you!</Typography>
-                        <Typography variant="p" component="p" >Hello there, sign in to continue!</Typography>
-                          {/* <h4 className="theme-txt">Glad to see you!</h4> */}
-                          {/* <Typography variant="p" component="p" >Hello there, sign in to continue!</Typography> */}
+                         <Typography variant="h4" component="h4" >Glad to see you!</Typography>
+                          <Typography variant="p" component="p" >Hello there, sign in to continue!</Typography>
                         </div>
                         <div className="form-group">
                           <div className="country text-left">
-                            <div id="country" className="select"><img src="https://flagcdn.com/16x12/af.png" />+93</div>
+                           <div id="country" className="select" ><img src="https://flagcdn.com/16x12/af.png" />+93</div>
                             <div id="country-drop" className="dropdown">
                               <ul>
-                              
-                                {countries_data.map((country, index) => (
-                                       <li data-code={country.code.toLowerCase()} data-name={country.label} data-cid={country.phone}><img src= {"https://flagcdn.com/16x12/"+country.code.toLowerCase()+".png"} />+{country.phone}</li>
+                                 {countries_data.map((country, index) => (
+                                       <li onClick={e => setCntCode(e.target.getAttribute("data-cid"))} data-code={country.code.toLowerCase()} data-name={country.label} data-cid={country.phone}><img src= {"https://flagcdn.com/16x12/"+country.code.toLowerCase()+".png"} />+{country.phone}</li>
                                     ))}
                               </ul>
                             </div>
                           </div>
-                          <TextField id="outlined-basic" label="Outlined" className="phone_number" name="Enter Phone Number" variant="outlined" />
-                          {/* <input className="form-control" name="phone-number" type="text" placeholder="Enter Phone Number" /> */}
+                          <input className="form-control" name="phone_number" id="phone_number" type="text" placeholder="Enter Phone Number" value={phoneNumber} onChange={e => setPhone(e.target.value)} />
+                            
                         </div>
                         <Typography variant="p" component="p" >You'll receive a verification code</Typography>
-                        {/* <a className="btn bg-grd-clr d-block mb-4 btn-countinue-1" href="javascript:void(0)">Continue</a> */}
-                       <Button  color="primary" className="btn bg-grd-clr d-block mb-4 btn-countinue-1">Continue</Button>
+                        {/* <a className="btn bg-grd-clr d-block mb-4 btn-countinue-1" href="javascript:void(0)" onClick={sendHandle} >Continue</a> */}
+
+                       
+                          <Button  className="btn bg-grd-clr d-block mb-4 btn-countinue-1" variant="contained" onClick={sendHandle}>
+                            Continue
+                          </Button>
                         <Typography variant="p" component="p" >Continue with</Typography>
                         <ul className="social-login">
                           <li>
@@ -167,59 +275,62 @@ countryDropdown('#country');
                           </li>
                           <li>
                             <a className="bg-grd-clr" href="javascript:void(0)"><i className="fab fa-twitter" /></a>
-                          </li>                                        
+                          </li>
                         </ul>
                         <div className="accept-field d-flex justify-content-center align-items-center mt-4">
-                          {/* <input type="checkbox" name="agree" id="accept-field" /> */}
-                           <Checkbox  defaultChecked name="agree" id="accept-field" inputProps={{ 'aria-label': 'uncontrolled-checkbox' }} />
+                          <input type="checkbox" name="agree" id="accept-field" />
                           <label htmlFor="accept-field" />
-                          <span>Agree to our Terms and Data Policy.</span>
+                           <Typography variant="span" component="span" >Agree to our Terms and Data Policy.</Typography>
                         </div>
                       </div>
                       {/* Second Tab */}
                       <div className="signup-inner" id="login-tab-2">
                         <div className="signup-header">
                           <a href="javascript:void(0)" className="login-back-1 btn-back"><i className="fas fa-chevron-left" /></a>
-                          <h4 className="theme-txt">Enter Code</h4>
+                         <Typography variant="h4" component="h4" >Enter Code</Typography>
                           <Typography variant="p" component="p" >Enter 4 digit verification code you<br /> received on +1 7462 462 321</Typography>
                         </div>
                         <div className="form-group otp-field">
-                          <input className="form-control" name type="text" placeholder={1} />
-                          <input className="form-control" name type="text" placeholder={2} />
-                          <input className="form-control" name type="text" placeholder={6} />
-                          <input className="form-control" name type="text" placeholder={8} />
+                          <input className="form-control" name="otp_1" value={otp_1} onChange={e => setOtp1(e.target.value)} type="text"  />
+                          <input className="form-control" name="otp_2" value={otp_2}   onChange={e => setOtp2(e.target.value)} type="text"  />
+                          <input className="form-control" name="otp_3" value={otp_3}  onChange={e => setOtp3(e.target.value)} type="text"  />
+                          <input className="form-control" name="otp_4" value={otp_4}  onChange={e => setOtp4(e.target.value)} type="text"  />
                         </div>
-                        <a className="btn bg-grd-clr d-block mb-2 btn-countinue-2" href="javascript:void(0)">Verify</a>
+                        <a className="btn bg-grd-clr d-block mb-2 btn-countinue-2" href="javascript:void(0)" onClick={verifyHandle}>Verify</a>
                         <a className="btn btn-trsp d-block" href="javascript:void(0)">Resend</a>
                       </div>
                       {/* Third Tab */}
-                      <div className="signup-inner" id="login-tab-3">
-                        <div className="signup-header mb-5">
-                          <a href="javascript:void(0)" className="login-back-2 btn-back"><i className="fas fa-chevron-left" /></a>
-                          <h4 className="theme-txt">Your Information</h4>
-                        </div>
-                        <div className="form-group">
-                          <input className="form-control bg-trsp" name="date-birth" type="text" placeholder="Your Date of birth" />
-                        </div>
-                        <div className="form-group">
-                          <input className="form-control bg-trsp" name="first-name" type="text" placeholder="First Name" />
-                        </div>
-                        <div className="form-group">
-                          <input className="form-control bg-trsp" name="last-name" type="text" placeholder="Last Name" />
-                        </div>
-                        <div className="choose-gender d-flex my-4">
-                          <div className="form-group">
-                            <input type="radio" id="female" name="gender" placeholder="Female" />
-                            <label htmlFor="female">Female</label>
-                          </div>
-                          <div className="form-group">
-                            <input type="radio" id="male" name="gender" placeholder="Male" />
-                            <label htmlFor="male">Male</label>
-                          </div>
-                          <div className="form-group">
-                            <input type="radio" id="more" name="gender" />
-                            <label htmlFor="more">More</label>
-                          </div>
+                      <div className="signup-inner" id="login-tab-3" >
+                    
+                            <div className="signup-header mb-5">
+                              <a href="javascript:void(0)" className="login-back-2 btn-back"><i className="fas fa-chevron-left" /></a>
+                             <Typography variant="h4" component="h4" >Your Information</Typography>
+                            </div>
+                            <div className="form-group">
+                              <input className="form-control bg-trsp" name="date-birth" value={Dob} onChange={e => setDob(e.target.value)} type="text" placeholder="Your Date of birth" />
+                            </div>
+                            <div className="form-group">
+                              <input className="form-control bg-trsp" name="first-name" value={FirstName} onChange={e => setFirst(e.target.value)} id="first_name" type="text" placeholder="First Name" />
+                            </div>
+                            <div className="form-group">
+                              <input className="form-control bg-trsp" name="last-name" value={LastName} onChange={e => setLast(e.target.value)} type="text" placeholder="Last Name" />
+                            </div>
+                            
+                                <div className="choose-gender d-flex my-4">
+                                  <div className="form-group">
+                                    <input type="radio" id="female" name="gender" value={1}  onChange={ handleChange }  placeholder="Female" />
+                                    <label htmlFor="female">Female</label>
+                                  </div>
+                                  <div className="form-group">
+                                    <input type="radio" id="male" name="gender" value={2} onChange={ handleChange } placeholder="Male" />
+                                    <label htmlFor="male">Male</label>
+                                  </div>
+                                    
+                                  <div className="form-group">
+                                    <input type="radio" id="more" value={3} onChange={ handleChange }  name="gender" />
+                                    <label htmlFor="more">More</label>
+                                </div>
+                             
                         </div>
                         <a className="btn bg-grd-clr d-block mb-4 btn-countinue-3" href="javascript:void(0)">Next</a>
                       </div>
@@ -227,7 +338,7 @@ countryDropdown('#country');
                       <div className="signup-inner" id="login-tab-4">
                         <div className="signup-header">
                           <a href="javascript:void(0)" className="login-back-3 btn-back"><i className="fas fa-chevron-left" /></a>
-                          <h4 className="theme-txt">Gender Identity</h4>
+                         <Typography variant="h4" component="h4" >Gender Identity</Typography>
                         </div>
                         <a className="btn bg-grd-clr d-block mb-4 btn-countinue-4" href="javascript:void(0)">Prefer Not to say</a>
                         <a className="btn btn-trsp d-block" href="javascript:void(0)">Non-Binary</a>
@@ -236,28 +347,27 @@ countryDropdown('#country');
                       <div className="signup-inner" id="login-tab-5">
                         <div className="signup-header">
                           <a href="javascript:void(0)" className="login-back-4 btn-back"><i className="fas fa-chevron-left" /></a>
-                          <h4 className="theme-txt">Upload Profile Photo</h4>
+                         <Typography variant="h4" component="h4" >Upload Profile Photo</Typography>
                         </div>
                         <div className="form-group upload-field mb-5">
-                          <label htmlFor="profile-photo" />
-                          <input type="file" id="profile-photo" name="profile-photo" accept="image/*" />
+                          <label htmlFor="profile-photo" id="PreviewPicture" style={{ backgroundImage: `url("${imgData}")` }}   />
+                          <input type="file" id="profile-photo" name="profile-photo" id="profile-photo" onChange={handleFileChange} accept="image/*" />
                           <span className="camera-icon">
                             <img src="/assets/images/Icon%20feather-camera.png" alt="Camera" />
                           </span>
                         </div>
-                        <a className="btn bg-grd-clr d-block mb-4 btn-countinue-5" href="signup-completed.html">Next</a>
+                        <a className="btn bg-grd-clr d-block mb-4 btn-countinue-5" href="javascript:void(0)" onClick={registerHandle} >Next</a>
                       </div>
                     </div>
                   </div>
                 </form>
               </div>
             </div>
-          </div>       
+          </div>
         </div>
       </section>
-       </Grid>
         )
-    }
+    
 }
 
 export default Login;
