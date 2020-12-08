@@ -37,18 +37,19 @@ const Login = () => {
     const [genderName, setGender] = useState('');  
     const [picture, setPicture] = useState(null);
     const [imgData, setImgData] = useState(null);
+
+    const [auth, setAuth] = useState({loggedIn : false})
+
+
 //  Setting value here radio button
    const handleChange = e => { 
         setGender(e.target.value);
     }
  
-  // const handleFileChange = e =>{
-  //   setUploadFile(e.target.files[0]);
-  // }
 
   const handleFileChange = e => {
     if (e.target.files[0]) {
-      console.log("picture: ", e.target.files);
+      // console.log("picture: ", e.target.files);
       setPicture(e.target.files[0]);
       const reader = new FileReader();
       reader.addEventListener("load", () => {
@@ -58,8 +59,24 @@ const Login = () => {
     }
   };
 
-  const token = localStorage.getItem('token');
+// Managing token here 
+const tokencheck = () =>{
 
+ const token = localStorage.getItem('session_id');
+        if(token!=null)
+        {
+            history.push("/");
+        }
+        else
+        {
+          localStorage.removeItem('session_id');
+        }
+}
+ useEffect(() => {
+    tokencheck();
+  });
+
+// Send OTP handle
   const sendHandle = () =>{
 
     const bodyParameters = {
@@ -92,10 +109,28 @@ const verifyHandle = () =>{
 
       axios.post(VERIFY_API,bodyParameters)
   .then((response) => { 
-    console.log(response);
+
+      
+    if(response.data.data != null)
+    {
+            let id = response.data.data.session_id;
+          setAuth( {loggedIn : true});
+
+         localStorage.setItem('session_id', response.data.data.session_id);
+         history.push("/");
+    }
+    else
+    {
+    localStorage.clear();
+     setAuth( {loggedIn : false});
+
    
+    }
+   
+  
   }, (error) => {
     
+     localStorage.clear();
   });
 }
   // End verify otp 
@@ -111,62 +146,33 @@ const verifyHandle = () =>{
 
     
   // Verify OTP Function 
-const registerHandle = () =>{
+const registerHandle = (e) =>{
 
-     const data = new FormData();
-        data.append("first_name", "" + FirstName);
-        data.append("last_name", LastName);
-        data.append("dob", "" + Dob);
-        data.append("gender", "" + genderName);
-        data.append("device_token", "" + "null");
-        data.append("device_type", "" + 0);
-        data.append("country_code", "+"+cntCode);
-        data.append("phone", "" + phoneNumber);
-        data.append("latitude", "" + "30.704649");
-        data.append("longitude", "" + "76.717873");
+     const bodyParameters = new FormData();
+        bodyParameters.append("first_name", "" + FirstName);
+        bodyParameters.append("last_name", LastName);
+        bodyParameters.append("dob", "" + Dob);
+        bodyParameters.append("gender", "" + genderName);
+        bodyParameters.append("device_token", "" + "null");
+        bodyParameters.append("device_type", "" + 0);
+        bodyParameters.append("country_code", "+"+cntCode);
+        bodyParameters.append("phone", "" + phoneNumber);
+        bodyParameters.append("latitude", "" + "30.704649");
+        bodyParameters.append("longitude", "" + "76.717873");
+        bodyParameters.append('profile_photo', picture);
 
-
-        // img.map((s, i) => {
-        //     if (s.uri == ‘’ || s.uri == null || s.uri == undefined) {
-        //        // s.uri = Platform.OS==‘ios’?s.uri.replace(“file://“, “/private”):s.uri
-        //         if (__DEV__) { console.log(‘Empty Image of Index’ + i) }
-        //     } else {
-        //         data.append(‘profile_photo’, s);
-        //        // data.append(‘profile_image’, s);
-        //     }
-        // })
+      axios.post(SIGNUP_API,bodyParameters, config)
+        .then((response) => { 
         
-                //data.append("profile_photo", s);
-               // data.append("profile_image", s);
-            
+        // Setting session id in local storage
+          setAuth( {loggedIn : true});
+          localStorage.setItem('session_id', response.data.data.session_id);
+          history.push("/");
         
-
-  //  const bodyParameters = {
-     
-  //     first_name:FirstName,
-  //     last_name:LastName,
-  //     dob:Dob,
-  //     gender:genderName,
-  //     device_token:"null",
-  //     device_type:0,
-  //     country_code:"+"+cntCode,
-  //     profile_photo:picture,
-  //     phone:phoneNumber,
-  //     latitude:"30.704649",
-  //     longitude:"76.717873",
-  //   };
-
-
-      axios.post(SIGNUP_API,data, config)
-  .then((response) => { 
-   
-    console.log(response);
-   
-  
-  }, (error) => {
-    
-  // localStorage.removeItem('token');
-  });
+        }, (error) => {
+          setAuth( {loggedIn : false});
+          localStorage.removeItem('session_id');
+        });
 }
 
 
