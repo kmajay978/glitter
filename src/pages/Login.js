@@ -1,14 +1,15 @@
-import * as startOfDay from "date-fns";
+import { format } from 'date-fns';
 import React, { useState, useEffect } from "react";
 import DateFnsUtils from '@date-io/date-fns';
 import {  useHistory } from 'react-router'
 import axios from "axios";
-import { Button,  makeStyles, createStyles, Theme, Typography, TextField, Grid, Container, Autocomplete,Select, MenuItem, InputLabel,  NativeSelect, Checkbox, FormControl, Link } from '@material-ui/core';
+import { Button,  makeStyles, createStyles, Theme, Typography, TextField, Grid, Container, Autocomplete,Select, MenuItem, InputLabel,  NativeSelect, Checkbox, FormControl, Link, Input} from '@material-ui/core';
 import {
   MuiPickersUtilsProvider,
   KeyboardTimePicker,
   KeyboardDatePicker,
 } from '@material-ui/pickers';
+
 import countries_data from '../components/Countries';
 import LoginSidebar from '../components/LoginSidebar';
 
@@ -156,7 +157,7 @@ const registerHandle = (e) =>{
      const bodyParameters = new FormData();
         bodyParameters.append("first_name", "" + FirstName);
         bodyParameters.append("last_name", LastName);
-        bodyParameters.append("dob", "" + Dob);
+        bodyParameters.append("dob", "" + format(Dob, 'MM/dd/yyyy'));
         bodyParameters.append("gender", "" + genderName);
         bodyParameters.append("device_token", "" + "null");
         bodyParameters.append("device_type", "" + 0);
@@ -264,8 +265,8 @@ countryDropdown('#country');
                               </ul>
                             </div>
                           </div>
-                          <input className="form-control" name="phone_number" id="phone_number" type="text" placeholder="Enter Phone Number" value={phoneNumber} onChange={e => setPhone(e.target.value)} />
-                            
+                       
+                          <Input defaultValue="Enter Phone Number" name="phone_number" id="phone_number" type="text" placeholder="Enter Phone Number" value={phoneNumber} onChange={e => setPhone(e.target.value)} />
                         </div>
                         <Typography variant="p" component="p" >You'll receive a verification code</Typography>
                           <Button  className="btn bg-grd-clr d-block mb-4 btn-countinue-1" variant="contained" onClick={sendHandle}>
