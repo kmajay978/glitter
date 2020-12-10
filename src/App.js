@@ -1,5 +1,6 @@
 
 import './App.css';
+import React, { useState } from 'react';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import SignUpForm from './pages/Form';
@@ -12,12 +13,13 @@ function App() {
     <Router>
   
         <Switch>
-          <Route exact path="/">
+          {/* <Route exact path="/">
             <Home />
-          </Route>
+          </Route> */}
           <Route path="/login">
             <Login />
           </Route>
+          <Route exact path='/' component={Home} />
           <Route path="/register">
             <SignUpForm />
           </Route>
