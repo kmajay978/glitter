@@ -29,6 +29,13 @@ const Login = () => {
    const [phoneNumber, setPhone] = useState('');   //For past users
   const [cntCode, setCntCode] = useState('');   //For past users
 
+
+// Only numbers allowed
+   const handlePhoneChange = (e) => {
+    const value = e.target.value.replace(/\D/g, "");
+    setPhone(value);
+  };
+
   // OTP fields in state
   const [otp_1,setOtp1] = useState('');
   const [otp_2,setOtp2] = useState('');
@@ -42,12 +49,13 @@ const Login = () => {
     const [genderName, setGender] = useState('');  
     const [picture, setPicture] = useState(null);
     const [imgData, setImgData] = useState(null);
+    const [phoneErr, setPhoneErr] = useState({});
 
     const [auth, setAuth] = useState({loggedIn : false})
+    const [hidden, setHidden] = useState(false);
+    // const [divToggle, setToggle] = useState(true);
+  {/* { divToggle ? "signup-inner" : "signup-inner active-tab-2"} */}
 
- const handleDateChange = (date) => {
-    setDob(date);
-  };
 //  Setting value here radio button
    const handleChange = e => { 
         setGender(e.target.value);
@@ -83,11 +91,16 @@ const tokencheck = () =>{
     tokencheck();
   });
 
+
 // Send OTP handle
   const sendHandle = (e) =>{
-
     e.preventDefault();
 
+  
+    const isValid = formValidation();
+    if(isValid)
+    {
+   
     const bodyParameters = {
       phone: phoneNumber,
       country_code: '+'+cntCode
@@ -96,12 +109,31 @@ const tokencheck = () =>{
       axios.post(SENDOTP_API,bodyParameters)
   .then((response) => {
     
+    // setHidden(false);
     // history.push("/dashboard");
   }, (error) => {
     
+    // setHidden(true);
   // localStorage.removeItem('token');
   });
 
+    }
+  
+
+   }
+
+   const formValidation = () =>{
+     const phoneErr = {};
+     let isValid = true;
+
+     if(phoneNumber.length == "")
+     {
+       phoneErr.phoneShort = "Phone number is Empty";
+       isValid = false;
+     }
+
+     setPhoneErr(phoneErr);
+     return isValid;
    }
 
  var otp = otp_1+otp_2+otp_3+otp_4;
@@ -122,9 +154,8 @@ const verifyHandle = () =>{
       
     if(response.data.data != null)
     {
-            let id = response.data.data.session_id;
+          let id = response.data.data.session_id;
           setAuth( {loggedIn : true});
-
          localStorage.setItem('session_id', response.data.data.session_id);
          history.push("/");
     }
@@ -132,6 +163,7 @@ const verifyHandle = () =>{
     {
     localStorage.clear();
      setAuth( {loggedIn : false});
+    setHidden(wasOpened => !wasOpened);
     }
   
   }, (error) => {
@@ -157,7 +189,7 @@ const registerHandle = (e) =>{
      const bodyParameters = new FormData();
         bodyParameters.append("first_name", "" + FirstName);
         bodyParameters.append("last_name", LastName);
-        bodyParameters.append("dob", "" + format(Dob, 'MM/dd/yyyy'));
+        bodyParameters.append("dob", "" + Dob);
         bodyParameters.append("gender", "" + genderName);
         bodyParameters.append("device_token", "" + "null");
         bodyParameters.append("device_type", "" + 0);
@@ -180,9 +212,6 @@ const registerHandle = (e) =>{
           localStorage.removeItem('session_id');
         });
 }
-
-
-
   // End here 
 
 
@@ -251,8 +280,8 @@ countryDropdown('#country');
                       {/* First Tab */}
                       <div className="signup-inner" id="login-tab-1">
                         <div className="signup-header">
-                         <Typography variant="h4" component="h4" >Glad to see you!</Typography>
-                          <Typography variant="p" component="p" >Hello there, sign in to continue!</Typography>
+                        <h4>Glad to see you!</h4>
+                         <p>Hello there, sign in to continue!</p>
                         </div>
                         <div className="form-group">
                           <div className="country text-left">
@@ -265,14 +294,14 @@ countryDropdown('#country');
                               </ul>
                             </div>
                           </div>
-                       
-                          <Input defaultValue="Enter Phone Number" name="phone_number" id="phone_number" type="text" placeholder="Enter Phone Number" value={phoneNumber} onChange={e => setPhone(e.target.value)} />
+                             <input className="form-control" name="phone_number" id="phone_number" type="text" placeholder="Enter Phone Number" value={phoneNumber} onChange={handlePhoneChange} />
+                      { Object.keys(phoneErr).map((key) => {
+                          return <div style={{color : "red"}}>{phoneErr[key]}</div>
+                        }) }
                         </div>
-                        <Typography variant="p" component="p" >You'll receive a verification code</Typography>
-                          <Button  className="btn bg-grd-clr d-block mb-4 btn-countinue-1" variant="contained" onClick={sendHandle}>
-                            Continue
-                          </Button>
-                        <Typography variant="p" component="p" >Continue with</Typography>
+                       <p>You'll receive a verification code</p>
+                        <a className="btn bg-grd-clr d-block mb-4 btn-countinue-1" href="javascript:void(0)" onClick={sendHandle} >Continue</a>
+                       <p>Continue with</p>
                         <ul className="social-login">
                           <li>
                             <a className="bg-grd-clr" href="javascript:void(0)"><i className="fab fa-facebook-f" /></a>
@@ -287,54 +316,42 @@ countryDropdown('#country');
                         <div className="accept-field d-flex justify-content-center align-items-center mt-4">
                           <input type="checkbox" name="agree" id="accept-field" />
                           <label htmlFor="accept-field" />
-                           <Typography variant="span" component="span" >Agree to our Terms and Data Policy.</Typography>
+                           <span> to our Terms and Data Policy.</span>
                         </div>
                       </div>
                       {/* Second Tab */}
                       <div className="signup-inner" id="login-tab-2">
-                        <div className="signup-header">
-                          <a href="javascript:void(0)" className="login-back-1 btn-back"><i className="fas fa-chevron-left" /></a>
-                         <Typography variant="h4" component="h4" >Enter Code</Typography>
-                          <Typography variant="p" component="p" >Enter 4 digit verification code you<br /> received on +1 7462 462 321</Typography>
+                          <div className="cont_screen">
+                              <div className="signup-header">
+                                <a href="javascript:void(0)" className="login-back-1 btn-back"><i className="fas fa-chevron-left" /></a>
+                             <h4>Enter Code</h4>
+                               <p>Enter 4 digit verification code you<br /> received on +1 7462 462 321</p>
+                              </div>
+                              <div className="form-group otp-field">
+                                <input className="form-control" name="otp_1" value={otp_1} onChange={e => setOtp1(e.target.value)} type="text"  />
+                                <input className="form-control" name="otp_2" value={otp_2}   onChange={e => setOtp2(e.target.value)} type="text"  />
+                                <input className="form-control" name="otp_3" value={otp_3}  onChange={e => setOtp3(e.target.value)} type="text"  />
+                                <input className="form-control" name="otp_4" value={otp_4}  onChange={e => setOtp4(e.target.value)} type="text"  />
+                              </div>
+                              
+                              <a className="btn bg-grd-clr d-block mb-2 btn-countinue-2" href="javascript:void(0)" onClick={verifyHandle}>Verify</a>
+                              <a className="btn btn-trsp d-block" href="javascript:void(0)">Resend</a>
                         </div>
-                        <div className="form-group otp-field">
-                          <input className="form-control" name="otp_1" value={otp_1} onChange={e => setOtp1(e.target.value)} type="text"  />
-                          <input className="form-control" name="otp_2" value={otp_2}   onChange={e => setOtp2(e.target.value)} type="text"  />
-                          <input className="form-control" name="otp_3" value={otp_3}  onChange={e => setOtp3(e.target.value)} type="text"  />
-                          <input className="form-control" name="otp_4" value={otp_4}  onChange={e => setOtp4(e.target.value)} type="text"  />
-                        </div>
-                        <a className="btn bg-grd-clr d-block mb-2 btn-countinue-2" href="javascript:void(0)" onClick={verifyHandle}>Verify</a>
-                        <a className="btn btn-trsp d-block" href="javascript:void(0)">Resend</a>
-                      </div>
+                        
+                   
+                     </div>
+                    
                       {/* Third Tab */}
                       <div className="signup-inner" id="login-tab-3" >
-                    
+                      
+                  
+                        {hidden && <div className="another_test">
                             <div className="signup-header mb-5">
                               <a href="javascript:void(0)" className="login-back-2 btn-back"><i className="fas fa-chevron-left" /></a>
-                             <Typography variant="h4" component="h4" >Your Information</Typography>
+                            <h4>Your Information</h4>
                             </div>
                             <div className="form-group">
-                              {/* <input className="form-control bg-trsp" name="date-birth" value={Dob} onChange={e => setDob(e.target.value)} type="text" placeholder="Your Date of birth" /> */}
-
-                               <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                                          <Grid container justify="space-around">
-                                            <KeyboardDatePicker
-                                              margin="normal"
-                                              name="date-birth"
-                                              className="form-control bg-trsp"
-                                              id="date-picker-dialog"
-                                              label="Your Date of birth"
-                                              format="MM/dd/yyyy"
-                                              value={Dob}
-                                             onChange={handleDateChange}
-                                              KeyboardButtonProps={{
-                                                'aria-label': 'change date',
-                                              }}
-                                            />
-                                          
-                                          </Grid>
-                                        </MuiPickersUtilsProvider>
-                              
+                             <input className="form-control bg-trsp" name="date-birth" value={Dob} onChange={e => setDob(e.target.value)} type="text" placeholder="Your Date of birth" /> 
                             </div>
                             <div className="form-group">
                               <input className="form-control bg-trsp" name="first-name" value={FirstName} onChange={e => setFirst(e.target.value)} id="first_name" type="text" placeholder="First Name" />
@@ -361,11 +378,14 @@ countryDropdown('#country');
                         </div>
                         <a className="btn bg-grd-clr d-block mb-4 btn-countinue-3" href="javascript:void(0)">Next</a>
                       </div>
+                        }
+
+                      </div>
                       {/* Fourth Tab */}
                       <div className="signup-inner" id="login-tab-4">
                         <div className="signup-header">
                           <a href="javascript:void(0)" className="login-back-3 btn-back"><i className="fas fa-chevron-left" /></a>
-                         <Typography variant="h4" component="h4" >Gender Identity</Typography>
+                        <h4>Gender Identity</h4>
                         </div>
                         <a className="btn bg-grd-clr d-block mb-4 btn-countinue-4" href="javascript:void(0)">Prefer Not to say</a>
                         <a className="btn btn-trsp d-block" href="javascript:void(0)">Non-Binary</a>
@@ -374,7 +394,7 @@ countryDropdown('#country');
                       <div className="signup-inner" id="login-tab-5">
                         <div className="signup-header">
                           <a href="javascript:void(0)" className="login-back-4 btn-back"><i className="fas fa-chevron-left" /></a>
-                         <Typography variant="h4" component="h4" >Upload Profile Photo</Typography>
+                        <h4>Upload Profile Photo</h4>
                         </div>
                         <div className="form-group upload-field mb-5">
                           <label htmlFor="profile-photo" id="PreviewPicture" style={{ backgroundImage: `url("${imgData}")` }}   />
