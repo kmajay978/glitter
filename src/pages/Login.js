@@ -53,7 +53,7 @@ const Login = () => {
 
     const [auth, setAuth] = useState({loggedIn : false})
     const [hidden, setHidden] = useState(false);
-    // const [divToggle, setToggle] = useState(true);
+
   {/* { divToggle ? "signup-inner" : "signup-inner active-tab-2"} */}
 
 //  Setting value here radio button
@@ -156,6 +156,7 @@ const verifyHandle = () =>{
     {
           let id = response.data.data.session_id;
           setAuth( {loggedIn : true});
+          setHidden(true);
          localStorage.setItem('session_id', response.data.data.session_id);
          history.push("/");
     }
@@ -163,7 +164,7 @@ const verifyHandle = () =>{
     {
     localStorage.clear();
      setAuth( {loggedIn : false});
-    setHidden(wasOpened => !wasOpened);
+    setHidden(false);
     }
   
   }, (error) => {
@@ -203,12 +204,14 @@ const registerHandle = (e) =>{
         .then((response) => { 
         
         // Setting session id in local storage
-          setAuth( {loggedIn : true});
+         
           localStorage.setItem('session_id', response.data.data.session_id);
-          history.push("/");
+          history.push({
+                    pathname: '/signup-completed',
+                    mypicture: imgData // your data array of objects
+                  })
         
         }, (error) => {
-          setAuth( {loggedIn : false});
           localStorage.removeItem('session_id');
         });
 }
@@ -344,8 +347,8 @@ countryDropdown('#country');
                       {/* Third Tab */}
                       <div className="signup-inner" id="login-tab-3" >
                       
-                  
-                        {hidden && <div className="another_test">
+
+                      <div className="another_test">
                             <div className="signup-header mb-5">
                               <a href="javascript:void(0)" className="login-back-2 btn-back"><i className="fas fa-chevron-left" /></a>
                             <h4>Your Information</h4>
@@ -378,7 +381,8 @@ countryDropdown('#country');
                         </div>
                         <a className="btn bg-grd-clr d-block mb-4 btn-countinue-3" href="javascript:void(0)">Next</a>
                       </div>
-                        }
+                    
+
 
                       </div>
                       {/* Fourth Tab */}
