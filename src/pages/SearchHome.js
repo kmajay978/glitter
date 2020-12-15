@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import {  useHistory } from 'react-router';
 import axios from "axios";
-
+import NavLinks from '../components/Nav';
 const SearchHome = () =>{
     return(
   <section className="home-wrapper">
@@ -88,32 +88,7 @@ const SearchHome = () =>{
             <div className="live-icon">
               <img src="/assets/images/live.png" alt="Live" />
             </div>
-            <ul className="feature-menu ml-auto">
-              <li className="active">
-                <a href="javascript:void(0)">
-                  <i className="fas fa-compass" />
-                  <span>Discover</span>
-                </a>
-              </li>
-              <li>
-                <a href="javascript:void(0)">
-                  <i className="fas fa-video" />
-                  <span>Video Chat</span>
-                </a>
-              </li>
-              <li>
-                <a href="javascript:void(0)">
-                  <i className="fas fa-layer-group" />
-                  <span>Activity</span>
-                </a>
-              </li>
-              <li>
-                <a href="javascript:void(0)">
-                  <i className="fas fa-user" />
-                  <span>Profile</span>
-                </a>
-              </li>
-            </ul>
+            <NavLinks />
           </div>
           <div className="search-section-wrapper mt-4 px-4">
             <div className="users-listing">
