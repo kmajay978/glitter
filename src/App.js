@@ -9,6 +9,7 @@ import SearchProfile from './pages/SearchProfile';
 import AnswerCalling from './pages/AnswerCalling';
 import SignupCompleted from './pages/SignupCompleted';
 import Profile from './pages/Profile';
+import SingleProfile from './pages/SingleProfile';
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 import  ProtectedRoute  from "./protected.route";
 
@@ -29,8 +30,8 @@ function App() {
           <ProtectedRoute exact path='/chat' component={ChatBox} />
           <ProtectedRoute exact path='/searching-profile' component={SearchProfile} />
           <ProtectedRoute exact path='/search-home' component={SearchHome} />
+          <ProtectedRoute exact path='/single-profile' component={SingleProfile} />
 
-          
            
         </Switch>
 

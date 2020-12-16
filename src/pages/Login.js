@@ -11,7 +11,7 @@ import {
 } from '@material-ui/pickers';
 
 import countries_data from '../components/Countries';
-import LoginSidebar from '../components/LoginSidebar';
+import LoginSidebar from '../components/LoginSidebar'; 
 
 import { SENDOTP_API, VERIFY_API, SIGNUP_API } from '../components/Api';
 import $ from 'jquery';
@@ -36,6 +36,7 @@ const Login = () => {
     setPhone(value);
   };
 
+console.log(phoneNumber);
   // OTP fields in state
   const [otp_1,setOtp1] = useState('');
   const [otp_2,setOtp2] = useState('');

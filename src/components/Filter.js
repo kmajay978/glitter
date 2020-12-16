@@ -2,9 +2,81 @@
 import React, { useState, useEffect } from "react";
 import {  useHistory } from 'react-router';
 import axios from "axios";
+import Slider from '@material-ui/core/Slider';
+import { makeStyles } from '@material-ui/core/styles';
 
+// const verifyHandle = () =>{
+
+//   const bodyParameters = {
+//      session_id: localStorage.getItem(session_id),
+//      age_from: setValueAge[0],
+//      age_to: setValueAge[1],
+//      distance: setValueDistance,
+//      height_from:setValueHeight[0],
+//      height_to:setValueHeight[1],
+//      weight_from:setValueWidth[0],
+//      weight_to:setValueWidth[1],
+
+//    };
+
+//      axios.post(VERIFY_API,bodyParameters)
+//  .then((response) => { 
+
+     
+   
+ 
+//  }, (error) => {
+   
+//     localStorage.clear();
+//  });
+// }
+
+const useStyles = makeStyles({
+  root: {
+    width: 300,
+  },
+});
+function valuetextAge(value) {
+  return '${valueAge}°C';
+}
+
+function valuetextHeight(value) {
+  return '${valueHeight}°C';
+}
+
+
+
+function valuetextWidth(value) {
+  return '${valueWidth}°C';
+}
 const SideFilter = () =>{
-    return(
+  
+  
+  const [valueHeight, setValueHeight] = useState([20, 37]);
+  const handleChangeHeight = (event, newValue) => {
+    setValueHeight(newValue);
+  };
+
+    
+    const [valueWidth, setValueWidth] = useState([25, 30]);
+    const handleChangeWidth = (event, newValue) => {
+      setValueWidth(newValue);
+    };
+
+    const [valueAge, setValueAge] = useState([34,45]);
+    const handleChangeAge = (event, newValue) => {
+      setValueAge(newValue);
+     
+    };
+    console.log(valueAge);
+
+    const [valueDistance, setValueDistance] = useState(30);
+    const handleChangeDistance = (event, newValue) => {
+    setValueDistance(newValue);
+    console.log(newValue);
+  };
+
+  return(
 
         <div className="filter-tab">
                   <h4 className="mb-4">Filter</h4>
@@ -30,19 +102,16 @@ const SideFilter = () =>{
                       <div className="tab-title">
                         <h5>Age</h5>
                       </div>
-                      <input type="text" className="two-range" id="age" readOnly />
-                      <div id="age-range" />
+                      <Slider value={valueAge} onChange={handleChangeAge} valueLabelDisplay="auto"
+            aria-labelledby="range-slider" getAriaValueText={valuetextAge}/>
                     </div>
+
                     <div className="distance-group ft-block">
-                      <div className="tab-title">
+                      <div className="tab-title"> 
                         <h5>Distance</h5>
                       </div>
                       <div className="range-slider">
-                        <output className="range-output">
-                          <span className="text-bold output" />
-                          <span className="text-bold">miles</span>
-                        </output>
-                        <input type="range" min={1} max={20} step={1} defaultValue={10} />
+                      <Slider value={valueDistance} onChange={handleChangeDistance} aria-labelledby="continuous-slider" />
                       </div>
                     </div>
                     <div className="height-group ft-block">
@@ -50,16 +119,17 @@ const SideFilter = () =>{
                         <h5>Height</h5>
                         {/*                                    <span class="point-calcu">1.60-1.78m</span>*/}
                       </div>
-                      <input type="text" className="two-range" id="height" readOnly />
-                      <div id="height-range" />
+                      <Slider value={valueHeight} onChange={handleChangeHeight} valueLabelDisplay="auto"
+        aria-labelledby="range-slider" getAriaValueText={valuetextHeight}/>
+
                     </div>
                     <div className="weight-group ft-block">
                       <div className="tab-title">
                         <h5>Weight</h5>
                         {/*                                    <span class="point-calcu">50-65kg</span>*/}
                       </div>
-                      <input type="text" className="two-range" id="weight" readOnly />
-                      <div id="weight-range" />
+                      <Slider value={valueWidth} onChange={handleChangeWidth} valueLabelDisplay="auto"
+        aria-labelledby="range-slider" getAriaValueText={valuetextWidth}/>
                     </div>
                     <div className="btns-group d-flex justify-content-between flex-wrap my-5">
                       <button className="btn bg-grd-clr" type="submit">Done</button>
