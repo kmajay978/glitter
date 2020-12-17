@@ -1,11 +1,12 @@
 import React, {Component} from 'react';
 import FilterSide from '../components/Filter';
 import NavLinks from '../components/Nav';
+import Loader from '../components/Loader';
 
 const Home = () =>{
     return(
           <section className="home-wrapper">
-          
+          {/* <Loader isLoading={isLoading} /> */}
         <img className="bg-mask" src="/assets/images/mask-bg.png" alt="Mask" />
         <div className="home-inner">
           <div className="container-fluid p-0">
