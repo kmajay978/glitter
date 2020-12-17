@@ -4,32 +4,33 @@ import {  useHistory } from 'react-router';
 import axios from "axios";
 import Slider from '@material-ui/core/Slider';
 import { makeStyles } from '@material-ui/core/styles';
+import { FILTER_LIST_API } from './Api';
 
-// const verifyHandle = () =>{
+const filterHandle = () =>{
 
-//   const bodyParameters = {
-//      session_id: localStorage.getItem(session_id),
-//      age_from: setValueAge[0],
-//      age_to: setValueAge[1],
-//      distance: setValueDistance,
-//      height_from:setValueHeight[0],
-//      height_to:setValueHeight[1],
-//      weight_from:setValueWidth[0],
-//      weight_to:setValueWidth[1],
+  const bodyParameters = {
+     session_id: localStorage.getItem('session_id'),
+     age_from: setValueAge[0],
+     age_to: setValueAge[1],
+     distance: setValueDistance,
+     height_from:setValueHeight[0],
+     height_to:setValueHeight[1],
+     weight_from:setValueWidth[0],
+     weight_to:setValueWidth[1],
 
-//    };
+   };
 
-//      axios.post(VERIFY_API,bodyParameters)
-//  .then((response) => { 
+     axios.post(FILTER_LIST_API,bodyParameters)
+ .then((response) => { 
 
-     
+     console.log(FILTER_LIST_API);
    
  
-//  }, (error) => {
+ }, (error) => {
    
-//     localStorage.clear();
-//  });
-// }
+    localStorage.clear();
+ });
+}
 
 const useStyles = makeStyles({
   root: {
@@ -73,7 +74,7 @@ const SideFilter = () =>{
     const [valueDistance, setValueDistance] = useState(30);
     const handleChangeDistance = (event, newValue) => {
     setValueDistance(newValue);
-    console.log(newValue);
+    // console.log(newValue);
   };
 
   return(
