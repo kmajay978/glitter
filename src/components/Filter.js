@@ -5,7 +5,7 @@ import axios from "axios";
 import Slider from '@material-ui/core/Slider';
 import { makeStyles } from '@material-ui/core/styles';
 import { FILTER_LIST_API } from './Api';
-import Loader from '../components/Loader';
+// import Loader from '../components/Loader';
 
 
 const useStyles = makeStyles({
@@ -93,7 +93,7 @@ const SideFilter = () =>{
   return(
 
         <div className="filter-tab">
-          <Loader isLoading={isLoading} />
+          {/* <Loader isLoading={isLoading} /> */}
                   <h4 className="mb-4">Filter</h4>
                   <form action="#" method="post">
                     <div className="show-gender ft-block d-flex flex-wrap" onChange={radioHandle}>
