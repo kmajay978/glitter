@@ -27,6 +27,6 @@ export const GET_LIVE_USER_TOKEN_API=getApiUrl("getLiveUserToken");
 export const VISITOR_API=getApiUrl("view");
 export const VISITOR_LIST_API=getApiUrl("getVisitorList");
 export const FILTER_LIST_API=getApiUrl("filter_user");
-
+export const GET_LOGGEDPROFILE_API=getApiUrl("logged_profile");
 
 

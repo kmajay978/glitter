@@ -5,6 +5,7 @@ import Loader from '../components/Loader';
 import FilterUser from '../components/FilterUser';
 
 const Home = () =>{
+
     return(
           <section className="home-wrapper">
           {/* <Loader isLoading={isLoading} /> */}

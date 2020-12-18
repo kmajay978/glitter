@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import {  useHistory } from 'react-router';
 import axios from "axios";
 import NavLinks from '../components/Nav';
-import { GET_USERPROFILE_API } from '../components/Api';
+import { GET_LOGGEDPROFILE_API } from '../components/Api';
 
 const Profile = () =>{
 
@@ -21,7 +21,7 @@ console.log(profileData);
       session_id: sessionId,
     };
 
-      axios.post(GET_USERPROFILE_API,bodyParameters)
+      axios.post(GET_LOGGEDPROFILE_API,bodyParameters)
   .then((response) => {
 
     setProfile(response.data.data);

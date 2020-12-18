@@ -3,8 +3,37 @@ import React, { useState, useEffect } from "react";
 import {  useHistory } from 'react-router';
 import axios from "axios";
 import NavLinks from '../components/Nav';
+import { GET_USERPROFILE_API } from '../components/Api';
 
 const SingleProfile = () =>{
+
+  const [userData, setUser] = useState('');
+
+  const singleProfileHandle = (e) =>{
+
+  const bodyParameters = {
+     session_id: localStorage.getItem('session_id'),
+     user_id: 1
+   };
+
+
+     axios.post(GET_USERPROFILE_API,bodyParameters)
+ .then((response) => { 
+       setUser(response.data.data);
+    // console.log(response.data.data);
+
+ 
+ }, (error) => {
+   
+    
+ });
+}
+
+
+useEffect(() =>{
+  singleProfileHandle();
+},[])
+
     return(
        <section className="home-wrapper">
   <img className="bg-mask" src="/assets/images/mask-bg.png" alt="Mask" />
@@ -75,7 +104,7 @@ const SingleProfile = () =>{
         <div className="col-md-5">
           <div className="p-title-info d-flex flex-wrap align-items-center justify-content-between my-3">
             <div className="profile-id">
-              <span className="d-inline-block">maerineiw</span>
+              <span className="d-inline-block">{userData.first_name}</span>
               <span className="d-inline-block">ID:2837289739</span>
             </div>
             <div className="pphoto-count">
