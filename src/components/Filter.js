@@ -26,7 +26,7 @@ function valueTextAge(value) {
 function valuetextweight(value) {
   return '${valueweight}°C';
 }
-const SideFilter = () =>{
+const SideFilter = ({setSelectedMode}) =>{
   const [isLoading, setLoading] = useState('false');
 
   const [valueHeight, setValueHeight] = useState([20, 37]);
@@ -73,7 +73,7 @@ const SideFilter = () =>{
      weight_from:valueweight[0],
      weight_to:valueweight[1],
      latitude:30.7,
-     longitude:76.0,
+     longitude:76.0, 
    
 
    };
@@ -82,6 +82,7 @@ const SideFilter = () =>{
  .then((response) => { 
 
      console.log(response);
+     setSelectedMode(response.data.data)
    
  
  }, (error) => {

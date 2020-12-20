@@ -1,11 +1,11 @@
-import React, {Component} from 'react';
+import React, {Component, useState} from 'react';
 import FilterSide from '../components/Filter';
 import NavLinks from '../components/Nav';
 import Loader from '../components/Loader';
-import FilterUser from '../components/FilterUser';
+import FilterUser from '../components/FilterUser'; 
 
 const Home = () =>{
-
+  const [selectedMode, setSelectedMode] = useState('work')
     return(
           <section className="home-wrapper">
           {/* <Loader isLoading={isLoading} /> */}
@@ -27,7 +27,7 @@ const Home = () =>{
                 
                 {/* Sidebar filter */}
 
-              <FilterSide/>
+              <FilterSide setSelectedMode={setSelectedMode} />
                 {/* End filter here */}
               </div>
               <div className="col-lg-9 main-bar p-3">
@@ -38,7 +38,7 @@ const Home = () =>{
                  <NavLinks/>
                 </div>
                 <div className="profile-swipe-wrapper">
-                  <FilterUser />
+                  <FilterUser selectedMode={selectedMode} />
                 </div>
               </div>
             </div>

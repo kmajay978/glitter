@@ -6,7 +6,10 @@ import Slider from '@material-ui/core/Slider';
 import { makeStyles } from '@material-ui/core/styles';
 import { FILTER_LIST_API } from './Api';
 
-const FilterUser = () =>{
+const FilterUser = ({selectedMode}) =>{
+ // console.log("=====>"+{selectedMode})
+  const jki = Object.values(selectedMode);
+  console.log(jki);
 
   return(
                   <div className="stage">
@@ -79,7 +82,7 @@ const FilterUser = () =>{
                       <div className="like-profile tray-btn-s">
                         <a className="right-action" href="javascript:void(0)">
                           <i className="fas fa-heart" />
-                        </a>
+                        </a> 
                       </div>
                     </div>
                   </div>
