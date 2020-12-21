@@ -5,10 +5,10 @@ import Loader from '../components/Loader';
 import FilterUser from '../components/FilterUser'; 
 
 const Home = () =>{
-  const [selectedMode, setSelectedMode] = useState('work')
+  const [fetchedProfile, setFilterUser] = useState('')
     return(
           <section className="home-wrapper">
-          {/* <Loader isLoading={isLoading} /> */}
+          {/* <Loader isLoading={isLo ading} /> */}
         <img className="bg-mask" src="/assets/images/mask-bg.png" alt="Mask" />
         <div className="home-inner">
           <div className="container-fluid p-0">
@@ -27,7 +27,7 @@ const Home = () =>{
                 
                 {/* Sidebar filter */}
 
-              <FilterSide setSelectedMode={setSelectedMode} />
+              <FilterSide setFilterUser={setFilterUser} />
                 {/* End filter here */}
               </div>
               <div className="col-lg-9 main-bar p-3">
@@ -38,7 +38,7 @@ const Home = () =>{
                  <NavLinks/>
                 </div>
                 <div className="profile-swipe-wrapper">
-                  <FilterUser selectedMode={selectedMode} />
+                  <FilterUser fetchedProfile={fetchedProfile} />
                 </div>
               </div>
             </div>

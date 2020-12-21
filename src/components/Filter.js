@@ -15,7 +15,10 @@ const useStyles = makeStyles({
 });
 
 
-function valuetextHeight(value) {
+
+const SideFilter = ({setFilterUser}) =>{
+  const [isLoading, setLoading] = useState('false');
+  function valuetextHeight(value) {
   return '${valueHeight}°C';
 }
 
@@ -26,8 +29,6 @@ function valueTextAge(value) {
 function valuetextweight(value) {
   return '${valueweight}°C';
 }
-const SideFilter = ({setSelectedMode}) =>{
-  const [isLoading, setLoading] = useState('false');
 
   const [valueHeight, setValueHeight] = useState([20, 37]);
   const handleChangeHeight = (event, newValue) => {
@@ -81,8 +82,8 @@ const SideFilter = ({setSelectedMode}) =>{
      axios.post(FILTER_LIST_API,bodyParameters)
  .then((response) => { 
 
-     console.log(response);
-     setSelectedMode(response.data.data)
+    // console.log(response);
+     setFilterUser(response)
    
  
  }, (error) => {
