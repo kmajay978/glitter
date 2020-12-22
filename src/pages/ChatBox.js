@@ -6,31 +6,30 @@ import NavLinks from '../components/Nav';
 import { LIKED_LIST } from '../components/Api';
 
 const ChatBox = () =>{
-const[likes, setLikes]=useState([]);
 
-  const getLikes =()=> {
+const[Likes, setLikes] = useState([]);
+
+  const getLikes = async () => {
     
-    const bodyParameters = 
-    {
-     session_id: localStorage.getItem('session_id'),
+   const bodyParameters = {
+       session_id: localStorage.getItem('session_id'),
     };
-    
-    axios.post(LIKED_LIST,bodyParameters)
-    .then((response) => {
-     console.log(response);
-     setLikes(response.data.data);
-    
-     }, (error) => {
-     });
-     }
+
+  // Destructing response and getting data part
+  const { data: {data} } = await axios.post(LIKED_LIST,bodyParameters)
+  // console.log(data);
+  setLikes(data);
+   
+    }
 
      useEffect(()=>{
        getLikes();
-       console.log(likes);
-     },[]
-
-     )
+      
+     },[])
+    //  console.log(Likes);
+      // console.log(Likes);
     return(
+      
       
       <section className="home-wrapper">
       <img className="bg-mask" src="/assets/images/mask-bg.png" alt="Mask" />
@@ -85,8 +84,8 @@ const[likes, setLikes]=useState([]);
               <div className="contacts-outter">
                 <ul className="nav contacts" role="tablist">
                 
-                {likes.map(item => {
-                  <li className="nav-item">
+                { Likes.map((item, i) => {
+                 return <li className="nav-item">
                     <a className="nav-link" href="#chat-field" data-toggle="tab" role="tab">
                       <img alt="Mia" className="img-circle medium-image" src={item.liked_user_pic} />
                       <div className="contacts_info">
@@ -101,7 +100,8 @@ const[likes, setLikes]=useState([]);
                       </div>
                     </a>
                   </li>
-                  })}
+                  })
+                  }
                   
                 </ul>
               </div>
