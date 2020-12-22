@@ -3,18 +3,18 @@ import React, { useState, useEffect } from "react";
 import {  useHistory } from 'react-router';
 import axios from "axios";
 import NavLinks from '../components/Nav';
-import { LIKED_LIST, VISITOR_LIST_API } from '../components/Api';
+import { LIKED_LIST, VISITOR_LIST_API ,FRIENDLIST_API} from '../components/Api';
 
 const ChatBox = () =>{
 
 const[Likes, setLikes] = useState([]);
 const[Visitors, setVisitors] = useState([]);
-
-  //Likes here
-
+const[FriendList, setFriendlist] = useState([]);
+  
    const bodyParameters = {
        session_id: localStorage.getItem('session_id'),
   };
+//Likes here
 
   const getLikes = async () => {
 
@@ -33,18 +33,24 @@ const[Visitors, setVisitors] = useState([]);
         setVisitors(result);
    
     }
+    //Friends here
 
+    const getFriend = async() => {
+    const response= await axios.post(FRIENDLIST_API,bodyParameters)
+    setFriendlist(response);
+     }
 
      useEffect(()=>{
        getLikes();
        getVisitors();
+       getFriend();
       
      },[])
-    //  console.log(Likes);
+    
       //console.log(Visitors);
-    return(
-      
-      
+      console.log(FriendList);
+
+    return( 
       <section className="home-wrapper">
       <img className="bg-mask" src="/assets/images/mask-bg.png" alt="Mask" />
        <div className="header-bar">
@@ -90,7 +96,7 @@ const[Visitors, setVisitors] = useState([]);
               <a id="tab-visitors" href="#visitors" className="nav-link" data-toggle="tab" role="tab" onClick={getVisitors} >Visitors</a>
             </li>
             <li className="nav-item">
-              <a id="tab-chat" href="#chat" className="nav-link" onClick={getLikes} data-toggle="tab" role="tab">Chat</a>
+              <a id="tab-chat" href="#chat" className="nav-link" onClick={getFriend} data-toggle="tab" role="tab">Chat</a>
             </li>
           </ul>
           <div className="tab-content" role="tablist">
@@ -147,6 +153,8 @@ const[Visitors, setVisitors] = useState([]);
             <div id="chat" className="contacts-outter-wrapper tab-pane fade" role="tabpanel" aria-labelledby="tab-chat">
               <div className="contacts-outter">
                 <ul className="nav contacts" role="tablist">
+                  
+                  
                   <li className="nav-item">
                     <a className="nav-link" href="#chat-field" data-toggle="tab" role="tab">
                       <img alt="Mia" className="img-circle medium-image" src="/assets/images/vc-user.png" />
@@ -162,21 +170,7 @@ const[Visitors, setVisitors] = useState([]);
                       </div>
                     </a>
                   </li>
-                  <li className="nav-item">
-                    <a className="nav-link" href="#chat-field" data-toggle="tab" role="tab">
-                      <img alt="Mia" className="img-circle medium-image" src="/assets/images/vc-user.png" />
-                      <div className="contacts_info">
-                        <div className="user_detail">
-                          <span className="message-time">55 min</span>
-                          <h5 className="mb-0 name">Mia</h5>
-                          <div className="message-count">2</div>
-                        </div>
-                        <div className="vcentered info-combo">
-                          <p>Yep, I'm new in town and I wanted</p>
-                        </div>
-                      </div>
-                    </a>
-                  </li>
+                  
                 </ul>
               </div>
             </div>

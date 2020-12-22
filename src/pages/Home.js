@@ -9,7 +9,7 @@ const Home = () =>{
     return(
           <section className="home-wrapper">
           {/* <Loader isLoading={isLo ading} /> */}
-        <img className="bg-mask" src="/assets/images/mask-bg.png" alt="Mask" />
+       
         <div className="home-inner">
           <div className="container-fluid p-0">
             <div className="row no-gutters">

@@ -5,7 +5,7 @@ import axios from "axios";
 import Slider from '@material-ui/core/Slider';
 import { makeStyles } from '@material-ui/core/styles';
 import { FILTER_LIST_API } from './Api';
-
+import Image from 'react-bootstrap/Image'
 
 const FilterUser = ({fetchedProfile}) =>{
 
@@ -17,7 +17,9 @@ const FilterUser = ({fetchedProfile}) =>{
 
                         <div className="card">
                           <div className="card-content">
-                            <div className="card-image"><img src="/assets/images/profile-card.png" alt="Emma" width="100%" height="100%" /></div>
+                            <div className="card-image">
+                            <Image src="/assets/images/profile-card.png" alt="Emma" width="100%" height="100%"/>
+                             </div>
                             <div className="card-titles">
                               <h3>Emma, 22</h3>
                               <span>72km, Lawyer</span>
