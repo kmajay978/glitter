@@ -3,13 +3,39 @@ import React, { useState, useEffect } from "react";
 import {  useHistory } from 'react-router';
 import axios from "axios";
 import NavLinks from '../components/Nav';
+import { LIKED_LIST } from '../components/Api';
 
 const ChatBox = () =>{
+const[likes, setLikes]=useState([]);
+
+  const getLikes =()=> {
+    
+    const bodyParameters = 
+    {
+     session_id: localStorage.getItem('session_id'),
+    };
+    
+    axios.post(LIKED_LIST,bodyParameters)
+    .then((response) => {
+     console.log(response);
+     setLikes(response.data.data);
+    
+     }, (error) => {
+     });
+     }
+
+     useEffect(()=>{
+       getLikes();
+       console.log(likes);
+     },[]
+
+     )
     return(
-       <section className="home-wrapper">
-  <img className="bg-mask" src="/assets/images/mask-bg.png" alt="Mask" />
-  <div className="header-bar">
-    <div className="container-fluid p-0">
+      
+      <section className="home-wrapper">
+      <img className="bg-mask" src="/assets/images/mask-bg.png" alt="Mask" />
+       <div className="header-bar">
+       <div className="container-fluid p-0">
       <div className="row no-gutters align-items-center">
         <div className="col-lg-3 p-3">
           <div className="d-flex flex-wrap align-items-center">
@@ -51,21 +77,23 @@ const ChatBox = () =>{
               <a id="tab-visitors" href="#visitors" className="nav-link" data-toggle="tab" role="tab">Visitors</a>
             </li>
             <li className="nav-item">
-              <a id="tab-chat" href="#chat" className="nav-link" data-toggle="tab" role="tab">Chat</a>
+              <a id="tab-chat" href="#chat" className="nav-link" onClick={getLikes} data-toggle="tab" role="tab">Chat</a>
             </li>
           </ul>
           <div className="tab-content" role="tablist">
             <div id="like" className="contacts-outter-wrapper tab-pane fade show active" role="tabpanel" aria-labelledby="tab-like">
               <div className="contacts-outter">
                 <ul className="nav contacts" role="tablist">
+                
+                {likes.map(item => {
                   <li className="nav-item">
                     <a className="nav-link" href="#chat-field" data-toggle="tab" role="tab">
-                      <img alt="Mia" className="img-circle medium-image" src="/assets/images/vc-user.png" />
+                      <img alt="Mia" className="img-circle medium-image" src={item.liked_user_pic} />
                       <div className="contacts_info">
                         <div className="user_detail">
-                          <span className="message-time">55 min</span>
-                          <h5 className="mb-0 name">Mia</h5>
-                          <div className="message-count">2</div>
+                          <span className="message-time">{item.created_at}</span>
+                          <h5 className="mb-0 name">{item.liked_user_name}</h5>
+                          {/* <div className="message-count">2</div> */}
                         </div>
                         <div className="vcentered info-combo">
                           <p>Yep, I'm new in town and I wanted</p>
@@ -73,36 +101,8 @@ const ChatBox = () =>{
                       </div>
                     </a>
                   </li>
-                  <li className="nav-item">
-                    <a className="nav-link" href="#chat-field" data-toggle="tab" role="tab">
-                      <img alt="Mia" className="img-circle medium-image" src="/assets/images/vc-user.png" />
-                      <div className="contacts_info">
-                        <div className="user_detail">
-                          <span className="message-time">55 min</span>
-                          <h5 className="mb-0 name">Mia</h5>
-                          <div className="message-count">2</div>
-                        </div>
-                        <div className="vcentered info-combo">
-                          <p>Yep, I'm new in town and I wanted</p>
-                        </div>
-                      </div>
-                    </a>
-                  </li>
-                  <li className="nav-item">
-                    <a className="nav-link" href="#chat-field" data-toggle="tab" role="tab">
-                      <img alt="Mia" className="img-circle medium-image" src="/assets/images/vc-user.png" />
-                      <div className="contacts_info">
-                        <div className="user_detail">
-                          <span className="message-time">55 min</span>
-                          <h5 className="mb-0 name">Mia</h5>
-                          <div className="message-count">2</div>
-                        </div>
-                        <div className="vcentered info-combo">
-                          <p>Yep, I'm new in town and I wanted</p>
-                        </div>
-                      </div>
-                    </a>
-                  </li>
+                  })}
+                  
                 </ul>
               </div>
             </div>
