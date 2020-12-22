@@ -3,31 +3,45 @@ import React, { useState, useEffect } from "react";
 import {  useHistory } from 'react-router';
 import axios from "axios";
 import NavLinks from '../components/Nav';
-import { LIKED_LIST } from '../components/Api';
+import { LIKED_LIST, VISITOR_LIST_API } from '../components/Api';
 
 const ChatBox = () =>{
 
 const[Likes, setLikes] = useState([]);
+const[Visitors, setVisitors] = useState([]);
 
-  const getLikes = async () => {
-    
+  //Likes here
+
    const bodyParameters = {
        session_id: localStorage.getItem('session_id'),
-    };
+  };
+
+  const getLikes = async () => {
 
   // Destructing response and getting data part
   const { data: {data} } = await axios.post(LIKED_LIST,bodyParameters)
-  // console.log(data);
   setLikes(data);
    
     }
 
+    // Visitors here
+
+    const getVisitors = async () => {
+
+  // Destructing response and getting data part
+  const { data: {result} } = await axios.post(VISITOR_LIST_API,bodyParameters)
+        setVisitors(result);
+   
+    }
+
+
      useEffect(()=>{
        getLikes();
+       getVisitors();
       
      },[])
     //  console.log(Likes);
-      // console.log(Likes);
+      //console.log(Visitors);
     return(
       
       
@@ -70,10 +84,10 @@ const[Likes, setLikes] = useState([]);
         <div className="contacts-list col-md-4">
           <ul className="nav inbox-categories d-flex flex-wrap mb-3" role="tablist">
             <li className="nav-item">
-              <a id="tab-like" href="#like" className="nav-link active" data-toggle="tab" role="tab">Like</a>
+              <a id="tab-like" href="#like" className="nav-link active" data-toggle="tab" role="tab" onClick={getLikes} >Like</a>
             </li>
             <li className="nav-item">
-              <a id="tab-visitors" href="#visitors" className="nav-link" data-toggle="tab" role="tab">Visitors</a>
+              <a id="tab-visitors" href="#visitors" className="nav-link" data-toggle="tab" role="tab" onClick={getVisitors} >Visitors</a>
             </li>
             <li className="nav-item">
               <a id="tab-chat" href="#chat" className="nav-link" onClick={getLikes} data-toggle="tab" role="tab">Chat</a>
@@ -100,8 +114,7 @@ const[Likes, setLikes] = useState([]);
                       </div>
                     </a>
                   </li>
-                  })
-                  }
+                  })}
                   
                 </ul>
               </div>
@@ -109,14 +122,16 @@ const[Likes, setLikes] = useState([]);
             <div id="visitors" className="contacts-outter-wrapper tab-pane fade" role="tabpanel" aria-labelledby="tab-visitors">
               <div className="contacts-outter">
                 <ul className="nav contacts" role="tablist">
-                  <li className="nav-item">
+
+              { Visitors.map((item, i) => {
+                   return <li className="nav-item">
                     <a className="nav-link" href="#chat-field" data-toggle="tab" role="tab">
-                      <img alt="Mia" className="img-circle medium-image" src="/assets/images/vc-user.png" />
+                      <img alt="Mia" className="img-circle medium-image" src={item.profile_images} />
                       <div className="contacts_info">
                         <div className="user_detail">
-                          <span className="message-time">55 min</span>
-                          <h5 className="mb-0 name">Mia</h5>
-                          <div className="message-count">2</div>
+                          <span className="message-time">{item.created_at}</span>
+                          <h5 className="mb-0 name">{item.full_name}</h5>
+                          {/* {/* <div className="message-count">2</div> */}
                         </div>
                         <div className="vcentered info-combo">
                           <p>Yep, I'm new in town and I wanted</p>
@@ -124,21 +139,8 @@ const[Likes, setLikes] = useState([]);
                       </div>
                     </a>
                   </li>
-                  <li className="nav-item">
-                    <a className="nav-link" href="#chat-field" data-toggle="tab" role="tab">
-                      <img alt="Mia" className="img-circle medium-image" src="/assets/images/vc-user.png" />
-                      <div className="contacts_info">
-                        <div className="user_detail">
-                          <span className="message-time">55 min</span>
-                          <h5 className="mb-0 name">Mia</h5>
-                          <div className="message-count">2</div>
-                        </div>
-                        <div className="vcentered info-combo">
-                          <p>Yep, I'm new in town and I wanted</p>
-                        </div>
-                      </div>
-                    </a>
-                  </li>
+                  })}
+
                 </ul>
               </div>
             </div>
