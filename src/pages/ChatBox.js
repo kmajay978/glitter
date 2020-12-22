@@ -26,7 +26,7 @@ const[FriendList, setFriendlist] = useState([]);
 
     // Visitors here
 
-    const getVisitors = async () => {
+    const getVisitors = async () => { 
 
   // Destructing response and getting data part
   const { data: {result} } = await axios.post(VISITOR_LIST_API,bodyParameters)
@@ -36,8 +36,9 @@ const[FriendList, setFriendlist] = useState([]);
     //Friends here
 
     const getFriend = async() => {
-    const response= await axios.post(FRIENDLIST_API,bodyParameters)
-    setFriendlist(response);
+    const {data:{data}}= await axios.post(FRIENDLIST_API,bodyParameters)
+    setFriendlist(data);
+
      }
 
      useEffect(()=>{
@@ -48,7 +49,7 @@ const[FriendList, setFriendlist] = useState([]);
      },[])
     
       //console.log(Visitors);
-      console.log(FriendList);
+      //console.log(FriendList);
 
     return( 
       <section className="home-wrapper">
@@ -154,15 +155,15 @@ const[FriendList, setFriendlist] = useState([]);
               <div className="contacts-outter">
                 <ul className="nav contacts" role="tablist">
                   
-                  
-                  <li className="nav-item">
+                  { FriendList.map((item, i) => {
+                    return <li className="nav-item">
                     <a className="nav-link" href="#chat-field" data-toggle="tab" role="tab">
-                      <img alt="Mia" className="img-circle medium-image" src="/assets/images/vc-user.png" />
+                      <img alt="Mia" className="img-circle medium-image" src={item.liked_user_pic} />
                       <div className="contacts_info">
                         <div className="user_detail">
-                          <span className="message-time">55 min</span>
-                          <h5 className="mb-0 name">Mia</h5>
-                          <div className="message-count">2</div>
+                          <span className="message-time">{item.created_at}</span>
+                          <h5 className="mb-0 name">{item.liked_user_name}</h5>
+                          {/* <div className="message-count">2</div> */}
                         </div>
                         <div className="vcentered info-combo">
                           <p>Yep, I'm new in town and I wanted</p>
@@ -170,7 +171,7 @@ const[FriendList, setFriendlist] = useState([]);
                       </div>
                     </a>
                   </li>
-                  
+                   })}
                 </ul>
               </div>
             </div>
