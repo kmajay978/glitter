@@ -101,7 +101,7 @@ const[Visitors, setVisitors] = useState([]);
                 { Likes.map((item, i) => {
                  return <li className="nav-item">
                     <a className="nav-link" href="#chat-field" data-toggle="tab" role="tab">
-                      <img alt="Mia" className="img-circle medium-image" src={item.liked_user_pic} />
+                      <img alt={item.liked_user_name} className="img-circle medium-image" src={item.liked_user_pic} />
                       <div className="contacts_info">
                         <div className="user_detail">
                           <span className="message-time">{item.created_at}</span>
@@ -126,7 +126,7 @@ const[Visitors, setVisitors] = useState([]);
               { Visitors.map((item, i) => {
                    return <li className="nav-item">
                     <a className="nav-link" href="#chat-field" data-toggle="tab" role="tab">
-                      <img alt="Mia" className="img-circle medium-image" src={item.profile_images} />
+                      <img alt={item.full_name} className="img-circle medium-image" src={item.profile_images}/>
                       <div className="contacts_info">
                         <div className="user_detail">
                           <span className="message-time">{item.created_at}</span>
