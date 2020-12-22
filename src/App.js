@@ -5,7 +5,7 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import ChatBox from './pages/ChatBox';
 import SearchHome from './pages/SearchHome';
-import SearchProfile from './pages/SearchProfile';
+import SearchProfile from './pages/SearchProfile'; 
 import AnswerCalling from './pages/AnswerCalling';
 import SignupCompleted from './pages/SignupCompleted';
 import Profile from './pages/Profile';
