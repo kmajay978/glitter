@@ -1,14 +1,24 @@
-import React, {Component, useState} from 'react';
+import React, {Component, useEffect, useState} from 'react';
 import FilterSide from '../components/Filter';
 import NavLinks from '../components/Nav';
 import Loader from '../components/Loader';
 import FilterUser from '../components/FilterUser'; 
+import axios from 'axios';
 
 const Home = () =>{
   const [fetchedProfile, setFilterUser] = useState('')
-    return(
+ 
+  
+
+
+  useEffect(()=>
+  {
+  
+  },[])
+    
+  return(
           <section className="home-wrapper">
-          {/* <Loader isLoading={isLo ading} /> */}
+           {/* <Loader isLoading={isLoading} />  */}
        
         <div className="home-inner">
           <div className="container-fluid p-0">

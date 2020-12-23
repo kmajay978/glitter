@@ -4,13 +4,15 @@ import {  useHistory } from 'react-router';
 import axios from "axios";
 import NavLinks from '../components/Nav';
 import { LIKED_LIST, VISITOR_LIST_API ,FRIENDLIST_API} from '../components/Api';
+import Loader from '../components/Loader';
 
 const ChatBox = () =>{
 
 const[Likes, setLikes] = useState([]);
 const[Visitors, setVisitors] = useState([]);
 const[FriendList, setFriendlist] = useState([]);
-  
+const [isLoaded, setIsLoaded] = useState(false);
+
    const bodyParameters = {
        session_id: localStorage.getItem('session_id'),
   };
@@ -20,7 +22,12 @@ const[FriendList, setFriendlist] = useState([]);
 
   // Destructing response and getting data part
   const { data: {data} } = await axios.post(LIKED_LIST,bodyParameters)
+   setTimeout(() => {
+   
+  setIsLoaded(true);
+      }, 4000);
   setLikes(data);
+  
    
     }
 
@@ -31,7 +38,7 @@ const[FriendList, setFriendlist] = useState([]);
   // Destructing response and getting data part
   const { data: {result} } = await axios.post(VISITOR_LIST_API,bodyParameters)
         setVisitors(result);
-   
+    
     }
     //Friends here
 
@@ -46,13 +53,15 @@ const[FriendList, setFriendlist] = useState([]);
        getVisitors();
        getFriend();
       
+        
      },[])
     
       //console.log(Visitors);
       //console.log(FriendList);
 
     return( 
-      <section className="home-wrapper">
+      
+      <section className="home-wrapper"> 
       <img className="bg-mask" src="/assets/images/mask-bg.png" alt="Mask" />
        <div className="header-bar">
        <div className="container-fluid p-0">
@@ -103,10 +112,12 @@ const[FriendList, setFriendlist] = useState([]);
           <div className="tab-content" role="tablist">
             <div id="like" className="contacts-outter-wrapper tab-pane fade show active" role="tabpanel" aria-labelledby="tab-like">
               <div className="contacts-outter">
+              
+              { isLoaded &&
                 <ul className="nav contacts" role="tablist">
-                
+               
                 { Likes.map((item, i) => {
-                 return <li className="nav-item">
+                 return    <li className="nav-item">
                     <a className="nav-link" href="#chat-field" data-toggle="tab" role="tab">
                       <img alt={item.liked_user_name} className="img-circle medium-image" src={item.liked_user_pic} />
                       <div className="contacts_info">
@@ -120,10 +131,13 @@ const[FriendList, setFriendlist] = useState([]);
                         </div>
                       </div>
                     </a>
+                
                   </li>
+                
                   })}
                   
                 </ul>
+}
               </div>
             </div>
             <div id="visitors" className="contacts-outter-wrapper tab-pane fade" role="tabpanel" aria-labelledby="tab-visitors">
@@ -252,6 +266,7 @@ const[FriendList, setFriendlist] = useState([]);
       </div>
     </div>
   </div>
+   
 </section>
 
     )

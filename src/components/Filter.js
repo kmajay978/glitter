@@ -5,8 +5,8 @@ import axios from "axios";
 import Slider from '@material-ui/core/Slider';
 import { makeStyles } from '@material-ui/core/styles';
 import { FILTER_LIST_API } from './Api';
-// import Loader from '../components/Loader';
-
+import Loader from '../components/Loader';
+import {Typography} from '@material-ui/core';
 
 const useStyles = makeStyles({
   root: {
@@ -17,12 +17,13 @@ const useStyles = makeStyles({
 
 
 const SideFilter = ({setFilterUser}) =>{
-  const [isLoading, setLoading] = useState('false');
+ 
+
   function valuetextHeight(value) {
   return '${valueHeight}°C';
 }
 
-function valueTextAge(value) {
+function valuetextAge(value) {
   return '${valueAge}°C';
 }
 
@@ -32,7 +33,7 @@ function valuetextweight(value) {
 
   const [valueHeight, setValueHeight] = useState([20, 37]);
   const handleChangeHeight = (event, newValue) => {
-    setLoading('true');
+    // setLoading('true');
     setValueHeight(newValue);
   };
 
@@ -42,7 +43,7 @@ function valuetextweight(value) {
       setValueweight(newValue);
     };
 
-    const [valueAge, setValueAge] = useState([25, 30]);
+    const [valueAge, setValueAge] = useState([19, 30]);
     const handleChangeAge = (event, newValue) => {
       setValueAge(newValue);
     };
@@ -53,13 +54,14 @@ function valuetextweight(value) {
     setValueDistance(newValue);
   
   };
-
+ 
   // Radio button value
  const [valueGender, setGender] = useState(3);
   const radioHandle = (e) =>{
         setGender(e.target.value);
   }
 
+  const [isLoading ,setLoading]= useState();
   const filterHandle = (e) =>{
         e.preventDefault();
 
@@ -80,11 +82,21 @@ function valuetextweight(value) {
    };
 
      axios.post(FILTER_LIST_API,bodyParameters)
- .then((response) => { 
+  .then((response) => { 
+  
+  
+   if (response.status == 200) {
+    setLoading(true);
+    setFilterUser(response)
+   console.log(response);
+   setTimeout(() => {
+   
+    setLoading(false);
+        }, 600);
+} else {
 
     // console.log(response);
-     setFilterUser(response)
-   
+}
  
  }, (error) => {
    
@@ -92,10 +104,16 @@ function valuetextweight(value) {
  });
 }
 
-  return(
+useEffect(()=>{
+  
+    
+},[])
 
+  return(
+   
         <div className="filter-tab">
-          {/* <Loader isLoading={isLoading} /> */}
+         
+         <Loader isLoading={isLoading} />
                   <h4 className="mb-4">Filter</h4>
                   <form action="#" method="post">
                     <div className="show-gender ft-block d-flex flex-wrap" onChange={radioHandle}>
@@ -120,9 +138,12 @@ function valuetextweight(value) {
                         <h5>Age</h5>
                       </div>
                      
-                      <input type="text" className="two-range" id="age" value={`+${valueAge[0]} - ${valueAge[1]}`} readOnly />
+                      <Typography  id="age" className="two-range"  >
+                         {`+${valueAge[0]} - ${valueAge[1]}`}
+                    </Typography>
                       <Slider value={valueAge} onChange={handleChangeAge} valueLabelDisplay="auto"
-            aria-labelledby="range-slider" getAriaValueText={valueTextAge}/>
+                       aria-labelledby="range-slider" getAriaValueText={valuetextAge}/>
+
                     </div>
 
                     <div className="distance-group ft-block">
@@ -130,9 +151,11 @@ function valuetextweight(value) {
                         <h5>Distance</h5> 
                       </div>
                       <div className="range-slider">
-                      <input type="text" className="two-range" id="age" value={`${valueDistance} miles`} readOnly />
+                      <Typography  id="distance" className="two-range"  >
+                      {`${valueDistance} miles`}
+                      </Typography>
                       <Slider value={valueDistance} onChange={handleChangeDistance} valueLabelDisplay="auto"
-            aria-labelledby="range-slider" aria-labelledby="continuous-slider" />
+                       aria-labelledby="range-slider" aria-labelledby="continuous-slider" />
                       </div>
                     </div>
                     <div className="height-group ft-block">
@@ -140,7 +163,10 @@ function valuetextweight(value) {
                         <h5>Height</h5>
                         {/*                                    <span class="point-calcu">1.60-1.78m</span>*/}
                       </div>
-                       <input type="text" className="two-range" id="age" value={`${valueHeight[0]} - ${valueHeight[1]}`} readOnly />
+                      <Typography  id="Height" className="two-range"  >
+                      {`${valueHeight[0]} - ${valueHeight[1]}`} 
+                    </Typography>
+                      
                       <Slider value={valueHeight} onChange={handleChangeHeight} valueLabelDisplay="auto"
         aria-labelledby="range-slider" getAriaValueText={valuetextHeight}/>
 
@@ -150,7 +176,10 @@ function valuetextweight(value) {
                         <h5>Weight</h5>
                         {/*                                    <span class="point-calcu">50-65kg</span>*/}
                       </div>
-                       <input type="text" className="two-range" id="age" value={`${valueweight[0]} - ${valueweight[1]}`} readOnly />
+                      <Typography  id="weight" className="two-range"  >
+                      {`${valueweight[0]} - ${valueweight[1]}`}
+                    </Typography>
+                      
                       <Slider value={valueweight} onChange={handleChangeweight} valueLabelDisplay="auto"
         aria-labelledby="range-slider" getAriaValueText={valuetextweight}/>
                     </div>
