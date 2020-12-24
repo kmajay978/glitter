@@ -19,7 +19,7 @@ import $ from 'jquery';
 
  
 // Working on login functional component
-const Login = () => {
+const Login = (setUserDetail) => {
 
   const history = useHistory();
 //  const config = {  
@@ -155,6 +155,7 @@ const verifyHandle = () =>{
       
     if(response.data.data != null)
     {
+       setUserDetail(response);
           let id = response.data.data.session_id;
           setAuth( {loggedIn : true});
           setHidden(true);

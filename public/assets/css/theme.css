@@ -2641,6 +2641,31 @@ textarea.send-message-text::placeholder {
 
 .user-profile__level img {
     margin-right: 5px;
+}bec/** become a vip */
+
+.no-scroll{
+ overflow: visible;
+    
+}
+
+.becomevip-wrapper__innerblock {
+    background-color: #565656;
+    background-blend-mode: overlay;
+    border-radius: 16px;
+    margin-bottom: 10px;
+}
+
+.user-profile__image {
+    position: relative;
+    top: -50px;
+}
+
+.user-profile__details__data {
+    margin-top: -40px;
+}
+
+.user-profile__level img {
+    margin-right: 5px;
 }
 
 .user-profile__status {
@@ -2666,7 +2691,7 @@ textarea.send-message-text::placeholder {
     color: #fff;
 }
 
-.becomevip-wrapper__innerblock i {
+.becomevip-wrapper__innerblock i{
     color: #C2C4CA;
     margin-left: auto;
 }
@@ -2815,7 +2840,7 @@ textarea.send-message-text::placeholder {
     -moz-transform: translateY(-50%);
     -webkit-transform: translateY(-50%);
     padding: 60px;
-    opacity: 0;
+        opacity: 0;
     visibility: hidden;
     -moz-transition: all .2s linear;
     -webkit-transition: all .2s linear;
@@ -2827,6 +2852,7 @@ textarea.send-message-text::placeholder {
 .edit-profile-modal__inner {
     max-width: 320px;
     margin: 0 auto;
+    overflow: hidden;
 }
 
 .edit-profile-modal input[type="text"] {
@@ -2835,12 +2861,56 @@ textarea.send-message-text::placeholder {
     background-color: transparent !important;
 }
 
+.edit-profile-modal textarea {
+    color: #F4C862;
+    font-size: 14px;
+    background-color: transparent !important;
+    border-radius: 50px !important;
+    border: 1px solid var(--theme-color) !important;
+    height: 60px;
+    resize: none;
+}
+
+.edit-profile-modal select {
+    font-size: 14px;
+     color: #F4C862;
+	height: 44px;
+	border-radius: 50px !important;
+	border: 1px solid var(--theme-color) !important;
+	background-color: transparent;
+	appearance: none;
+	-moz-appearance: none;
+    width: 100%;
+    padding: .375rem .75rem;
+}
+
+.active-second-step{
+ transform: translateX(-100%);
+}
+
+.disable-first-step{
+     transform: translateX(-100%);
+}
+
+
 .modal-close {
     position: absolute;
     top: 10px;
     right: 10px;
 }
 
+.edit-profile-form{
+ display: flex;
+    flex-wrap: nowrap;
+    width: 200%;
+}
+.edit-profile-form > div {
+	width: 100%;
+    transition: all .3s ease-in-out;
+    -moz-transition: all .3s ease-in-out;
+    -webkit-transition: all .3s ease-in-out;
+    align-self: flex-start;
+}
 /* coins spend */
 
 .coin-spend {

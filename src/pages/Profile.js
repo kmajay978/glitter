@@ -3,15 +3,30 @@ import React, { useState, useEffect } from "react";
 import {  useHistory } from 'react-router';
 import axios from "axios";
 import NavLinks from '../components/Nav';
-import { GET_LOGGEDPROFILE_API } from '../components/Api';
+import { GET_LOGGEDPROFILE_API , EDITPROFILE_API} from '../components/Api';
 
 const Profile = () =>{
 
   const history = useHistory();
   const [profileData, setProfile] = useState('');   //For past users
+  const[FirstName,setFirstName] = useState('');
+  const[LastName,setLastName] = useState('');
+  const [Dob, setDob] = useState(''); 
+  const[Gender,setGender]=useState('');
+  const[AboutMe , setAboutMe]=useState('');
+  const[Height,setHeight] = useState('');
+  const[Weight,setWeight]= useState('');
+  const[RelationStatus, setRelationStatus] = useState('');
+  const[EditProfile,setEditProfile] = useState('');
+  
+ 
+  const handleChange = e => { 
+    setGender(e.target.value);
+}
 
 
-console.log(profileData);
+
+
   // Fetching profile Data
  
   const ProfileData = (e) =>{
@@ -32,8 +47,34 @@ console.log(profileData);
   });
    }
 
+   const updateProfile = (e) =>{
+   const bodyParameters ={
+    session_id : localStorage.getItem("session_id"),
+    device_token : "uhydfdfghdertyt445t6y78755t5jhyhyy",
+    device_type : 0 ,
+    first_name : FirstName,
+    last_name : LastName,
+    dob : Dob,
+    gender :Gender,
+    aboutMe : AboutMe,
+    height : Height,
+    weight : Weight,
+    relationship_status :RelationStatus
+   };
+   axios.post(EDITPROFILE_API , bodyParameters) 
+   .then((response) => {
+   if(response.status==200){
+    
+    alert("update succesfully")
+   }
+   }, (error) =>{
+
+   });
+   }
+
 useEffect(() =>{
   ProfileData();
+ 
 },[])
 
 
@@ -228,31 +269,102 @@ useEffect(() =>{
       </div>
     </div>
   </section>
-  <div className="edit-profile-modal modal-wrapper">
-    <div className="edit-profile-modal__inner">
-      <h4 className="theme-txt text-center mb-4">Your Information</h4>
-      <div className="form-group">
-        <label htmlFor>Your Name</label>
-      
-        <input className="form-control bg-trsp" name="date-birth" type="text" defaultValue={profileData.first_name} />
-      </div>
-      <div className="form-group">
-        <input className="form-control bg-trsp" name="first-name" type="text" defaultValue={profileData.last_name} />
-      </div>
-      <div className="form-group">
-        <label htmlFor>Date Information</label>
-        <input className="form-control bg-trsp" name="last-name" type="text" defaultValue={profileData.dob} />
-      </div>
-      <div className="choose-gender d-flex my-4">
-        <div className="form-group">
-          <input type="radio" id="male" name="gender" placeholder="Male" defaultChecked />
-          <label htmlFor="male" className="text-center">Male</label>
+
+  <div class="edit-profile-modal modal-wrapper">
+        <div class="edit-profile-modal__inner">
+            <h4 class="theme-txt text-center mb-4">Your Information</h4>
+
+            <div className="edit-profile-form">
+                <div className="edit-first-step"><label for="">Gender</label>
+                    <div className="form-group">
+                        <label for="">First Name</label>
+                        <input className="form-control bg-trsp" name="first-name" type="text" value={FirstName} onChange={e => setFirstName(e.target.value)}/>
+                    </div>
+                    <div className="form-group">
+                    <label for="">Last name</label>
+                        <input className="form-control bg-trsp" name="last-name" type="text" value={LastName} onChange={e => setLastName(e.target.value)}/>
+                    </div>
+                    <div className="form-group">
+                        <label for="">DOB</label>
+                        <input className="form-control bg-trsp" name="dob" type="text" value={Dob} onChange={e => setDob(e.target.value)} />
+                    </div>
+
+                   <div className="choose-gender d-flex my-4">
+                                  <div className="form-group">
+                                    <input type="radio" id="female" name="gender" value={1}  onChange={ handleChange }  placeholder="Female" />
+                                    <label htmlFor="female">Female</label>
+                                  </div>
+                                  <div className="form-group">
+                                    <input type="radio" id="male" name="gender" value={2} onChange={ handleChange } placeholder="Male" />
+                                    <label htmlFor="male">Male</label>
+                                  </div>
+                                    
+                                  <div className="form-group">
+                                    <input type="radio" id="more" value={3} onChange={ handleChange }  name="gender" />
+                                    <label htmlFor="more">More</label>
+                                </div>
+                                </div>
+                    <div className="form-group">
+                        <label for="">About Me</label>
+                        <textarea name="" id="" cols="30" rows="10"></textarea>
+                    </div>
+
+                    <a className="btn bg-grd-clr d-block btn-countinue-3" id="edit-first-step" href="javascript:void(0)">Next</a>
+                </div>
+
+                <div className="edit-second-step">
+                    
+
+                    <div className="form-group">
+                        <label for="">Height</label>
+                        <input className="form-control bg-trsp" name="height" type="text" value={Height} onChange ={e => setHeight(e.target.value)}/>
+                    </div>
+
+                    <div className="form-group">
+                        <label for="">Weight</label>
+                        <input className="form-control bg-trsp" name="weight" type="text" value={Weight} onChange={e=> setWeight(e.target.value)}/>
+                    </div>
+
+                    <div className="form-group">
+                        <label for="">Relationship status</label>
+                        <select name="relationship-status" id="" value={RelationStatus} onChange={e =>setRelationStatus(e.target.value)}>
+                            <option value={1}>Single</option>
+                            <option value={2}>Married</option>
+                            <option value={3}>UnMarried</option>
+                        </select>
+                    </div>
+
+
+                    <div className="show-gender ft-block d-flex flex-wrap">
+                        <div className="tab-title">
+                            <label>Looking For</label>
+                        </div>
+                        <div className="form-group">
+                            <input type="checkbox" checked="" name="man" id="man"/>
+                            <label for="man">Man</label>
+                        </div>
+                        <div className="form-group">
+                            <input type="checkbox" name="woman" id="woman"/>
+                            <label for="woman">Woman</label>
+                        </div>
+                        <div className="form-group">
+                            <input type="checkbox" checked="" name="both" id="both"/>
+                            <label for="both">Both</label>
+                        </div>
+                    </div>
+
+                    <a className="btn bg-grd-clr d-block btn-countinue-3" id="edit-second-step" href="javascript:void(0)" onClick={updateProfile}>Update</a>
+
+                </div>
+            </div>
+
+
+
         </div>
-      </div>
-      <a className="btn bg-grd-clr d-block mb-4 btn-countinue-3" href="javascript:void(0)">Next</a>
+        <a href="javascript:void(0)" className="modal-close"><img src="assets/images/btn_close.png"/></a>
     </div>
-    <a href="javascript:void(0)" className="modal-close"><img src="/assets/images/btn_close.png" /></a>
-  </div>
+
+
   <div className="coin-spend-modal modal-wrapper">
     <div className="edit-profile-modal__inner">
       <h4 className="theme-txt text-center mb-4">Coin Spend</h4>
