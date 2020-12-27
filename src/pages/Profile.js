@@ -8,30 +8,37 @@ import { GET_LOGGEDPROFILE_API , EDITPROFILE_API} from '../components/Api';
 const Profile = () =>{
 
   const history = useHistory();
-  const [profileData, setProfile] = useState('');   //For past users
-  const[FirstName,setFirstName] = useState('');
-  const[LastName,setLastName] = useState('');
-  const [Dob, setDob] = useState(''); 
-  const[Gender,setGender]=useState('');
-  const[AboutMe , setAboutMe]=useState('');
-  const[Height,setHeight] = useState('');
-  const[Weight,setWeight]= useState('');
-  const[RelationStatus, setRelationStatus] = useState('');
-  const[EditProfile,setEditProfile] = useState('');
+  const [profileData, setProfile] = useState('');  
+
+  // Getting form value here
+  const [form , setForm] = useState({
+    firstName:"",
+    lastName:"",
+    dob:"",
+    gender:"",
+    aboutMe:"",
+    height:"",
+    weight:"",
+    relationStatus:"",
+    editProfile:"",
+      
+  });
+
+  //console.log(form);
   
- 
   const handleChange = e => { 
-    setGender(e.target.value);
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value,
+    })
 }
 
 
 
 
   // Fetching profile Data
- 
+  var sessionId = localStorage.getItem("session_id")
   const ProfileData = (e) =>{
-   var sessionId = localStorage.getItem("session_id")
-
     const bodyParameters = {
       session_id: sessionId,
     };
@@ -48,18 +55,19 @@ const Profile = () =>{
    }
 
    const updateProfile = (e) =>{
+     console.log("working");
    const bodyParameters ={
-    session_id : localStorage.getItem("session_id"),
+    session_id : sessionId,
     device_token : "uhydfdfghdertyt445t6y78755t5jhyhyy",
     device_type : 0 ,
-    first_name : FirstName,
-    last_name : LastName,
-    dob : Dob,
-    gender :Gender,
-    aboutMe : AboutMe,
-    height : Height,
-    weight : Weight,
-    relationship_status :RelationStatus
+    first_name : form.firstName,
+    last_name : form.lastName,
+    dob : form.dob,
+    gender :form.gender,
+    aboutMe : form.aboutMe,
+    height : form.height,
+    weight : form.weight,
+    relationship_status :form.relationStatus
    };
    axios.post(EDITPROFILE_API , bodyParameters) 
    .then((response) => {
@@ -70,6 +78,11 @@ const Profile = () =>{
    }, (error) =>{
 
    });
+   }
+
+   const handleLogout = () =>{
+    localStorage.removeItem("session_id");
+    history.push('/login');
    }
 
 useEffect(() =>{
@@ -185,7 +198,7 @@ useEffect(() =>{
             </ul>
           </div>
           <div className="user-profile__logout becomevip-wrapper__innerblock text-center">
-            <a href="javascript:void(0)" className="text-white signout-btn">Sign out</a>
+            <a href="javascript:void(0)" className="text-white signout-btn" onClick={handleLogout}>Sign out</a>
           </div>
         </div>
         <div className="col-md-4">
@@ -273,20 +286,20 @@ useEffect(() =>{
   <div class="edit-profile-modal modal-wrapper">
         <div class="edit-profile-modal__inner">
             <h4 class="theme-txt text-center mb-4">Your Information</h4>
-
+            <form>
             <div className="edit-profile-form">
                 <div className="edit-first-step"><label for="">Gender</label>
                     <div className="form-group">
                         <label for="">First Name</label>
-                        <input className="form-control bg-trsp" name="first-name" type="text" value={FirstName} onChange={e => setFirstName(e.target.value)}/>
+                        <input className="form-control bg-trsp" name="firstName" type="text" value={form.firstName} onChange={handleChange}/>
                     </div>
                     <div className="form-group">
                     <label for="">Last name</label>
-                        <input className="form-control bg-trsp" name="last-name" type="text" value={LastName} onChange={e => setLastName(e.target.value)}/>
+                        <input className="form-control bg-trsp" name="lastName" type="text" value={form.lastName} onChange={handleChange}/>
                     </div>
                     <div className="form-group">
                         <label for="">DOB</label>
-                        <input className="form-control bg-trsp" name="dob" type="text" value={Dob} onChange={e => setDob(e.target.value)} />
+                        <input className="form-control bg-trsp" name="dob" type="text" value={form.dob} onChange={handleChange} />
                     </div>
 
                    <div className="choose-gender d-flex my-4">
@@ -306,7 +319,7 @@ useEffect(() =>{
                                 </div>
                     <div className="form-group">
                         <label for="">About Me</label>
-                        <textarea name="" id="" cols="30" rows="10"></textarea>
+                        <textarea name="aboutMe" id="" cols="30" rows="10" onChange={handleChange}>{form.aboutMe}</textarea>
                     </div>
 
                     <a className="btn bg-grd-clr d-block btn-countinue-3" id="edit-first-step" href="javascript:void(0)">Next</a>
@@ -317,17 +330,17 @@ useEffect(() =>{
 
                     <div className="form-group">
                         <label for="">Height</label>
-                        <input className="form-control bg-trsp" name="height" type="text" value={Height} onChange ={e => setHeight(e.target.value)}/>
+                        <input className="form-control bg-trsp" name="height" type="text" value={form.height} onChange ={handleChange}/>
                     </div>
 
                     <div className="form-group">
                         <label for="">Weight</label>
-                        <input className="form-control bg-trsp" name="weight" type="text" value={Weight} onChange={e=> setWeight(e.target.value)}/>
+                        <input className="form-control bg-trsp" name="weight" type="text" value={form.weight} onChange ={handleChange}/>
                     </div>
 
                     <div className="form-group">
                         <label for="">Relationship status</label>
-                        <select name="relationship-status" id="" value={RelationStatus} onChange={e =>setRelationStatus(e.target.value)}>
+                        <select name="relationStatus" id="" value={form.relationStatus} onChange ={handleChange}>
                             <option value={1}>Single</option>
                             <option value={2}>Married</option>
                             <option value={3}>UnMarried</option>
@@ -357,7 +370,7 @@ useEffect(() =>{
 
                 </div>
             </div>
-
+            </form>
 
 
         </div>

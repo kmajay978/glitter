@@ -19,7 +19,7 @@ import $ from 'jquery';
 
  
 // Working on login functional component
-const Login = (setUserDetail) => {
+const Login = () => {
 
   const history = useHistory();
 //  const config = {  
@@ -51,9 +51,6 @@ console.log(phoneNumber);
     const [picture, setPicture] = useState(null);
     const [imgData, setImgData] = useState(null);
     const [phoneErr, setPhoneErr] = useState({});
-
-    const [auth, setAuth] = useState({loggedIn : false})
-    const [hidden, setHidden] = useState(false);
 
   {/* { divToggle ? "signup-inner" : "signup-inner active-tab-2"} */}
 
@@ -155,18 +152,12 @@ const verifyHandle = () =>{
       
     if(response.data.data != null)
     {
-       setUserDetail(response);
-          let id = response.data.data.session_id;
-          setAuth( {loggedIn : true});
-          setHidden(true);
          localStorage.setItem('session_id', response.data.data.session_id);
          history.push("/");
     }
     else
     {
     localStorage.clear();
-     setAuth( {loggedIn : false});
-    setHidden(false);
     }
   
   }, (error) => {
