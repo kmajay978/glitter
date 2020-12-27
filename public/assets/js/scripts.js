@@ -44,45 +44,45 @@ $(document).ready(function () {
 
 
     /* TAB 1 */
-    $(".btn-countinue-1").click(function () {
-        $("#login-tab-2").addClass("active-tab-2");
-        $("#login-tab-2").prev().addClass("disable-tab-1");
-    });
+    // $(".btn-countinue-1").click(function () {
+    //     $("#login-tab-2").addClass("active-tab-2");
+    //     $("#login-tab-2").prev().addClass("disable-tab-1");
+    // });
 
-    $(".login-back-1").click(function () {
-        $("#login-tab-2").removeClass("active-tab-2");
-        $("#login-tab-2").prev().removeClass("disable-tab-1");
-    });
+    // $(".login-back-1").click(function () {
+    //     $("#login-tab-2").removeClass("active-tab-2");
+    //     $("#login-tab-2").prev().removeClass("disable-tab-1");
+    // });
 
-    /* TAB 2 */
-    $(".btn-countinue-2").click(function () {
-        $("#login-tab-3").addClass("active-tab-3");
-        $("#login-tab-3").prev().addClass("disable-tab-2");
-    });
-    $(".login-back-2").click(function () {
-        $("#login-tab-3").removeClass("active-tab-3");
-        $("#login-tab-3").prev().removeClass("disable-tab-2");
-    });
+    // /* TAB 2 */
+    // $(".btn-countinue-2").click(function () {
+    //     $("#login-tab-3").addClass("active-tab-3");
+    //     $("#login-tab-3").prev().addClass("disable-tab-2");
+    // });
+    // $(".login-back-2").click(function () {
+    //     $("#login-tab-3").removeClass("active-tab-3");
+    //     $("#login-tab-3").prev().removeClass("disable-tab-2");
+    // });
 
-    /* TAB 3 */
-    $(".btn-countinue-3").click(function () {
-        $("#login-tab-4").addClass("active-tab-4");
-        $("#login-tab-4").prev().addClass("disable-tab-3");
-    });
-    $(".login-back-3").click(function () {
-        $("#login-tab-4").removeClass("active-tab-4");
-        $("#login-tab-4").prev().removeClass("disable-tab-3");
-    });
+    // /* TAB 3 */
+    // $(".btn-countinue-3").click(function () {
+    //     $("#login-tab-4").addClass("active-tab-4");
+    //     $("#login-tab-4").prev().addClass("disable-tab-3");
+    // });
+    // $(".login-back-3").click(function () {
+    //     $("#login-tab-4").removeClass("active-tab-4");
+    //     $("#login-tab-4").prev().removeClass("disable-tab-3");
+    // });
 
-    /* TAB 4 */
-    $(".btn-countinue-4").click(function () {
-        $("#login-tab-5").addClass("active-tab-5");
-        $("#login-tab-5").prev().addClass("disable-tab-4");
-    });
-    $(".login-back-4").click(function () {
-        $("#login-tab-5").removeClass("active-tab-5");
-        $("#login-tab-5").prev().removeClass("disable-tab-4");
-    });
+    // /* TAB 4 */
+    // $(".btn-countinue-4").click(function () {
+    //     $("#login-tab-5").addClass("active-tab-5");
+    //     $("#login-tab-5").prev().addClass("disable-tab-4");
+    // });
+    // $(".login-back-4").click(function () {
+    //     $("#login-tab-5").removeClass("active-tab-5");
+    //     $("#login-tab-5").prev().removeClass("disable-tab-4");
+    // });
 
 
     $('.feature-menu').on('click', 'li', function () {

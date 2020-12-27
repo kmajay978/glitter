@@ -21,6 +21,7 @@ import $ from 'jquery';
 // Working on login functional component
 const Login = () => {
 
+  const [step, setStep] = useState(1);
   const history = useHistory();
 //  const config = {  
 //     headers: { Authorization: `Bearer ${token}` }
@@ -91,14 +92,12 @@ const tokencheck = () =>{
 
 
 // Send OTP handle
-  const sendHandle = (e) =>{
-    e.preventDefault();
-
-  
+  const sendHandle = () =>{
+    
     const isValid = formValidation();
     if(isValid)
     {
-   
+      setStep(step + 1)
     const bodyParameters = {
       phone: phoneNumber,
       country_code: '+'+cntCode
@@ -106,7 +105,7 @@ const tokencheck = () =>{
 
       axios.post(SENDOTP_API,bodyParameters)
   .then((response) => {
-    
+  
     // setHidden(false);
     // history.push("/dashboard");
   }, (error) => {
@@ -138,6 +137,7 @@ const tokencheck = () =>{
   // Verify OTP Function 
 const verifyHandle = () =>{
 
+  setStep(step + 1)
    const bodyParameters = {
       phone: phoneNumber,
       country_code: '+'+cntCode,
@@ -180,6 +180,7 @@ const verifyHandle = () =>{
   // Verify OTP Function 
 const registerHandle = (e) =>{
 
+
      const bodyParameters = new FormData();
         bodyParameters.append("first_name", "" + FirstName);
         bodyParameters.append("last_name", LastName);
@@ -209,6 +210,157 @@ const registerHandle = (e) =>{
         });
 }
   // End here 
+
+  // Testing here
+
+
+
+  const tabScreen = () =>{
+    
+    switch(step) {
+      case 1:
+        return (
+          <div className="signup-inner" id="login-tab-1">
+                        <div className="signup-header">
+                        <h4>Glad to see you!</h4>
+                         <p>Hello there, sign in to continue!</p>
+                        </div>
+                        <div className="form-group">
+                          <div className="country text-left">
+                           <div id="country" className="select" ><img src="https://flagcdn.com/16x12/af.png" />+93</div>
+                            <div id="country-drop" className="dropdown">
+                              <ul>
+                                 {countries_data.map((country, index) => (
+                                       <li onClick={e => setCntCode(e.target.getAttribute("data-cid"))} data-code={country.code.toLowerCase()} data-name={country.label} data-cid={country.phone}><img src= {"https://flagcdn.com/16x12/"+country.code.toLowerCase()+".png"} />+{country.phone}</li>
+                                    ))}
+                              </ul>
+                            </div>
+                          </div>
+                             <input className="form-control" name="phone_number" id="phone_number" type="text" placeholder="Enter Phone Number" value={phoneNumber} onChange={handlePhoneChange} />
+                        { Object.keys(phoneErr).map((key) => {
+                          return <div style={{color : "red"}}>{phoneErr[key]}</div>
+                        }) }
+                        </div>
+                       <p>You'll receive a verification code</p>
+                        <a className="btn bg-grd-clr d-block mb-4 btn-countinue-1" href="javascript:void(0)" onClick={sendHandle} >Continue</a>
+                       <p>Continue with</p>
+                        <ul className="social-login">
+                          <li>
+                            <a className="bg-grd-clr" href="javascript:void(0)"><i className="fab fa-facebook-f" /></a>
+                          </li>
+                          <li>
+                            <a className="bg-grd-clr" href="javascript:void(0)"><i className="fab fa-google" /></a>
+                          </li>
+                          <li>
+                            <a className="bg-grd-clr" href="javascript:void(0)"><i className="fab fa-twitter" /></a>
+                          </li>
+                        </ul>
+                        <div className="accept-field d-flex justify-content-center align-items-center mt-4">
+                          <input type="checkbox" name="agree" id="accept-field" />
+                          <label htmlFor="accept-field" />
+                           <span> to our Terms and Data Policy.</span>
+                        </div>
+                      </div>
+        );
+        case 2:
+        return (
+          <div className="signup-inner" id="login-tab-2">
+                          <div className="cont_screen">
+                              <div className="signup-header">
+                                <a href="javascript:void(0)" className="login-back-1 btn-back" onClick={() => setStep(step - 1)}><i className="fas fa-chevron-left" /></a>
+                             <h4>Enter Code</h4>
+                               <p>Enter 4 digit verification code you<br /> received on +1 7462 462 321</p>
+                              </div>
+                              <div className="form-group otp-field">
+                                <input className="form-control" name="otp_1" value={otp_1} onChange={e => setOtp1(e.target.value)} type="text"  />
+                                <input className="form-control" name="otp_2" value={otp_2}   onChange={e => setOtp2(e.target.value)} type="text"  />
+                                <input className="form-control" name="otp_3" value={otp_3}  onChange={e => setOtp3(e.target.value)} type="text"  />
+                                <input className="form-control" name="otp_4" value={otp_4}  onChange={e => setOtp4(e.target.value)} type="text"  />
+                              </div>
+                              
+                              <a className="btn bg-grd-clr d-block mb-2 btn-countinue-2" href="javascript:void(0)" onClick={verifyHandle}>Verify</a>
+                              <a className="btn btn-trsp d-block" href="javascript:void(0)">Resend</a>
+                        </div>
+                     </div>
+        );
+        case 3:
+        return (
+          <div className="signup-inner" id="login-tab-3" >
+          <div className="another_test">
+                <div className="signup-header mb-5">
+                  <a href="javascript:void(0)" className="login-back-2 btn-back" onClick={() => setStep(step - 1)} ><i className="fas fa-chevron-left" /></a>
+                <h4>Your Information</h4>
+                </div>
+                <div className="form-group">
+                 <input className="form-control bg-trsp" name="date-birth" value={Dob} onChange={e => setDob(e.target.value)} type="text" placeholder="Your Date of birth" /> 
+                </div>
+                <div className="form-group">
+                  <input className="form-control bg-trsp" name="first-name" value={FirstName} onChange={e => setFirst(e.target.value)} id="first_name" type="text" placeholder="First Name" />
+                </div>
+                <div className="form-group">
+                  <input className="form-control bg-trsp" name="last-name" value={LastName} onChange={e => setLast(e.target.value)} type="text" placeholder="Last Name" />
+                </div>
+                
+                    <div className="choose-gender d-flex my-4">
+                      <div className="form-group">
+                        <input type="radio" id="female" name="gender" value={1}  onChange={ handleChange }  placeholder="Female" />
+                        <label htmlFor="female">Female</label>
+                      </div>
+                      <div className="form-group">
+                        <input type="radio" id="male" name="gender" value={2} onChange={ handleChange } placeholder="Male" />
+                        <label htmlFor="male">Male</label>
+                      </div>
+                        
+                      <div className="form-group">
+                        <input type="radio" id="more" value={3} onChange={ handleChange }  name="gender" />
+                        <label htmlFor="more">More</label>
+                    </div>
+                 
+            </div>
+            <a className="btn bg-grd-clr d-block mb-4 btn-countinue-3" href="javascript:void(0)" onClick={() => setStep(step + 1)}>Next</a>
+          </div>
+          </div>
+          
+        );
+        case 4:
+        return (
+          <div className="signup-inner" id="login-tab-4">
+          <div className="signup-header">
+            <a href="javascript:void(0)" className="login-back-3 btn-back" onClick={() => setStep(step - 1)}><i className="fas fa-chevron-left" /></a>
+          <h4>Gender Identity</h4>
+          </div>
+          <a className="btn bg-grd-clr d-block mb-4 btn-countinue-4" href="javascript:void(0)" onClick={() => setStep(step + 1)}>Prefer Not to say</a>
+          <a className="btn btn-trsp d-block" href="javascript:void(0)" onClick={() => setStep(step + 1)}>Non-Binary</a>
+        </div>
+          
+        );
+        case 5:
+        return (
+          <div className="signup-inner" id="login-tab-5">
+          <div className="signup-header">
+            <a href="javascript:void(0)" className="login-back-4 btn-back" onClick={() => setStep(step - 1)}><i className="fas fa-chevron-left" /></a>
+          <h4>Upload Profile Photo</h4>
+          </div>
+          <div className="form-group upload-field mb-5">
+            <label htmlFor="profile-photo" id="PreviewPicture" style={{ backgroundImage: `url("${imgData}")` }}   />
+            <input type="file" id="profile-photo" name="profile-photo" id="profile-photo" onChange={handleFileChange} accept="image/*" />
+            <span className="camera-icon">
+              <img src="/assets/images/Icon%20feather-camera.png" alt="Camera" />
+            </span>
+          </div>
+          <a className="btn bg-grd-clr d-block mb-4 btn-countinue-5" href="javascript:void(0)" onClick={registerHandle} >Next</a>
+        </div>
+          
+        );
+      default:
+        return 'foo';
+    }
+
+  }
+
+
+
+  // end testing here
 
 
   useEffect(() => {
@@ -272,137 +424,26 @@ countryDropdown('#country');
               <div className="col-md-4 mx-auto">
                 <form action="#" method="post" id="login_form" enctype="multipart/form-data" >
                   <div className="signup-wrapper__form">
+
                     <div className="signup-form text-center">
+
                       {/* First Tab */}
-                      <div className="signup-inner" id="login-tab-1">
-                        <div className="signup-header">
-                        <h4>Glad to see you!</h4>
-                         <p>Hello there, sign in to continue!</p>
-                        </div>
-                        <div className="form-group">
-                          <div className="country text-left">
-                           <div id="country" className="select" ><img src="https://flagcdn.com/16x12/af.png" />+93</div>
-                            <div id="country-drop" className="dropdown">
-                              <ul>
-                                 {countries_data.map((country, index) => (
-                                       <li onClick={e => setCntCode(e.target.getAttribute("data-cid"))} data-code={country.code.toLowerCase()} data-name={country.label} data-cid={country.phone}><img src= {"https://flagcdn.com/16x12/"+country.code.toLowerCase()+".png"} />+{country.phone}</li>
-                                    ))}
-                              </ul>
-                            </div>
-                          </div>
-                             <input className="form-control" name="phone_number" id="phone_number" type="text" placeholder="Enter Phone Number" value={phoneNumber} onChange={handlePhoneChange} />
-                      { Object.keys(phoneErr).map((key) => {
-                          return <div style={{color : "red"}}>{phoneErr[key]}</div>
-                        }) }
-                        </div>
-                       <p>You'll receive a verification code</p>
-                        <a className="btn bg-grd-clr d-block mb-4 btn-countinue-1" href="javascript:void(0)" onClick={sendHandle} >Continue</a>
-                       <p>Continue with</p>
-                        <ul className="social-login">
-                          <li>
-                            <a className="bg-grd-clr" href="javascript:void(0)"><i className="fab fa-facebook-f" /></a>
-                          </li>
-                          <li>
-                            <a className="bg-grd-clr" href="javascript:void(0)"><i className="fab fa-google" /></a>
-                          </li>
-                          <li>
-                            <a className="bg-grd-clr" href="javascript:void(0)"><i className="fab fa-twitter" /></a>
-                          </li>
-                        </ul>
-                        <div className="accept-field d-flex justify-content-center align-items-center mt-4">
-                          <input type="checkbox" name="agree" id="accept-field" />
-                          <label htmlFor="accept-field" />
-                           <span> to our Terms and Data Policy.</span>
-                        </div>
-                      </div>
-                      {/* Second Tab */}
-                      <div className="signup-inner" id="login-tab-2">
-                          <div className="cont_screen">
-                              <div className="signup-header">
-                                <a href="javascript:void(0)" className="login-back-1 btn-back"><i className="fas fa-chevron-left" /></a>
-                             <h4>Enter Code</h4>
-                               <p>Enter 4 digit verification code you<br /> received on +1 7462 462 321</p>
-                              </div>
-                              <div className="form-group otp-field">
-                                <input className="form-control" name="otp_1" value={otp_1} onChange={e => setOtp1(e.target.value)} type="text"  />
-                                <input className="form-control" name="otp_2" value={otp_2}   onChange={e => setOtp2(e.target.value)} type="text"  />
-                                <input className="form-control" name="otp_3" value={otp_3}  onChange={e => setOtp3(e.target.value)} type="text"  />
-                                <input className="form-control" name="otp_4" value={otp_4}  onChange={e => setOtp4(e.target.value)} type="text"  />
-                              </div>
-                              
-                              <a className="btn bg-grd-clr d-block mb-2 btn-countinue-2" href="javascript:void(0)" onClick={verifyHandle}>Verify</a>
-                              <a className="btn btn-trsp d-block" href="javascript:void(0)">Resend</a>
-                        </div>
-                        
-                   
-                     </div>
-                    
-                      {/* Third Tab */}
-                      <div className="signup-inner" id="login-tab-3" >
                       
 
-                      <div className="another_test">
-                            <div className="signup-header mb-5">
-                              <a href="javascript:void(0)" className="login-back-2 btn-back"><i className="fas fa-chevron-left" /></a>
-                            <h4>Your Information</h4>
-                            </div>
-                            <div className="form-group">
-                             <input className="form-control bg-trsp" name="date-birth" value={Dob} onChange={e => setDob(e.target.value)} type="text" placeholder="Your Date of birth" /> 
-                            </div>
-                            <div className="form-group">
-                              <input className="form-control bg-trsp" name="first-name" value={FirstName} onChange={e => setFirst(e.target.value)} id="first_name" type="text" placeholder="First Name" />
-                            </div>
-                            <div className="form-group">
-                              <input className="form-control bg-trsp" name="last-name" value={LastName} onChange={e => setLast(e.target.value)} type="text" placeholder="Last Name" />
-                            </div>
-                            
-                                <div className="choose-gender d-flex my-4">
-                                  <div className="form-group">
-                                    <input type="radio" id="female" name="gender" value={1}  onChange={ handleChange }  placeholder="Female" />
-                                    <label htmlFor="female">Female</label>
-                                  </div>
-                                  <div className="form-group">
-                                    <input type="radio" id="male" name="gender" value={2} onChange={ handleChange } placeholder="Male" />
-                                    <label htmlFor="male">Male</label>
-                                  </div>
-                                    
-                                  <div className="form-group">
-                                    <input type="radio" id="more" value={3} onChange={ handleChange }  name="gender" />
-                                    <label htmlFor="more">More</label>
-                                </div>
-                             
-                        </div>
-                        <a className="btn bg-grd-clr d-block mb-4 btn-countinue-3" href="javascript:void(0)">Next</a>
-                      </div>
+                      {/* Second Tab */}
+                      
+                    
+                      {/* Third Tab */}
                     
 
-
-                      </div>
                       {/* Fourth Tab */}
-                      <div className="signup-inner" id="login-tab-4">
-                        <div className="signup-header">
-                          <a href="javascript:void(0)" className="login-back-3 btn-back"><i className="fas fa-chevron-left" /></a>
-                        <h4>Gender Identity</h4>
-                        </div>
-                        <a className="btn bg-grd-clr d-block mb-4 btn-countinue-4" href="javascript:void(0)">Prefer Not to say</a>
-                        <a className="btn btn-trsp d-block" href="javascript:void(0)">Non-Binary</a>
-                      </div>
+                     
+
                       {/* Fifth Tab */}
-                      <div className="signup-inner" id="login-tab-5">
-                        <div className="signup-header">
-                          <a href="javascript:void(0)" className="login-back-4 btn-back"><i className="fas fa-chevron-left" /></a>
-                        <h4>Upload Profile Photo</h4>
-                        </div>
-                        <div className="form-group upload-field mb-5">
-                          <label htmlFor="profile-photo" id="PreviewPicture" style={{ backgroundImage: `url("${imgData}")` }}   />
-                          <input type="file" id="profile-photo" name="profile-photo" id="profile-photo" onChange={handleFileChange} accept="image/*" />
-                          <span className="camera-icon">
-                            <img src="/assets/images/Icon%20feather-camera.png" alt="Camera" />
-                          </span>
-                        </div>
-                        <a className="btn bg-grd-clr d-block mb-4 btn-countinue-5" href="javascript:void(0)" onClick={registerHandle} >Next</a>
-                      </div>
+                     {tabScreen()}
+
                     </div>
+
                   </div>
                 </form>
               </div>

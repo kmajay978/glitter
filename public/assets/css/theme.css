@@ -221,7 +221,7 @@ input::placeholder {
 
 .signup-inner {
     padding: 35px;
-    width: 100%;
+    /* width: 100%; */
     -webkit-transition: all .3s ease-in-out;
     transition: all .3s ease-in-out;
 }
