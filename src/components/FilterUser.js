@@ -4,16 +4,58 @@ import {  useHistory } from 'react-router';
 import axios from "axios";
 import Slider from '@material-ui/core/Slider';
 import { makeStyles } from '@material-ui/core/styles';
-import { FILTER_LIST_API } from './Api';
+import { FILTER_LIST_API , LIKE_USER , DISLIKE_USER} from './Api';
 import Image from 'react-bootstrap/Image'
 
 const FilterUser = ({fetchedProfile}) =>{
 
+  const dislikeUser =(e) => {
+    const bodyParameters = {
+   session_id : localStorage.getItem("session_id"), 
+   user_id : 3
+    }
+  axios.post(DISLIKE_USER , bodyParameters) 
+  .then((response) => {
+    if(response.status==200) {
+      alert("dislike succesfully")
+    }
+  },(error) =>{
+ 
+  });
+  }
+
+  const likeedUser =(e) => {
+    const bodyParameters = {
+   session_id : localStorage.getItem("session_id"), 
+   user_id : 3
+    }
+  axios.post(LIKE_USER , bodyParameters) 
+  .then((response) => {
+  if(response.status==200){
+   
+   alert("liked succesfully")
+  }
+  }, (error) =>{
+
+  });
+  }
           console.log(fetchedProfile);
                 return(
                   <div className="stage">
                     <div id="stacked-cards-block" className="stackedcards stackedcards--animatable init">
                       <div className="stackedcards-container">
+
+                        <div className="card">
+                          <div className="card-content">
+                            <div className="card-image">
+                            <Image src="/assets/images/profile-card.png" alt="Emma" width="100%" height="100%"/>
+                             </div>
+                            <div className="card-titles">
+                              <h3>Emma, 22</h3>
+                              <span>72km, Lawyer</span>
+                            </div>  
+                          </div>
+                        </div>
 
                         <div className="card">
                           <div className="card-content">
@@ -34,7 +76,7 @@ const FilterUser = ({fetchedProfile}) =>{
                     </div>
                     <div className="action-tray global-actions d-flex flex-wrap justify-content-center align-items-center">
                       <div className="close-btn tray-btn-s">
-                        <a className="left-action" href="javascript:void(0)">×</a>
+                        <a className="left-action" href="javascript:void(0)" onClick={dislikeUser} >×</a>
                       </div>
                       <div className="chat tray-btn-l">
                         <a href="javascript:void(0)">
@@ -47,7 +89,7 @@ const FilterUser = ({fetchedProfile}) =>{
                         </a>
                       </div>
                       <div className="like-profile tray-btn-s">
-                        <a className="right-action" href="javascript:void(0)">
+                        <a className="right-action" href="javascript:void(0)" onClick={likeedUser} >
                           <i className="fas fa-heart" />
                         </a>
                       </div>

@@ -4,14 +4,13 @@ import {  useHistory } from 'react-router';
 import axios from "axios";
 import NavLinks from '../components/Nav';
 import { GET_LOGGEDPROFILE_API , EDITPROFILE_API} from '../components/Api';
-import { First } from "react-bootstrap/esm/PageItem";
+
 
 const Profile = () =>{
 
   const history = useHistory();
   const ref =useRef();
   const [profileData, setProfile] = useState('');  
-
   // Getting form value here
   const [form , setForm] = useState({
     
@@ -56,14 +55,20 @@ const Profile = () =>{
       form.relationStatus = data.relationship_status
     
      setProfile(data);
-       }
+     form.first_name=data.first_name;
   
+<<<<<<< HEAD
  
  
+=======
+       }
+  console.log(profileData);
+   
+>>>>>>> a406cc4885186429f9632b56f1f395ade09ee686
 
    const updateProfile = (e) =>{
-  
-   const bodyParameters ={
+     console.log("working");
+     const bodyParameters ={
     session_id : sessionId,
     device_token : "uhydfdfghdertyt445t6y78755t5jhyhyy",
     device_type : 0 ,
