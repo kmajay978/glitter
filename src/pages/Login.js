@@ -106,12 +106,8 @@ const tokencheck = () =>{
   .then((response) => {
   
    setStep(step + 1)
-    // setHidden(false);
-    // history.push("/dashboard");
   }, (error) => {
     
-    // setHidden(true);
-  // localStorage.removeItem('token');
   });
 
     }
@@ -129,6 +125,8 @@ const tokencheck = () =>{
        isValid = false;
      }
 
+     
+
      setPhoneErr(phoneErr);
      return isValid;
    }
@@ -137,7 +135,6 @@ const tokencheck = () =>{
   // Verify OTP Function 
 const verifyHandle = () =>{
 
-  setStep(step + 1)
    const bodyParameters = {
       phone: phoneNumber,
       country_code: '+'+cntCode,
@@ -157,6 +154,7 @@ const verifyHandle = () =>{
     }
     else
     {
+    setStep(step + 1)
     localStorage.clear();
     }
   
@@ -292,11 +290,12 @@ const registerHandle = (e) =>{
                 <h4>Your Information</h4>
                 </div>
                 <div className="form-group">
-                 <input className="form-control bg-trsp" name="date-birth" value={Dob} onChange={e => setDob(e.target.value)} type="text" placeholder="Your Date of birth" /> 
+                 <input 
+                 className="form-control bg-trsp" name="date-birth" value={Dob} onChange={e => setDob(e.target.value)} type="text" placeholder="Your Date of birth" /> 
                 </div>
                 <div className="form-group">
                   <input className="form-control bg-trsp" name="first-name" value={FirstName} onChange={e => setFirst(e.target.value)} id="first_name" type="text" placeholder="First Name" />
-                </div>
+                </div> 
                 <div className="form-group">
                   <input className="form-control bg-trsp" name="last-name" value={LastName} onChange={e => setLast(e.target.value)} type="text" placeholder="Last Name" />
                 </div>

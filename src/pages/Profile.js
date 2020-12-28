@@ -11,7 +11,11 @@ const Profile = () =>{
   const history = useHistory();
   const ref =useRef();
   const [profileData, setProfile] = useState('');  
+<<<<<<< HEAD
   
+=======
+
+>>>>>>> 9acc864fe7b64341a9ad9e72ad7ceff134a82972
   // Getting form value here
   const [form , setForm] = useState({
     
@@ -36,9 +40,6 @@ const Profile = () =>{
     })
 }
 
-
-
-
   // Fetching profile Data
   var sessionId = localStorage.getItem("session_id")
   const ProfileData = async() =>{
@@ -46,7 +47,18 @@ const Profile = () =>{
       session_id: sessionId,
     };
      const {data:{data}}= await axios.post(GET_LOGGEDPROFILE_API,bodyParameters)
+
+    //  Setting data variable to state object 
+      form.firstName = data.first_name
+      form.lastName = data.last_name
+      form.dob = data.dob
+      form.aboutMe = data.about_me
+      form.height = data.height
+      form.weight = data.weight
+      form.relationStatus = data.relationship_status
+    
      setProfile(data);
+<<<<<<< HEAD
      form.first_name=data.first_name;
   
        }
@@ -56,6 +68,14 @@ const Profile = () =>{
    const updateProfile = (e) =>{
      console.log("working");
      const bodyParameters ={
+=======
+       }
+  
+
+   const updateProfile = (e) =>{
+  
+   const bodyParameters ={
+>>>>>>> 9acc864fe7b64341a9ad9e72ad7ceff134a82972
     session_id : sessionId,
     device_token : "uhydfdfghdertyt445t6y78755t5jhyhyy",
     device_type : 0 ,
@@ -86,6 +106,7 @@ const Profile = () =>{
 
 useEffect(() =>{
   ProfileData();
+ 
 },[])
 
 
@@ -298,7 +319,7 @@ useEffect(() =>{
                     <div className="form-group">
                         <label for="">DOB</label>
                        
-                        <input className="form-control bg-trsp" name="dob" type="text" onChange={handleChange}  />
+                        <input className="form-control bg-trsp" name="dob" type="text" value={form.dob} onChange={handleChange}  />
                     </div>
 
                    <div className="choose-gender d-flex my-4">
@@ -318,7 +339,7 @@ useEffect(() =>{
                                 </div>
                     <div className="form-group">
                         <label for="">About Me</label>
-                        <textarea name="aboutMe" id="" cols="30" rows="10" onChange={handleChange}>{form.aboutMe}</textarea>
+                    <textarea  type="text" id="" cols="30" rows="10" value={form.aboutMe} onChange={handleChange} />
                     </div>
 
                     <a className="btn bg-grd-clr d-block btn-countinue-3" id="edit-first-step" href="javascript:void(0)">Next</a>

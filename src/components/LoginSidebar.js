@@ -1,4 +1,13 @@
 import React, { useState, useEffect } from "react";
+import ReactDOM from "react-dom";
+import styled from 'styled-components'
+import Carousel from "react-elastic-carousel";
+
+const breakPoints = [
+  { width: 1, itemsToShow: 1 },
+  { width: 600, itemsToShow: 1 },
+  { width: 1000, itemsToShow: 1 },
+];
 
 // Working on login functional component
 const LoginSidebar = () => {
@@ -7,7 +16,8 @@ const LoginSidebar = () => {
         return(
             <>
                 <div className="signup-wrapper__slider">
-                   <div className="owl-carousel owl-theme login-carousel">
+                   <div className=" ">
+                    <Carousel breakPoints={breakPoints}>
                     <div className="item text-center">
                       <figure>
                         <img src="/assets/images/dating-app-login.png" alt="Dating App" />
@@ -17,6 +27,7 @@ const LoginSidebar = () => {
                         <p>Mutual sympathy. Do not waste time and write to her</p>
                       </div>
                     </div>
+
                     <div className="item text-center">
                       <figure>
                         <img src="/assets/images/find-friend-login.png" alt="Find Best Friend" />
@@ -26,6 +37,7 @@ const LoginSidebar = () => {
                         <p>Mutual sympathy. Do not waste time and write to her</p>
                       </div>
                     </div>
+
                     <div className="item text-center">
                       <figure>
                         <img src="/assets/images/live-login.png" alt="Live and Get Fan" />
@@ -35,6 +47,7 @@ const LoginSidebar = () => {
                         <p>Mutual sympathy. Do not waste time and write to her</p>
                       </div>
                     </div>
+                  </Carousel>
                     </div>
                 </div>
           </>
