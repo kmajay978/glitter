@@ -37,7 +37,7 @@ const Login = () => {
     setPhone(value);
   };
 
-console.log(phoneNumber);
+//console.log(phoneNumber);
   // OTP fields in state
   const [otp_1,setOtp1] = useState('');
   const [otp_2,setOtp2] = useState('');
@@ -97,7 +97,6 @@ const tokencheck = () =>{
     const isValid = formValidation();
     if(isValid)
     {
-      setStep(step + 1)
     const bodyParameters = {
       phone: phoneNumber,
       country_code: '+'+cntCode
@@ -106,6 +105,7 @@ const tokencheck = () =>{
       axios.post(SENDOTP_API,bodyParameters)
   .then((response) => {
   
+   setStep(step + 1)
     // setHidden(false);
     // history.push("/dashboard");
   }, (error) => {
@@ -426,22 +426,7 @@ countryDropdown('#country');
                   <div className="signup-wrapper__form">
 
                     <div className="signup-form text-center">
-
-                      {/* First Tab */}
-                      
-
-                      {/* Second Tab */}
-                      
-                    
-                      {/* Third Tab */}
-                    
-
-                      {/* Fourth Tab */}
-                     
-
-                      {/* Fifth Tab */}
                      {tabScreen()}
-
                     </div>
 
                   </div>

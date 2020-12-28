@@ -24,7 +24,7 @@ const Profile = () =>{
       
   });
 
-  //console.log(form);
+ console.log(form);
   
   const handleChange = e => { 
     setForm({
@@ -288,7 +288,7 @@ useEffect(() =>{
             <h4 class="theme-txt text-center mb-4">Your Information</h4>
             <form>
             <div className="edit-profile-form">
-                <div className="edit-first-step"><label for="">Gender</label>
+                <div className="edit-first-step">
                     <div className="form-group">
                         <label for="">First Name</label>
                         <input className="form-control bg-trsp" name="firstName" type="text" value={form.firstName} onChange={handleChange}/>
