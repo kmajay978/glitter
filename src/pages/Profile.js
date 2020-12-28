@@ -38,21 +38,16 @@ const Profile = () =>{
 
   // Fetching profile Data
   var sessionId = localStorage.getItem("session_id")
-  const ProfileData = (e) =>{
+  const ProfileData = async() =>{
     const bodyParameters = {
       session_id: sessionId,
     };
-
-      axios.post(GET_LOGGEDPROFILE_API,bodyParameters)
-  .then((response) => {
-
-    setProfile(response.data.data);
-
-  }, (error) => {
-    
-
-  });
-   }
+     const {data:{data}}= await axios.post(GET_LOGGEDPROFILE_API,bodyParameters)
+     setProfile(data);
+  
+       }
+  console.log(profileData);
+   
 
    const updateProfile = (e) =>{
      console.log("working");
@@ -291,7 +286,7 @@ useEffect(() =>{
                 <div className="edit-first-step"><label for="">Gender</label>
                     <div className="form-group">
                         <label for="">First Name</label>
-                        <input className="form-control bg-trsp" name="firstName" type="text" value={form.firstName} onChange={handleChange}/>
+                      <input className="form-control bg-trsp" name="firstName" type="text" value={form.firstName} onChange={handleChange}/>
                     </div>
                     <div className="form-group">
                     <label for="">Last name</label>
