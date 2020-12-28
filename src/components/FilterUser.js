@@ -4,10 +4,25 @@ import {  useHistory } from 'react-router';
 import axios from "axios";
 import Slider from '@material-ui/core/Slider';
 import { makeStyles } from '@material-ui/core/styles';
-import { FILTER_LIST_API , LIKE_USER} from './Api';
+import { FILTER_LIST_API , LIKE_USER , DISLIKE_USER} from './Api';
 import Image from 'react-bootstrap/Image'
 
 const FilterUser = ({fetchedProfile}) =>{
+
+  const dislikeUser =(e) => {
+    const bodyParameters = {
+   session_id : localStorage.getItem("session_id"), 
+   user_id : 3
+    }
+  axios.post(DISLIKE_USER , bodyParameters) 
+  .then((response) => {
+    if(response.status==200) {
+      alert("dislike succesfully")
+    }
+  },(error) =>{
+ 
+  });
+  }
 
   const likeedUser =(e) => {
     const bodyParameters = {
@@ -61,7 +76,7 @@ const FilterUser = ({fetchedProfile}) =>{
                     </div>
                     <div className="action-tray global-actions d-flex flex-wrap justify-content-center align-items-center">
                       <div className="close-btn tray-btn-s">
-                        <a className="left-action" href="javascript:void(0)">×</a>
+                        <a className="left-action" href="javascript:void(0)" onClick={dislikeUser} >×</a>
                       </div>
                       <div className="chat tray-btn-l">
                         <a href="javascript:void(0)">

@@ -11,11 +11,6 @@ const Profile = () =>{
   const history = useHistory();
   const ref =useRef();
   const [profileData, setProfile] = useState('');  
-<<<<<<< HEAD
-  
-=======
-
->>>>>>> 9acc864fe7b64341a9ad9e72ad7ceff134a82972
   // Getting form value here
   const [form , setForm] = useState({
     
@@ -58,7 +53,6 @@ const Profile = () =>{
       form.relationStatus = data.relationship_status
     
      setProfile(data);
-<<<<<<< HEAD
      form.first_name=data.first_name;
   
        }
@@ -68,14 +62,6 @@ const Profile = () =>{
    const updateProfile = (e) =>{
      console.log("working");
      const bodyParameters ={
-=======
-       }
-  
-
-   const updateProfile = (e) =>{
-  
-   const bodyParameters ={
->>>>>>> 9acc864fe7b64341a9ad9e72ad7ceff134a82972
     session_id : sessionId,
     device_token : "uhydfdfghdertyt445t6y78755t5jhyhyy",
     device_type : 0 ,
