@@ -4,16 +4,14 @@ import {  useHistory } from 'react-router';
 import axios from "axios";
 import NavLinks from '../components/Nav';
 import { GET_LOGGEDPROFILE_API , EDITPROFILE_API} from '../components/Api';
-import { First } from "react-bootstrap/esm/PageItem";
+
 
 const Profile = () =>{
 
   const history = useHistory();
   const ref =useRef();
   const [profileData, setProfile] = useState('');  
-  // const First =profileData.first_name;
-  // const Last = profileData.last_name;
-  const Dob = profileData.dob;
+  
   // Getting form value here
   const [form , setForm] = useState({
     
@@ -49,14 +47,15 @@ const Profile = () =>{
     };
      const {data:{data}}= await axios.post(GET_LOGGEDPROFILE_API,bodyParameters)
      setProfile(data);
+     form.first_name=data.first_name;
   
        }
-  //console.log(profileData);
+  console.log(profileData);
    
 
    const updateProfile = (e) =>{
      console.log("working");
-   const bodyParameters ={
+     const bodyParameters ={
     session_id : sessionId,
     device_token : "uhydfdfghdertyt445t6y78755t5jhyhyy",
     device_type : 0 ,
