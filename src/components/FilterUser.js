@@ -6,6 +6,9 @@ import Slider from '@material-ui/core/Slider';
 import { makeStyles } from '@material-ui/core/styles';
 import { FILTER_LIST_API , LIKE_USER , DISLIKE_USER} from './Api';
 import Image from 'react-bootstrap/Image'
+import { CardHeader , card} from "@material-ui/core";
+import { CCardTitle } from "@coreui/react";
+
 
 const FilterUser = ({fetchedProfile}) =>{
 
@@ -56,6 +59,12 @@ const FilterUser = ({fetchedProfile}) =>{
                             </div>  
                           </div>
                         </div>
+                       
+                       <card>
+                       <CardHeader>
+                       <Image src="/assets/images/profile-card.png" alt="Emma" width="100%" height="100%"/>
+                       </CardHeader>
+                       </card>
 
                         <div className="card">
                           <div className="card-content">

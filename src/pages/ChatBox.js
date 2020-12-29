@@ -11,7 +11,7 @@ const ChatBox = () =>{
 const[Likes, setLikes] = useState([]);
 const[Visitors, setVisitors] = useState([]);
 const[FriendList, setFriendlist] = useState([]);
-const [isLoaded, setIsLoaded] = useState(false);
+const[isLoaded, setIsLoaded] = useState(false);
 
    const bodyParameters = {
        session_id: localStorage.getItem('session_id'),
@@ -22,13 +22,11 @@ const [isLoaded, setIsLoaded] = useState(false);
 
   // Destructing response and getting data part
   const { data: {data} } = await axios.post(LIKED_LIST,bodyParameters)
-   setTimeout(() => {
+  //  setTimeout(() => {
    
-  setIsLoaded(true);
-      }, 4000);
-  setLikes(data);
-  
-   
+  //  setIsLoaded(true);
+  //     }, 200);
+   setLikes(data);
     }
 
     // Visitors here
@@ -36,7 +34,7 @@ const [isLoaded, setIsLoaded] = useState(false);
     const getVisitors = async () => { 
 
   // Destructing response and getting data part
-  const { data: {result} } = await axios.post(VISITOR_LIST_API,bodyParameters)
+    const { data: {result} } = await axios.post(VISITOR_LIST_API,bodyParameters)
         setVisitors(result);
     
     }
@@ -113,11 +111,11 @@ const [isLoaded, setIsLoaded] = useState(false);
             <div id="like" className="contacts-outter-wrapper tab-pane fade show active" role="tabpanel" aria-labelledby="tab-like">
               <div className="contacts-outter">
               
-              { isLoaded &&
+              {/* { isLoaded && */}
                 <ul className="nav contacts" role="tablist">
                
                 { Likes.map((item, i) => {
-                 return    <li className="nav-item">
+                 return   <li className="nav-item">
                     <a className="nav-link" href="#chat-field" data-toggle="tab" role="tab">
                       <img alt={item.liked_user_name} className="img-circle medium-image" src={item.liked_user_pic} />
                       <div className="contacts_info">
@@ -137,7 +135,7 @@ const [isLoaded, setIsLoaded] = useState(false);
                   })}
                   
                 </ul>
-}
+{/* } */}
               </div>
             </div>
             <div id="visitors" className="contacts-outter-wrapper tab-pane fade" role="tabpanel" aria-labelledby="tab-visitors">

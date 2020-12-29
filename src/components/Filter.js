@@ -88,7 +88,7 @@ function valuetextweight(value) {
    if (response.status == 200) {
     setLoading(true);
     setFilterUser(response)
-   console.log(response);
+   //console.log(response);
    setTimeout(() => {
    
     setLoading(false);
