@@ -22,11 +22,11 @@ const Profile = () =>{
     height:"",
     weight:"",
     relationStatus:"",
-    editProfile:"",
+    interest:"",
       
   });
 
- //console.log(form);
+ console.log(form);
   
   const handleChange = e => { 
     setForm({
@@ -50,14 +50,21 @@ const Profile = () =>{
       form.aboutMe = data.about_me
       form.height = data.height
       form.weight = data.weight
+      form.gender = data.gender
+      form.interest = data.interest
       form.relationStatus = data.relationship_status
     
      setProfile(data);
      form.first_name=data.first_name;
   
+<<<<<<< HEAD
+ 
+ 
+=======
        }
   console.log(profileData);
    
+>>>>>>> a406cc4885186429f9632b56f1f395ade09ee686
 
    const updateProfile = (e) =>{
      console.log("working");
@@ -72,6 +79,7 @@ const Profile = () =>{
     aboutMe : form.aboutMe,
     height : form.height,
     weight : form.weight,
+    interest:form.interest,
     relationship_status :form.relationStatus
    };
    axios.post(EDITPROFILE_API , bodyParameters) 
@@ -181,6 +189,7 @@ useEffect(() =>{
           </div>
           <div className="user-profile__options becomevip-wrapper__innerblock">
             <ul>
+           
               <li><a href="javascript:void(0)" id="gift-modal"><img src="/assets/images/gift-icon.png" alt="gifts" />
                   <h6>Gifts</h6> <i className="fas fa-chevron-right" />
                 </a></li>
@@ -288,7 +297,7 @@ useEffect(() =>{
     </div>
   </section>
 
-  <div class="edit-profile-modal modal-wrapper">
+   <div class="edit-profile-modal modal-wrapper">
         <div class="edit-profile-modal__inner">
             <h4 class="theme-txt text-center mb-4">Your Information</h4>
             <form>
@@ -310,16 +319,17 @@ useEffect(() =>{
 
                    <div className="choose-gender d-flex my-4">
                                   <div className="form-group">
-                                    <input type="radio" id="female" name="gender" value={1}  onChange={ handleChange }  placeholder="Female" />
+                                  {form.gender == 1 }
+                                    <input type="radio" id="female" name="gender" value={1} checked={form.gender == 1 ? "checked" : ""} onChange={ handleChange }  placeholder="Female" />
                                     <label htmlFor="female">Female</label>
                                   </div>
                                   <div className="form-group">
-                                    <input type="radio" id="male" name="gender" value={2} onChange={ handleChange } placeholder="Male" />
+                                    <input type="radio" id="male" name="gender" value={2} checked={form.gender == 2 ? "checked" : ""}  onChange={ handleChange } placeholder="Male" />
                                     <label htmlFor="male">Male</label>
                                   </div>
                                     
                                   <div className="form-group">
-                                    <input type="radio" id="more" value={3} onChange={ handleChange }  name="gender" />
+                                    <input type="radio" id="more" value={3}  checked={form.gender == 3 ? "checked" : ""} onChange={ handleChange }  name="gender" />
                                     <label htmlFor="more">More</label>
                                 </div>
                                 </div>
@@ -358,18 +368,22 @@ useEffect(() =>{
                         <div className="tab-title">
                             <label>Looking For</label>
                         </div>
+
                         <div className="form-group">
-                            <input type="checkbox" checked="" name="man" id="man"/>
+                            <input type="checkbox"  name="interest" id="man" value={1} onChange={handleChange} />
                             <label for="man">Man</label>
                         </div>
                         <div className="form-group">
-                            <input type="checkbox" name="woman" id="woman"/>
+                            <input type="checkbox" name="interest" id="woman" value={2} onChange={handleChange} />
                             <label for="woman">Woman</label>
                         </div>
                         <div className="form-group">
-                            <input type="checkbox" checked="" name="both" id="both"/>
+                            <input type="checkbox" name="interest" id="both" value={3} onChange={handleChange} />
                             <label for="both">Both</label>
                         </div>
+
+                        
+                        
                     </div>
 
                     <a className="btn bg-grd-clr d-block btn-countinue-3" id="edit-second-step" href="javascript:void(0)" onClick={updateProfile}>Update</a>
@@ -382,7 +396,6 @@ useEffect(() =>{
         </div>
         <a href="javascript:void(0)" className="modal-close"><img src="assets/images/btn_close.png"/></a>
     </div>
-
 
   <div className="coin-spend-modal modal-wrapper">
     <div className="edit-profile-modal__inner">
