@@ -3,20 +3,19 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-// import { Provider } from 'react-redux';
-// import {createStore} from 'redux'
+
+import { Provider } from 'react-redux';
+import store from './reduxStore/store';
 // import reducer from './ReduxReducers/LoginReducer';
 // import LoginReducer from './ReduxReducers/LoginReducer';
 
 // const store = createStore(LoginReducer);
 
 ReactDOM.render(
-  //  <Provider store={store}>
-  <React.StrictMode> 
-    <App /> 
-  </React.StrictMode>
-  //  </Provider>
-  ,
+   
+ <Provider store={store}>
+    <App />
+  </Provider>,
   document.getElementById('root') 
 );
 

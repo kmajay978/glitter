@@ -5,7 +5,7 @@ import axios from "axios";
 import NavLinks from '../components/Nav';
 import Logo from '../components/Logo';
 const RecentCall = () =>{
-    return(
+    return(                                               
   <section className="home-wrapper">
   <img className="bg-mask" src="/assets/images/mask-bg.png" alt="Mask" />
   <div className="header-bar">

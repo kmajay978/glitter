@@ -1,4 +1,7 @@
 import React, {Component, useEffect, useState} from 'react';
+import {useSelector} from 'react-redux';
+
+import { selectUser } from '../features/userSlice';
 import FilterSide from '../components/Filter';
 import NavLinks from '../components/Nav';
 import Loader from '../components/Loader';
@@ -6,15 +9,9 @@ import FilterUser from '../components/FilterUser';
 import axios from 'axios';
 
 const Home = () =>{
-  const [fetchedProfile, setFilterUser] = useState('')
- 
-  
+    const user = useSelector(selectUser); //using redux useSelector here
+    const [fetchedProfile, setFilterUser] = useState('')
 
-
-  useEffect(()=>
-  {
-  
-  },[])
     
   return(
           <section className="home-wrapper">
@@ -27,6 +24,7 @@ const Home = () =>{
                 <div className="logo-tab mb-5 d-flex justify-content-between align-items-start">
                   <a href="javascript:void(0)">
                     <img src="/assets/images/glitters.png" alt="Glitters" />
+                    
                   </a>
                   <span className="chat-point">
                     <a href="javascript:void(0)">

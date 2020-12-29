@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+import {login} from '../features/userSlice';
 import { format } from 'date-fns';
 import React, { useState, useEffect } from "react";
 import DateFnsUtils from '@date-io/date-fns';
@@ -23,6 +25,8 @@ const Login = () => {
 
   const [step, setStep] = useState(1);
   const history = useHistory();
+
+ const dispatch = useDispatch();
 //  const config = {  
 //     headers: { Authorization: `Bearer ${token}` }
 //   };
@@ -151,6 +155,13 @@ const verifyHandle = () =>{
     {
          localStorage.setItem('session_id', response.data.data.session_id);
          history.push("/");
+         dispatch(
+           login({
+              logged: response.data.data,
+              loggedIn: true,
+           })
+         );
+
     }
     else
     {
