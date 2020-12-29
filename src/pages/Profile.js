@@ -32,7 +32,7 @@ const Profile = () =>{
     setForm({
       ...form,
       [e.target.name]: e.target.value,
-    })
+    }) 
 }
 
   // Fetching profile Data
@@ -57,14 +57,9 @@ const Profile = () =>{
      setProfile(data);
      form.first_name=data.first_name;
   
-<<<<<<< HEAD
- 
- 
-=======
        }
   console.log(profileData);
    
->>>>>>> a406cc4885186429f9632b56f1f395ade09ee686
 
    const updateProfile = (e) =>{
      console.log("working");
