@@ -26,13 +26,13 @@ const Profile = () =>{
       
   });
 
- console.log(form);
+//  console.log(form);
   
   const handleChange = e => { 
     setForm({
       ...form,
       [e.target.name]: e.target.value,
-    })
+    }) 
 }
 
   // Fetching profile Data
@@ -53,13 +53,11 @@ const Profile = () =>{
       form.gender = data.gender
       form.interest = data.interest
       form.relationStatus = data.relationship_status
-    
      setProfile(data);
-
        }
-  console.log(profileData);
-   
 
+      //console.log(profileData);
+   
 
    const updateProfile = (e) =>{
      console.log("working");
