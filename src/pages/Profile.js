@@ -28,7 +28,7 @@ const Profile = () =>{
       
   });
 
- console.log(form);
+//  console.log(form);
   
   const handleChange = e => { 
     setForm({
@@ -55,12 +55,10 @@ const Profile = () =>{
       form.gender = data.gender
       form.interest = data.interest
       form.relationStatus = data.relationship_status
-    
      setProfile(data);
-     form.first_name=data.first_name;
-  
        }
-      console.log(profileData);
+
+      //console.log(profileData);
    
      //update profile data
      const updateProfile = (e) =>{
