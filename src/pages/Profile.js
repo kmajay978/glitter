@@ -55,16 +55,11 @@ const Profile = () =>{
       form.relationStatus = data.relationship_status
     
      setProfile(data);
-     form.first_name=data.first_name;
-  
-<<<<<<< HEAD
- 
- 
-=======
+
        }
   console.log(profileData);
    
->>>>>>> a406cc4885186429f9632b56f1f395ade09ee686
+
 
    const updateProfile = (e) =>{
      console.log("working");
