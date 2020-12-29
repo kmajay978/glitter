@@ -62,6 +62,7 @@ function valuetextweight(value) {
   }
 
   const [isLoading ,setLoading]= useState();
+ 
   const filterHandle = (e) =>{
         e.preventDefault();
 

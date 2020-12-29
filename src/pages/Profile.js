@@ -3,14 +3,16 @@ import React, { useState, useEffect, useRef } from "react";
 import {  useHistory } from 'react-router';
 import axios from "axios";
 import NavLinks from '../components/Nav';
-import { GET_LOGGEDPROFILE_API , EDITPROFILE_API} from '../components/Api';
+import { GET_LOGGEDPROFILE_API , EDITPROFILE_API , BLOCK_USERLIST_API , LOGOUT_API} from '../components/Api';
+
 
 
 const Profile = () =>{
 
   const history = useHistory();
-  const ref =useRef();
+  
   const [profileData, setProfile] = useState('');  
+  const [blockData, setBlockData] = useState([]);
   // Getting form value here
   const [form , setForm] = useState({
     
@@ -58,8 +60,8 @@ const Profile = () =>{
 
       //console.log(profileData);
    
-
-   const updateProfile = (e) =>{
+     //update profile data
+     const updateProfile = (e) =>{
      console.log("working");
      const bodyParameters ={
     session_id : sessionId,
@@ -87,18 +89,39 @@ const Profile = () =>{
    }
 
    const handleLogout = () =>{
-    localStorage.removeItem("session_id");
-    history.push('/login');
+    const bodyParameters= {
+     session_id : sessionId
+    };
+    axios.post(LOGOUT_API , bodyParameters)
+    .then((response) => { 
+      localStorage.removeItem("session_id");
+      history.push('/login');
+      alert("logout successfully")
+    }, (error) =>{
+
+    });
    }
 
-useEffect(() =>{
+   //block list
+   const handleBlock = async() => {
+   const bodyParameters ={
+    session_id: sessionId,
+   };
+   const{data : {data}} = await axios.post(BLOCK_USERLIST_API ,bodyParameters)
+   setBlockData(data);
+   
+   }
+
+   console.log(blockData);
+
+  useEffect(() =>{
   ProfileData();
- 
-},[])
+  handleBlock();
+  },[])
 
 
-    return(
-<div>
+  return(
+   <div>
   <section className="home-wrapper">
     <img className="bg-mask" src="/assets/images/mask-bg.png" alt="Mask" />
     <div className="header-bar">
@@ -196,7 +219,7 @@ useEffect(() =>{
           </div>
           <div className="user-profile__options becomevip-wrapper__innerblock">
             <ul>
-              <li><a href="javascript:void(0)" id="blacklist">
+              <li><a href="javascript:void(0)" id="blacklist" onClick={handleBlock}>
                   <h6><img src="/assets/images/blacklist-icon.png" alt="Blacklist" />Blacklist</h6> <i className="fas fa-chevron-right" />
                 </a></li>
               <li><a href="javascript:void(0)" id="setting">
@@ -327,14 +350,15 @@ useEffect(() =>{
                                 </div>
                                 </div>
                     <div className="form-group">
-                        <label for="">About Me</label>
-                    <textarea  type="text" id="" cols="30" rows="10" value={form.aboutMe} onChange={handleChange} />
+                    <label for="">About Me</label>
+                    <input className="form-control bg-trsp" name="aboutMe" type="text" value={form.aboutMe} onChange={handleChange} />
+                    {/* <textarea  type="text"  cols="30" rows="10" value={form.aboutMe} onChange={handleChange} /> */}
                     </div>
 
                     <a className="btn bg-grd-clr d-block btn-countinue-3" id="edit-first-step" href="javascript:void(0)">Next</a>
-                </div>
+                   </div>
 
-                <div className="edit-second-step">
+                   <div className="edit-second-step">
                     
 
                     <div className="form-group">
@@ -460,16 +484,21 @@ useEffect(() =>{
   <div className="blacklist-modal modal-wrapper">
     <div className="edit-profile-modal__inner">
       <h4 className="theme-txt text-center mb-4">Blacklist</h4>
+    
+    {blockData.map((item, i) => {
       <div className="coin-spend">
         <div className="coin-spend__hostimg">
           <img src="/assets/images/host.png" alt="host" />
         </div>
         <div className="coins-spend__hostname">
-          <span>Charlotte Marie</span> <span className="counter">20</span>
+          <span>{blockData.first_name}</span> <span className="counter">20</span>
           <div className="coin-spend__total"><img src="/assets/images/diamond-sm.png" /> 75</div>
         </div>
+     
       </div>
+    })}
     </div>
+     
     <a href="javascript:void(0)" className="modal-close"><img src="/assets/images/btn_close.png" /></a>
   </div>
   <div className="setting-modal modal-wrapper">
