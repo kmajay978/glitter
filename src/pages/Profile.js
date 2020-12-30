@@ -4,13 +4,14 @@ import {  useHistory } from 'react-router';
 import axios from "axios";
 import NavLinks from '../components/Nav';
 import { GET_LOGGEDPROFILE_API , EDITPROFILE_API , BLOCK_USERLIST_API , LOGOUT_API} from '../components/Api';
-
-
+import Login from '../pages/Login'
+import { useDispatch } from 'react-redux';
+import {login} from '../features/userSlice';
 
 const Profile = () =>{
 
   const history = useHistory();
-  
+  const dispatch = useDispatch();
   const [profileData, setProfile] = useState('');  
   const [blockData, setBlockData] = useState([]);
   // Getting form value here
@@ -36,6 +37,8 @@ const Profile = () =>{
       [e.target.name]: e.target.value,
     }) 
 }
+
+
 
   // Fetching profile Data
   var sessionId = localStorage.getItem("session_id")

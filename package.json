@@ -45,7 +45,7 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.1",
     "react-semantic-ui-range": "^0.7.0",
-    "reactstrap": "^8.8.0",
+    "reactstrap": "^8.8.1",
     "redux": "^4.0.5",
     "styled-components": "^5.2.1",
     "typeface-roboto": "^1.1.13",
