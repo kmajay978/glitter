@@ -99,7 +99,7 @@ const SingleProfile = () =>{
             <div className="pphoto-count">
               <i className="far fa-image" />
               <span className="d-inline-block"> 
-               {/* {result} */}
+               {/* {setCount(count+1)} */}
               </span>
             </div>
           </div>
