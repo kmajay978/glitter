@@ -3,8 +3,10 @@ import React, { useState, useEffect } from "react";
 import {  useHistory } from 'react-router';
 import axios from "axios";
 import NavLinks from '../components/Nav';
-import { LIKED_LIST, VISITOR_LIST_API ,FRIENDLIST_API} from '../components/Api';
+import { LIKED_LIST, VISITOR_LIST_API ,FRIENDLIST_API, GET_USERPROFILE_API} from '../components/Api';
 import Loader from '../components/Loader';
+// import MessageBox from '../components/MessageBox';
+
 
 const ChatBox = () =>{
 
@@ -12,6 +14,8 @@ const[Likes, setLikes] = useState([]);
 const[Visitors, setVisitors] = useState([]);
 const[FriendList, setFriendlist] = useState([]);
 const[isLoaded, setIsLoaded] = useState(false);
+
+
 
    const bodyParameters = {
        session_id: localStorage.getItem('session_id'),
@@ -43,18 +47,17 @@ const[isLoaded, setIsLoaded] = useState(false);
     const getFriend = async() => {
     const {data:{data}}= await axios.post(FRIENDLIST_API,bodyParameters)
     setFriendlist(data);
-
      }
 
      useEffect(()=>{
        getLikes();
        getVisitors();
        getFriend();
-      
+     
         
      },[])
     
-      //console.log(Visitors);
+       //console.log(ChatUserData);
       //console.log(FriendList);
 
     return( 
@@ -169,7 +172,7 @@ const[isLoaded, setIsLoaded] = useState(false);
                   
                   { FriendList.map((item, i) => {
                     return <li className="nav-item">
-                    <a className="nav-link" href="#chat-field" data-toggle="tab" role="tab">
+                    <a className="nav-link" href="#chat-field" data-toggle="tab" data-id={item.id} role="tab" >
                       <img alt="Mia" className="img-circle medium-image" src={item.liked_user_pic} />
                       <div className="contacts_info">
                         <div className="user_detail">
@@ -189,7 +192,8 @@ const[isLoaded, setIsLoaded] = useState(false);
             </div>
           </div>
         </div>
-        <div className="col-md-8 tab-content chat-block" role="tablist">
+        {/* Chat box here */}
+       <div className="col-md-8 tab-content chat-block" role="tablist">
           <div className="nothing-to-see text-center active">
             <figure>
               <img src="/assets/images/message-circle.png" alt="Message" />
@@ -201,7 +205,7 @@ const[isLoaded, setIsLoaded] = useState(false);
               <div className="chat-header-info d-flex align-items-center">
                 <img alt="Mia" className="img-circle medium-image" src="/assets/images/vc-user.png" />
                 <div className="chat-user-info ml-2">
-                  <h5 className="mb-0 name">Mia</h5>
+                  <h5 className="mb-0 name">mandy</h5>
                   <div className="info">Art. Director, 21</div>
                 </div>
               </div>
@@ -261,8 +265,11 @@ const[isLoaded, setIsLoaded] = useState(false);
             </div>
           </div>
         </div>
+        {/* End chat box here */}
       </div>
+
     </div>
+
   </div>
    
 </section>
