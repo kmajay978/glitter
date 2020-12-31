@@ -22,7 +22,7 @@ const FilterUser = ({fetchedProfile}) =>{
     setAllData(data);
   }
 
-  const dislikeUser =(e) => {
+  const dislikeUser =(userid) => {
     const bodyParameters = {
    session_id : localStorage.getItem("session_id"), 
    user_id : 3
@@ -37,10 +37,10 @@ const FilterUser = ({fetchedProfile}) =>{
   });
   }
 
-  const likeedUser =(e) => {
+  const likeedUser =(userid) => {
     const bodyParameters = {
    session_id : localStorage.getItem("session_id"), 
-   user_id : 3
+   user_id : userid
     }
   axios.post(LIKE_USER , bodyParameters) 
   .then((response) => {
@@ -90,7 +90,7 @@ const FilterUser = ({fetchedProfile}) =>{
                    
                     <div className="action-tray global-actions d-flex flex-wrap justify-content-center align-items-center">
                       <div className="close-btn tray-btn-s">
-                        <a className="left-action" href="javascript:void(0)" onClick={dislikeUser} >×</a>
+                        <a className="left-action" href="javascript:void(0)" onClick={dislikeUser.bind(this, 5)} >×</a>
                       </div>
                       <div className="chat tray-btn-l">
                         <a href="javascript:void(0)">
@@ -103,7 +103,7 @@ const FilterUser = ({fetchedProfile}) =>{
                         </a>
                       </div>
                       <div className="like-profile tray-btn-s">
-                        <a className="right-action" href="javascript:void(0)" onClick={likeedUser} >
+                        <a className="right-action" href="javascript:void(0)" onClick={likeedUser.bind(this, 5)} >
                           <i className="fas fa-heart" />
                         </a>
                       </div>
