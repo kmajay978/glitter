@@ -20,6 +20,7 @@ const FilterUser = ({fetchedProfile}) =>{
     };
     const{data :{data}} =await axios.post(GETALLUSER_API ,bodyParameters)
     setAllData(data);
+    
   }
 
   const dislikeUser =(e) => {
