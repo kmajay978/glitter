@@ -8,7 +8,7 @@ import { FILTER_LIST_API , LIKE_USER , DISLIKE_USER} from './Api';
 import Image from 'react-bootstrap/Image'
 import { CardHeader , card} from "@material-ui/core";
 import {Card, CardImg, CardText, CardBody,CardTitle} from 'reactstrap';
-import {GETALLUSER_API} from '../components/Api'
+import {GETALLUSER_API} from '../components/Api';
 
 const FilterUser = ({fetchedProfile}) =>{
 

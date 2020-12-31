@@ -14,14 +14,14 @@ const[Likes, setLikes] = useState([]);
 const[Visitors, setVisitors] = useState([]);
 const[FriendList, setFriendlist] = useState([]);
 const[isLoaded, setIsLoaded] = useState(false);
-
+const[FriendUserId, setFriendId] = useState('');
+const[AllData, setData] = useState('');
 
 
    const bodyParameters = {
        session_id: localStorage.getItem('session_id'),
   };
 //Likes here
-
   const getLikes = async () => {
 
   // Destructing response and getting data part
@@ -49,6 +49,17 @@ const[isLoaded, setIsLoaded] = useState(false);
     setFriendlist(data);
      }
 
+  // fetching friends according to userID
+        const friendListChat = async() => {
+            const bodyParameters = {
+            session_id: localStorage.getItem('session_id'),
+            user_id: FriendUserId,
+          };
+
+     const {data:{data}}= await axios.post(GET_USERPROFILE_API,bodyParameters)
+     setData(data);
+     }
+
      useEffect(()=>{
        getLikes();
        getVisitors();
@@ -56,8 +67,12 @@ const[isLoaded, setIsLoaded] = useState(false);
      
         
      },[])
+
+     useEffect(()=>{
+       friendListChat();
+     },[FriendUserId])
     
-       //console.log(ChatUserData);
+      //console.log(AllData);
       //console.log(FriendList);
 
     return( 
@@ -172,7 +187,8 @@ const[isLoaded, setIsLoaded] = useState(false);
                   
                   { FriendList.map((item, i) => {
                     return <li className="nav-item">
-                    <a className="nav-link" href="#chat-field" data-toggle="tab" data-id={item.id} role="tab" >
+                    <a className="nav-link" href="#chat-field" data-toggle="tab" data-id={item.liked_user_id} role="tab" onClick={() => setFriendId(item.liked_user_id)}>
+                      
                       <img alt="Mia" className="img-circle medium-image" src={item.liked_user_pic} />
                       <div className="contacts_info">
                         <div className="user_detail">
@@ -203,10 +219,10 @@ const[isLoaded, setIsLoaded] = useState(false);
           <div className="tab-pane tab-pane fade" id="chat-field">
             <div className="message-top d-flex flex-wrap align-items-center justify-content-between">
               <div className="chat-header-info d-flex align-items-center">
-                <img alt="Mia" className="img-circle medium-image" src="/assets/images/vc-user.png" />
+                <img alt="Mia" className="img-circle medium-image" src={AllData.profile_images} />
                 <div className="chat-user-info ml-2">
-                  <h5 className="mb-0 name">mandy</h5>
-                  <div className="info">Art. Director, 21</div>
+                  <h5 className="mb-0 name">{AllData.first_name}</h5>
+                  <div className="info">{AllData.occupation},  {AllData.age}</div>
                 </div>
               </div>
               <div className="chat-call-opt">
@@ -215,8 +231,10 @@ const[isLoaded, setIsLoaded] = useState(false);
                 </a>
               </div>
             </div>
+
             <div className="chat-date text-center my-2">Today</div>
-            <div className="message-chat">
+              <div className="message-chat">
+
               <div className="chat-body">
                 <div className="message info">
                   <div className="message-body">
@@ -242,6 +260,7 @@ const[isLoaded, setIsLoaded] = useState(false);
                   </div>
                 </div>
               </div>
+
               <div className="chat-footer">
                 <label className="upload-file">
                   <div>
@@ -263,7 +282,9 @@ const[isLoaded, setIsLoaded] = useState(false);
                 <button type="button" className="send-message-button bg-grd-clr"><i className="fas fa-paper-plane" /></button>
               </div>
             </div>
+            
           </div>
+
         </div>
         {/* End chat box here */}
       </div>
