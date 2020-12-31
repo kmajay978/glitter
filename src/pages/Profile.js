@@ -484,6 +484,7 @@ const Profile = () =>{
     </div>
     <a href="javascript:void(0)" className="modal-close"><img src="/assets/images/btn_close.png" /></a>
   </div>
+ 
   <div className="blacklist-modal modal-wrapper">
     <div className="edit-profile-modal__inner">
       <h4 className="theme-txt text-center mb-4">Blacklist</h4>
