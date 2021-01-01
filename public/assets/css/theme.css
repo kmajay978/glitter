@@ -1966,6 +1966,8 @@ body {
 
 .stackedcards {
     position: relative;
+   height: 400px;
+
 }
 
 .stackedcards * {
@@ -3264,4 +3266,34 @@ screen and (max-height: 768px) {
     margin-top: 30px;
 }
 
+/* Tinder card swip css */
+
+.card {
+    position: relative;
+    height: 50vh;
+    max-width: 85vw;
+    border-radius: 20px;
+    background-size: cover;
+    box-shadow: 0px 18px 53px 0px rgba(0, 0, 0, 0.3);
 }
+
+.card > h3 {
+    position: absolute;
+    bottom: 10px;
+    color: white;
+}
+
+.tinderCards_cardContainer {
+  
+    display: flex;
+    justify-content: center;
+    margin-top: 10vh;
+}
+
+.swipe {
+    position: absolute;
+    top:15%;
+    display: flex;
+    justify-content: center;
+}
+/* End swipe css */

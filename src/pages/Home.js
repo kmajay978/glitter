@@ -46,9 +46,8 @@ const Home = () =>{
                   </div>
                  <NavLinks/>
                 </div>
-                <FilterUser fetchedProfile={fetchedProfile} />
                 <div className="profile-swipe-wrapper">
-                  
+                  <FilterUser fetchedProfile={fetchedProfile} />
                 </div>
               </div>
             </div>
