@@ -212,7 +212,7 @@ const Profile = () =>{
               <li><a href="javascript:void(0)" id="gift-modal"><img src="/assets/images/gift-icon.png" alt="gifts" />
                   <h6>Gifts</h6> <i className="fas fa-chevron-right" />
                 </a></li>
-              <li><a href="javascript:void(0)" id="edit-profile"><img src="/assets/images/edit-profile.png" alt="Edit Profile" />
+              <li><a href="javascript:void(0)" id="edit-profile"  ><img src="/assets/images/edit-profile.png" alt="Edit Profile" />
                   <h6>Edit Profile</h6> <i className="fas fa-chevron-right" />
                 </a></li>
               <li><a href="javascript:void(0)" id="coin-spend"><img src="/assets/images/diamond-coin.png" alt="Coins" />
@@ -484,6 +484,7 @@ const Profile = () =>{
     </div>
     <a href="javascript:void(0)" className="modal-close"><img src="/assets/images/btn_close.png" /></a>
   </div>
+ 
   <div className="blacklist-modal modal-wrapper">
     <div className="edit-profile-modal__inner">
       <h4 className="theme-txt text-center mb-4">Blacklist</h4>

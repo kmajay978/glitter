@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect ,useMemo} from "react";
 import {  useHistory } from 'react-router';
 import axios from "axios";
 import Slider from '@material-ui/core/Slider';
@@ -9,26 +9,33 @@ import Image from 'react-bootstrap/Image'
 import { CardHeader , card} from "@material-ui/core";
 import {Card, CardImg, CardText, CardBody,CardTitle} from 'reactstrap';
 import {GETALLUSER_API} from '../components/Api';
+import GlitterCard from 'react-tinder-card'
+import Swipe from "./Swipe";
 
 const FilterUser = ({fetchedProfile}) =>{
+  const alreadyRemoved = []
 
-  const [allData , setAllData] = useState([]);;
+  const [allData , setAllData] = useState([]);
   
+  
+
     const handleUserData = async() => {
     const bodyParameters ={
      session_id : localStorage.getItem("session_id")
     };
     const{data :{data}} =await axios.post(GETALLUSER_API ,bodyParameters)
     setAllData(data);
+    
   }
 
-  const dislikeUser =(userid) => {
+  const dislikeUser =(userid , dir) => {
+    const cardsLeft = allData.filter(userid => !alreadyRemoved.includes())
     const bodyParameters = {
-   session_id : localStorage.getItem("session_id"), 
-   user_id : 3
+    session_id : localStorage.getItem("session_id"), 
+    user_id : userid
     }
-  axios.post(DISLIKE_USER , bodyParameters) 
-  .then((response) => {
+    axios.post(DISLIKE_USER , bodyParameters) 
+    .then((response) => {
     if(response.status==200) {
       alert("dislike succesfully")
     }
@@ -45,41 +52,60 @@ const FilterUser = ({fetchedProfile}) =>{
   axios.post(LIKE_USER , bodyParameters) 
   .then((response) => {
   if(response.status==200){
-   
+ 
    alert("liked succesfully")
   }
   }, (error) =>{
 
   });
   }
-  console.log(allData);
+
+ 
+
+    console.log(allData);
     useEffect(()=> {
     handleUserData();
      },[])
+
           //console.log(fetchedProfile);
                 return(
                 
                        <div className="stage">
                       
                       <div id="stacked-cards-block" className="stackedcards stackedcards--animatable init">
-                   
-                      <div className="stackedcards-container">
-                      
-                       {allData.map((item,i)=>{
-                       return  <div className="card" >
+                  
+                    <div className="stackedcards-container">
+                       
+                      <div className="tinderCards_cardContainer">
+                      {allData.map((item ,index) => (
+                      <GlitterCard className="swipe"   key={index} preventSwipe={["up", "down"]}>
+                      <div className="card" >
+                      <div className="card-image" >
+                      <Image src={item.profile_images} alt={item.first_name} width="100%" height="100%"/>
+                      </div>
+                     <div className="card-titles"> 
+                     <h3>{item.first_name}, {item.age}</h3>
+                     <span>{item.distance},{item.occupation}</span>
+              
+                   </div>
+                   </div>
+                   </GlitterCard>
+                     ))}
+                      </div>
+                        {/* <div className="card" >
                           <div className="card-content">
                           <div className="card-image">
                               
                             <Image src={item.profile_images} alt={item.first_name} width="100%" height="100%"/>
                              </div>
                             <div className="card-titles">
-                              <h3>{item.first_name}, {item.age}</h3>
-                              <span>{item.distance},{item.occupation}</span>
-                            </div>  
+                             <h3>{item.first_name}, {item.age}</h3>
+                            <span>{item.distance},{item.occupation}</span>
+                           </div>  
                           </div>
-                        </div>
+                        </div> */}
                     
-                  })}
+                  {/* })} */}
 
                       </div>
                      
@@ -91,22 +117,15 @@ const FilterUser = ({fetchedProfile}) =>{
                     <div className="action-tray global-actions d-flex flex-wrap justify-content-center align-items-center">
                       <div className="close-btn tray-btn-s">
                         <a className="left-action" href="javascript:void(0)" onClick={dislikeUser.bind(this, 5)} >×</a>
-                      </div>
-                      <div className="chat tray-btn-l">
-                        <a href="javascript:void(0)">
-                          <i className="fas fa-comment" />
-                        </a>
-                      </div>
-                      <div className="video-chat tray-btn-l">
-                        <a href="javascript:void(0)">
-                          <i className="fas fa-video" />
-                        </a>
+                       
                       </div>
                       <div className="like-profile tray-btn-s">
-                        <a className="right-action" href="javascript:void(0)" onClick={likeedUser.bind(this, 5)} >
+                        <a className="right-action" href="javascript:void(0)" onClick={likeedUser.bind(this, 4)} >
+                      
                           <i className="fas fa-heart" />
                         </a>
                       </div>
+                      
                     </div>
                   </div>
                  

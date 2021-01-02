@@ -7,24 +7,13 @@ import NavLinks from '../components/Nav';
 import Loader from '../components/Loader';
 import FilterUser from '../components/FilterUser'; 
 import axios from 'axios';
-import {GETALLUSER_API} from '../components/Api'
+
 
 const Home = () =>{
     const user = useSelector(selectUser); //using redux useSelector here
     const [fetchedProfile, setFilterUser] = useState('')
-    const [allData , setAllData] = useState('');;
-  
-    const handleUserData = async() => {
-    const bodyParameters ={
-     session_id : localStorage.getItem("session_id")
-    };
-    const{data :{data}} =await axios.post(GETALLUSER_API ,bodyParameters)
-    setAllData(data);
-  }
-    console.log(allData);
-  useEffect(()=> {
- handleUserData();
-  },[])
+    
+    
   return(
           <section className="home-wrapper">
            {/* <Loader isLoading={isLoading} />  */}

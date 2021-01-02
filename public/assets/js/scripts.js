@@ -1,3 +1,4 @@
+
 $(document).ready(function () {
     $('.owl-carousel.login-carousel').owlCarousel({
         loop: true,
@@ -40,7 +41,24 @@ $(document).ready(function () {
             }
         }
     });
-    
+      $(".swipe").click(function () {
+           
+        element.addEventListener(('mouseup'), (ev) => {
+            if (mouseIsClicked) {
+              ev.preventDefault()
+              mouseIsClicked = false
+            
+            }
+          })
+      
+          element.addEventListener(('mouseleave'), (ev) => {
+            if (mouseIsClicked) {
+              ev.preventDefault()
+              mouseIsClicked = false
+            
+            }
+          })
+        });
 
 
     /* TAB 1 */

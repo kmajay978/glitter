@@ -10,7 +10,7 @@ const SingleProfile = () =>{
     //  var result=profile_image.length();
     const getUser=()=> {
         const bodyParameters = {
-            user_id: 1,
+            user_id: 2,
             session_id: localStorage.getItem('session_id'),
           };
     axios.post(GET_USERPROFILE_API,bodyParameters)
