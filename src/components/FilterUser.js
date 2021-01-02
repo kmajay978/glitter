@@ -22,10 +22,10 @@ const FilterUser = ({fetchedProfile}) =>{
   const [CurrentId, setCurrentUid] = useState('');
 
 
-  const getDataId = (id) =>
-  {
-      console.log(id);
-  }
+  const handleClick = (userId) => {
+    console.log(userId);
+
+   }
   
    const handleUserData = async() => {
    const bodyParameters ={
@@ -113,7 +113,7 @@ const FilterUser = ({fetchedProfile}) =>{
                        
                     <div className='cardContainer'>
                     {allData.map((character, index) =>
-                    <GlitterCard ref={childRefs[index]} className='swipe' key={character.user_id} onSwipe={(dir) => swiped(dir, character.user_id)} >
+                    <GlitterCard ref={childRefs[index]} className='swipe' key={character.user_id} onSwipe={(dir) => swiped(dir, character.user_id)} onClick={() => handleClick(character.user_id)}>
                   
                     <div className="card" >
                     <img src={character.profile_images} alt={character.first_name} width="100%" height="100%"/>
@@ -125,9 +125,9 @@ const FilterUser = ({fetchedProfile}) =>{
                   
                    </div>
            
-          </GlitterCard>
-        )}
-         </div>
+                    </GlitterCard>
+                    )}
+                    </div>
                       
                         {/* <div className="card" >
                           <div className="card-content">
