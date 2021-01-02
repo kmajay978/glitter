@@ -182,8 +182,9 @@ const Profile = () =>{
         <div className="col-md-4 border-rt">
           <div className="user-profile becomevip-wrapper__innerblock p-0">
             <div className="user-profile__details text-center">
-              <img src="/assets/images/user-img.png" alt="user" className="user-profile__image" />
-                 {/* {profileData.profile_images } */}
+            
+              <img src={profileData.profile_images} alt="user" className="user-profile__image img-circle medium-image" />
+                 
               <div className="user-profile__details__data">
                 <h5 className="user-profile__name">{profileData.first_name +' '+ profileData.last_name } </h5>
                 <div className="user-profile__level d-inline-block">

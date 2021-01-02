@@ -12,54 +12,89 @@ import {GETALLUSER_API} from '../components/Api';
 import GlitterCard from 'react-tinder-card'
 import Swipe from "./Swipe";
 
+const alreadyRemoved = []
 const FilterUser = ({fetchedProfile}) =>{
-  const alreadyRemoved = []
+  
 
+  const [lastDirection, setLastDirection] = useState()
+  const [characters, setCharacters] = useState()
   const [allData , setAllData] = useState([]);
+  const [CurrentId, setCurrentUid] = useState('');
+
+
+  const getDataId = (id) =>
+  {
+      console.log(id);
+  }
   
+   const handleUserData = async() => {
+   const bodyParameters ={
+   session_id : localStorage.getItem("session_id")
+   };
+   const{data :{data}} =await axios.post(GETALLUSER_API ,bodyParameters)
+   setAllData(data);
+  
+   }
+
   
 
-    const handleUserData = async() => {
-    const bodyParameters ={
-     session_id : localStorage.getItem("session_id")
-    };
-    const{data :{data}} =await axios.post(GETALLUSER_API ,bodyParameters)
-    setAllData(data);
+   const childRefs = useMemo(() => Array(allData.length).fill(0).map(i => React.createRef()), [])
+
+    const swiped = (direction, userId) => 
+    {
+      if(direction=='left')
+      {
+        const bodyParameters = 
+        {
+          session_id : localStorage.getItem("session_id"), 
+          user_id : userId
+          }
+          axios.post(DISLIKE_USER , bodyParameters) 
+        .then((response) => {
+        if(response.status==200) {
+        alert("dislike succesfully")
+        console.log(direction);
+        console.log('removing: ' + userId)
+        alreadyRemoved.push(userId);
+       }
+     },(error) =>{
+ 
+     });
+      }
+     else if(direction=='right')
+     {
+      const bodyParameters = {
+        session_id : localStorage.getItem("session_id"), 
+        user_id : userId
+       }
+       axios.post(LIKE_USER , bodyParameters) 
+       .then((response) => {
+       if(response.status==200){
+  
+       alert("liked succesfully")
+       console.log(direction)
+       console.log('removing: ' + userId)
+       alreadyRemoved.push(userId)
+      }
+      }, (error) =>{
+ 
+     });
+      
+     }
     
-  }
-
-  const dislikeUser =(userid , dir) => {
-    const cardsLeft = allData.filter(userid => !alreadyRemoved.includes())
-    const bodyParameters = {
-    session_id : localStorage.getItem("session_id"), 
-    user_id : userid
+   
     }
-    axios.post(DISLIKE_USER , bodyParameters) 
-    .then((response) => {
-    if(response.status==200) {
-      alert("dislike succesfully")
-    }
-  },(error) =>{
- 
-  });
-  }
 
-  const likeedUser =(userid) => {
-    const bodyParameters = {
-   session_id : localStorage.getItem("session_id"), 
-   user_id : userid
-    }
-  axios.post(LIKE_USER , bodyParameters) 
-  .then((response) => {
-  if(response.status==200){
- 
-   alert("liked succesfully")
-  }
-  }, (error) =>{
-
-  });
-  }
-
+    
+      const swipe = (dir) => {
+      const cardsLeft = allData.filter(person => !alreadyRemoved.includes(person.user_id))
+      if (cardsLeft.length) {
+        const toBeRemoved = cardsLeft[cardsLeft.length - 1].user_id // Find the card object to be removed
+        const index = allData.map(person => person.user_id).indexOf(toBeRemoved) // Find the index of which to make the reference to
+        alreadyRemoved.push(toBeRemoved) // Make sure the next card gets removed next time if this card do not have time to exit the screen
+        childRefs[index].current.swipe(dir) // Swipe the card!
+      }
+      }
  
 
     console.log(allData);
@@ -76,22 +111,24 @@ const FilterUser = ({fetchedProfile}) =>{
                   
                     <div className="stackedcards-container">
                        
-                      <div className="tinderCards_cardContainer">
-                      {allData.map((item ,index) => (
-                      <GlitterCard className="swipe"   key={index} preventSwipe={["up", "down"]}>
-                      <div className="card" >
-                      <div className="card-image" >
-                      <Image src={item.profile_images} alt={item.first_name} width="100%" height="100%"/>
-                      </div>
-                     <div className="card-titles"> 
-                     <h3>{item.first_name}, {item.age}</h3>
-                     <span>{item.distance},{item.occupation}</span>
+                    <div className='cardContainer'>
+                    {allData.map((character, index) =>
+                    <GlitterCard ref={childRefs[index]} className='swipe' key={character.user_id} onSwipe={(dir) => swiped(dir, character.user_id)} >
+                  
+                    <div className="card" >
+                    <img src={character.profile_images} alt={character.first_name} width="100%" height="100%"/>
+                     
+                    
+                     <h3>{character.first_name}, {character.age}</h3>
+                     <h4>{character.distance},{character.occupation}</h4>
               
+                  
                    </div>
-                   </div>
-                   </GlitterCard>
-                     ))}
-                      </div>
+           
+          </GlitterCard>
+        )}
+         </div>
+                      
                         {/* <div className="card" >
                           <div className="card-content">
                           <div className="card-image">
@@ -115,16 +152,20 @@ const FilterUser = ({fetchedProfile}) =>{
                     </div>
                    
                     <div className="action-tray global-actions d-flex flex-wrap justify-content-center align-items-center">
-                      <div className="close-btn tray-btn-s">
-                        <a className="left-action" href="javascript:void(0)" onClick={dislikeUser.bind(this, 5)} >×</a>
+                   
+                    <button onClick={() => swipe('left' )}>Swipe left!</button>
+                    <button onClick={() => swipe('right')}>swipe right</button>
+                   
+                      {/* <div className="close-btn tray-btn-s">
+                        <a className="left-action" href="javascript:void(0)" onClick={swiped} >×</a>
                        
                       </div>
                       <div className="like-profile tray-btn-s">
-                        <a className="right-action" href="javascript:void(0)" onClick={likeedUser.bind(this, 4)} >
+                        <a className="right-action" href="javascript:void(0)" onClick={swiped} >
                       
                           <i className="fas fa-heart" />
                         </a>
-                      </div>
+                      </div> */}
                       
                     </div>
                   </div>

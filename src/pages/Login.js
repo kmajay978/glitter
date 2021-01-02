@@ -245,7 +245,7 @@ const registerHandle = (e) =>{
                               </ul>
                             </div>
                           </div>
-                             <input className="form-control" name="phone_number" id="phone_number" type="text" placeholder="Enter Phone Number" value={phoneNumber} onChange={handlePhoneChange} />
+                          <input className="form-control" name="phone_number" id="phone_number" type="text" placeholder="Enter Phone Number" value={phoneNumber} onChange={handlePhoneChange} />
                         { Object.keys(phoneErr).map((key) => {
                           return <div style={{color : "red"}}>{phoneErr[key]}</div>
                         }) }
