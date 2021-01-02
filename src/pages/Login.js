@@ -49,13 +49,13 @@ const Login = () => {
   const [otp_4,setOtp4] = useState('');
 
   // All form fields
-    const [Dob, setDob] = useState(''); 
-    const [FirstName, setFirst] = useState(''); 
-    const [LastName, setLast] = useState(''); 
-    const [genderName, setGender] = useState('');  
-    const [picture, setPicture] = useState(null);
-    const [imgData, setImgData] = useState(null);
-    const [phoneErr, setPhoneErr] = useState({});
+  const [Dob, setDob] = useState(''); 
+  const [FirstName, setFirst] = useState(''); 
+  const [LastName, setLast] = useState(''); 
+  const [genderName, setGender] = useState('');  
+  const [picture, setPicture] = useState(null);
+  const [imgData, setImgData] = useState(null);
+  const [phoneErr, setPhoneErr] = useState({});
 
   {/* { divToggle ? "signup-inner" : "signup-inner active-tab-2"} */}
 

@@ -34,8 +34,8 @@ const FilterUser = ({fetchedProfile}) =>{
     session_id : localStorage.getItem("session_id"), 
     user_id : userid
     }
-  axios.post(DISLIKE_USER , bodyParameters) 
-  .then((response) => {
+    axios.post(DISLIKE_USER , bodyParameters) 
+    .then((response) => {
     if(response.status==200) {
       alert("dislike succesfully")
     }
@@ -78,7 +78,7 @@ const FilterUser = ({fetchedProfile}) =>{
                        
                       <div className="tinderCards_cardContainer">
                       {allData.map((item ,index) => (
-                      <GlitterCard className="swipe" key={item.index} preventSwipe={["up", "down"]}>
+                      <GlitterCard className="swipe"   key={index} preventSwipe={["up", "down"]}>
                       <div className="card" >
                       <div className="card-image" >
                       <Image src={item.profile_images} alt={item.first_name} width="100%" height="100%"/>
@@ -86,6 +86,7 @@ const FilterUser = ({fetchedProfile}) =>{
                      <div className="card-titles"> 
                      <h3>{item.first_name}, {item.age}</h3>
                      <span>{item.distance},{item.occupation}</span>
+              
                    </div>
                    </div>
                    </GlitterCard>
@@ -119,7 +120,7 @@ const FilterUser = ({fetchedProfile}) =>{
                        
                       </div>
                       <div className="like-profile tray-btn-s">
-                        <a className="right-action" href="javascript:void(0)" onClick={likeedUser.bind(this, 5)} >
+                        <a className="right-action" href="javascript:void(0)" onClick={likeedUser.bind(this, 4)} >
                       
                           <i className="fas fa-heart" />
                         </a>
