@@ -6,6 +6,7 @@ import { GET_USERPROFILE_API , BLOCK_USER_API } from '../components/Api';
 const SingleProfile = (props) =>{
     const [userData, setUser] = useState('');
     const [count, setCount] = useState('0');
+    const [blk, setBlock ]= useState(false);
     var userId = props.location.user_id;
     //  var result=profile_image.length();
       const getUser=()=> {
@@ -28,9 +29,12 @@ const SingleProfile = (props) =>{
           axios.post(BLOCK_USER_API , bodyParameters)
           .then((response)=>
           {
-          if(response.status==200) {
+          if(response.status==200 ) {
           alert("block successfully")
+         
           }
+       
+          
           }, (error) =>{
   
           });
@@ -97,7 +101,7 @@ const SingleProfile = (props) =>{
         <div className="col-md-7">
           <div className="report-tab d-flex flex-wrap align-items-center justify-content-end ml-auto">
             <span className="block-cta">
-              <a className="theme-txt" href="javascript:void(0)" onClick={handleblock}>Block</a>
+              <a className="theme-txt" href="javascript:void(0)" onClick={handleblock}>{blk ?'unblock':'Block'}</a>
             </span>
             <span className="report-cta">
               <a className="theme-txt" href="javascript:void(0)">Report</a>

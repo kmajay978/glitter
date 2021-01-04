@@ -3,8 +3,9 @@ import React, { useState, useEffect } from "react";
 import {  useHistory } from 'react-router';
 import axios from "axios";
 import NavLinks from '../components/Nav';
-import { LIKED_LIST, VISITOR_LIST_API ,FRIENDLIST_API, GET_USERPROFILE_API} from '../components/Api';
+import { LIKED_LIST, VISITOR_LIST_API ,FRIENDLIST_API, GET_USERPROFILE_API ,VIDEOCALL_API} from '../components/Api';
 import Loader from '../components/Loader';
+import { error } from "jquery";
 // import MessageBox from '../components/MessageBox';
 
 
@@ -60,11 +61,29 @@ const[AllData, setData] = useState('');
      setData(data);
      }
 
+     const handleCall =() =>{
+     const bodyParameters = {
+      session_id: localStorage.getItem('session_id'),
+      user_id :FriendUserId,
+      type : 'audio',
+      room_id : '1'
+     }
+     axios.post(VIDEOCALL_API , bodyParameters)
+     .then((response) => {
+     if(response.status==200) 
+     {
+       alert("call made successfully");
+     }
+     }, (error) => {
+
+     });
+     }
+
      useEffect(()=>{
        getLikes();
        getVisitors();
        getFriend();
-     
+ 
         
      },[])
 
@@ -162,7 +181,7 @@ const[AllData, setData] = useState('');
 
               { Visitors.map((item, i) => {
                    return <li className="nav-item">
-                    <a className="nav-link" href="#chat-field" data-toggle="tab" role="tab">
+                    <a className="nav-link" href="#chat-field" data-toggle="tab" role="tab" >
                       <img alt={item.full_name} className="img-circle medium-image" src={item.profile_images}/>
                       <div className="contacts_info">
                         <div className="user_detail">
@@ -219,14 +238,14 @@ const[AllData, setData] = useState('');
           <div className="tab-pane tab-pane fade" id="chat-field">
             <div className="message-top d-flex flex-wrap align-items-center justify-content-between">
               <div className="chat-header-info d-flex align-items-center">
-                <img alt="Mia" className="img-circle medium-image" src={AllData.profile_images} />
+                <img alt="Mia" className="img-circle medium-image" src={AllData.profile_images}/>
                 <div className="chat-user-info ml-2">
                   <h5 className="mb-0 name">{AllData.first_name}</h5>
                   <div className="info">{AllData.occupation},  {AllData.age}</div>
                 </div>
               </div>
               <div className="chat-call-opt">
-                <a className="bg-grd-clr" href="javascript:void(0)">
+                <a className="bg-grd-clr" onClick = {handleCall} href="javascript:void(0)">
                   <i className="fas fa-phone-alt" />
                 </a>
               </div>
