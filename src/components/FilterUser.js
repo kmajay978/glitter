@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect ,useMemo} from "react";
+import React, { useState, useEffect ,useMemo } from "react";
 import {  useHistory } from 'react-router';
 import axios from "axios";
 import Slider from '@material-ui/core/Slider';
@@ -15,17 +15,13 @@ import Swipe from "./Swipe";
 const alreadyRemoved = []
 const FilterUser = ({fetchedProfile}) =>{
   
-
+  const history = useHistory();
   const [lastDirection, setLastDirection] = useState()
   const [characters, setCharacters] = useState()
   const [allData , setAllData] = useState([]);
-  const [CurrentId, setCurrentUid] = useState('');
+  const [currentId, setCurrentUid] = useState('');
 
 
-  const handleClick = (userId) => {
-    console.log(userId);
-
-   }
   
    const handleUserData = async() => {
    const bodyParameters ={
@@ -78,21 +74,27 @@ const FilterUser = ({fetchedProfile}) =>{
       }
       }, (error) =>{
  
-     });
-      
+     }); 
      }
-    
-   
     }
 
+    const handleClick = (currentId) => {
+     console.log(currentId);
+    //  history.push({
+    //   pathname: '/single-profile',
+    //   user_id: currentId // your data array of objects
+    // })
+
+     }
     
-      const swipe = (dir) => {
+      const swipe = (dir,userId) => {
+      
       const cardsLeft = allData.filter(person => !alreadyRemoved.includes(person.user_id))
       if (cardsLeft.length) {
         const toBeRemoved = cardsLeft[cardsLeft.length - 1].user_id // Find the card object to be removed
         const index = allData.map(person => person.user_id).indexOf(toBeRemoved) // Find the index of which to make the reference to
         alreadyRemoved.push(toBeRemoved) // Make sure the next card gets removed next time if this card do not have time to exit the screen
-        childRefs[index].current.swipe(dir) // Swipe the card!
+        childRefs[index].swipe(dir) // Swipe the card!
       }
       }
  
@@ -102,6 +104,9 @@ const FilterUser = ({fetchedProfile}) =>{
     handleUserData();
      },[])
 
+     useEffect(()=>{
+       handleClick();
+     },[currentId])
           //console.log(fetchedProfile);
                 return(
                 
@@ -113,7 +118,7 @@ const FilterUser = ({fetchedProfile}) =>{
                        
                     <div className='cardContainer'>
                     {allData.map((character, index) =>
-                    <GlitterCard ref={childRefs[index]} className='swipe' key={character.user_id} onSwipe={(dir) => swiped(dir, character.user_id)} onClick={() => handleClick(character.user_id)}>
+                    <GlitterCard ref={childRefs[index]} className='swipe' key={character.user_id} onSwipe={(dir) => swiped(dir, character.user_id)} onClick={() => setCurrentUid(character.user_id)}>
                   
                     <div className="card" >
                     <img src={character.profile_images} alt={character.first_name} width="100%" height="100%"/>

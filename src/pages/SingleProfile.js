@@ -2,27 +2,43 @@ import React, { useState, useEffect } from "react";
 import {  useHistory } from 'react-router';
 import axios from "axios";
 import NavLinks from '../components/Nav';
-import { GET_USERPROFILE_API } from '../components/Api';
-const SingleProfile = () =>{
+import { GET_USERPROFILE_API , BLOCK_USER_API } from '../components/Api';
+const SingleProfile = (props) =>{
     const [userData, setUser] = useState('');
     const [count, setCount] = useState('0');
-    //  var profile_images=[];
+    var userId = props.location.user_id;
     //  var result=profile_image.length();
-    const getUser=()=> {
+      const getUser=()=> {
         const bodyParameters = {
-            user_id: 2,
+            user_id: 4,
             session_id: localStorage.getItem('session_id'),
           };
-    axios.post(GET_USERPROFILE_API,bodyParameters)
-    .then((response) => {
-         console.log(response);
-         setUser(response.data.data);
-    }, (error) => {
-    });
-   }
+            axios.post(GET_USERPROFILE_API,bodyParameters)
+            .then((response) => {
+            console.log(response);
+            setUser(response.data.data);
+         }, (error) => {
+        });
+        }
+        const handleblock = async() => {
+          const bodyParameters={
+            session_id : localStorage.getItem('session_id'),
+            blocked_user: 2,
+          }
+          axios.post(BLOCK_USER_API , bodyParameters)
+          .then((response)=>
+          {
+          if(response.status==200) {
+          alert("block successfully")
+          }
+          }, (error) =>{
+  
+          });
+        }
+
    useEffect(() =>{
     getUser();
-  },[])
+    },[])
     return(
        <section className="home-wrapper">
   <img className="bg-mask" src="/assets/images/mask-bg.png" alt="Mask" />
@@ -81,7 +97,7 @@ const SingleProfile = () =>{
         <div className="col-md-7">
           <div className="report-tab d-flex flex-wrap align-items-center justify-content-end ml-auto">
             <span className="block-cta">
-              <a className="theme-txt" href="javascript:void(0)">Block</a>
+              <a className="theme-txt" href="javascript:void(0)" onClick={handleblock}>Block</a>
             </span>
             <span className="report-cta">
               <a className="theme-txt" href="javascript:void(0)">Report</a>
