@@ -335,10 +335,7 @@ $(document).ready(function () {
     
 /* become member */
     
-    $("#edit-profile").click(function(){
-        $(".edit-profile-modal").addClass("active");
-        
-    })
+    
     
      $("#coin-spend").click(function(){
         $(".coin-spend-modal").addClass("active");

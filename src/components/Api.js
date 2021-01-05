@@ -19,13 +19,13 @@ export const VISITOR_LIST_API=getApiUrl("getVisitorList");
 export const FILTER_LIST_API=getApiUrl("filter_user");
 export const GET_LOGGEDPROFILE_API=getApiUrl("logged_profile");
 export const DISLIKE_USER=getApiUrl("dislike_user");
+export const VIDEOCALL_API=getApiUrl("make_call");
+export const BLOCK_USER_API=getApiUrl("block_user");
 
 // Not done yet
-export const VIDEOCALL_API=getApiUrl("make_call");
 export const CALL_ACTION_API=getApiUrl("call_action");
 export const CHECK_CALLSTATUS_API=getApiUrl("fetch_action");
 export const ACCEPT_REQUEST_API=getApiUrl("accept_friend_like");
-export const BLOCK_USER_API=getApiUrl("block_user");
 export const TOKEN_AGORA_API=getApiUrl("generateToken");
 export const TOKEN_AGORA_FORLIVE_API=getApiUrl("liveUserToken");
 export const ENDLIVE_API=getApiUrl("disconnectLive");

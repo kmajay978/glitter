@@ -7,6 +7,8 @@ import { GET_LOGGEDPROFILE_API , EDITPROFILE_API , BLOCK_USERLIST_API , LOGOUT_A
 import Login from '../pages/Login'
 import { useDispatch } from 'react-redux';
 import {login} from '../features/userSlice';
+import {Modal, ModalBody} from 'react-bootstrap';
+
 
 const Profile = () =>{
 
@@ -14,6 +16,11 @@ const Profile = () =>{
   const dispatch = useDispatch();
   const [profileData, setProfile] = useState('');  
   const [blockData, setBlockData] = useState([]);
+  const [step, setStep] = useState(1);
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
   // Getting form value here
   const [form , setForm] = useState({
     
@@ -115,7 +122,110 @@ const Profile = () =>{
    
    }
 
-   console.log(blockData);
+  // console.log(blockData);
+
+   const tabScreen = () =>{
+    
+    switch(step) {
+      case 1:
+        return (
+          
+          <div className="edit-first-step">
+              <div className="form-group">
+                  <label for="">First Name</label>
+                <input className="form-control bg-trsp" name="firstName" type="text" value={form.firstName}  onChange={handleChange}/>
+              </div>
+              <div className="form-group">
+              <label for="">Last name</label>
+                  <input className="form-control bg-trsp" name="lastName" type="text" value={form.lastName} onChange={handleChange}/>
+              </div>
+              <div className="form-group">
+                  <label for="">DOB</label>
+                  <input className="form-control bg-trsp" name="dob" type="text" value={form.dob} onChange={handleChange}  />
+              </div>
+
+             <div className="choose-gender d-flex my-4">
+                            <div className="form-group">
+                            {form.gender == 1 }
+                              <input type="radio" id="female" name="gender" value={1} checked={form.gender == 1 ? "checked" : ""} onChange={ handleChange }  placeholder="Female" />
+                              <label htmlFor="female">Female</label>
+                            </div>
+                            <div className="form-group">
+                              <input type="radio" id="male" name="gender" value={2} checked={form.gender == 2 ? "checked" : ""}  onChange={ handleChange } placeholder="Male" />
+                              <label htmlFor="male">Male</label>
+                            </div>
+                              
+                            <div className="form-group">
+                              <input type="radio" id="more" value={3}  checked={form.gender == 3 ? "checked" : ""} onChange={ handleChange }  name="gender" />
+                              <label htmlFor="more">More</label>
+                          </div>
+                          </div>
+              <div className="form-group">
+              <label for="">About Me</label>
+              <input className="form-control bg-trsp" name="aboutMe" type="text" value={form.aboutMe} onChange={handleChange} />
+              </div>
+
+              <a className="btn bg-grd-clr d-block btn-countinue-3" id="edit-first-step" href="javascript:void(0)" onClick={() => setStep(step + 1)}>Next</a>
+             </div>
+            
+        );
+        case 2:
+        return (
+          
+          <div className="edit-second-step">
+             <a href="javascript:void(0)" className="login-back-2 btn-back" onClick={() => setStep(step - 1)} ><i className="fas fa-chevron-left" /></a>
+          <div className="form-group">
+              <label for="">Height</label>
+              <input className="form-control bg-trsp" name="height" type="text" value={form.height} onChange ={handleChange}/>
+          </div>
+
+          <div className="form-group">
+              <label for="">Weight</label>
+              <input className="form-control bg-trsp" name="weight" type="text" value={form.weight} onChange ={handleChange}/>
+          </div>
+
+          <div className="form-group">
+              <label for="">Relationship status</label>
+              <select name="relationStatus" id="" value={form.relationStatus} onChange ={handleChange}>
+                  <option value={1}>Single</option>
+                  <option value={2}>Married</option>
+                  <option value={3}>UnMarried</option>
+              </select>
+          </div>
+
+
+          <div className="show-gender ft-block d-flex flex-wrap">
+              <div className="tab-title">
+                  <label>Looking For</label>
+              </div>
+
+              <div className="form-group">
+                  <input type="checkbox"  name="interest" id="man" value={1} onChange={handleChange} />
+                  <label for="man">Man</label>
+              </div>
+              <div className="form-group">
+                  <input type="checkbox" name="interest" id="woman" value={2} onChange={handleChange} />
+                  <label for="woman">Woman</label>
+              </div>
+              <div className="form-group">
+                  <input type="checkbox" name="interest" id="both" value={3} onChange={handleChange} />
+                  <label for="both">Both</label>
+              </div>
+
+              
+              
+          </div>
+
+          <a className="btn bg-grd-clr d-block btn-countinue-3" id="edit-second-step" href="javascript:void(0)" onClick={updateProfile}>Update</a>
+
+      </div>
+  
+        );
+             default:
+        return 'foo';
+    }
+
+  }
 
   useEffect(() =>{
   ProfileData();
@@ -155,9 +265,9 @@ const Profile = () =>{
             <div className="tab-top d-flex flex-wrap-wrap align-items-center">
               <div className="vc-action-tab ml-auto mr-4 position-relative">
                 <div className="vc-action-btn">
-                  <span />
-                  <span />
-                  <span />
+                  <span/>
+                  <span/>
+                  <span/>
                 </div>
                 <ul className="action-menu">
                   <li>
@@ -213,7 +323,7 @@ const Profile = () =>{
               <li><a href="javascript:void(0)" id="gift-modal"><img src="/assets/images/gift-icon.png" alt="gifts" />
                   <h6>Gifts</h6> <i className="fas fa-chevron-right" />
                 </a></li>
-              <li><a href="javascript:void(0)" id="edit-profile"  ><img src="/assets/images/edit-profile.png" alt="Edit Profile" />
+              <li><a href="javascript:void(0)" id="edit-profile" onClick={handleShow}><img src="/assets/images/edit-profile.png" alt="Edit Profile" />
                   <h6>Edit Profile</h6> <i className="fas fa-chevron-right" />
                 </a></li>
               <li><a href="javascript:void(0)" id="coin-spend"><img src="/assets/images/diamond-coin.png" alt="Coins" />
@@ -317,106 +427,22 @@ const Profile = () =>{
     </div>
   </section>
 
-   <div class="edit-profile-modal modal-wrapper">
-        <div class="edit-profile-modal__inner">
-            <h4 class="theme-txt text-center mb-4">Your Information</h4>
-            <form>
-            <div className="edit-profile-form">
-                <div className="edit-first-step">
-                    <div className="form-group">
-                        <label for="">First Name</label>
-                      <input className="form-control bg-trsp" name="firstName" type="text" value={form.firstName}  onChange={handleChange}/>
-                    </div>
-                    <div className="form-group">
-                    <label for="">Last name</label>
-                        <input className="form-control bg-trsp" name="lastName" type="text" value={form.lastName} onChange={handleChange}/>
-                    </div>
-                    <div className="form-group">
-                        <label for="">DOB</label>
-                       
-                        <input className="form-control bg-trsp" name="dob" type="text" value={form.dob} onChange={handleChange}  />
-                    </div>
-
-                   <div className="choose-gender d-flex my-4">
-                                  <div className="form-group">
-                                  {form.gender == 1 }
-                                    <input type="radio" id="female" name="gender" value={1} checked={form.gender == 1 ? "checked" : ""} onChange={ handleChange }  placeholder="Female" />
-                                    <label htmlFor="female">Female</label>
-                                  </div>
-                                  <div className="form-group">
-                                    <input type="radio" id="male" name="gender" value={2} checked={form.gender == 2 ? "checked" : ""}  onChange={ handleChange } placeholder="Male" />
-                                    <label htmlFor="male">Male</label>
-                                  </div>
-                                    
-                                  <div className="form-group">
-                                    <input type="radio" id="more" value={3}  checked={form.gender == 3 ? "checked" : ""} onChange={ handleChange }  name="gender" />
-                                    <label htmlFor="more">More</label>
-                                </div>
-                                </div>
-                    <div className="form-group">
-                    <label for="">About Me</label>
-                    <input className="form-control bg-trsp" name="aboutMe" type="text" value={form.aboutMe} onChange={handleChange} />
-                    {/* <textarea  type="text"  cols="30" rows="10" value={form.aboutMe} onChange={handleChange} /> */}
-                    </div>
-
-                    <a className="btn bg-grd-clr d-block btn-countinue-3" id="edit-first-step" href="javascript:void(0)">Next</a>
-                   </div>
-
-                   <div className="edit-second-step">
-                    
-
-                    <div className="form-group">
-                        <label for="">Height</label>
-                        <input className="form-control bg-trsp" name="height" type="text" value={form.height} onChange ={handleChange}/>
-                    </div>
-
-                    <div className="form-group">
-                        <label for="">Weight</label>
-                        <input className="form-control bg-trsp" name="weight" type="text" value={form.weight} onChange ={handleChange}/>
-                    </div>
-
-                    <div className="form-group">
-                        <label for="">Relationship status</label>
-                        <select name="relationStatus" id="" value={form.relationStatus} onChange ={handleChange}>
-                            <option value={1}>Single</option>
-                            <option value={2}>Married</option>
-                            <option value={3}>UnMarried</option>
-                        </select>
-                    </div>
-
-
-                    <div className="show-gender ft-block d-flex flex-wrap">
-                        <div className="tab-title">
-                            <label>Looking For</label>
-                        </div>
-
-                        <div className="form-group">
-                            <input type="checkbox"  name="interest" id="man" value={1} onChange={handleChange} />
-                            <label for="man">Man</label>
-                        </div>
-                        <div className="form-group">
-                            <input type="checkbox" name="interest" id="woman" value={2} onChange={handleChange} />
-                            <label for="woman">Woman</label>
-                        </div>
-                        <div className="form-group">
-                            <input type="checkbox" name="interest" id="both" value={3} onChange={handleChange} />
-                            <label for="both">Both</label>
-                        </div>
-
-                        
-                        
-                    </div>
-
-                    <a className="btn bg-grd-clr d-block btn-countinue-3" id="edit-second-step" href="javascript:void(0)" onClick={updateProfile}>Update</a>
-
-                </div>
-            </div>
-            </form>
-
-
-        </div>
-        <a href="javascript:void(0)" className="modal-close"><img src="assets/images/btn_close.png"/></a>
-    </div>
+   {/* <div class="edit-profile-modal modal-wrapper"> */}
+   <Modal className ="edit-modal " show={show} onHide={handleClose} backdrop="static" keyboard={false}>
+        <div className="edit-profile-modal__inner">
+        <Modal.Header closeButton >
+          <Modal.Title> <h4 className="theme-txt text-center mb-4 ">Your Information</h4>
+          </Modal.Title>
+        </Modal.Header>
+        <form>
+      
+          {tabScreen()}
+         
+          </form>
+           </div>
+       
+    </Modal>
+  
 
   <div className="coin-spend-modal modal-wrapper">
     <div className="edit-profile-modal__inner">
