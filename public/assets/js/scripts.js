@@ -353,25 +353,25 @@ $(document).ready(function () {
     
 /* become member */
     
-    $("#edit-profile").click(function(){
-        $(".edit-profile-modal").addClass("active");
+    // $("#edit-profile").click(function(){
+    //     $(".edit-profile-modal").addClass("active");
         
-    })
+    // })
     
-     $("#coin-spend").click(function(){
-        $(".coin-spend-modal").addClass("active");
+    //  $("#coin-spend").click(function(){
+    //     $(".coin-spend-modal").addClass("active");
         
-    })
+    // })
     
-     $("#blacklist").click(function(){
-        $(".blacklist-modal").addClass("active");
+    //  $("#blacklist").click(function(){
+    //     $(".blacklist-modal").addClass("active");
         
-    })
+    // })
     
-    $("#setting").click(function(){
-        $(".setting-modal").addClass("active");
+    // $("#setting").click(function(){
+    //     $(".setting-modal").addClass("active");
         
-    })
+    // })
     
      $("#gift-modal").click(function(){
         $(".all-gifts-wrapper").addClass("active");

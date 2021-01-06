@@ -3,6 +3,7 @@ import {  useHistory } from 'react-router';
 import axios from "axios";
 import NavLinks from '../components/Nav';
 import { GET_USERPROFILE_API , BLOCK_USER_API } from '../components/Api';
+
 const SingleProfile = (props) =>{
     const [userData, setUser] = useState('');
     const [count, setCount] = useState('0');

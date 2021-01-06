@@ -7,7 +7,8 @@ import { LIKED_LIST, VISITOR_LIST_API ,FRIENDLIST_API, GET_USERPROFILE_API ,VIDE
 import Loader from '../components/Loader';
 import { error } from "jquery";
 // import MessageBox from '../components/MessageBox';
-
+// import socketIOClient from 'socket.io-client'
+// import * as io from 'socket.io-client'
 
 const ChatBox = () =>{
 
@@ -17,7 +18,13 @@ const[FriendList, setFriendlist] = useState([]);
 const[isLoaded, setIsLoaded] = useState(false);
 const[FriendUserId, setFriendId] = useState('');
 const[AllData, setData] = useState('');
+const[sendMessages , setSendMessages] = useState('');
 
+// const socket = io("localhost:3000"); 
+// const socketUrl = 'http://localhost:3000';
+// const socketIo = require("socket.io");
+
+// const port = process.env.PORT || 3000;
 
    const bodyParameters = {
        session_id: localStorage.getItem('session_id'),
@@ -82,15 +89,31 @@ const[AllData, setData] = useState('');
      useEffect(()=>{
        getLikes();
        getVisitors();
-       getFriend();
- 
-        
+       getFriend(); 
      },[])
 
      useEffect(()=>{
        friendListChat();
      },[FriendUserId])
     
+     const send = () => {
+       const bodyParameters ={
+         session_id : localStorage.getItem("sesion_id") ,
+         user_id : FriendUserId ,
+        }
+      //  server.listen(socketUrl, () => console.log('Listening on port ${socketUrl}'));
+      //  io.on('connection',function(socket) {
+      //   console.log('made socket connection');
+      //   socket.on('authenticate', function(data){
+      //     // io.sockets.emit('chat',data);
+      //     console.log(data);
+      //   });
+      // });
+    }
+
+    useEffect(()=> {
+      // socket.off("authenticate");
+    },[])
       //console.log(AllData);
       //console.log(FriendList);
 
@@ -298,7 +321,7 @@ const[AllData, setData] = useState('');
                     <i className="fas fa-microphone" />
                   </a>
                 </label>
-                <button type="button" className="send-message-button bg-grd-clr"><i className="fas fa-paper-plane" /></button>
+                <button type="button" className="send-message-button bg-grd-clr" onClick={() => send()}><i className="fas fa-paper-plane" /></button>
               </div>
             </div>
             

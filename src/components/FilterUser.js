@@ -16,11 +16,11 @@ const alreadyRemoved = []
 const FilterUser = ({fetchedProfile}) =>{
   
   const history = useHistory();
-  const [lastDirection, setLastDirection] = useState()
-  const [characters, setCharacters] = useState()
+  const [lastDirection, setLastDirection] = useState();
+  const [characters, setCharacters] = useState();
   const [allData , setAllData] = useState([]);
   const [CurrentId, setCurrentUid] = useState('');
-  const [mouseIsClicked , setmouseIsClicked] = useState('false')
+  const [mouseIsClicked , setmouseIsClicked] = useState('false');
 
   
    const handleUserData = async() => {

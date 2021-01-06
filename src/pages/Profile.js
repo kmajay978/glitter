@@ -7,7 +7,7 @@ import { GET_LOGGEDPROFILE_API , EDITPROFILE_API , BLOCK_USERLIST_API , LOGOUT_A
 import Login from '../pages/Login'
 import { useDispatch } from 'react-redux';
 import {login} from '../features/userSlice';
-import {Modal, ModalBody} from 'react-bootstrap';
+import {Modal, ModalBody , Dropdown} from 'react-bootstrap';
 
 
 const Profile = () =>{
@@ -18,9 +18,13 @@ const Profile = () =>{
   const [blockData, setBlockData] = useState([]);
   const [step, setStep] = useState(1);
   const [show, setShow] = useState(false);
+  const [showBlock , setShowBlock] = useState(false);
+  const [showSetting ,setShowSetting] = useState(false);
+  const [showCoins , setShowCoin] = useState(false);
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const handleShow = () => setShow(true); // show Edit model
+  const handleSettingShow = () => setShowSetting(true); //show Setting Model
+  const handleCoinsShow = () => setShowCoin(true); //show coins model
   // Getting form value here
   const [form , setForm] = useState({
     
@@ -52,7 +56,7 @@ const Profile = () =>{
   const ProfileData = async() =>{
     const bodyParameters = {
       session_id: sessionId,
-    };
+      };
      const {data:{data}}= await axios.post(GET_LOGGEDPROFILE_API,bodyParameters)
 
     //  Setting data variable to state object 
@@ -65,7 +69,7 @@ const Profile = () =>{
       form.gender = data.gender
       form.interest = data.interest
       form.relationStatus = data.relationship_status
-     setProfile(data);
+       setProfile(data);
        }
 
       //console.log(profileData);
@@ -114,6 +118,7 @@ const Profile = () =>{
 
    //block list
    const handleBlock = async() => {
+     setShowBlock(true);
    const bodyParameters ={
     session_id: sessionId,
    };
@@ -229,7 +234,7 @@ const Profile = () =>{
 
   useEffect(() =>{
   ProfileData();
-  handleBlock();
+  //handleBlock();
   },[])
 
 
@@ -264,7 +269,17 @@ const Profile = () =>{
           <div className="col-lg-7 p-3">
             <div className="tab-top d-flex flex-wrap-wrap align-items-center">
               <div className="vc-action-tab ml-auto mr-4 position-relative">
-                <div className="vc-action-btn">
+              <Dropdown >
+              <Dropdown.Toggle variant="secondary"  size="sm"  id="dropdown-basic">
+               ...
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+              <Dropdown.Item href="#/action-1">Report</Dropdown.Item>
+              <Dropdown.Item href="#/action-2">Block</Dropdown.Item>
+              <Dropdown.Item href="#/action-3">End Video</Dropdown.Item>
+              </Dropdown.Menu>
+              </Dropdown>
+                {/* <div className="vc-action-btn">
                   <span/>
                   <span/>
                   <span/>
@@ -279,7 +294,7 @@ const Profile = () =>{
                   <li>
                     <a href="javascript:void(0)">End Video</a>
                   </li>
-                </ul>
+                </ul> */}
               </div>
             <NavLinks />
             </div>
@@ -326,7 +341,7 @@ const Profile = () =>{
               <li><a href="javascript:void(0)" id="edit-profile" onClick={handleShow}><img src="/assets/images/edit-profile.png" alt="Edit Profile" />
                   <h6>Edit Profile</h6> <i className="fas fa-chevron-right" />
                 </a></li>
-              <li><a href="javascript:void(0)" id="coin-spend"><img src="/assets/images/diamond-coin.png" alt="Coins" />
+              <li><a href="javascript:void(0)" id="coin-spend" onClick={handleCoinsShow}><img src="/assets/images/diamond-coin.png" alt="Coins" />
                   <h6>Coins</h6> <i className="fas fa-chevron-right" />
                 </a></li>
             </ul>
@@ -336,7 +351,7 @@ const Profile = () =>{
               <li><a href="javascript:void(0)" id="blacklist" onClick={handleBlock}>
                   <h6><img src="/assets/images/blacklist-icon.png" alt="Blacklist" />Blacklist</h6> <i className="fas fa-chevron-right" />
                 </a></li>
-              <li><a href="javascript:void(0)" id="setting">
+              <li><a href="javascript:void(0)" id="setting" onClick={handleSettingShow}>
                   <h6><img src="/assets/images/setting-icon.png" alt="setting" />Setting</h6> <i className="fas fa-chevron-right" />
                 </a></li>
             </ul>
@@ -428,7 +443,7 @@ const Profile = () =>{
   </section>
 
    {/* <div class="edit-profile-modal modal-wrapper"> */}
-   <Modal className ="edit-modal " show={show} onHide={handleClose} backdrop="static" keyboard={false}>
+   <Modal className =" edit-profile-modal" show={show} onHide={() => setShow(false)} backdrop="static" keyboard={false}>
         <div className="edit-profile-modal__inner">
         <Modal.Header closeButton >
           <Modal.Title> <h4 className="theme-txt text-center mb-4 ">Your Information</h4>
@@ -443,11 +458,13 @@ const Profile = () =>{
        
     </Modal>
   
-
-  <div className="coin-spend-modal modal-wrapper">
+    <Modal className ="coin-spend-modal" show={showCoins} onHide={() => setShowCoin(false)} backdrop="static" keyboard={false}>
     <div className="edit-profile-modal__inner">
-      <h4 className="theme-txt text-center mb-4">Coin Spend</h4>
-      <h4 className="total-coins-spend text-center mb-4">152,922</h4>
+    <Modal.Header closeButton >
+          <Modal.Title> <h4 className="theme-txt text-center mb-4 ">Coin Spend</h4>
+          <h4 className="total-coins-spend text-center mb-4">152,922</h4>
+          </Modal.Title>
+        </Modal.Header>
       <div className="coin-spend">
         <div className="coin-spend__hostimg">
           <img src="/assets/images/host.png" alt="host" />
@@ -509,12 +526,16 @@ const Profile = () =>{
         </div>
       </div>
     </div>
-    <a href="javascript:void(0)" className="modal-close"><img src="/assets/images/btn_close.png" /></a>
-  </div>
+   
+  </Modal>
  
-  <div className="blacklist-modal modal-wrapper">
+  <Modal className ="blacklist-modal " show={showBlock} onHide={()=> setShowBlock(false)} backdrop="static" keyboard={false}>
     <div className="edit-profile-modal__inner">
-      <h4 className="theme-txt text-center mb-4">Blacklist</h4>
+    <Modal.Header closeButton >
+          <Modal.Title> <h4 className="theme-txt text-center mb-4 ">Blacklist</h4>
+          </Modal.Title>
+      </Modal.Header>
+     
     
     {blockData.map((item, i) => {
       <div className="coin-spend">
@@ -530,11 +551,14 @@ const Profile = () =>{
     })}
     </div>
      
-    <a href="javascript:void(0)" className="modal-close"><img src="/assets/images/btn_close.png" /></a>
-  </div>
-  <div className="setting-modal modal-wrapper">
+ </Modal>
+
+  <Modal className ="setting-modal " show={showSetting} onHide={() => setShowSetting(false)} backdrop="static" keyboard={false}>
     <div className="edit-profile-modal__inner">
-      <h4 className="theme-txt text-center mb-4">Setting</h4>
+    <Modal.Header closeButton >
+          <Modal.Title> <h4 className="theme-txt text-center mb-4 ">Setting</h4>
+          </Modal.Title>
+      </Modal.Header>
       <div className="user-profile__options becomevip-wrapper__innerblock">
         <ul>
           <li><a href="javascript:void(0)">
@@ -607,8 +631,8 @@ const Profile = () =>{
         </ul>
       </div>
     </div>
-    <a href="javascript:void(0)" className="modal-close"><img src="/assets/images/btn_close.png" /></a>
-  </div>
+  </Modal>
+  
   <div className="all-gifts-wrapper">
     <div className="all-gift-inner">
       <div className="all-gift-header d-flex flex-wrap align-items-center mb-3">
