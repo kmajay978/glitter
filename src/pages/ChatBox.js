@@ -7,8 +7,8 @@ import { LIKED_LIST, VISITOR_LIST_API ,FRIENDLIST_API, GET_USERPROFILE_API ,VIDE
 import Loader from '../components/Loader';
 import { error } from "jquery";
 // import MessageBox from '../components/MessageBox';
-// import socketIOClient from 'socket.io-client'
-// import * as io from 'socket.io-client'
+//import socketIOClient from 'socket.io-client'
+import * as io from 'socket.io-client'
 
 const ChatBox = () =>{
 
@@ -20,11 +20,11 @@ const[FriendUserId, setFriendId] = useState('');
 const[AllData, setData] = useState('');
 const[sendMessages , setSendMessages] = useState('');
 
-// const socket = io("localhost:3000"); 
-// const socketUrl = 'http://localhost:3000';
-// const socketIo = require("socket.io");
+ 
+ const socketUrl = 'http://localhost:3000';
+ //const socketIo = require("socket.io");
 
-// const port = process.env.PORT || 3000;
+ //const port = process.env.PORT || 3000;
 
    const bodyParameters = {
        session_id: localStorage.getItem('session_id'),
@@ -97,18 +97,19 @@ const[sendMessages , setSendMessages] = useState('');
      },[FriendUserId])
     
      const send = () => {
+      const socket = io("localhost:3000"); 
        const bodyParameters ={
          session_id : localStorage.getItem("sesion_id") ,
          user_id : FriendUserId ,
         }
-      //  server.listen(socketUrl, () => console.log('Listening on port ${socketUrl}'));
-      //  io.on('connection',function(socket) {
-      //   console.log('made socket connection');
-      //   socket.on('authenticate', function(data){
-      //     // io.sockets.emit('chat',data);
-      //     console.log(data);
-      //   });
-      // });
+        //  io.on('connection',function(socket) {
+        // console.log('made socket connection');
+        socket.on('authenticate', function(data){
+        socket.emit('authenticate', bodyParameters) 
+     
+        //console.log(data);
+         });
+      //  });
     }
 
     useEffect(()=> {

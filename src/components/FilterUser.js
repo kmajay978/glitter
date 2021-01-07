@@ -79,16 +79,7 @@ const FilterUser = ({fetchedProfile}) =>{
      }
     }
 
-    const handleClick = (userId) => {
-
-     console.log("pagal");
-    //  history.push({
-    //   pathname: '/single-profile',
-    //   user_id: currentId // your data array of objects
-    // })
-
-     }
-    
+  
       const swipe = (dir, userId) => {
       // const cardsLeft = allData.filter(person => !alreadyRemoved.includes(person.user_id))
       // if(dir=='left')
@@ -111,16 +102,75 @@ const FilterUser = ({fetchedProfile}) =>{
         childRefs[index].current.swipe(dir); // Swipe the card!
       }
       }
- 
+ // Setting current user from all data 
+ const [currentUser, setCurrentUser] = useState([])
+// Session id from local storage
+const SessionId = localStorage.getItem("session_id");
+
+ //console.log(currentUser);
+// Dislike function
+const handleDislike = async (userId) => {
+  console.log("Disliked user id", userId);
+
+  const bodyParameters = {
+    session_id: SessionId,
+    user_id: userId,
+  };
+
+  axios.post(DISLIKE_USER, bodyParameters).then(
+    (response) => {
+      if (response.status == 200) {
+        alert("dislike succesfully");
+      }
+    },
+    (error) => {}
+  );
+
+  nextUser();
+};
+
+// Like function
+const handleLike = async (userId) => {
+  console.log("Liked user id", userId);
+
+  const bodyParameters = {
+    session_id: SessionId,
+    user_id: userId,
+  };
+
+  axios.post(LIKE_USER, bodyParameters).then(
+    (response) => {
+      if (response.status == 200) {
+        alert("Liked succesfully");
+      }
+    },
+    (error) => {}
+  );
+  nextUser();
+};
+
+// Getting next user id
+const nextUser = () => {
+  var count = "";
+  if (count < allData.length) {
+    count = count + 1;
+  }
+  setCurrentUser(allData[count]);
+  console.log("current user", currentUser);
+};
+
+useEffect(() => {
+  if (allData.length) {
+    setCurrentUser(allData[0]);
+  }
+}, [allData]);
+
 
    
     useEffect(()=> {
     handleUserData();
      },[])
 
-     useEffect(()=>{
-      
-     },[])
           //console.log(fetchedProfile);
                 return(
                 
@@ -131,15 +181,15 @@ const FilterUser = ({fetchedProfile}) =>{
                     <div className="stackedcards-container">
                        
                     <div className='cardContainer'>
-                    {allData.map((character, index) =>
-                    <GlitterCard ref={childRefs[index]} className='swipe' key={character.user_id} onSwipe={(dir) => swiped(dir, character.user_id)} onClick={handleClick(character.user_id)}>
+                    {allData.map((currentUser, index) =>
+                    <GlitterCard ref={childRefs[index]} className='swipe' key={currentUser.user_id} onSwipe={(dir) => swiped(dir, currentUser.user_id)} >
                   
                     <div className="card" >
-                    <img src={character.profile_images} alt={character.first_name} width="100%" height="100%"/>
+                    <img src={currentUser.profile_images} alt={currentUser.first_name} width="100%" height="100%"/>
                      
                     
-                     <h3>{character.first_name}, {character.age}</h3>
-                     <h4>{character.distance},{character.occupation}</h4>
+                     <h3>{currentUser.first_name}, {currentUser.age}</h3>
+                     <h4>{currentUser.distance},{currentUser.occupation}</h4>
               
                   
                    </div>
@@ -172,8 +222,8 @@ const FilterUser = ({fetchedProfile}) =>{
                    
                     <div className="action-tray global-actions d-flex flex-wrap justify-content-center align-items-center">
                    
-                    <button onClick={() => swipe('left' )}>Swipe left!</button>
-                    <button onClick={() => swipe('right')}>swipe right</button>
+                    <button onClick={()=>handleDislike(currentUser.user_id)}>Swipe left!</button>
+                    <button onClick={()=>handleLike(currentUser.user_id)}>swipe right</button>
                    
                       {/* <div className="close-btn tray-btn-s">
                         <a className="left-action" href="javascript:void(0)" onClick={swiped} >×</a>

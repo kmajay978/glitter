@@ -21,10 +21,12 @@ const Profile = () =>{
   const [showBlock , setShowBlock] = useState(false);
   const [showSetting ,setShowSetting] = useState(false);
   const [showCoins , setShowCoin] = useState(false);
+  const [showGift , setShowGift] = useState(false);
 
   const handleShow = () => setShow(true); // show Edit model
   const handleSettingShow = () => setShowSetting(true); //show Setting Model
   const handleCoinsShow = () => setShowCoin(true); //show coins model
+  const handleGiftShow = () => setShowGift(true); 
   // Getting form value here
   const [form , setForm] = useState({
     
@@ -270,7 +272,7 @@ const Profile = () =>{
             <div className="tab-top d-flex flex-wrap-wrap align-items-center">
               <div className="vc-action-tab ml-auto mr-4 position-relative">
               <Dropdown >
-              <Dropdown.Toggle variant="secondary"  size="sm"  id="dropdown-basic">
+              <Dropdown.Toggle  variant="secondary"  size="sm"  >
                ...
               </Dropdown.Toggle>
               <Dropdown.Menu>
@@ -335,8 +337,8 @@ const Profile = () =>{
           <div className="user-profile__options becomevip-wrapper__innerblock">
             <ul>
            
-              <li><a href="javascript:void(0)" id="gift-modal"><img src="/assets/images/gift-icon.png" alt="gifts" />
-                  <h6>Gifts</h6> <i className="fas fa-chevron-right" />
+              <li><a href="javascript:void(0)" id="gift-modal"  onClick={handleGiftShow}><img src="/assets/images/gift-icon.png" alt="gifts" />
+                  <h6>Gifts</h6> <i className="fas fa-chevron-right"/>
                 </a></li>
               <li><a href="javascript:void(0)" id="edit-profile" onClick={handleShow}><img src="/assets/images/edit-profile.png" alt="Edit Profile" />
                   <h6>Edit Profile</h6> <i className="fas fa-chevron-right" />
@@ -633,7 +635,8 @@ const Profile = () =>{
     </div>
   </Modal>
   
-  <div className="all-gifts-wrapper">
+
+  <div className="all-gifts-wrapper" >
     <div className="all-gift-inner">
       <div className="all-gift-header d-flex flex-wrap align-items-center mb-3">
         <h5 className="mb-0 mr-4">Send Gift</h5>
