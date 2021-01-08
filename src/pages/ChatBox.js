@@ -6,9 +6,7 @@ import NavLinks from '../components/Nav';
 import { LIKED_LIST, VISITOR_LIST_API ,FRIENDLIST_API, GET_USERPROFILE_API ,VIDEOCALL_API} from '../components/Api';
 import Loader from '../components/Loader';
 import { error } from "jquery";
-// import MessageBox from '../components/MessageBox';
-//import socketIOClient from 'socket.io-client'
-import * as io from 'socket.io-client'
+import {SOCKET} from '../components/Config';
 
 const ChatBox = () =>{
 
@@ -18,26 +16,19 @@ const[FriendList, setFriendlist] = useState([]);
 const[isLoaded, setIsLoaded] = useState(false);
 const[FriendUserId, setFriendId] = useState('');
 const[AllData, setData] = useState('');
-const[sendMessages , setSendMessages] = useState('');
+const[CompleteMessageList, setMessages] = useState([]);
 
+
+const sessionId = localStorage.getItem('session_id');
  
- const socketUrl = 'http://localhost:3000';
- //const socketIo = require("socket.io");
-
- //const port = process.env.PORT || 3000;
-
    const bodyParameters = {
-       session_id: localStorage.getItem('session_id'),
+       session_id: sessionId,
   };
-//Likes here
+  //Likes here
   const getLikes = async () => {
 
   // Destructing response and getting data part
   const { data: {data} } = await axios.post(LIKED_LIST,bodyParameters)
-  //  setTimeout(() => {
-   
-  //  setIsLoaded(true);
-  //     }, 200);
    setLikes(data);
     }
 
@@ -86,6 +77,45 @@ const[sendMessages , setSendMessages] = useState('');
      });
      }
 
+    // Working here socket 
+
+    // Authenicating user here
+   const DetermineUser = () => {
+        var secondUserDataId = FriendUserId;
+        console.log('authenticate hit', secondUserDataId);
+
+       SOCKET.emit("authenticate", {
+            session_id: sessionId,
+            reciever_id: secondUserDataId,
+      });
+    }
+
+  // User entered message here
+  const OnReceivedMessage = (messages) => {
+        console.log("listen message")
+        // console.log(messages.obj)
+        setMessages([...messages, messages.obj])
+         // this.setState({ userMessage: "" });
+
+    }
+
+  // Get all messages here
+    const GetAllMessages = (messages) => {
+        console.log("complete message List")
+        console.log(messages.message_list)
+      // this.setState({ dataSource: messages })
+       setMessages(messages.message_list)
+    }
+
+
+    // Calling socket functions here
+    DetermineUser();
+
+
+
+    // End socket here 
+
+// console.log(FriendUserId);
      useEffect(()=>{
        getLikes();
        getVisitors();
@@ -96,28 +126,6 @@ const[sendMessages , setSendMessages] = useState('');
        friendListChat();
      },[FriendUserId])
     
-     const send = () => {
-      const socket = io("localhost:3000"); 
-       const bodyParameters ={
-         session_id : localStorage.getItem("sesion_id") ,
-         user_id : FriendUserId ,
-        }
-        //  io.on('connection',function(socket) {
-        // console.log('made socket connection');
-        socket.on('authenticate', function(data){
-        socket.emit('authenticate', bodyParameters) 
-     
-        //console.log(data);
-         });
-      //  });
-    }
-
-    useEffect(()=> {
-      // socket.off("authenticate");
-    },[])
-      //console.log(AllData);
-      //console.log(FriendList);
-
     return( 
       
       <section className="home-wrapper"> 
@@ -322,7 +330,7 @@ const[sendMessages , setSendMessages] = useState('');
                     <i className="fas fa-microphone" />
                   </a>
                 </label>
-                <button type="button" className="send-message-button bg-grd-clr" onClick={() => send()}><i className="fas fa-paper-plane" /></button>
+                <button type="button" className="send-message-button bg-grd-clr"><i className="fas fa-paper-plane" /></button>
               </div>
             </div>
             

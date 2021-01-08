@@ -1,6 +1,6 @@
 
 import './App.css';
-import React, { useState } from 'react';
+import React, { useState , useEffect } from 'react';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import ChatBox from './pages/ChatBox';
@@ -13,9 +13,29 @@ import SingleProfile from './pages/SingleProfile';
 import RecentCall from './pages/RecentCall';
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 import  ProtectedRoute  from "./protected.route";
-
+import {SOCKET} from './components/Config';
 
 function App() {
+
+// initializing socket here 
+
+  useEffect(() =>{
+ SOCKET.connect();
+    SOCKET.on('connect', function () {
+      console.log('connected to socket server');
+    });
+    SOCKET.on('event', function (data) {
+      console.log('Event Data', data);
+    });
+    //socket.emit(‘Test’, ‘world’);
+    SOCKET.on('connect_error', (err) => {
+      console.log(err)
+    });
+    SOCKET.on('disconnect', function () {
+      console.log('Disconnected from Socket Server');
+    });
+  })
+
 
 
   return (
