@@ -19,7 +19,7 @@ const LoginSidebar = () => {
             <>
                 <div className="signup-wrapper__slider">
                    <div className=" ">
-                   <Carousel id="sampleSlide"  >
+                   <Carousel id="sampleSlide" >
                   
                    <Carousel.Item interval={900} >
                    <div className="item text-center">

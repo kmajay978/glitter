@@ -14,7 +14,6 @@ const Home = () =>{
     const [fetchedProfile, setFilterUser] = useState('');
     
   return(
-    
           <section className="home-wrapper">
            {/* <Loader isLoading={isLoading} />  */}
           
