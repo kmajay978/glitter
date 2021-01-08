@@ -2,11 +2,6 @@
   "name": "glitter",
   "version": "0.1.0",
   "private": true,
-<<<<<<< HEAD
-=======
-  "proxy": "http://167.172.209.57",
-  "homepage": "http://167.172.209.57:8080",
->>>>>>> f3265099ae2a76b83e9fdac5ee444eef0cd3ccb9
   "dependencies": {
     "@coreui/chartjs": "^2.0.0",
     "@coreui/coreui": "^3.2.2",

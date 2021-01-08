@@ -125,9 +125,6 @@ const sessionId = localStorage.getItem('session_id');
      useEffect(()=>{
        friendListChat();
      },[FriendUserId])
-<<<<<<< HEAD
-    
-=======
      
      const send = () => {
       const socket = io("localhost:3000"); 
@@ -159,8 +156,6 @@ const sessionId = localStorage.getItem('session_id');
     },[])
       //console.log(AllData);
       //console.log(FriendList);
-
->>>>>>> f3265099ae2a76b83e9fdac5ee444eef0cd3ccb9
     return( 
       
       <section className="home-wrapper"> 

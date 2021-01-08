@@ -1,5 +1,4 @@
 import React, {Component, useEffect, useState} from 'react';
-import { Swipeable, direction } from 'react-deck-swiper';
 import { makeStyles } from '@material-ui/core/styles';
 import MaterialCard from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
