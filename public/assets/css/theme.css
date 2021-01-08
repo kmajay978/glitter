@@ -12,7 +12,7 @@
 }
 
 body {
-    font-family: 'Ubuntu', sans-serif;
+    font-family: 'Ubuntu', sans-serif !important;
     color: var(--theme-primary-color);
     font-size: 14px;
     font-weight: 400;
@@ -216,12 +216,13 @@ input::placeholder {
 
 .signup-form {
     display: flex;
-    width: 500%;
+    width: 100%;
+    justify-content:center;
 }
 
 .signup-inner {
     padding: 35px;
-    /* width: 100%; */
+     width: 100%;
     -webkit-transition: all .3s ease-in-out;
     transition: all .3s ease-in-out;
 }
@@ -687,14 +688,17 @@ input::placeholder {
 }
 
 .show-gender input[type="checkbox"]:checked,
-.show-gender input[type="checkbox"]:not(:checked) {
+.show-gender input[type="checkbox"]:not(:checked), .show-gender input[type="radio"]:checked,
+.show-gender input[type="radio"]:not(:checked) {
     position: absolute;
     z-index: -9999;
     opacity: 0;
 }
 
 .show-gender input[type="checkbox"]:checked + label,
-.show-gender input[type="checkbox"]:not(:checked) + label {
+.show-gender input[type="checkbox"]:not(:checked) + label , 
+.show-gender input[type="radio"]:checked + label,
+.show-gender input[type="radio"]:not(:checked) + label {
     position: relative;
     cursor: pointer;
     border-radius: 50px;
@@ -708,7 +712,7 @@ input::placeholder {
     font-size: 12px;
 }
 
-.show-gender input[type="checkbox"]:checked + label {
+.show-gender input[type="checkbox"]:checked + label, .show-gender input[type="radio"]:checked + label {
     background: rgba(189, 125, 13, 1);
     background: -moz-linear-gradient(left, rgba(189, 125, 13, 1) 0%, rgba(252, 212, 111, 1) 100%);
     background: -webkit-linear-gradient(left, rgba(189, 125, 13, 1) 0%, rgba(252, 212, 111, 1) 100%);
@@ -2915,6 +2919,64 @@ textarea.send-message-text::placeholder {
     -webkit-transition: all .3s ease-in-out;
     align-self: flex-start;
 }
+
+/* Report */
+
+.choose-report > div input {
+    display: none;
+}
+.choose-report > div {
+    width: 100%;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: flex-start;
+}
+
+.choose-report > div label {
+    width: 15px;
+    height: 15px;
+    border: 1px solid var(--theme-txt-color);
+    border-radius: 50%;
+    margin-right: 5px;
+    position: relative;
+    margin-bottom: 0;
+}
+.choose-report > div label::before {
+    width: 6px;
+    height: 6px;
+    background-color: var(--theme-txt-color);
+    position: absolute;
+    content: "";
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    border-radius: 50%;
+    top: 50%;
+    transform: translateY(-50%);
+    display: none;
+}
+
+.choose-report > div input:checked + label::before{
+    display: block;
+}
+
+/*carousel css*/
+.carousel-indicators li {
+    width: 10px;
+    height: 10px;
+    border-radius: 100%;
+}
+.carousel-indicators {
+    bottom: -50px;
+}
+
+.carousel-control-prev-icon {
+    visibility: hidden !important;
+}
+
+.carousel-control-next-icon {
+    visibility: hidden;
+}
 /* coins spend */
 
 .coin-spend {
@@ -3335,7 +3397,7 @@ screen and (max-height: 768px) {
     animation-duration: 800ms;
   }
   
-  
+
   
   @keyframes popup {
     0%   { transform: scale(1,1) }
@@ -3347,3 +3409,4 @@ screen and (max-height: 768px) {
     100% { transform: scale(1,1) }
   }
 /* End swipe css */
+

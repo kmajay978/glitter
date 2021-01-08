@@ -7,7 +7,7 @@ import NavLinks from '../components/Nav';
 import Loader from '../components/Loader';
 import FilterUser from '../components/FilterUser'; 
 import axios from 'axios';
-
+import Dummy from '../pages/Dummy'
 
 const Home = () =>{
     const user = useSelector(selectUser); //using redux useSelector here
@@ -48,7 +48,7 @@ const Home = () =>{
                 </div>
                 <div className="profile-swipe-wrapper">
                   <FilterUser fetchedProfile={fetchedProfile} />
-                 
+                 {/* <Dummy></Dummy> */}
                  
                 </div>
               </div>

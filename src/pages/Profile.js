@@ -4,6 +4,7 @@ import {  useHistory } from 'react-router';
 import axios from "axios";
 import NavLinks from '../components/Nav';
 import { GET_LOGGEDPROFILE_API , EDITPROFILE_API , BLOCK_USERLIST_API , LOGOUT_API} from '../components/Api';
+import useToggle from '../components/CommonFunction';
 import Login from '../pages/Login'
 import { useDispatch } from 'react-redux';
 import {login} from '../features/userSlice';
@@ -22,7 +23,8 @@ const Profile = () =>{
   const [showSetting ,setShowSetting] = useState(false);
   const [showCoins , setShowCoin] = useState(false);
   const [showGift , setShowGift] = useState(false);
-
+  const [isOn, toggleIsOn] = useToggle();
+  const [isProfile, toggleProfile] = useToggle();
   const handleShow = () => setShow(true); // show Edit model
   const handleSettingShow = () => setShowSetting(true); //show Setting Model
   const handleCoinsShow = () => setShowCoin(true); //show coins model
@@ -257,13 +259,13 @@ const Profile = () =>{
               <div className="vc-head-title d-flex flex-wrap align-items-center ml-5">
                 <div className="vc-user-name d-flex flex-wrap align-items-center">
                   <figure>
-                    <img src="/assets/images/vc-user.png" alt="Augusta Castro" />
+                    <img src={profileData.profile_images} alt="Augusta Castro"  />
                   </figure>
-                  <div className="name ml-2">Augusta Castro <span className="age">20</span></div>
+                  <div className="name ml-2">{profileData.first_name +' '+ profileData.last_name }  <span className="age">{profileData.age}</span></div>
                 </div>
                 <div className="remaining-coins ml-4">
                   <img src="/assets/images/diamond-coin.png" alt="Coins" />
-                  <span>152</span>
+                  <span>{profileData.coins}</span>
                 </div>
               </div>
             </div>
@@ -271,22 +273,13 @@ const Profile = () =>{
           <div className="col-lg-7 p-3">
             <div className="tab-top d-flex flex-wrap-wrap align-items-center">
               <div className="vc-action-tab ml-auto mr-4 position-relative">
-              <Dropdown >
-              <Dropdown.Toggle  variant="secondary"  size="sm"  >
-               ...
-              </Dropdown.Toggle>
-              <Dropdown.Menu>
-              <Dropdown.Item href="#/action-1">Report</Dropdown.Item>
-              <Dropdown.Item href="#/action-2">Block</Dropdown.Item>
-              <Dropdown.Item href="#/action-3">End Video</Dropdown.Item>
-              </Dropdown.Menu>
-              </Dropdown>
-                {/* <div className="vc-action-btn">
+              
+                <div className="vc-action-btn" onClick={toggleProfile}>
                   <span/>
                   <span/>
                   <span/>
                 </div>
-                <ul className="action-menu">
+                <ul className={isProfile ? 'action-menu active': 'action-menu'}>
                   <li>
                     <a href="javascript:void(0)">Report</a>
                   </li>
@@ -296,7 +289,7 @@ const Profile = () =>{
                   <li>
                     <a href="javascript:void(0)">End Video</a>
                   </li>
-                </ul> */}
+                </ul>
               </div>
             <NavLinks />
             </div>
@@ -323,13 +316,13 @@ const Profile = () =>{
             <div className="user-profile__status">
               <ul className="d-flex flex-wrap justify-content-center">
                 <li><span className="user-profile__status__heading d-block text-uppercase">Liked</span>
-                  <span className="user-profile__status__counter d-block">218</span>
+                  <span className="user-profile__status__counter d-block">{profileData.likes}</span>
                 </li>
                 <li><span className="user-profile__status__heading d-block text-uppercase">Story</span>
                   <span className="user-profile__status__counter d-block">0</span>
                 </li>
                 <li><span className="user-profile__status__heading d-block text-uppercase">Coins</span>
-                  <span className="user-profile__status__counter d-block">152</span>
+                  <span className="user-profile__status__counter d-block">{profileData.coins}</span>
                 </li>
               </ul>
             </div>
@@ -337,7 +330,7 @@ const Profile = () =>{
           <div className="user-profile__options becomevip-wrapper__innerblock">
             <ul>
            
-              <li><a href="javascript:void(0)" id="gift-modal"  onClick={handleGiftShow}><img src="/assets/images/gift-icon.png" alt="gifts" />
+              <li><a href="javascript:void(0)" id="gift-modal" onClick={toggleIsOn}><img src="/assets/images/gift-icon.png" alt="gifts" />
                   <h6>Gifts</h6> <i className="fas fa-chevron-right"/>
                 </a></li>
               <li><a href="javascript:void(0)" id="edit-profile" onClick={handleShow}><img src="/assets/images/edit-profile.png" alt="Edit Profile" />
@@ -636,8 +629,9 @@ const Profile = () =>{
   </Modal>
   
 
-  <div className="all-gifts-wrapper" >
+  <div className={isOn ? 'all-gifts-wrapper active': 'all-gifts-wrapper '} >
     <div className="all-gift-inner">
+    <a href="javascript:void(0)" className="close-gift-btn modal-close" onClick={toggleIsOn}><img src="/assets/images/btn_close.png" /></a>
       <div className="all-gift-header d-flex flex-wrap align-items-center mb-3">
         <h5 className="mb-0 mr-4">Send Gift</h5>
         <div className="remaining-coins">
