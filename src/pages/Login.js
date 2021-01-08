@@ -97,7 +97,7 @@ const tokencheck = () =>{
 
 // Send OTP handle
   const sendHandle = () =>{
-   
+    
     const isValid = formValidation();
     if(isValid)
     {
@@ -106,14 +106,14 @@ const tokencheck = () =>{
       country_code: '+'+cntCode
     };
 
-  //     axios.post(SENDOTP_API,bodyParameters)
-  // .then((response) => {
-  //   setStep(step + 1)
+      axios.post(SENDOTP_API,bodyParameters)
+  .then((response) => {
+   setStep(step + 1)
   
-  // }, (error) => {
+  }, (error) => {
     
-  // });
- setStep(step + 1)
+  });
+
     }
   
 
@@ -139,43 +139,40 @@ const tokencheck = () =>{
   // Verify OTP Function 
 const verifyHandle = () =>{
 
-  //  const bodyParameters = {
-  //     phone: phoneNumber,
-  //     country_code: '+'+cntCode,
-  //     otp: otp,
-  //     device_type:0,
-  //     device_token:"",
-  //   };
+   const bodyParameters = {
+      phone: phoneNumber,
+      country_code: '+'+cntCode,
+      otp: otp,
+      device_type:0,
+      device_token:"",
+    };
 
-    localStorage.setItem('session_id', "DlcgwzW8fuIk27kdvHbpWytwhYnYkSOG");
-     history.push("/");
-
-  //     axios.post(VERIFY_API,bodyParameters)
-  // .then((response) => { 
+      axios.post(VERIFY_API,bodyParameters)
+  .then((response) => { 
 
       
-  //   if(response.data.data != null)
-  //   {
-  //        localStorage.setItem('session_id', response.data.data.session_id);
-  //        history.push("/");
-  //        dispatch(
-  //          login({
-  //             logged: response.data.data,
-  //             loggedIn: true,
-  //          })
-  //        );
+    if(response.data.data != null)
+    {
+         localStorage.setItem('session_id', response.data.data.session_id);
+         history.push("/");
+         dispatch(
+           login({
+              logged: response.data.data,
+              loggedIn: true,
+           })
+         );
 
-  //   }
-  //   else
-  //   {
-  //   setStep(step + 1)
-  //   localStorage.clear();
-  //   }
+    }
+    else
+    {
+    setStep(step + 1)
+    localStorage.clear();
+    }
   
-  // }, (error) => {
+  }, (error) => {
     
-  //    localStorage.clear();
-  // });
+     localStorage.clear();
+  });
 }
   // End verify otp 
 
@@ -281,7 +278,7 @@ const registerHandle = (e) =>{
                               <div className="signup-header">
                                 <a href="javascript:void(0)" className="login-back-1 btn-back" onClick={() => setStep(step - 1)}><i className="fas fa-chevron-left" /></a>
                              <h4 class="theme-txt">Enter Code</h4>
-                               <p>Enter 4 digit verification code you<br /> received on {'+'+cntCode} {phoneNumber}</p>
+                               <p>Enter 4 digit verification code you<br /> received on +1 7462 462 321</p>
                               </div>
                               <div className="form-group otp-field">
                                 <input className="form-control" name="otp_1" value={otp_1} onChange={e => setOtp1(e.target.value)} type="text"  />
