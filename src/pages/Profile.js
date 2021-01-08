@@ -259,13 +259,13 @@ const Profile = () =>{
               <div className="vc-head-title d-flex flex-wrap align-items-center ml-5">
                 <div className="vc-user-name d-flex flex-wrap align-items-center">
                   <figure>
-                    <img src="/assets/images/vc-user.png" alt="Augusta Castro" />
+                    <img src={profileData.profile_images} alt="Augusta Castro"  />
                   </figure>
-                  <div className="name ml-2">Augusta Castro <span className="age">20</span></div>
+                  <div className="name ml-2">{profileData.first_name +' '+ profileData.last_name }  <span className="age">{profileData.age}</span></div>
                 </div>
                 <div className="remaining-coins ml-4">
                   <img src="/assets/images/diamond-coin.png" alt="Coins" />
-                  <span>152</span>
+                  <span>{profileData.coins}</span>
                 </div>
               </div>
             </div>
@@ -316,13 +316,13 @@ const Profile = () =>{
             <div className="user-profile__status">
               <ul className="d-flex flex-wrap justify-content-center">
                 <li><span className="user-profile__status__heading d-block text-uppercase">Liked</span>
-                  <span className="user-profile__status__counter d-block">218</span>
+                  <span className="user-profile__status__counter d-block">{profileData.likes}</span>
                 </li>
                 <li><span className="user-profile__status__heading d-block text-uppercase">Story</span>
                   <span className="user-profile__status__counter d-block">0</span>
                 </li>
                 <li><span className="user-profile__status__heading d-block text-uppercase">Coins</span>
-                  <span className="user-profile__status__counter d-block">152</span>
+                  <span className="user-profile__status__counter d-block">{profileData.coins}</span>
                 </li>
               </ul>
             </div>

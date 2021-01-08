@@ -26,8 +26,74 @@ const FilterUser = ({fetchedProfile}) =>{
       name: 'ABC 2'
     },
      {
+<<<<<<< HEAD
       id: 4,
       name: 'ABC 3'
+=======
+      const bodyParameters = {
+        session_id : localStorage.getItem("session_id"), 
+        user_id : userId
+       }
+       axios.post(LIKE_USER , bodyParameters) 
+       .then((response) => {
+       if(response.status==200){
+  
+       alert("liked succesfully")
+       console.log(direction)
+       console.log('removing: ' + userId)
+       alreadyRemoved.push(userId)
+      }
+      }, (error) =>{
+ 
+     }); 
+     }
+    }
+
+  
+      const swipe = (dir, userId) => {
+
+      // const cardsLeft = allData.filter(person => !alreadyRemoved.includes(person.user_id))
+      // if(dir=='left')
+      // {
+      //   console.log(dir)
+        
+      // }
+      // else if(dir=='right')
+      // {
+      //   console.log(dir);
+      // }
+     
+      const cardsLeft = allData.filter(currentUser => !alreadyRemoved.includes(currentUser.user_id))
+
+      if (cardsLeft.length) 
+      {
+        const toBeRemoved = cardsLeft[cardsLeft.length - 1].user_id ;// Find the card object to be removed
+        const index = allData.map(person => person.user_id).indexOf(toBeRemoved); // Find the index of which to make the reference to
+        alreadyRemoved.push(toBeRemoved); // Make sure the next card gets removed next time if this card do not have time to exit the screen
+        childRefs[index].current.swipe(dir); // Swipe the card!
+      }
+      }
+ // Setting current user from all data 
+ const [currentUser, setCurrentUser] = useState([])
+// Session id from local storage
+    const SessionId = localStorage.getItem("session_id");
+
+ //console.log(currentUser);
+// Dislike function
+const handleDislike = ( dir, userId ) => {
+  console.log("Disliked user id", userId);
+ 
+  const bodyParameters = {
+    session_id: SessionId,
+    user_id: userId,
+  };
+
+  axios.post(DISLIKE_USER, bodyParameters).then(
+    (response) => {
+      if (response.status == 200) {
+        alert("dislike succesfully");
+      }
+>>>>>>> f3265099ae2a76b83e9fdac5ee444eef0cd3ccb9
     },
      {
       id: 5,
@@ -61,6 +127,56 @@ const FilterUser = ({fetchedProfile}) =>{
     setCurrentUser(dummy[count])
     console.log('current user', currentUser)
   }
+<<<<<<< HEAD
+=======
+}, [allData]);
+
+
+   
+    useEffect(()=> {
+    handleUserData();
+     },[])
+
+          //console.log(fetchedProfile);
+                return(
+                
+                       <div className="stage">
+                      
+                      <div id="stacked-cards-block" className="stackedcards stackedcards--animatable init">
+                  
+                    <div className="stackedcards-container">
+                       
+                    <div className='cardContainer'>
+                    {allData.map((currentUser, index) =>
+                    <GlitterCard ref={childRefs[index]} className='swipe' key={currentUser.user_id} onSwipe={(dir) => swiped(dir, currentUser.user_id)} >
+                  
+                    <div className="card" >
+                    <img src={currentUser.profile_images} alt={currentUser.first_name} width="100%" height="100%"/>
+                     <h3>{currentUser.first_name}, {currentUser.age}</h3>
+                     <h4>{currentUser.distance},{currentUser.occupation}</h4>
+              
+                  
+                   </div>
+           
+                    </GlitterCard>
+                    )}
+                    </div>
+                      
+                        {/* <div className="card" >
+                          <div className="card-content">
+                          <div className="card-image">
+                              
+                            <Image src={item.profile_images} alt={item.first_name} width="100%" height="100%"/>
+                             </div>
+                            <div className="card-titles">
+                             <h3>{item.first_name}, {item.age}</h3>
+                            <span>{item.distance},{item.occupation}</span>
+                           </div>  
+                          </div>
+                        </div> */}
+                    
+                  {/* })} */}
+>>>>>>> f3265099ae2a76b83e9fdac5ee444eef0cd3ccb9
 
  
   return(

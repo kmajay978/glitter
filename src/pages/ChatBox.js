@@ -125,7 +125,42 @@ const sessionId = localStorage.getItem('session_id');
      useEffect(()=>{
        friendListChat();
      },[FriendUserId])
+<<<<<<< HEAD
     
+=======
+     
+     const send = () => {
+      const socket = io("localhost:3000"); 
+       const bodyParameters ={
+         session_id : localStorage.getItem("sesion_id") ,
+         user_id : FriendUserId ,
+        }
+        
+        socket.on('connect', () => {
+          console.log('Connected');
+          socket.emit('authenticate', bodyParameters)
+        });
+      
+        socket.on('Unauthorized', (reason) => {
+          console.log('Unauthorized:', reason);
+          error = reason.message;
+          socket.disconnect();
+        });
+      
+        socket.on('authenticate', function(data){
+        socket.emit('authenticate', bodyParameters) 
+
+         });
+       
+    }
+
+    useEffect(()=> {
+     
+    },[])
+      //console.log(AllData);
+      //console.log(FriendList);
+
+>>>>>>> f3265099ae2a76b83e9fdac5ee444eef0cd3ccb9
     return( 
       
       <section className="home-wrapper"> 

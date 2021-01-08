@@ -43,7 +43,7 @@ function App() {
         <Switch>
           <Route exact path="/login" component={Login} />
           <Route exact path='/signup-completed' component={SignupCompleted} />
-         
+       
           {/* Private routes */}
           <ProtectedRoute exact path='/' component={Home} />
           <ProtectedRoute exact path='/profile' component={Profile} />
@@ -53,7 +53,7 @@ function App() {
           <ProtectedRoute exact path='/search-home' component={SearchHome} />
           <ProtectedRoute exact path='/single-profile' component={SingleProfile} />
           <ProtectedRoute exact path='/recent-call' component={RecentCall} />
-
+           
            
         </Switch>
 

@@ -2919,6 +2919,64 @@ textarea.send-message-text::placeholder {
     -webkit-transition: all .3s ease-in-out;
     align-self: flex-start;
 }
+
+/* Report */
+
+.choose-report > div input {
+    display: none;
+}
+.choose-report > div {
+    width: 100%;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: flex-start;
+}
+
+.choose-report > div label {
+    width: 15px;
+    height: 15px;
+    border: 1px solid var(--theme-txt-color);
+    border-radius: 50%;
+    margin-right: 5px;
+    position: relative;
+    margin-bottom: 0;
+}
+.choose-report > div label::before {
+    width: 6px;
+    height: 6px;
+    background-color: var(--theme-txt-color);
+    position: absolute;
+    content: "";
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    border-radius: 50%;
+    top: 50%;
+    transform: translateY(-50%);
+    display: none;
+}
+
+.choose-report > div input:checked + label::before{
+    display: block;
+}
+
+/*carousel css*/
+.carousel-indicators li {
+    width: 10px;
+    height: 10px;
+    border-radius: 100%;
+}
+.carousel-indicators {
+    bottom: -50px;
+}
+
+.carousel-control-prev-icon {
+    visibility: hidden !important;
+}
+
+.carousel-control-next-icon {
+    visibility: hidden;
+}
 /* coins spend */
 
 .coin-spend {
@@ -3351,3 +3409,4 @@ screen and (max-height: 768px) {
     100% { transform: scale(1,1) }
   }
 /* End swipe css */
+
