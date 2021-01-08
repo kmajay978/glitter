@@ -95,25 +95,40 @@ const[sendMessages , setSendMessages] = useState('');
      useEffect(()=>{
        friendListChat();
      },[FriendUserId])
-    
+     
      const send = () => {
       const socket = io("localhost:3000"); 
        const bodyParameters ={
          session_id : localStorage.getItem("sesion_id") ,
          user_id : FriendUserId ,
         }
-        //  io.on('connection',function(socket) {
-        // console.log('made socket connection');
+        
+        socket.on('connect', () => {
+          console.log('Connected');
+      
+      
+          socket.emit('authenticate', bodyParameters)
+          
+      
+        });
+      
+        socket.on('Unauthorized', (reason) => {
+          console.log('Unauthorized:', reason);
+      
+          error = reason.message;
+      
+          socket.disconnect();
+        });
+      
         socket.on('authenticate', function(data){
         socket.emit('authenticate', bodyParameters) 
-     
-        //console.log(data);
+
          });
-      //  });
+       
     }
 
     useEffect(()=> {
-      // socket.off("authenticate");
+     
     },[])
       //console.log(AllData);
       //console.log(FriendList);

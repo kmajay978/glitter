@@ -90,8 +90,6 @@ const FilterUser = ({fetchedProfile}) =>{
       // else if(dir=='right')
       // {
       //   console.log(dir);
-    
-
       // }
       const cardsLeft = allData.filter(person => !alreadyRemoved.includes(person.user_id))
       if (cardsLeft.length) 
@@ -105,7 +103,7 @@ const FilterUser = ({fetchedProfile}) =>{
  // Setting current user from all data 
  const [currentUser, setCurrentUser] = useState([])
 // Session id from local storage
-const SessionId = localStorage.getItem("session_id");
+    const SessionId = localStorage.getItem("session_id");
 
  //console.log(currentUser);
 // Dislike function
@@ -186,8 +184,6 @@ useEffect(() => {
                   
                     <div className="card" >
                     <img src={currentUser.profile_images} alt={currentUser.first_name} width="100%" height="100%"/>
-                     
-                    
                      <h3>{currentUser.first_name}, {currentUser.age}</h3>
                      <h4>{currentUser.distance},{currentUser.occupation}</h4>
               

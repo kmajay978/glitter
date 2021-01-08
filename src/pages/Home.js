@@ -11,13 +11,13 @@ import axios from 'axios';
 
 const Home = () =>{
     const user = useSelector(selectUser); //using redux useSelector here
-    const [fetchedProfile, setFilterUser] = useState('')
-    
+    const [fetchedProfile, setFilterUser] = useState('');
     
   return(
+    
           <section className="home-wrapper">
            {/* <Loader isLoading={isLoading} />  */}
-       
+          
         <div className="home-inner">
           <div className="container-fluid p-0">
             <div className="row no-gutters">
@@ -48,6 +48,8 @@ const Home = () =>{
                 </div>
                 <div className="profile-swipe-wrapper">
                   <FilterUser fetchedProfile={fetchedProfile} />
+                 
+                 
                 </div>
               </div>
             </div>
