@@ -105,18 +105,12 @@ const[sendMessages , setSendMessages] = useState('');
         
         socket.on('connect', () => {
           console.log('Connected');
-      
-      
           socket.emit('authenticate', bodyParameters)
-          
-      
         });
       
         socket.on('Unauthorized', (reason) => {
           console.log('Unauthorized:', reason);
-      
           error = reason.message;
-      
           socket.disconnect();
         });
       
