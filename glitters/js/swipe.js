@@ -103,9 +103,11 @@ document.addEventListener("DOMContentLoaded", function(event) {
 			topObj.classList.add('stackedcards-overlay-hidden');
 		}
 		
+		alert("Outside timeout");
 		//Remove class init
 		setTimeout(function() {
 			obj.classList.remove('init');
+			alert("under timeout");
 		},150);
 		
 		

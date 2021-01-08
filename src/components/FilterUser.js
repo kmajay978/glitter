@@ -81,19 +81,7 @@ const FilterUser = ({fetchedProfile}) =>{
 
   
       const swipe = (dir, userId) => {
-      // const cardsLeft = allData.filter(person => !alreadyRemoved.includes(person.user_id))
-      // if(dir=='left')
-      // {
-      //   console.log(dir)
-        
-      // }
-      // else if(dir=='right')
-      // {
-      //   console.log(dir);
-    
-
-      // }
-      const cardsLeft = allData.filter(person => !alreadyRemoved.includes(person.user_id))
+      const cardsLeft = allData.filter(currentUser => !alreadyRemoved.includes(currentUser.user_id))
       if (cardsLeft.length) 
       {
         const toBeRemoved = cardsLeft[cardsLeft.length - 1].user_id ;// Find the card object to be removed
@@ -109,9 +97,9 @@ const SessionId = localStorage.getItem("session_id");
 
  //console.log(currentUser);
 // Dislike function
-const handleDislike = async (userId) => {
+const handleDislike = ( dir, userId ) => {
   console.log("Disliked user id", userId);
-
+ 
   const bodyParameters = {
     session_id: SessionId,
     user_id: userId,
@@ -125,14 +113,14 @@ const handleDislike = async (userId) => {
     },
     (error) => {}
   );
-
+swipe(dir);
   nextUser();
 };
 
 // Like function
-const handleLike = async (userId) => {
+const handleLike = ( dir, userId ) => {
   console.log("Liked user id", userId);
-
+  console.log(dir);
   const bodyParameters = {
     session_id: SessionId,
     user_id: userId,
@@ -161,7 +149,8 @@ const nextUser = () => {
 
 useEffect(() => {
   if (allData.length) {
-    setCurrentUser(allData[0]);
+    // Setting last element of array using slice -1 
+    setCurrentUser(allData.slice(-1)[0]);
   }
 }, [allData]);
 
@@ -222,8 +211,8 @@ useEffect(() => {
                    
                     <div className="action-tray global-actions d-flex flex-wrap justify-content-center align-items-center">
                    
-                    <button onClick={()=>handleDislike(currentUser.user_id)}>Swipe left!</button>
-                    <button onClick={()=>handleLike(currentUser.user_id)}>swipe right</button>
+                    <button onClick={()=>handleDislike("left",currentUser.user_id)}>Swipe left!</button>
+                    <button onClick={()=>handleLike("right",currentUser.user_id)}>swipe right</button>
                    
                       {/* <div className="close-btn tray-btn-s">
                         <a className="left-action" href="javascript:void(0)" onClick={swiped} >×</a>

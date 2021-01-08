@@ -108,8 +108,8 @@ const tokencheck = () =>{
 
       axios.post(SENDOTP_API,bodyParameters)
   .then((response) => {
-  
    setStep(step + 1)
+  
   }, (error) => {
     
   });
@@ -231,7 +231,7 @@ const registerHandle = (e) =>{
         return (
           <div className="signup-inner" id="login-tab-1">
                         <div className="signup-header">
-                        <h4>Glad to see you!</h4>
+                        <h4 class="theme-txt">Glad to see you!</h4>
                          <p>Hello there, sign in to continue!</p>
                         </div>
                         <div className="form-group">
@@ -277,7 +277,7 @@ const registerHandle = (e) =>{
                           <div className="cont_screen">
                               <div className="signup-header">
                                 <a href="javascript:void(0)" className="login-back-1 btn-back" onClick={() => setStep(step - 1)}><i className="fas fa-chevron-left" /></a>
-                             <h4>Enter Code</h4>
+                             <h4 class="theme-txt">Enter Code</h4>
                                <p>Enter 4 digit verification code you<br /> received on +1 7462 462 321</p>
                               </div>
                               <div className="form-group otp-field">
@@ -298,7 +298,7 @@ const registerHandle = (e) =>{
           <div className="another_test">
                 <div className="signup-header mb-5">
                   <a href="javascript:void(0)" className="login-back-2 btn-back" onClick={() => setStep(step - 1)} ><i className="fas fa-chevron-left" /></a>
-                <h4>Your Information</h4>
+                <h4 class="theme-txt">Your Information</h4>
                 </div>
                 <div className="form-group">
                  <input 
@@ -337,7 +337,7 @@ const registerHandle = (e) =>{
           <div className="signup-inner" id="login-tab-4">
           <div className="signup-header">
             <a href="javascript:void(0)" className="login-back-3 btn-back" onClick={() => setStep(step - 1)}><i className="fas fa-chevron-left" /></a>
-          <h4>Gender Identity</h4>
+          <h4 class="theme-txt">Gender Identity</h4>
           </div>
           <a className="btn bg-grd-clr d-block mb-4 btn-countinue-4" href="javascript:void(0)" onClick={() => setStep(step + 1)}>Prefer Not to say</a>
           <a className="btn btn-trsp d-block" href="javascript:void(0)" onClick={() => setStep(step + 1)}>Non-Binary</a>
@@ -349,7 +349,7 @@ const registerHandle = (e) =>{
           <div className="signup-inner" id="login-tab-5">
           <div className="signup-header">
             <a href="javascript:void(0)" className="login-back-4 btn-back" onClick={() => setStep(step - 1)}><i className="fas fa-chevron-left" /></a>
-          <h4>Upload Profile Photo</h4>
+          <h4 class="theme-txt">Upload Profile Photo</h4>
           </div>
           <div className="form-group upload-field mb-5">
             <label htmlFor="profile-photo" id="PreviewPicture" style={{ backgroundImage: `url("${imgData}")` }}   />

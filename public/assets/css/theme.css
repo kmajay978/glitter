@@ -12,7 +12,7 @@
 }
 
 body {
-    font-family: 'Ubuntu', sans-serif;
+    font-family: 'Ubuntu', sans-serif !important;
     color: var(--theme-primary-color);
     font-size: 14px;
     font-weight: 400;
@@ -216,12 +216,13 @@ input::placeholder {
 
 .signup-form {
     display: flex;
-    width: 500%;
+    width: 100%;
+    justify-content:center;
 }
 
 .signup-inner {
     padding: 35px;
-    /* width: 100%; */
+     width: 100%;
     -webkit-transition: all .3s ease-in-out;
     transition: all .3s ease-in-out;
 }
@@ -687,14 +688,17 @@ input::placeholder {
 }
 
 .show-gender input[type="checkbox"]:checked,
-.show-gender input[type="checkbox"]:not(:checked) {
+.show-gender input[type="checkbox"]:not(:checked), .show-gender input[type="radio"]:checked,
+.show-gender input[type="radio"]:not(:checked) {
     position: absolute;
     z-index: -9999;
     opacity: 0;
 }
 
 .show-gender input[type="checkbox"]:checked + label,
-.show-gender input[type="checkbox"]:not(:checked) + label {
+.show-gender input[type="checkbox"]:not(:checked) + label , 
+.show-gender input[type="radio"]:checked + label,
+.show-gender input[type="radio"]:not(:checked) + label {
     position: relative;
     cursor: pointer;
     border-radius: 50px;
@@ -708,7 +712,7 @@ input::placeholder {
     font-size: 12px;
 }
 
-.show-gender input[type="checkbox"]:checked + label {
+.show-gender input[type="checkbox"]:checked + label, .show-gender input[type="radio"]:checked + label {
     background: rgba(189, 125, 13, 1);
     background: -moz-linear-gradient(left, rgba(189, 125, 13, 1) 0%, rgba(252, 212, 111, 1) 100%);
     background: -webkit-linear-gradient(left, rgba(189, 125, 13, 1) 0%, rgba(252, 212, 111, 1) 100%);
@@ -3335,7 +3339,7 @@ screen and (max-height: 768px) {
     animation-duration: 800ms;
   }
   
-  
+
   
   @keyframes popup {
     0%   { transform: scale(1,1) }

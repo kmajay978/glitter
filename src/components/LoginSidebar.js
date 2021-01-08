@@ -6,7 +6,7 @@ import Carousel from "react-elastic-carousel";
 const breakPoints = [
   { width: 1, itemsToShow: 1 },
   { width: 600, itemsToShow: 1 },
-  { width: 1000, itemsToShow: 1 },
+  { width: 1000, itemsToShow: 1, dots: false },
 ];
 
 // Working on login functional component

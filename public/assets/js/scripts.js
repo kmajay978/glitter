@@ -110,13 +110,13 @@ $(document).ready(function () {
     
     
     /*-- VIDEO CHAT ACTION MENU --*/
-    $('.vc-action-btn').click(function(){
-        if($('.action-menu').hasClass('active')) {
-            $('.action-menu').removeClass('active');
-        } else {
-            $('.action-menu').addClass('active');
-        }
-    });
+    // $('.vc-action-btn').click(function(){
+    //     if($('.action-menu').hasClass('active')) {
+    //         $('.action-menu').removeClass('active');
+    //     } else {
+    //         $('.action-menu').addClass('active');
+    //     }
+    // });
     
     /*-- Chat Box --*/
     $('.inbox-categories > div').click(function(){
@@ -373,10 +373,10 @@ $(document).ready(function () {
         
     // })
     
-     $("#gift-modal").click(function(){
-        $(".all-gifts-wrapper").addClass("active");
+    //  $("#gift-modal").click(function(){
+    //     $(".all-gifts-wrapper").addClass("active");
         
-    })
+    // })
     
     $("#edit-first-step").click(function(){ 
         $(".edit-second-step").addClass("active-second-step");
