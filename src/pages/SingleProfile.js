@@ -2,27 +2,75 @@ import React, { useState, useEffect } from "react";
 import {  useHistory } from 'react-router';
 import axios from "axios";
 import NavLinks from '../components/Nav';
-import { GET_USERPROFILE_API } from '../components/Api';
-const SingleProfile = () =>{
+import { GET_USERPROFILE_API , BLOCK_USER_API , REPORT_USER_API } from '../components/Api';
+import {Modal, ModalBody , Dropdown} from 'react-bootstrap';
+
+const SingleProfile = (props) =>{
     const [userData, setUser] = useState('');
     const [count, setCount] = useState('0');
-    //  var profile_images=[];
+    const [blk, setBlock ]= useState(false);
+    const [smShow, setSmShow] = useState(false);
+
+    const[ form, setForm] =useState({ report :""})
+
+    const handleChange = e => { 
+      setForm({
+        ...form,
+        [e.target.name]: e.target.value,
+      }) 
+  }
+    var userId = props.location.user_id;
     //  var result=profile_image.length();
-    const getUser=()=> {
+      const getUser=()=> {
         const bodyParameters = {
-            user_id: 1,
+            user_id: 4,
             session_id: localStorage.getItem('session_id'),
           };
-    axios.post(GET_USERPROFILE_API,bodyParameters)
-    .then((response) => {
-         console.log(response);
-         setUser(response.data.data);
-    }, (error) => {
-    });
-   }
+            axios.post(GET_USERPROFILE_API,bodyParameters)
+            .then((response) => {
+            console.log(response);
+            setUser(response.data.data);
+         }, (error) => {
+        });
+        }
+        const handleblock = async() => {
+          const bodyParameters={
+            session_id : localStorage.getItem('session_id'),
+            blocked_user: 2,
+          }
+          axios.post(BLOCK_USER_API , bodyParameters)
+          .then((response)=>
+          {
+          if(response.status==200 ) {
+          alert("block successfully")
+         
+          }
+       
+          
+          }, (error) =>{
+  
+          });
+        }
+
+      const handleReport =() =>{
+         const bodyParameters ={
+          session_id: localStorage.getItem('session_id') ,
+          report_user :4 ,
+          report_message: form.report
+         }
+         axios.post(REPORT_USER_API , bodyParameters)
+         .then((response) => {
+          if(response.status==200)
+          { alert("report successfully")
+           setSmShow(false) }
+         } ,(error) => {
+
+         });
+        };
+
    useEffect(() =>{
     getUser();
-  },[])
+    },[])
     return(
        <section className="home-wrapper">
   <img className="bg-mask" src="/assets/images/mask-bg.png" alt="Mask" />
@@ -81,10 +129,10 @@ const SingleProfile = () =>{
         <div className="col-md-7">
           <div className="report-tab d-flex flex-wrap align-items-center justify-content-end ml-auto">
             <span className="block-cta">
-              <a className="theme-txt" href="javascript:void(0)">Block</a>
+              <a className="theme-txt" href="javascript:void(0)" onClick={handleblock}>{blk ?'unblock':'Block'}</a>
             </span>
             <span className="report-cta">
-              <a className="theme-txt" href="javascript:void(0)">Report</a>
+              <a className="theme-txt" href="javascript:void(0)" onClick={() => setSmShow(true)}>Report</a>
             </span>
           </div>
         </div>
@@ -248,7 +296,42 @@ const SingleProfile = () =>{
       </div>
     </div>
   </div>
+  
+  <Modal className =" report-modal"   show={smShow} onHide={() => setSmShow(false)}   aria-labelledby="example-modal-sizes-title-sm">
+        <div className="edit-profile-modal__inner">
+        <Modal.Header  id="example-modal-sizes-title-sm">
+        <Modal.Title> <h4 className="theme-txt text-center mb-4 ">Report a problem</h4>
+          </Modal.Title>
+        </Modal.Header>
+        <form>
+      
+        <div className="choose-report d-flex flex-wrap">
+                            <div className="form-group">
+                              <input type="radio"  name="report" value="it's spam" id="first-option"  onChange={ handleChange } />
+                              <label for="first-option"></label>
+                              <span>it's Spam</span>  
+                            </div>
+                            <div className="form-group">
+                              <input type="radio"  name="report" value="Fake user"  id="second-option" onChange={ handleChange }  />
+                              <label for="second-option"></label>
+                              <span>Fake User</span>
+                            </div>
+                              
+                            <div className="form-group">
+                              <input type="radio" name="report" value="more"  id="third-option" onChange={ handleChange }  />
+                              <label for="third-option"></label>
+                              <span>Other</span>  
+                          </div>
+                          </div>
+                          <a className="btn bg-grd-clr d-block btn-countinue-3 "  id="edit-second-step" href="javascript:void(0)" onClick={handleReport}>Send</a>
+          </form>
+           </div>
+       
+    </Modal>
+  
 </section>
+
+
     )
 }
 export default SingleProfile;

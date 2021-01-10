@@ -3,16 +3,50 @@ import React, { useState, useEffect } from "react";
 import {  useHistory } from 'react-router';
 import axios from "axios";
 import Slider from '@material-ui/core/Slider';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles , withStyles } from '@material-ui/core/styles';
 import { FILTER_LIST_API } from './Api';
 import Loader from '../components/Loader';
 import {Typography} from '@material-ui/core';
 
 const useStyles = makeStyles({
   root: {
-     width: 300,
+    backgroundcolor: '#f4c862',
+    height: 5,
+
+    
   },
 });
+
+const PrettoSlider = withStyles({
+  root: {
+    color: '#707070',
+    height: 5,
+        padding:0,
+  },
+  thumb: {
+    height: 20,
+    width: 20,
+    backgroundColor: '#fff',
+    marginTop: -8,
+    marginLeft: -12,
+    '&:focus, &:hover, &$active': {
+      boxShadow: 'inherit',
+    },
+  },
+  active: {},
+  valueLabel: {
+    left: 'calc(-50% + 4px)',
+  },
+  track: {
+    height: 5,
+    backgroundColor: '#f4c862',
+    borderRadius: 4,
+  },
+  rail: {
+    height: 5,
+    borderRadius: 4,
+  },
+})(Slider);
 
 
 
@@ -142,7 +176,7 @@ useEffect(()=>{
                       <Typography  id="age" className="two-range"  >
                          {`+${valueAge[0]} - ${valueAge[1]}`}
                     </Typography>
-                      <Slider value={valueAge} onChange={handleChangeAge} valueLabelDisplay="auto"
+                      <PrettoSlider value={valueAge} onChange={handleChangeAge} valueLabelDisplay="auto"
                        aria-labelledby="range-slider" getAriaValueText={valuetextAge}/>
 
                     </div>
@@ -155,7 +189,7 @@ useEffect(()=>{
                       <Typography  id="distance" className="two-range"  >
                       {`${valueDistance} miles`}
                       </Typography>
-                      <Slider value={valueDistance} onChange={handleChangeDistance} valueLabelDisplay="auto"
+                      <PrettoSlider value={valueDistance} onChange={handleChangeDistance} valueLabelDisplay="auto"
                        aria-labelledby="range-slider" aria-labelledby="continuous-slider" />
                       </div>
                     </div>
@@ -168,7 +202,7 @@ useEffect(()=>{
                       {`${valueHeight[0]} - ${valueHeight[1]}`} 
                     </Typography>
                       
-                      <Slider value={valueHeight} onChange={handleChangeHeight} valueLabelDisplay="auto"
+                      <PrettoSlider value={valueHeight} onChange={handleChangeHeight} valueLabelDisplay="auto"
         aria-labelledby="range-slider" getAriaValueText={valuetextHeight}/>
 
                     </div>
@@ -181,7 +215,7 @@ useEffect(()=>{
                       {`${valueweight[0]} - ${valueweight[1]}`}
                     </Typography>
                       
-                      <Slider value={valueweight} onChange={handleChangeweight} valueLabelDisplay="auto"
+                      <PrettoSlider value={valueweight} onChange={handleChangeweight} valueLabelDisplay="auto"
         aria-labelledby="range-slider" getAriaValueText={valuetextweight}/>
                     </div>
                     <div className="btns-group d-flex justify-content-between flex-wrap my-5">

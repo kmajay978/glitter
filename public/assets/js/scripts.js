@@ -1,3 +1,4 @@
+
 $(document).ready(function () {
     $('.owl-carousel.login-carousel').owlCarousel({
         loop: true,
@@ -40,8 +41,25 @@ $(document).ready(function () {
             }
         }
     });
-    
-
+      $(".swipe").click(function () {
+           
+        element.addEventListener(('mouseup'), (ev) => {
+            if (mouseIsClicked) {
+              ev.preventDefault()
+              mouseIsClicked = false
+            
+            }
+          })
+      
+          element.addEventListener(('mouseleave'), (ev) => {
+            if (mouseIsClicked) {
+              ev.preventDefault()
+              mouseIsClicked = false
+            
+            }
+          })
+        });
+       
 
     /* TAB 1 */
     // $(".btn-countinue-1").click(function () {
@@ -92,13 +110,13 @@ $(document).ready(function () {
     
     
     /*-- VIDEO CHAT ACTION MENU --*/
-    $('.vc-action-btn').click(function(){
-        if($('.action-menu').hasClass('active')) {
-            $('.action-menu').removeClass('active');
-        } else {
-            $('.action-menu').addClass('active');
-        }
-    });
+    // $('.vc-action-btn').click(function(){
+    //     if($('.action-menu').hasClass('active')) {
+    //         $('.action-menu').removeClass('active');
+    //     } else {
+    //         $('.action-menu').addClass('active');
+    //     }
+    // });
     
     /*-- Chat Box --*/
     $('.inbox-categories > div').click(function(){
@@ -335,30 +353,30 @@ $(document).ready(function () {
     
 /* become member */
     
-    $("#edit-profile").click(function(){
-        $(".edit-profile-modal").addClass("active");
+    // $("#edit-profile").click(function(){
+    //     $(".edit-profile-modal").addClass("active");
         
-    })
+    // })
     
-     $("#coin-spend").click(function(){
-        $(".coin-spend-modal").addClass("active");
+    //  $("#coin-spend").click(function(){
+    //     $(".coin-spend-modal").addClass("active");
         
-    })
+    // })
     
-     $("#blacklist").click(function(){
-        $(".blacklist-modal").addClass("active");
+    //  $("#blacklist").click(function(){
+    //     $(".blacklist-modal").addClass("active");
         
-    })
+    // })
     
-    $("#setting").click(function(){
-        $(".setting-modal").addClass("active");
+    // $("#setting").click(function(){
+    //     $(".setting-modal").addClass("active");
         
-    })
+    // })
     
-     $("#gift-modal").click(function(){
-        $(".all-gifts-wrapper").addClass("active");
+    //  $("#gift-modal").click(function(){
+    //     $(".all-gifts-wrapper").addClass("active");
         
-    })
+    // })
     
     $("#edit-first-step").click(function(){ 
         $(".edit-second-step").addClass("active-second-step");
