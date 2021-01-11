@@ -695,6 +695,7 @@ input::placeholder {
     opacity: 0;
 }
 
+
 .show-gender input[type="checkbox"]:checked + label,
 .show-gender input[type="checkbox"]:not(:checked) + label , 
 .show-gender input[type="radio"]:checked + label,
@@ -702,7 +703,7 @@ input::placeholder {
     position: relative;
     cursor: pointer;
     border-radius: 50px;
-    width: 98px;
+    width: 97px;
     height: 32px;
     line-height: 32px;
     text-transform: uppercase;
