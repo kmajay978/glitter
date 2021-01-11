@@ -46,10 +46,11 @@ const Home = () =>{
                  <NavLinks/>
                 </div>
                 <div className="profile-swipe-wrapper">
-                  <FilterUser fetchedProfile={fetchedProfile} />
-                 {/* <Dummy></Dummy> */}
+                  {/* <FilterUser fetchedProfile={fetchedProfile} /> */}
+                 <Dummy></Dummy>
                  
                 </div>
+              
               </div>
             </div>
           </div>

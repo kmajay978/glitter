@@ -53,7 +53,7 @@
     "reactstrap": "^8.8.1",
     "redux": "^4.0.5",
     "socket.io": "^2.3.0",
-    "socket.io-client": "^2.3.0",
+    "socket.io-client": "^2.4.0",
     "styled-components": "^5.2.1",
     "typeface-roboto": "^1.1.13",
     "web-vitals": "^0.2.4"
