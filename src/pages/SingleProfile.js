@@ -5,6 +5,7 @@ import NavLinks from '../components/Nav';
 import { GET_USERPROFILE_API , BLOCK_USER_API , REPORT_USER_API } from '../components/Api';
 import {Modal, ModalBody , Dropdown} from 'react-bootstrap';
 
+
 const SingleProfile = (props) =>{
     const [userData, setUser] = useState('');
     const [count, setCount] = useState('0');
@@ -86,32 +87,7 @@ const SingleProfile = (props) =>{
         </div>
         <div className="col-lg-9 p-3">
           <div className="tab-top d-flex flex-wrap-wrap">
-            <ul className="feature-menu ml-auto">
-              <li className="active">
-                <a href="javascript:void(0)">
-                  <i className="fas fa-compass" />
-                  <span>Discover</span>
-                </a>
-              </li>
-              <li>
-                <a href="javascript:void(0)">
-                  <i className="fas fa-video" />
-                  <span>Video Chat</span>
-                </a>
-              </li>
-              <li>
-                <a href="javascript:void(0)">
-                  <i className="fas fa-layer-group" />
-                  <span>Activity</span>
-                </a>
-              </li>
-              <li>
-                <a href="javascript:void(0)">
-                  <i className="fas fa-user" />
-                  <span>Profile</span>
-                </a>
-              </li>
-            </ul>
+          <NavLinks />
           </div>
         </div>
       </div>

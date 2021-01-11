@@ -211,19 +211,19 @@ useEffect(() => {
                    
                     <div className="action-tray global-actions d-flex flex-wrap justify-content-center align-items-center">
                    
-                    <button onClick={()=>handleDislike("left",currentUser.user_id)}>Swipe left!</button>
-                    <button onClick={()=>handleLike("right",currentUser.user_id)}>swipe right</button>
+                    {/* <button onClick={()=>handleDislike("left",currentUser.user_id)}>Swipe left!</button>
+                    <button onClick={()=>handleLike("right",currentUser.user_id)}>swipe right</button> */}
                    
-                      {/* <div className="close-btn tray-btn-s">
-                        <a className="left-action" href="javascript:void(0)" onClick={swiped} >×</a>
+                      <div className="close-btn tray-btn-s">
+                        <a className="left-action" href="javascript:void(0)" onClick={()=>handleDislike("left",currentUser.user_id)} >×</a>
                        
                       </div>
                       <div className="like-profile tray-btn-s">
-                        <a className="right-action" href="javascript:void(0)" onClick={swiped} >
+                        <a className="right-action" href="javascript:void(0)" onClick={()=>handleLike("right",currentUser.user_id)} >
                       
                           <i className="fas fa-heart" />
                         </a>
-                      </div> */}
+                      </div>
                       
                     </div>
                   </div>
