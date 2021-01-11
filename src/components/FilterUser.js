@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
+import $ from 'jquery';
 import { useHistory } from "react-router";
 import axios from "axios";
 import Slider from "@material-ui/core/Slider";
@@ -11,12 +12,15 @@ import { GETALLUSER_API } from "../components/Api";
 import GlitterCard from "react-tinder-card";
 import Swipe from "./Swipe";
 const alreadyRemoved = [];
+let isMouseClick = false, startingPos = [], glitterUid;
 const FilterUser = ({ fetchedProfile }) => {
   const history = useHistory();
   const [lastDirection, setLastDirection] = useState();
   const [characters, setCharacters] = useState();
   const [allData, setAllData] = useState([]);
   const [mouseIsClicked, setmouseIsClicked] = useState("false");
+  const [cardClick, setCardClick] = useState(false);
+  const [cardStartPosition, setStartPosition] = useState([])
   const handleUserData = async () => {
     const bodyParameters = {
       session_id: localStorage.getItem("session_id"),
@@ -28,8 +32,8 @@ const FilterUser = ({ fetchedProfile }) => {
   };
 
   // Click here
-const handleUserId = (userId) =>{
-  console.log(userId);
+const handleUserId = (e, userId) =>{
+
 }
 
   const childRefs = allData;
@@ -85,8 +89,45 @@ const handleUserId = (userId) =>{
     }
   };
 
+ useEffect(() => {
+   console.log(cardClick, isMouseClick, "test...");
+   if (cardClick) {
+      history.push({
+                    pathname: '/single-profile',
+                    userId: glitterUid // Your userId
+                  })
+  }
+ }, [cardClick])
+
   useEffect(() => {
     handleUserData();
+    window.setTimeout(() => {
+       $(".main_wrapper")
+    .mousedown(function (evt) {
+      isMouseClick = true;
+      glitterUid =  $(".main_wrapper")
+        // setCardClick(isMouseClick)
+        startingPos = [evt.pageX, evt.pageY]
+        glitterUid = evt.currentTarget.id
+        // setStartPosition(startingPos);
+
+    })
+    .mousemove(function (evt) {
+        if (!(evt.pageX === startingPos[0] && evt.pageY === startingPos[1])) {
+            isMouseClick = false;
+        }
+    })
+    .mouseup(function () {
+        if (!isMouseClick) {
+           setCardClick(isMouseClick)
+        } else {
+          isMouseClick = true
+           setCardClick(isMouseClick)
+        }
+        startingPos = [];
+        setStartPosition(startingPos)
+    });
+    }, 1000); 
   }, []);
 
   return (
@@ -98,12 +139,13 @@ const handleUserId = (userId) =>{
         <div className="stackedcards-container">
           <div className="cardContainer">
             {allData.reverse().map((currentUser, index) => (
+              <div className="main_wrapper" id={currentUser.user_id}>
               <GlitterCard
                 ref={childRefs[index]}
                 className="swipe"
                 key={currentUser.user_id}
                 onSwipe={(dir) => swiped(dir, currentUser.user_id)}
-                onClick={() => handleUserId(currentUser.user_id)}
+               
               >
                 <div className="card">
                   <img
@@ -119,7 +161,9 @@ const handleUserId = (userId) =>{
                     {currentUser.distance},{currentUser.occupation}
                   </h4>
                 </div>
+                
               </GlitterCard>
+              </div>
             ))}
           </div>
           {/* <div className="card" >
