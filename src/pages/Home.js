@@ -6,12 +6,16 @@ import FilterSide from '../components/Filter';
 import NavLinks from '../components/Nav';
 import Loader from '../components/Loader';
 import FilterUser from '../components/FilterUser'; 
+import {addBodyClass} from '../components/CommonFunction'; 
 import axios from 'axios';
 import Dummy from '../pages/Dummy'
 
 const Home = () =>{
     const user = useSelector(selectUser); //using redux useSelector here
     const [fetchedProfile, setFilterUser] = useState('');
+
+    // Adding class to body and removing the class
+    addBodyClass('no-bg')('login-body')
     
   return(
           <section className="home-wrapper">
