@@ -1,11 +1,15 @@
 
 import React, { useState, useEffect } from "react";
 import {  useHistory } from 'react-router';
+import {addBodyClass} from '../components/CommonFunction'; 
 import axios from "axios";
 
 const SignupCompleted = (props) =>{
   // Getting picture from prop
 var picture = props.location.mypicture;
+
+// Adding class to body with custom function
+addBodyClass('signup-completed-body')('login-body')
 
 // Setting image to imgData var
 if (typeof(picture) == "undefined")

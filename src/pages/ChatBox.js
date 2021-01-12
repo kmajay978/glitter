@@ -7,8 +7,11 @@ import { LIKED_LIST, VISITOR_LIST_API ,FRIENDLIST_API, GET_USERPROFILE_API ,VIDE
 import Loader from '../components/Loader';
 import { error } from "jquery";
 import {SOCKET} from '../components/Config';
+import {addBodyClass} from '../components/CommonFunction'; 
+
 
 const ChatBox = () =>{
+
 
 const[Likes, setLikes] = useState([]);
 const[Visitors, setVisitors] = useState([]);

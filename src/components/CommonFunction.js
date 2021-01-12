@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, useEffect} from 'react';
 
 
 // Common function toggle
@@ -8,6 +8,14 @@ export default function useToggle(initialValue = false) {
     setValue(v => !v);
   }, []);
   return [value, toggle];
+}
+
+export function addBodyClass(className) {
+   return ()  => useEffect(() => {
+  document.body.className = className;
+  return () => { document.body.className = 'no-bg'; }
+});
+
 }
 
 
