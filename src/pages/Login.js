@@ -8,6 +8,7 @@ import {  useHistory } from 'react-router'
 import axios from "axios";
 import { Button,  makeStyles, createStyles, Theme, Typography, TextField, Grid, Container, Autocomplete,Select, MenuItem, InputLabel,  NativeSelect, Checkbox, FormControl, Link, Input} from '@material-ui/core';
 import DatePicker from 'react-date-picker';
+import moment from 'moment'
 
 
 import countries_data from '../components/Countries';
@@ -20,6 +21,7 @@ import { FacebookProvider, Like } from 'react-facebook';
 
 // Working on login functional component
 const Login = () => {
+  // alert(moment().format("YYYY MMMM Do"))
 
   const [step, setStep] = useState(1);
   const history = useHistory();
@@ -47,6 +49,7 @@ const Login = () => {
   const [otp_4,setOtp4] = useState('');
 
   // All form fields
+  
   const [Dob, setDob] = useState(new Date()); 
   const [FirstName, setFirst] = useState(''); 
   const [LastName, setLast] = useState(''); 
@@ -56,10 +59,10 @@ const Login = () => {
   const [phoneErr, setPhoneErr] = useState({});
   const [FirstErr, setFirstErr] = useState({});
   const [LastErr ,setLastErr] =useState({});
-  
+  const dates = moment(Dob).format('YYYY/M/D');
+ 
   {/* { divToggle ? "signup-inner" : "signup-inner active-tab-2"} */}
-
-
+console.log(dates);
 //  Setting value here radio button
    const handleChange = e => { 
         setGender(e.target.value);
@@ -148,7 +151,7 @@ const tokencheck = () =>{
      {
        Valid = false;
      }
-    else if(genderName.length=="")
+    else if(genderName.length == "")
     {
       Valid = false;
     }
@@ -229,7 +232,7 @@ const registerHandle = (e) =>{
      const bodyParameters = new FormData();
         bodyParameters.append("first_name", "" + FirstName);
         bodyParameters.append("last_name", LastName);
-        bodyParameters.append("dob", "" + Dob);
+        bodyParameters.append("dob", "" + dates);
         bodyParameters.append("gender", "" + genderName);
         bodyParameters.append("device_token", "" + "null");
         bodyParameters.append("device_type", "" + 0);
@@ -259,7 +262,6 @@ const registerHandle = (e) =>{
   // Testing here
 
 
-console.log(Dob);
   const tabScreen = () =>{
     
     switch(step) {
@@ -342,7 +344,7 @@ console.log(Dob);
                 <h4 class="theme-txt">Your Information</h4>
                 </div>
                 <div className="form-group">
-                <DatePicker  className="form-control bg-trsp" name="date-birth" format="yyyy/MM/dd"   value={Dob} onChange={date => setDob(date)} placeholder="Your Date of birth"/>
+                <DatePicker  className="bg-trsp" name="date-birth"   value={Dob} selected={Dob}  onChange={date => setDob(date)} placeholder="Your Date of birth"/>
                </div>
                 {/* <div className="form-group">
                  <input 
