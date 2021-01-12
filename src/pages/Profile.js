@@ -3,8 +3,9 @@ import React, { useState, useEffect, useRef } from "react";
 import {  useHistory } from 'react-router';
 import axios from "axios";
 import NavLinks from '../components/Nav';
-import { GET_GIFT_API , GIFT_LIST_API , GET_LOGGEDPROFILE_API , EDITPROFILE_API , BLOCK_USERLIST_API , LOGOUT_API} from '../components/Api';
+import { GET_GIFT_API , GIFT_LIST_API , GET_LOGGEDPROFILE_API , EDITPROFILE_API , BLOCK_USERLIST_API , LOGOUT_API, BLOCK_USER_API} from '../components/Api';
 import useToggle from '../components/CommonFunction';
+import {removeStorage} from '../components/CommonFunction';
 import Login from '../pages/Login'
 import { useDispatch } from 'react-redux';
 import {login} from '../features/userSlice';
@@ -117,7 +118,7 @@ const Profile = () =>{
     };
     axios.post(LOGOUT_API , bodyParameters)
     .then((response) => { 
-      localStorage.removeItem("session_id");
+      removeStorage('session_id');
       history.push('/login');
       alert("logout successfully")
     }, (error) =>{
@@ -135,6 +136,8 @@ const Profile = () =>{
    setBlockData(data);
    
    }
+
+ 
 
    //all gift
    const handleGift = async() =>{
@@ -565,7 +568,9 @@ const Profile = () =>{
         </div>
         <div className="coins-spend__hostname">
           <span>{item.first_name}</span> <span className="counter">{item.age}</span>
-          <div className="coin-spend__total"><img src="/assets/images/diamond-sm.png"/> 75</div>
+          <div className="coin-spend__total" > 
+              <a className="theme-txt" href="javascript:void(0)">Unblock</a>
+            </div>
         </div>
      
       </div>

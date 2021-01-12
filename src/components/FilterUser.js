@@ -134,11 +134,11 @@ const handleUserId = (e, userId) =>{
   return (
     <div className="stage">
       <div
-        id="stacked-cards-block"
-        className="stackedcards stackedcards--animatable init"
+        id=""
+        className=""
       >
-        <div className="stackedcards-container">
-          <div className="cardContainer">
+        <div className="">
+          <div className="">
             {allData.reverse().map((currentUser, index) => (
               <div className="main_wrapper" id={currentUser.user_id}>
               <GlitterCard

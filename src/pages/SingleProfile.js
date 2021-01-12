@@ -14,7 +14,12 @@ const SingleProfile = (props) =>{
     const [smShow, setSmShow] = useState(false);
 
     const[ form, setForm] =useState({ report :""})
+    
+     const history = useHistory()
 
+    const handleBack = () =>{
+      history.push("/")
+    }
     const handleChange = e => { 
       setForm({
         ...form,
@@ -98,7 +103,7 @@ const SingleProfile = (props) =>{
       <div className="row align-items-center">
         <div className="col-md-5">
           <div className="back-bar d-flex align-items-center">
-            <a className="btn-back" href="javascript:void(0)"><i className="fas fa-chevron-left" /></a>
+            <a className="btn-back" href="javascript:void(0)"><i className="fas fa-chevron-left" onClick={handleBack} /></a>
             <span className="theme-txt">Back</span>
           </div>
         </div>
