@@ -72,7 +72,7 @@ function valuetextweight(value) {
   };
 
     
-    const [valueweight, setValueweight] = useState([25, 30]);
+    const [valueweight, setValueweight] = useState([25, 50]);
     const handleChangeweight = (event, newValue) => {
       setValueweight(newValue);
     };

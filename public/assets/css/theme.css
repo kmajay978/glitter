@@ -98,6 +98,39 @@ input {
     color: var(--theme-primary-color);
 }
 
+.react-date-picker__wrapper {
+    display: flex;
+    flex-grow: 1;
+    flex-shrink: 0;
+    border: none;
+    height: 44px;
+    border-radius: 50px;
+    background-color: var(--input-bg-color) !important;
+    border: 1px solid var(--theme-color) !important;
+    align-items: center;
+}
+
+.react-date-picker{
+    display: block !important;
+}
+
+.react-date-picker__inputGroup input {
+    height: auto !important;
+    min-width: auto !important;
+    border: none !important;
+}
+
+.react-date-picker__inputGroup {
+    text-align: left;
+    padding: .375rem .75rem !important;
+}
+
+.react-date-picker__button svg {
+    display: inherit;
+    stroke: var(--theme-color);
+    width: 14px;
+}
+
 ::-webkit-input-placeholder {
     color: #fff !important;
 }
@@ -2961,6 +2994,9 @@ textarea.send-message-text::placeholder {
     display: block;
 }
 
+#images_crousal .carousel-indicators {
+    display: none;
+}
 /*carousel css*/
 .carousel-indicators li {
     width: 10px;

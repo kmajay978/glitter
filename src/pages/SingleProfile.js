@@ -4,6 +4,7 @@ import axios from "axios";
 import NavLinks from '../components/Nav';
 import { GET_USERPROFILE_API , BLOCK_USER_API , REPORT_USER_API } from '../components/Api';
 import {Modal, ModalBody , Dropdown} from 'react-bootstrap';
+import Carousel from 'react-bootstrap/Carousel'
 
 const SingleProfile = (props) =>{
     const [userData, setUser] = useState('');
@@ -36,7 +37,7 @@ const SingleProfile = (props) =>{
         const handleblock = async() => {
           const bodyParameters={
             session_id : localStorage.getItem('session_id'),
-            blocked_user: 2,
+            blocked_user: checkUid,
           }
           axios.post(BLOCK_USER_API , bodyParameters)
           .then((response)=>
@@ -55,7 +56,7 @@ const SingleProfile = (props) =>{
       const handleReport =() =>{
          const bodyParameters ={
           session_id: localStorage.getItem('session_id') ,
-          report_user :4 ,
+          report_user :checkUid ,
           report_message: form.report
          }
          axios.post(REPORT_USER_API , bodyParameters)
@@ -86,32 +87,7 @@ const SingleProfile = (props) =>{
         </div>
         <div className="col-lg-9 p-3">
           <div className="tab-top d-flex flex-wrap-wrap">
-            <ul className="feature-menu ml-auto">
-              <li className="active">
-                <a href="javascript:void(0)">
-                  <i className="fas fa-compass" />
-                  <span>Discover</span>
-                </a>
-              </li>
-              <li>
-                <a href="javascript:void(0)">
-                  <i className="fas fa-video" />
-                  <span>Video Chat</span>
-                </a>
-              </li>
-              <li>
-                <a href="javascript:void(0)">
-                  <i className="fas fa-layer-group" />
-                  <span>Activity</span>
-                </a>
-              </li>
-              <li>
-                <a href="javascript:void(0)">
-                  <i className="fas fa-user" />
-                  <span>Profile</span>
-                </a>
-              </li>
-            </ul>
+          <NavLinks />
           </div>
         </div>
       </div>
@@ -151,7 +127,9 @@ const SingleProfile = (props) =>{
               </span>
             </div>
           </div>
-          <div className="owl-carousel owl-theme profile-carousel">
+          {/* <div className="owl-carousel owl-theme profile-carousel"> */}
+          <Carousel id="images_crousal" >
+          <Carousel.Item interval={900} >
             <div className="item">
               <figure>
                 <img src={userData.profile_images} alt="Marlene" />
@@ -164,7 +142,9 @@ const SingleProfile = (props) =>{
                 <span className="liked"><i className="fas fa-heart" /> {userData.likes}</span>
              </div>
             </div>
-          </div>
+            </Carousel.Item>
+            </Carousel>
+          {/* </div> */}
           <div className="action-tray d-flex flex-wrap justify-content-center align-items-center">
             <div className="close-btn tray-btn-s">
               <a href="javascript:void(0)">×</a>

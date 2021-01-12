@@ -694,9 +694,9 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		element.addEventListener('touchend', gestureEnd, false);
 		
 		//Add listeners to call global action for swipe cards
-		var buttonLeft = document.querySelector('.left-action');
+		var buttonLeft = document.getElementById('.left-action');
 	  //var buttonTop = document.querySelector('.top-action');
-		var buttonRight = document.querySelector('.right-action');
+		var buttonRight = document.getElementById('.right-action');
 
 		buttonLeft.addEventListener('click', onActionLeft, false);
 		//buttonTop.addEventListener('click', onActionTop, false);

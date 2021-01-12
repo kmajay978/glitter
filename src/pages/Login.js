@@ -1,27 +1,27 @@
+import { format } from 'date-fns';
 import { useDispatch } from 'react-redux';
 import {login} from '../features/userSlice';
-import { format } from 'date-fns';
+
 import React, { useState, useEffect } from "react";
 import DateFnsUtils from '@date-io/date-fns';
 import {  useHistory } from 'react-router'
 import axios from "axios";
 import { Button,  makeStyles, createStyles, Theme, Typography, TextField, Grid, Container, Autocomplete,Select, MenuItem, InputLabel,  NativeSelect, Checkbox, FormControl, Link, Input} from '@material-ui/core';
-import {
-  MuiPickersUtilsProvider,
-  KeyboardTimePicker,
-  KeyboardDatePicker,
-} from '@material-ui/pickers';
+import DatePicker from 'react-date-picker';
+import moment from 'moment'
+
 
 import countries_data from '../components/Countries';
 import LoginSidebar from '../components/LoginSidebar'; 
 
 import { SENDOTP_API, VERIFY_API, SIGNUP_API } from '../components/Api';
 import $ from 'jquery';
+import { FacebookProvider, Like } from 'react-facebook';
 
 
- 
 // Working on login functional component
 const Login = () => {
+  // alert(moment().format("YYYY MMMM Do"))
 
   const [step, setStep] = useState(1);
   const history = useHistory();
@@ -49,21 +49,26 @@ const Login = () => {
   const [otp_4,setOtp4] = useState('');
 
   // All form fields
-  const [Dob, setDob] = useState(''); 
+  
+  const [Dob, setDob] = useState(new Date()); 
   const [FirstName, setFirst] = useState(''); 
   const [LastName, setLast] = useState(''); 
   const [genderName, setGender] = useState('');  
   const [picture, setPicture] = useState(null);
   const [imgData, setImgData] = useState(null);
   const [phoneErr, setPhoneErr] = useState({});
-
+  const [FirstErr, setFirstErr] = useState({});
+  const [LastErr ,setLastErr] =useState({});
+  const dates = moment(Dob).format('YYYY/M/D');
+ 
   {/* { divToggle ? "signup-inner" : "signup-inner active-tab-2"} */}
-
+console.log(dates);
 //  Setting value here radio button
    const handleChange = e => { 
         setGender(e.target.value);
     }
  
+  
 
   const handleFileChange = e => {
     if (e.target.files[0]) {
@@ -119,6 +124,42 @@ const tokencheck = () =>{
 
    }
 
+   const handleNextClick = () =>
+   {
+    const Valid = registrationvalidation();
+    if(Valid) {
+      setStep(step + 1)
+    }
+   }
+   const registrationvalidation =() =>
+   {
+    const FirstErr = {};
+    let Valid = true;
+    if(FirstName.length == "")
+     {
+       FirstErr.FirstNameEmpty = "First name is Empty";
+       Valid = false;
+     }
+     
+     else if(LastName.length == "")
+     {
+       LastErr.lastNameEmpty = "last name is Empty";
+       Valid = false;
+     }
+     
+     else if(Dob.length == "")
+     {
+       Valid = false;
+     }
+    else if(genderName.length == "")
+    {
+      Valid = false;
+    }
+     setFirstErr(FirstErr);
+     setLastErr(LastErr);
+      return Valid;
+   }
+
    const formValidation = () =>{
      const phoneErr = {};
      let isValid = true;
@@ -128,9 +169,7 @@ const tokencheck = () =>{
        phoneErr.phoneShort = "Phone number is Empty";
        isValid = false;
      }
-
-     
-
+    
      setPhoneErr(phoneErr);
      return isValid;
    }
@@ -193,7 +232,7 @@ const registerHandle = (e) =>{
      const bodyParameters = new FormData();
         bodyParameters.append("first_name", "" + FirstName);
         bodyParameters.append("last_name", LastName);
-        bodyParameters.append("dob", "" + Dob);
+        bodyParameters.append("dob", "" + dates);
         bodyParameters.append("gender", "" + genderName);
         bodyParameters.append("device_token", "" + "null");
         bodyParameters.append("device_type", "" + 0);
@@ -221,7 +260,6 @@ const registerHandle = (e) =>{
   // End here 
 
   // Testing here
-
 
 
   const tabScreen = () =>{
@@ -255,7 +293,12 @@ const registerHandle = (e) =>{
                        <p>Continue with</p>
                         <ul className="social-login">
                           <li>
-                            <a className="bg-grd-clr" href="javascript:void(0)"><i className="fab fa-facebook-f" /></a>
+                            <a className="bg-grd-clr" href="javascript:void(0)">
+                            <FacebookProvider appId="123456789">
+                            <i className="fab fa-facebook-f" />
+                            <Like href="http://www.facebook.com" colorScheme="dark" showFaces share />
+                            </FacebookProvider>  
+                          </a>
                           </li>
                           <li>
                             <a className="bg-grd-clr" href="javascript:void(0)"><i className="fab fa-google" /></a>
@@ -301,9 +344,12 @@ const registerHandle = (e) =>{
                 <h4 class="theme-txt">Your Information</h4>
                 </div>
                 <div className="form-group">
+                <DatePicker  className="bg-trsp" name="date-birth"   value={Dob} selected={Dob}  onChange={date => setDob(date)} placeholder="Your Date of birth"/>
+               </div>
+                {/* <div className="form-group">
                  <input 
                  className="form-control bg-trsp" name="date-birth" value={Dob} onChange={e => setDob(e.target.value)} type="text" placeholder="Your Date of birth" /> 
-                </div>
+                </div> */}
                 <div className="form-group">
                   <input className="form-control bg-trsp" name="first-name" value={FirstName} onChange={e => setFirst(e.target.value)} id="first_name" type="text" placeholder="First Name" />
                 </div> 
@@ -327,7 +373,7 @@ const registerHandle = (e) =>{
                     </div>
                  
             </div>
-            <a className="btn bg-grd-clr d-block mb-4 btn-countinue-3" href="javascript:void(0)" onClick={() => setStep(step + 1)}>Next</a>
+            <a className="btn bg-grd-clr d-block mb-4 btn-countinue-3" href="javascript:void(0)" onClick={handleNextClick}>Next</a>
           </div>
           </div>
           

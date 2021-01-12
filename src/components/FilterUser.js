@@ -13,6 +13,7 @@ import GlitterCard from "react-tinder-card";
 import Swipe from "./Swipe";
 const alreadyRemoved = [];
 let isMouseClick = false, startingPos = [], glitterUid;
+
 const FilterUser = ({ fetchedProfile }) => {
   const history = useHistory();
   const [lastDirection, setLastDirection] = useState();
