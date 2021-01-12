@@ -9,7 +9,7 @@ import axios from "axios";
 import { Button,  makeStyles, createStyles, Theme, Typography, TextField, Grid, Container, Autocomplete,Select, MenuItem, InputLabel,  NativeSelect, Checkbox, FormControl, Link, Input} from '@material-ui/core';
 import DatePicker from 'react-date-picker';
 import moment from 'moment'
-
+import PhoneInput from 'react-phone-input-2'
 
 import countries_data from '../components/Countries';
 import LoginSidebar from '../components/LoginSidebar'; 
@@ -57,12 +57,9 @@ const Login = () => {
   const [picture, setPicture] = useState(null);
   const [imgData, setImgData] = useState(null);
   const [phoneErr, setPhoneErr] = useState({});
-  const [FirstErr, setFirstErr] = useState({});
-  const [LastErr ,setLastErr] =useState({});
   const dates = moment(Dob).format('YYYY/M/D');
  
   {/* { divToggle ? "signup-inner" : "signup-inner active-tab-2"} */}
-console.log(dates);
 //  Setting value here radio button
    const handleChange = e => { 
         setGender(e.target.value);
@@ -131,19 +128,18 @@ const tokencheck = () =>{
       setStep(step + 1)
     }
    }
+
    const registrationvalidation =() =>
    {
     const FirstErr = {};
     let Valid = true;
     if(FirstName.length == "")
      {
-       FirstErr.FirstNameEmpty = "First name is Empty";
        Valid = false;
      }
      
      else if(LastName.length == "")
      {
-       LastErr.lastNameEmpty = "last name is Empty";
        Valid = false;
      }
      
@@ -155,8 +151,6 @@ const tokencheck = () =>{
     {
       Valid = false;
     }
-     setFirstErr(FirstErr);
-     setLastErr(LastErr);
       return Valid;
    }
 
@@ -204,14 +198,28 @@ const verifyHandle = () =>{
     }
     else
     {
+    const ifvalid = otpValidation();
+    if(ifvalid){
     setStep(step + 1)
     localStorage.clear();
     }
+  }
   
   }, (error) => {
     
      localStorage.clear();
   });
+}
+//otp validation
+const otpValidation = () =>{
+  const phoneErr = {};
+  let ifvalid = true;
+
+  if(otp.length == "")
+  {
+    ifvalid = false;
+  }
+  return ifvalid;
 }
   // End verify otp 
 
@@ -222,8 +230,6 @@ const verifyHandle = () =>{
                 "Content-Type": "multipart/form-data",
             }
       }
-
-
     
   // Verify OTP Function 
 const registerHandle = (e) =>{
@@ -260,8 +266,6 @@ const registerHandle = (e) =>{
   // End here 
 
   // Testing here
-
-
   const tabScreen = () =>{
     
     switch(step) {
