@@ -11,30 +11,31 @@ import SignupCompleted from './pages/SignupCompleted';
 import Profile from './pages/Profile';
 import SingleProfile from './pages/SingleProfile';
 import RecentCall from './pages/RecentCall';
+import Dummy from './pages/Dummy';
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 import  ProtectedRoute  from "./protected.route";
-import {SOCKET} from './components/Config';
+// import {SOCKET} from './components/Config';
 
 function App() {
 
 // initializing socket here 
 
-  useEffect(() =>{
- SOCKET.connect();
-    SOCKET.on('connect', function () {
-      console.log('connected to socket server');
-    });
-    SOCKET.on('event', function (data) {
-      console.log('Event Data', data);
-    });
-    //socket.emit(‘Test’, ‘world’);
-    SOCKET.on('connect_error', (err) => {
-      console.log(err)
-    });
-    SOCKET.on('disconnect', function () {
-      console.log('Disconnected from Socket Server');
-    });
-  })
+//   useEffect(() =>{
+//  SOCKET.connect();
+//     SOCKET.on('connect', function () {
+//       console.log('connected to socket server');
+//     });
+//     SOCKET.on('event', function (data) {
+//       console.log('Event Data', data);
+//     });
+//     //socket.emit(‘Test’, ‘world’);
+//     SOCKET.on('connect_error', (err) => {
+//       console.log(err)
+//     });
+//     SOCKET.on('disconnect', function () {
+//       console.log('Disconnected from Socket Server');
+//     });
+//   })
 
 
 
@@ -43,6 +44,7 @@ function App() {
         <Switch>
           <Route exact path="/login" component={Login} />
           <Route exact path='/signup-completed' component={SignupCompleted} />
+       
        
           {/* Private routes */}
           <ProtectedRoute exact path='/' component={Home} />
@@ -53,6 +55,7 @@ function App() {
           <ProtectedRoute exact path='/search-home' component={SearchHome} />
           <ProtectedRoute exact path='/single-profile' component={SingleProfile} />
           <ProtectedRoute exact path='/recent-call' component={RecentCall} />
+           <ProtectedRoute exact path='/dummy' component={Dummy} />
            
            
         </Switch>

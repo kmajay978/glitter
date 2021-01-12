@@ -9,6 +9,7 @@ import {Modal, ModalBody , Dropdown} from 'react-bootstrap';
 const SingleProfile = (props) =>{
     const [userData, setUser] = useState('');
     const [count, setCount] = useState('0');
+    const [checkUid, setUserId] = useState(props.location.userId);
     const [blk, setBlock ]= useState(false);
     const [smShow, setSmShow] = useState(false);
 
@@ -20,11 +21,10 @@ const SingleProfile = (props) =>{
         [e.target.name]: e.target.value,
       }) 
   }
-    var userId = props.location.user_id;
-    //  var result=profile_image.length();
+    
       const getUser=()=> {
         const bodyParameters = {
-            user_id: 4,
+            user_id: checkUid,
             session_id: localStorage.getItem('session_id'),
           };
             axios.post(GET_USERPROFILE_API,bodyParameters)

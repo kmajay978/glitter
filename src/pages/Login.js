@@ -1,6 +1,7 @@
+import { format } from 'date-fns';
 import { useDispatch } from 'react-redux';
 import {login} from '../features/userSlice';
-import { format } from 'date-fns';
+
 import React, { useState, useEffect } from "react";
 import DateFnsUtils from '@date-io/date-fns';
 import {  useHistory } from 'react-router'
@@ -46,7 +47,7 @@ const Login = () => {
   const [otp_4,setOtp4] = useState('');
 
   // All form fields
-  const [Dob, setDob] = useState(''); 
+  const [Dob, setDob] = useState(new Date()); 
   const [FirstName, setFirst] = useState(''); 
   const [LastName, setLast] = useState(''); 
   const [genderName, setGender] = useState('');  
@@ -57,6 +58,7 @@ const Login = () => {
   const [LastErr ,setLastErr] =useState({});
   
   {/* { divToggle ? "signup-inner" : "signup-inner active-tab-2"} */}
+
 
 //  Setting value here radio button
    const handleChange = e => { 

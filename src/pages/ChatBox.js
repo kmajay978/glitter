@@ -17,6 +17,7 @@ const[isLoaded, setIsLoaded] = useState(false);
 const[FriendUserId, setFriendId] = useState('');
 const[AllData, setData] = useState('');
 const[CompleteMessageList, setMessages] = useState([]);
+const[GetActivity, setActivity] = useState(0);
 
 
 const sessionId = localStorage.getItem('session_id');
@@ -24,8 +25,10 @@ const sessionId = localStorage.getItem('session_id');
    const bodyParameters = {
        session_id: sessionId,
   };
+  
   //Likes here
   const getLikes = async () => {
+      setActivity(0);
 
   // Destructing response and getting data part
   const { data: {data} } = await axios.post(LIKED_LIST,bodyParameters)
@@ -35,7 +38,7 @@ const sessionId = localStorage.getItem('session_id');
     // Visitors here
 
     const getVisitors = async () => { 
-
+    setActivity(1);
   // Destructing response and getting data part
     const { data: {result} } = await axios.post(VISITOR_LIST_API,bodyParameters)
         setVisitors(result);
@@ -44,6 +47,7 @@ const sessionId = localStorage.getItem('session_id');
     //Friends here
 
     const getFriend = async() => {
+       setActivity(2);
     const {data:{data}}= await axios.post(FRIENDLIST_API,bodyParameters)
     setFriendlist(data);
      }
@@ -120,17 +124,23 @@ const sessionId = localStorage.getItem('session_id');
        getLikes();
        getVisitors();
        getFriend(); 
+
      },[])
+
+ useEffect(()=>{
+   if (GetActivity === 2) {
+      SOCKET.connect();
+   }
+   else {
+      SOCKET.disconnect();
+   }
+     },[GetActivity])
 
      useEffect(()=>{
        friendListChat();
      },[FriendUserId])
      
     
-
-    useEffect(()=> {
-     
-    },[])
       //console.log(AllData);
       //console.log(FriendList);
     return( 
@@ -245,7 +255,7 @@ const sessionId = localStorage.getItem('session_id');
                   
                   { FriendList.map((item, i) => {
                     return <li className="nav-item">
-                    <a className="nav-link" href="#chat-field" data-toggle="tab" data-id={item.liked_user_id} role="tab" onClick={() => setFriendId(item.liked_user_id)}>
+                    <a className="nav-link" href="#chat-field" data-toggle="tab" data-id={item.liked_user_id} role="tab" onClick={() =>  setFriendId(item.liked_user_id)}>
                       
                       <img alt="Mia" className="img-circle medium-image" src={item.liked_user_pic} />
                       <div className="contacts_info">
