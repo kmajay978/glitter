@@ -23,40 +23,49 @@ const[CompleteMessageList, setMessages] = useState([]);
 const[GetActivity, setActivity] = useState(0);
 
 
+// console.log(CompleteMessageList)
 const sessionId = localStorage.getItem('session_id');
  
    const bodyParameters = {
        session_id: sessionId,
   };
   
-  //Likes here
-  const getLikes = async () => {
-      setActivity(0);
-
+  // Fetching details of user initial time 
+  const getAllDetails = async () => {
+  const likes = await axios.post(LIKED_LIST,bodyParameters)
+   setLikes(likes.data.data);
+    
   // Destructing response and getting data part
-  const { data: {data} } = await axios.post(LIKED_LIST,bodyParameters)
-   setLikes(data);
-    }
+    const visitor = await axios.post(VISITOR_LIST_API,bodyParameters)
+        setVisitors(visitor.data.result);
+ 
+    const friend= await axios.post(FRIENDLIST_API,bodyParameters)
+    setFriendlist(friend.data.data); 
+  }
 
-    // Visitors here
+// Onclick button, getting LIkes, Visitor and friends list 
+ 
+    const getLikes = async () => {  //Likes here
+        setActivity(0);
+    const { data: {data} } = await axios.post(LIKED_LIST,bodyParameters)
+    setLikes(data);
+      }
 
-    const getVisitors = async () => { 
+    const getVisitors = async () => {  // Visitors here
     setActivity(1);
-  // Destructing response and getting data part
     const { data: {result} } = await axios.post(VISITOR_LIST_API,bodyParameters)
         setVisitors(result);
     
     }
-    //Friends here
-
-    const getFriend = async() => {
+    
+    const getFriend = async() => { //Friends here
        setActivity(2);
     const {data:{data}}= await axios.post(FRIENDLIST_API,bodyParameters)
     setFriendlist(data);
      }
 
   // fetching friends according to userID
-        const friendListChat = async() => {
+        const getFriendDetails = async() => {
             const bodyParameters = {
             session_id: localStorage.getItem('session_id'),
             user_id: FriendUserId,
@@ -66,6 +75,7 @@ const sessionId = localStorage.getItem('session_id');
      setData(data);
      }
 
+    // Adding call functionality here
      const handleCall =() =>{
      const bodyParameters = {
       session_id: localStorage.getItem('session_id'),
@@ -84,13 +94,11 @@ const sessionId = localStorage.getItem('session_id');
      });
      }
 
-    // Working here socket 
+/************************************* Working here socket *******************************************************/
 
     // Authenicating user here
    const DetermineUser = () => {
         var secondUserDataId = FriendUserId;
-        console.log('authenticate hit', secondUserDataId);
-
        SOCKET.emit("authenticate", {
             session_id: sessionId,
             reciever_id: secondUserDataId,
@@ -103,35 +111,27 @@ const sessionId = localStorage.getItem('session_id');
         // console.log(messages.obj)
         setMessages([...messages, messages.obj])
          // this.setState({ userMessage: "" });
-
     }
 
   // Get all messages here
     const GetAllMessages = (messages) => {
-        console.log("complete message List")
-        console.log(messages.message_list)
-      // this.setState({ dataSource: messages })
-       setMessages(messages.message_list)
+         console.log("complete message List")
+        SOCKET.on('getMessage', (messages) => {
+        setMessages(messages.message_list)
+        });
+      
     }
 
 
-    // Calling socket functions here
-    DetermineUser();
-
-
-
-    // End socket here 
-
 // console.log(FriendUserId);
      useEffect(()=>{
-       getLikes();
-       getVisitors();
-       getFriend(); 
-
+      getAllDetails()
      },[])
 
  useEffect(()=>{
    if (GetActivity === 2) {
+     console.log("connect socket")
+     getFriendDetails(); 
       SOCKET.connect();
    }
    else {
@@ -140,12 +140,17 @@ const sessionId = localStorage.getItem('session_id');
      },[GetActivity])
 
      useEffect(()=>{
-       friendListChat();
+      
+       if (!!FriendUserId) {
+          DetermineUser();
+         // GetAllMessages();
+         
+       }
+       // get messagesfrom socket...
+     
      },[FriendUserId])
      
-    
-      //console.log(AllData);
-      //console.log(FriendList);
+
     return( 
       
       <section className="home-wrapper"> 
