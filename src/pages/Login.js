@@ -10,6 +10,7 @@ import { Button,  makeStyles, createStyles, Theme, Typography, TextField, Grid, 
 import DatePicker from 'react-date-picker';
 import moment from 'moment'
 import PhoneInput from 'react-phone-input-2'
+import {addBodyClass} from '../components/CommonFunction'; 
 
 import countries_data from '../components/Countries';
 import LoginSidebar from '../components/LoginSidebar'; 
@@ -21,6 +22,9 @@ import { FacebookProvider, Like } from 'react-facebook';
 
 // Working on login functional component
 const Login = () => {
+
+  // Adding class to body with custom function
+addBodyClass('login-body')('')
   // alert(moment().format("YYYY MMMM Do"))
 
   const [step, setStep] = useState(1);
