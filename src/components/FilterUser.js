@@ -22,20 +22,26 @@ const FilterUser = ({ fetchedProfile }) => {
   const [mouseIsClicked, setmouseIsClicked] = useState("false");
   const [cardClick, setCardClick] = useState(false);
   const [cardStartPosition, setStartPosition] = useState([])
+
   const handleUserData = async () => {
     const bodyParameters = {
       session_id: localStorage.getItem("session_id"),
     };
-    const {
-      data: { data },
-    } = await axios.post(GETALLUSER_API, bodyParameters);
+    const { data: { data }} = await axios.post(GETALLUSER_API, bodyParameters);
     setAllData(data);
   };
+
+//   fetchedProfile =[
+// { user_id :1 ,first_name:"sandeep" , age: 20, distance: 30, weight : "49", gender:"female"},
+// { user_id :2 ,first_name:"oishee" , age: 25, distance: 40, weight : "55" , gender:"female"}
+//   ]
 
   // Click here
 const handleUserId = (e, userId) =>{
 
 }
+
+
 
   const childRefs = allData;
   const swiped = (direction, userId) => {
@@ -133,10 +139,7 @@ const handleUserId = (e, userId) =>{
 
   return (
     <div className="stage">
-      <div
-        id="stacked-cards-block"
-        className="stackedcards stackedcards--animatable init"
-      >
+      <div id="stacked-cards-block" className="stackedcards stackedcards--animatable init" >
         <div className="stackedcards-container">
           <div className="cardContainer">
             {allData.reverse().map((currentUser, index) => (

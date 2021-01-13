@@ -57,6 +57,9 @@ const Login = () => {
   const [picture, setPicture] = useState(null);
   const [imgData, setImgData] = useState(null);
   const [phoneErr, setPhoneErr] = useState({});
+  const [firstErr, setFirstErr] = useState({});
+  const [lastErr, setLastErr] = useState({});
+  const [dobErr, setDobErr] = useState({});
   const dates = moment(Dob).format('YYYY/M/D');
  
   {/* { divToggle ? "signup-inner" : "signup-inner active-tab-2"} */}
@@ -131,26 +134,34 @@ const tokencheck = () =>{
 
    const registrationvalidation =() =>
    {
-    const FirstErr = {};
+    const firstErr = {};
+    const lastErr = {} ;
+    const dobErr = {};
     let Valid = true;
     if(FirstName.length == "")
      {
+      firstErr.firstShort = "First name is Empty";
        Valid = false;
      }
      
-     else if(LastName.length == "")
-     {
+     if(LastName.length == "")
+     { 
+      lastErr.lastShort="Last name is empty"
        Valid = false;
      }
      
-     else if(Dob.length == "")
+      if(Dob.length == "")
      {
+      dobErr.dobShort="date of birth is empty"
        Valid = false;
      }
-    else if(genderName.length == "")
+     if(genderName.length == "")
     {
       Valid = false;
     }
+    setFirstErr(firstErr);
+    setLastErr(lastErr);
+    setDobErr(dobErr);
       return Valid;
    }
 
@@ -349,6 +360,9 @@ const registerHandle = (e) =>{
                 </div>
                 <div className="form-group">
                 <DatePicker  className="bg-trsp" name="date-birth"   value={Dob} selected={Dob}  onChange={date => setDob(date)} placeholder="Your Date of birth"/>
+                { Object.keys(dobErr).map((key) => {
+                          return <div style={{color : "red"}}>{dobErr[key]}</div>
+                        }) }
                </div>
                 {/* <div className="form-group">
                  <input 
@@ -356,9 +370,15 @@ const registerHandle = (e) =>{
                 </div> */}
                 <div className="form-group">
                   <input className="form-control bg-trsp" name="first-name" value={FirstName} onChange={e => setFirst(e.target.value)} id="first_name" type="text" placeholder="First Name" />
+                  { Object.keys(firstErr).map((key) => {
+                          return <div style={{color : "red"}}>{firstErr[key]}</div>
+                        }) }
                 </div> 
                 <div className="form-group">
                   <input className="form-control bg-trsp" name="last-name" value={LastName} onChange={e => setLast(e.target.value)} type="text" placeholder="Last Name" />
+                  { Object.keys(lastErr).map((key) => {
+                          return <div style={{color : "red"}}>{lastErr[key]}</div>
+                        }) }
                 </div>
                 
                     <div className="choose-gender d-flex my-4">

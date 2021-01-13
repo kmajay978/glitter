@@ -81,7 +81,7 @@ const Profile = () =>{
        setProfile(data);
        }
 
-      // console.log(profileData);
+       console.log(profileData);
    
      //update profile data
      const updateProfile = (e) =>{
