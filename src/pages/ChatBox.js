@@ -26,7 +26,7 @@ const[UserMessage, setuserMessage] = useState('');
 const[GetActivity, setActivity] = useState(0);
 
 
- console.log(CompleteMessageList)
+ console.log(CompleteMessageList, "nowwww")
 const sessionId = localStorage.getItem('session_id');
  
    const bodyParameters = {
@@ -141,17 +141,19 @@ const sessionId = localStorage.getItem('session_id');
         console.log("listen message")
         // console.log(messages.obj)
          SOCKET.on('message_data', (messages) => {
-       setMessages([...messages, messages.obj])
+           console.log(messages, "test..");
+           let messageList = CompleteMessageList;
+           messageList.push(messages.obj)
+           console.log(messageList, "messageList...")
+         setMessages(messageList)
         });
          setuserMessage(''); //Empty user input here  
     }
    
   // Get all messages here
     const GetAllMessages = (messages) => {
-         console.log("complete message List")
-        SOCKET.on('getMessage', (messages) => {
-        setMessages(messages.message_list)
-        });   
+         console.log(messages.message_list,"messages.message_list....")
+      
     }
 
 
@@ -182,12 +184,16 @@ const sessionId = localStorage.getItem('session_id');
      useEffect(()=>{
       
         if (GetActivity === 2) {
-                getFriendDetails(); 
+                  getFriendDetails(); 
+                  SOCKET.on('getMessage', (messages) => { // only one time
+                  console.log(messages, "hahahaha")
+                  setMessages(messages.message_list)
+        });   
         }
        if (!!FriendUserId) {
           DetermineUser();
-         // GetAllMessages();
-         OnReceivedMessage();
+        //  GetAllMessages();
+        //  OnReceivedMessage();
          
        }
        // get messagesfrom socket...
@@ -356,28 +362,32 @@ const sessionId = localStorage.getItem('session_id');
               <div className="message-chat">
 
               <div className="chat-body">
-
-              {/* Here we will show our chats */}
-                <div className="message info">
+{
+  CompleteMessageList.map((data, i) => (
+    <div>
+    {
+     (data.user_from_id === FriendUserId) ?
+ <div className="message info">
                   <div className="message-body">
                     <div className="message-text">
-                      <p>Lorem ipsum dolor</p>
+                      <p>{data.message}</p>
                     </div>
                   </div>
                 </div>
-
-                <div className="message my-message">
+                :
+ <div className="message my-message">
                   <div className="message-body">
                     <div className="message-body-inner">
                       <div className="message-text">
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
+                        <p>{data.message}</p>
                       </div>
                     </div>
                   </div>
                 </div>
-
-               {/* End Chats here */}
-
+    }
+</div>
+  ))
+}            
               </div>
 
               <div className="chat-footer">
@@ -427,3 +437,13 @@ export default ChatBox;
 
 
 
+
+
+// created_at: "2021-01-13T00:09:46.000Z"
+// id: 1
+// media: null
+// message: "This is test message"
+// message_is_read: 1
+// updated_at: "2021-01-13T00:02:28.000Z"
+// user_from_id: 4
+// user_to_id: 3

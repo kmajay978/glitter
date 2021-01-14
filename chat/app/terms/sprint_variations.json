@@ -1,0 +1,19 @@
+{
+  "client": "Buyer",
+  "vendor's": "Supplier's",
+  "companies": "Buyers",
+  "vendors": "Suppliers",
+  "carrier": "Buyer",
+  "catalog": "IMN/Catalog",
+  "subCompany": "Sub Buyer",
+  "company's": "Buyer's",
+  "company_name":"Sprint",
+  "catalog_key": "IMN/MISC Unit Price($)",
+  "VENDOR": "SUPPLIER",
+  "imn": "IMN",
+  "company": "Buyer",
+  "subVendor": "Sub Supplier",
+  "catalog_item": "IMN/MISC ",
+  "vendor": "Supplier",
+  "V": "S"
+}

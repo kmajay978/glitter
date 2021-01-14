@@ -1,0 +1,26 @@
+{
+	"port":"3001",
+	"url":"http://18.219.222.191/memorybox/public/uploads/profile/",
+	"databasesettings":
+	{
+		"host":"167.172.209.57",
+		"user":"systemadmin",
+		"password":"G$tintoPc",
+		"database":"glitter-101"
+	},
+	 "emailCredentials": {
+        "host": "smtp.mandrillapp.com",
+        "port": 587,
+        "senderEmail": "noreply@safari.com",
+        "senderPassword": "kOh1VzJLtAKqf1doal34eQ",
+        "From": "Safari <noreply@safari.com",
+        "signature": "Best, \nSafari Team",
+        "particularSignature": "Best, \nSafari Team ",
+        "devTeamSignature": "Best,\nSafari Team"
+    },
+	"AppPasswordLength":6,
+	"service_category_required":true,
+	"fcmnodeCredential":{
+		"serverKey": "AAAAGnk_Fg4:APA91bGYYN9wMZ1SwbZBcz5zdhszBcuAcgvgsUemE0ERSRRdVaKt1h0wyu3jE3aH-0Tk1VEcumODKlHgUTBLviAd-JDBNRHTtxJAs0KmtfKP7bm9wz_ai28BnqICm5jSC6Ekijg72fAZ"
+	}
+}
