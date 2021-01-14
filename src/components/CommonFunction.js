@@ -18,4 +18,26 @@ export function addBodyClass(className) {
 
 }
 
+export function setStorage(key, value) {
+    return localStorage.setItem(key, value);
+}
+
+export function removeStorage(key) {
+    return localStorage.removeItem(key);
+}
+
+export function randomString(len = 5) {
+	let text = '';
+	const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+	for (let i = 0; i < len; i++) {
+		text += possible.charAt(Math.floor(Math.random() * possible.length));
+	}
+
+	return text;
+}
+
+
+
+
 

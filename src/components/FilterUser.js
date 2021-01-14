@@ -40,7 +40,7 @@ const FilterUser = ({ fetchedProfile }) => {
 const handleUserId = (e, userId) =>{
 
 }
-
+console.log(fetchedProfile)
 
 
   const childRefs = allData;
@@ -139,9 +139,12 @@ const handleUserId = (e, userId) =>{
 
   return (
     <div className="stage">
-      <div id="stacked-cards-block" className="stackedcards stackedcards--animatable init" >
-        <div className="stackedcards-container">
-          <div className="cardContainer">
+      <div
+        id=""
+        className=""
+      >
+        <div className="">
+          <div className="">
             {allData.reverse().map((currentUser, index) => (
               <div className="main_wrapper" id={currentUser.user_id}>
               <GlitterCard

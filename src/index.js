@@ -6,10 +6,7 @@ import reportWebVitals from './reportWebVitals';
 
 import { Provider } from 'react-redux';
 import store from './reduxStore/store';
-// import reducer from './ReduxReducers/LoginReducer';
-// import LoginReducer from './ReduxReducers/LoginReducer';
 
-// const store = createStore(LoginReducer);
 
 ReactDOM.render(
    

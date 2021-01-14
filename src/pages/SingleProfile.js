@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import {  useHistory } from 'react-router';
 import axios from "axios";
 import NavLinks from '../components/Nav';
-import { GET_USERPROFILE_API , BLOCK_USER_API , REPORT_USER_API } from '../components/Api';
+import {DISLIKE_USER , LIKE_USER, GET_USERPROFILE_API , BLOCK_USER_API , REPORT_USER_API } from '../components/Api';
 import {Modal, ModalBody , Dropdown} from 'react-bootstrap';
 import Carousel from 'react-bootstrap/Carousel'
 
@@ -14,8 +14,14 @@ const SingleProfile = (props) =>{
     const [smShow, setSmShow] = useState(false);
 
     const[ form, setForm] =useState({ report :""})
+    
+    const history = useHistory()
 
-    const handleChange = e => { 
+    const handleBack = () =>{
+      history.push("/")
+    }
+
+      const handleChange = e => { 
       setForm({
         ...form,
         [e.target.name]: e.target.value,
@@ -44,10 +50,7 @@ const SingleProfile = (props) =>{
           {
           if(response.status==200 ) {
           alert("block successfully")
-         
           }
-       
-          
           }, (error) =>{
   
           });
@@ -69,6 +72,29 @@ const SingleProfile = (props) =>{
          });
         };
 
+        const handleLike =() => {
+           const bodyParameters ={
+            session_id  : localStorage.getItem('session_id'),
+            user_id : checkUid
+            }
+            axios.post(LIKE_USER, bodyParameters).then(
+              (response) => {   
+              },
+              (error) => {}
+            );
+        }
+
+        const handleDislike = () => {
+          const bodyParameters ={
+            session_id : localStorage.getItem('session_id'),
+            user_id : checkUid
+          }
+          axios.post(DISLIKE_USER, bodyParameters).then(
+            (response) => {
+            },
+            (error) => {}
+          );
+        }
    useEffect(() =>{
     getUser();
     },[])
@@ -98,7 +124,7 @@ const SingleProfile = (props) =>{
       <div className="row align-items-center">
         <div className="col-md-5">
           <div className="back-bar d-flex align-items-center">
-            <a className="btn-back" href="javascript:void(0)"><i className="fas fa-chevron-left" /></a>
+            <a className="btn-back" href="javascript:void(0)" onClick={handleBack}><i className="fas fa-chevron-left"  /></a>
             <span className="theme-txt">Back</span>
           </div>
         </div>
@@ -147,7 +173,7 @@ const SingleProfile = (props) =>{
           {/* </div> */}
           <div className="action-tray d-flex flex-wrap justify-content-center align-items-center">
             <div className="close-btn tray-btn-s">
-              <a href="javascript:void(0)">×</a>
+              <a href="javascript:void(0)" onClick={handleDislike}>×</a>
             </div>
             <div className="chat tray-btn-l">
               <a href="javascript:void(0)">
@@ -160,7 +186,7 @@ const SingleProfile = (props) =>{
               </a>
             </div>
             <div className="like-profile tray-btn-s">
-              <a href="javascript:void(0)">
+              <a href="javascript:void(0)" onClick={handleLike}>
                 <i className="fas fa-heart" />
               </a>
             </div>

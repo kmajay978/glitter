@@ -51,7 +51,8 @@ const PrettoSlider = withStyles({
 
 
 const SideFilter = ({setFilterUser}) =>{
- 
+
+  const history = useHistory();
 
   function valuetextHeight(value) {
   return '${valueHeight}°C';
@@ -64,39 +65,54 @@ function valuetextAge(value) {
 function valuetextweight(value) {
   return '${valueweight}°C';
 }
-
-  const [valueHeight, setValueHeight] = useState([20, 37]);
+ const filter ={
+   gender: 3,
+   age: {from: 20, to: 37},
+   distance: 20,
+   height: {from: 10, to: 37},
+   weight: {from: 38, to: 50}
+ };
+  const [valueHeight, setValueHeight] = useState([filter.height.from, filter.height.to]);
   const handleChangeHeight = (event, newValue) => {
     // setLoading('true');
     setValueHeight(newValue);
   };
 
     
-    const [valueweight, setValueweight] = useState([25, 50]);
+    const [valueweight, setValueweight] = useState([filter.weight.from, filter.weight.to]);
     const handleChangeweight = (event, newValue) => {
       setValueweight(newValue);
     };
 
-    const [valueAge, setValueAge] = useState([19, 30]);
+    const [valueAge, setValueAge] = useState([filter.age.from, filter.age.to]);
     const handleChangeAge = (event, newValue) => {
       setValueAge(newValue);
     };
 
 
-    const [valueDistance, setValueDistance] = useState(5);
+    const [valueDistance, setValueDistance] = useState(filter.distance);
     const handleChangeDistance = (event, newValue) => {
     setValueDistance(newValue);
   
   };
  
   // Radio button value
- const [valueGender, setGender] = useState(3);
+ const [valueGender, setGender] = useState(filter.gender);
   const radioHandle = (e) =>{
         setGender(e.target.value);
   }
 
   const [isLoading ,setLoading]= useState();
- 
+
+  
+  const handleReset =(e) => {
+    setGender(filter.gender);
+    setValueDistance(filter.distance);
+    setValueAge([filter.age.from, filter.age.to]);
+    setValueHeight([filter.height.from, filter.height.to]);
+    setValueweight([filter.weight.from, filter.weight.to]);
+  }
+
   const filterHandle = (e) =>{
         e.preventDefault();
 
@@ -112,8 +128,6 @@ function valuetextweight(value) {
      weight_to:valueweight[1],
      latitude:30.7,
      longitude:76.0, 
-   
-
    };
 
      axios.post(FILTER_LIST_API,bodyParameters)
@@ -150,7 +164,7 @@ useEffect(()=>{
          
          <Loader isLoading={isLoading} />
                   <h4 className="mb-4">Filter</h4>
-                  <form action="#" method="post" className="form">
+                  <form action="#" method="post"  className="form">
                     <div className="show-gender ft-block d-flex flex-wrap" onChange={radioHandle}>
                       <div className="tab-title">
                         <h5>Show Me</h5>
@@ -199,11 +213,11 @@ useEffect(()=>{
                         {/*                                    <span class="point-calcu">1.60-1.78m</span>*/}
                       </div>
                       <Typography  id="Height" className="two-range"  >
-                      {`${valueHeight[0]} - ${valueHeight[1]}`} 
+                      {`${valueHeight[0]} - ${valueHeight[1]} cm`} 
                     </Typography>
                       
-                      <PrettoSlider value={valueHeight} onChange={handleChangeHeight} valueLabelDisplay="auto"
-        aria-labelledby="range-slider" getAriaValueText={valuetextHeight}/>
+                      <PrettoSlider value={valueHeight} onChange={handleChangeHeight}  valueLabelDisplay="auto"
+                       aria-labelledby="range-slider" getAriaValueText={valuetextHeight}/>
 
                     </div>
                     <div className="weight-group ft-block">
@@ -212,15 +226,16 @@ useEffect(()=>{
                         {/*                                    <span class="point-calcu">50-65kg</span>*/}
                       </div>
                       <Typography  id="weight" className="two-range"  >
-                      {`${valueweight[0]} - ${valueweight[1]}`}
+                      {`${valueweight[0]} - ${valueweight[1]} kg`}
                     </Typography>
                       
-                      <PrettoSlider value={valueweight} onChange={handleChangeweight} valueLabelDisplay="auto"
-        aria-labelledby="range-slider" getAriaValueText={valuetextweight}/>
+                      <PrettoSlider value={valueweight} onChange={handleChangeweight} valueLabelDisplay="auto" 
+        aria-labelledby="range-slider"  min={18}
+        max={100} getAriaValueText={valuetextweight}/>
                     </div>
                     <div className="btns-group d-flex justify-content-between flex-wrap my-5">
                       <button className="btn bg-grd-clr" type="submit" onClick={filterHandle}>Done</button>
-                      <button className="btn bg-grd-clr" type="reset">Reset</button>
+                      <button className="btn bg-grd-clr" type="reset" onClick={handleReset}>Reset</button>
                     </div>
                   </form>
                 </div>
