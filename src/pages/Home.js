@@ -1,6 +1,6 @@
 import React, {Component, useEffect, useState} from 'react';
 import {useSelector} from 'react-redux';
-
+import Logo from '../components/Logo';
 import { selectUser } from '../features/userSlice';
 import FilterSide from '../components/Filter';
 import NavLinks from '../components/Nav';
@@ -27,8 +27,8 @@ const Home = () =>{
               <div className="col-lg-3 option-bar p-3 vh-100">
                 <div className="logo-tab mb-5 d-flex justify-content-between align-items-start">
                   <a href="javascript:void(0)">
-                    <img src="/assets/images/glitters.png" alt="Glitters" />
-                    
+                    {/* <img src="/assets/images/glitters.png" alt="Glitters" /> */}
+                    <Logo/>
                   </a>
                   <span className="chat-point">
                     <a href="javascript:void(0)">

@@ -8,10 +8,10 @@ import Loader from '../components/Loader';
 import { error } from "jquery";
 import {SOCKET} from '../components/Config';
 import {addBodyClass} from '../components/CommonFunction'; 
+import  $ from 'jquery';
 
 
 const ChatBox = () =>{
-
 
 const[Likes, setLikes] = useState([]);
 const[Visitors, setVisitors] = useState([]);
@@ -20,10 +20,13 @@ const[isLoaded, setIsLoaded] = useState(false);
 const[FriendUserId, setFriendId] = useState('');
 const[AllData, setData] = useState('');
 const[CompleteMessageList, setMessages] = useState([]);
+const[UserMessage, setuserMessage] = useState('');
+
+// console.log(UserMessage);
 const[GetActivity, setActivity] = useState(0);
 
 
-// console.log(CompleteMessageList)
+ console.log(CompleteMessageList)
 const sessionId = localStorage.getItem('session_id');
  
    const bodyParameters = {
@@ -96,6 +99,20 @@ const sessionId = localStorage.getItem('session_id');
 
 /************************************* Working here socket *******************************************************/
 
+  // function readThenSendFile(data){
+  //     var reader = new FileReader();
+  //     reader.onload = function(evt){
+  //         var msg ={};
+  //         msg.file = evt.target.result;
+  //         msg.fileName = data.name;
+  //         msg.sessionId = sessionId;
+  //         console.log(msg, "msg...")
+  //         SOCKET.emit('media_file', msg);
+  //     };
+  //     reader.readAsDataURL(data);
+  // }
+
+
     // Authenicating user here
    const DetermineUser = () => {
         var secondUserDataId = FriendUserId;
@@ -105,32 +122,56 @@ const sessionId = localStorage.getItem('session_id');
       });
     }
 
+    // Socket Methods 
+      const CheckTextInputIsEmptyOrNot = () =>  {
+   
+        if ( UserMessage != '') {
+             var secondUserDataId = FriendUserId;
+            var message = { "session_id": sessionId, "reciever_id": secondUserDataId, "message": UserMessage }
+            console.log('sent>>>> Data', message);
+            SOCKET.emit("send_message", message)
+            OnReceivedMessage(message) //Calling On recieve message here 
+        } else {
+            console.log("Please enter message")
+        }
+    }
+
   // User entered message here
   const OnReceivedMessage = (messages) => {
         console.log("listen message")
         // console.log(messages.obj)
-        setMessages([...messages, messages.obj])
-         // this.setState({ userMessage: "" });
+         SOCKET.on('message_data', (messages) => {
+       setMessages([...messages, messages.obj])
+        });
+         setuserMessage(''); //Empty user input here  
     }
-
+   
   // Get all messages here
     const GetAllMessages = (messages) => {
          console.log("complete message List")
         SOCKET.on('getMessage', (messages) => {
         setMessages(messages.message_list)
-        });
+        });   
     }
 
 
 // console.log(FriendUserId);
      useEffect(()=>{
+
+    //    window.setTimeout(() => {
+    //  $('#uploadfile').bind('change', function(e){
+    // var data = e.originalEvent.target.files[0];
+    // readThenSendFile(data);
+    //   })
+    // }, 1000); 
+
       getAllDetails()
      },[])
 
  useEffect(()=>{
    if (GetActivity === 2) {
      console.log("connect socket")
-     getFriendDetails(); 
+    
       SOCKET.connect();
    }
    else {
@@ -140,9 +181,13 @@ const sessionId = localStorage.getItem('session_id');
 
      useEffect(()=>{
       
+        if (GetActivity === 2) {
+                getFriendDetails(); 
+        }
        if (!!FriendUserId) {
           DetermineUser();
          // GetAllMessages();
+         OnReceivedMessage();
          
        }
        // get messagesfrom socket...
@@ -311,6 +356,8 @@ const sessionId = localStorage.getItem('session_id');
               <div className="message-chat">
 
               <div className="chat-body">
+
+              {/* Here we will show our chats */}
                 <div className="message info">
                   <div className="message-body">
                     <div className="message-text">
@@ -318,6 +365,7 @@ const sessionId = localStorage.getItem('session_id');
                     </div>
                   </div>
                 </div>
+
                 <div className="message my-message">
                   <div className="message-body">
                     <div className="message-body-inner">
@@ -327,23 +375,20 @@ const sessionId = localStorage.getItem('session_id');
                     </div>
                   </div>
                 </div>
-                <div className="message info">
-                  <div className="message-body">
-                    <div className="message-text">
-                      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
-                    </div>
-                  </div>
-                </div>
+
+               {/* End Chats here */}
+
               </div>
 
               <div className="chat-footer">
                 <label className="upload-file">
                   <div>
-                    <input type="file" required />
+                    <input id="uploadfile" type="file" required />
                     <i className="far fa-image" />
                   </div>
                 </label>
-                <textarea className="send-message-text" placeholder="Message..." defaultValue={""} />
+                {/* <textarea className="send-message-text" placeholder="Message..." defaultValue={UserMessage} /> */}
+                  <input className="send-message-text" name="Message" id="Message" type="text" placeholder="Message..." value={UserMessage} onChange={e => setuserMessage(e.target.value)} />
                 <label className="gift-message bg-grd-clr">
                   <a href="javascript:void(0)">
                     <i className="fas fa-gift" />
@@ -354,7 +399,7 @@ const sessionId = localStorage.getItem('session_id');
                     <i className="fas fa-microphone" />
                   </a>
                 </label>
-                <button type="button" className="send-message-button bg-grd-clr"><i className="fas fa-paper-plane" /></button>
+                <button type="button" className="send-message-button bg-grd-clr" onClick={CheckTextInputIsEmptyOrNot}><i className="fas fa-paper-plane" /></button>
               </div>
             </div>
             
@@ -363,6 +408,12 @@ const sessionId = localStorage.getItem('session_id');
         </div>
         {/* End chat box here */}
       </div>
+
+
+
+
+
+
 
     </div>
 

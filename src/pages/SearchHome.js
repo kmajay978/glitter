@@ -1,13 +1,70 @@
 
 import React, { useState, useEffect } from "react";
+import $ from 'jquery';
 import {  useHistory } from 'react-router';
 import axios from "axios";
 import NavLinks from '../components/Nav';
 import FilterSide from '../components/Filter';
+import { FRIENDLIST_API} from '../components/Api';
 
+let isMouseClick = false, startingPos = [], glitterUid;
 const SearchHome = () =>{
-  const [fetchedProfile, setFilterUser] = useState('')
+  const history = useHistory();
+  const [fetchedProfile, setFilterUser] = useState('');
+ const [ friendList  , setFriendlist] = useState([]);
+ const [mouseIsClicked, setmouseIsClicked] = useState("false");
+ const [Click, setClick] = useState(false);
+ const [StartPosition, setStartPosition] = useState([])
+
+  const handleFriendList = async() => {
+    const bodyParameters ={
+      session_id : localStorage.getItem('session_id')
+    }
+    const {data :{data}}= await axios.post(FRIENDLIST_API,bodyParameters)
+    setFriendlist(data); 
+    
+  }
  
+  useEffect (() => {
+    handleFriendList();
+    window.setTimeout(() => {
+       $(".main")
+    .mousedown(function (evt) {
+      isMouseClick = true;
+      glitterUid =  $(".main")
+     
+        startingPos = [evt.pageX, evt.pageY]
+        glitterUid = evt.currentTarget.id
+        // setStartPosition(startingPos);
+
+    })
+    .mousemove(function (evt) {
+        if (!(evt.pageX === startingPos[0] && evt.pageY === startingPos[1])) {
+            isMouseClick = false;
+        }
+    })
+    .mouseup(function () {
+        if (!isMouseClick) {
+           setClick(isMouseClick)
+        } else {
+          isMouseClick = true
+           setClick(isMouseClick)
+        }
+        startingPos = [];
+        setStartPosition(startingPos)
+    });
+    }, 1000); 
+    },[])
+
+  useEffect (() => {
+    if (Click) {
+      history.push({
+                    pathname: '/single-profile',
+                    userId: glitterUid // Your userId
+                  })
+  }
+  },[Click])
+ console.log(friendList);
   console.log(fetchedProfile);
     return(
   <section className="home-wrapper">
@@ -166,6 +223,22 @@ const SearchHome = () =>{
             </div>
             <div className="search-people-row">
               <div className="row">
+                {friendList.map((item,i) => {
+               return <div className=" main col-md-3" id={item.user_id}  >
+                  <div className="sp-singular">
+                    <a href="javascript:void(0)">
+                      <figure>
+                        <img src={item.liked_user_pic} alt="Marlene" />
+                      </figure>
+                      <div className="sp-singular-content">
+                        <div className="status online">Online</div>
+                        <h4>{item.liked_user_name} <span className="age">23</span></h4>
+                        <div className="info">55km, Art. Director</div>
+                      </div>
+                    </a>
+                  </div>
+                </div>
+                })}
                 <div className="col-md-3">
                   <div className="sp-singular">
                     <a href="javascript:void(0)">
@@ -180,132 +253,7 @@ const SearchHome = () =>{
                     </a>
                   </div>
                 </div>
-                <div className="col-md-3">
-                  <div className="sp-singular">
-                    <a href="javascript:void(0)">
-                      <figure>
-                        <img src="/assets/images/eva.png" alt="Eva" />
-                      </figure>
-                      <div className="sp-singular-content">
-                        <div className="status online">Online</div>
-                        <h4>Eva, <span className="age">21</span></h4>
-                        <div className="info">75km, Musician</div>
-                      </div>
-                    </a>
-                  </div>
-                </div>
-                <div className="col-md-3">
-                  <div className="sp-singular">
-                    <a href="javascript:void(0)">
-                      <figure>
-                        <img src="/assets/images/marlene-2.png" alt="Marlene" />
-                      </figure>
-                      <div className="sp-singular-content">
-                        <div className="status online">Online</div>
-                        <h4>Marlene, <span className="age">21</span></h4>
-                        <div className="info">55km, Art. Director</div>
-                      </div>
-                    </a>
-                  </div>
-                </div>
-                <div className="col-md-3">
-                  <div className="sp-singular">
-                    <a href="javascript:void(0)">
-                      <figure>
-                        <img src="/assets/images/marlene.png" alt="Marlene" />
-                      </figure>
-                      <div className="sp-singular-content">
-                        <div className="status online">Online</div>
-                        <h4>Marlene, <span className="age">21</span></h4>
-                        <div className="info">55km, Art. Director</div>
-                      </div>
-                    </a>
-                  </div>
-                </div>
-                <div className="col-md-3">
-                  <div className="sp-singular">
-                    <a href="javascript:void(0)">
-                      <figure>
-                        <img src="/assets/images/eva.png" alt="Eva" />
-                      </figure>
-                      <div className="sp-singular-content">
-                        <div className="status online">Online</div>
-                        <h4>Marlene, <span className="age">21</span></h4>
-                        <div className="info">55km, Art. Director</div>
-                      </div>
-                    </a>
-                  </div>
-                </div>
-                <div className="col-md-3">
-                  <div className="sp-singular">
-                    <a href="javascript:void(0)">
-                      <figure>
-                        <img src="/assets/images/jessica.png" alt="Jessica" />
-                      </figure>
-                      <div className="sp-singular-content">
-                        <div className="status online">Online</div>
-                        <h4>Jessica, <span className="age">25</span></h4>
-                        <div className="info">12km, Student</div>
-                      </div>
-                    </a>
-                  </div>
-                </div>
-                <div className="col-md-3">
-                  <div className="sp-singular">
-                    <a href="javascript:void(0)">
-                      <figure>
-                        <img src="/assets/images/adrianne.png" alt="Adrianne" />
-                      </figure>
-                      <div className="sp-singular-content">
-                        <div className="status online">Online</div>
-                        <h4>Adrianne, <span className="age">21</span></h4>
-                        <div className="info">47km, Fashion Model</div>
-                      </div>
-                    </a>
-                  </div>
-                </div>
-                <div className="col-md-3">
-                  <div className="sp-singular">
-                    <a href="javascript:void(0)">
-                      <figure>
-                        <img src="/assets/images/mia.png" alt="Mia" />
-                      </figure>
-                      <div className="sp-singular-content">
-                        <div className="status online">Online</div>
-                        <h4>Mia, <span className="age">26</span></h4>
-                        <div className="info">12km, Lawyer Student</div>
-                      </div>
-                    </a>
-                  </div>
-                </div>
-                <div className="col-md-3">
-                  <div className="sp-singular">
-                    <a href="javascript:void(0)">
-                      <figure>
-                        <img src="/assets/images/jessica.png" alt="Jessica" />
-                      </figure>
-                      <div className="sp-singular-content">
-                        <div className="status online">Online</div>
-                        <h4>Jessica, <span className="age">25</span></h4>
-                        <div className="info">12km, Student</div>
-                      </div>
-                    </a>
-                  </div>
-                </div>
-                <div className="col-md-3">
-                  <div className="sp-singular">
-                    <a href="javascript:void(0)">
-                      <figure>
-                        <img src="/assets/images/adrianne.png" alt="Adrianne" />
-                      </figure>
-                      <div className="sp-singular-content">
-                        <div className="status online">Online</div>
-                        <h4>Adrianne, <span className="age">21</span></h4>
-                        <div className="info">47km, Fashion Model</div>
-                      </div>
-                    </a>
-                  </div>
-                </div>
+             
               </div>
             </div>
           </div>
