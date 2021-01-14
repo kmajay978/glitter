@@ -1067,6 +1067,10 @@ span.live {
     background-color: #00FF31;
 }
 
+.sp-singular-content .status.offline::before {
+    background-color: #ed283a;
+}
+
 .sp-singular-content h4 {
     font-size: 16px;
 }
