@@ -231,7 +231,8 @@ const SearchHome = () =>{
                         <img src={item.liked_user_pic} alt="Marlene" />
                       </figure>
                       <div className="sp-singular-content">
-                        <div className="status online">Online</div>
+                      {item.is_online == '0'? <div className="status offline">Offline</div>: <div className="status online">Online</div>}
+                       
                         <h4>{item.liked_user_name} <span className="age">23</span></h4>
                         <div className="info">55km, Art. Director</div>
                       </div>
