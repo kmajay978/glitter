@@ -228,13 +228,13 @@ const SearchHome = () =>{
                   <div className="sp-singular">
                     <a href="javascript:void(0)">
                       <figure>
-                        <img src={item.liked_user_pic} alt="Marlene" />
+                        <img src={item.profile_images} alt="Marlene" />
                       </figure>
                       <div className="sp-singular-content">
-                      {item.is_online == '0'? <div className="status offline">Offline</div>: <div className="status online">Online</div>}
+                      {item.online == '0'? <div className="status offline">Offline</div>: <div className="status online">Online</div>}
                        
-                        <h4>{item.liked_user_name} <span className="age">23</span></h4>
-                        <div className="info">55km, Art. Director</div>
+                        <h4>{item.first_name + ' ' + item.last_name} <span className="age">{item.age}</span></h4>
+                        <div className="info">{item.distance}, {item.occupation}</div>
                       </div>
                     </a>
                   </div>
