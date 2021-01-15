@@ -2320,10 +2320,16 @@ body {
     background-color: rgba(255, 255, 255, 0.12);
 }
 
-.message audio {
+.message .audio-right {
   display: inherit;
     position: relative;
     right: 65px;
+}
+
+.message .audio-left {
+    display: inherit;
+    position: relative;
+    left: 0px;
 }
 
 .message .message-text {

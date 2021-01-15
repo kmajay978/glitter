@@ -545,7 +545,7 @@ const ChatBox = () =>{
                                                 <a  onClick={sendVoiceNote}>
                                                     {
                                                         dummyMediaRc &&
-                                                        <i className="far fa-microphone-alt-slash"/>
+                                                        <i className="fas fa-microphone-slash"/>
                                                     }
                                                     {
                                                         !dummyMediaRc &&
