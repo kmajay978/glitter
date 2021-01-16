@@ -260,8 +260,9 @@ const registerHandle = (e) =>{
         bodyParameters.append("latitude", "" + "30.704649");
         bodyParameters.append("longitude", "" + "76.717873");
         bodyParameters.append('profile_photo', picture);
-
-      axios.post(SIGNUP_API,bodyParameters, config)
+        console.log(picture,"picture......");
+        
+        axios.post(SIGNUP_API,bodyParameters, config)
         .then((response) => { 
         
         // Setting session id in local storage

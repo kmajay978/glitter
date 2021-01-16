@@ -566,6 +566,7 @@ input::placeholder {
     border: 5px solid var(--theme-color);
 }
 
+
 .upload-field .camera-icon {
     position: absolute;
     top: 0;
