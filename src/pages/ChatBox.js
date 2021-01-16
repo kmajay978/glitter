@@ -18,6 +18,7 @@ let messageList = [], receiver_id;
 
 const scrollToBottom = () => {
     var div = document.getElementById('chat-body');
+    if(!!div)
     div.scroll({ top: div.scrollHeight, behavior: 'smooth' });
 }
 
