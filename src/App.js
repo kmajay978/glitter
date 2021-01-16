@@ -35,7 +35,6 @@ const  ProfileData = async(dispatch, sessionId) => {
 }
 
 function App() {
-  console.log("testing git...")
   const dispatch = useDispatch();
   useEffect(() => {
     const sessionId = localStorage.getItem("session_id");
