@@ -179,8 +179,6 @@ useEffect(() => {
                     
                      <h3>{currentUser.first_name}, {currentUser.age}</h3>
                      <h4>{currentUser.distance},{currentUser.occupation}</h4>
-              
-                  
                    </div>
            
                     </GlitterCard>

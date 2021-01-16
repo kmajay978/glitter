@@ -117,7 +117,6 @@ console.log(fetchedProfile)
         startingPos = [evt.pageX, evt.pageY]
         glitterUid = evt.currentTarget.id
         // setStartPosition(startingPos);
-
     })
     .mousemove(function (evt) {
         if (!(evt.pageX === startingPos[0] && evt.pageY === startingPos[1])) {
@@ -137,14 +136,22 @@ console.log(fetchedProfile)
     }, 1000); 
   }, []);
 
+  const handleComment =() => {
+    history.push ({
+      pathname: '/chat',
+     })
+  }
+  
+  const handleVideo =() => {
+    history.push ({
+      pathname: '/searching-profile',
+     })
+  }
+
+
   return (
     <div className="stage">
-      <div
-        id=""
-        className=""
-      >
-        <div className="">
-          <div className="">
+      <div id=""  className="swipe__card_layout">              
             {allData.reverse().map((currentUser, index) => (
               <div className="main_wrapper" id={currentUser.user_id}>
               <GlitterCard
@@ -159,7 +166,7 @@ console.log(fetchedProfile)
                     src={currentUser.profile_images}
                     alt={currentUser.first_name}
                     width="100%"
-                    height="100%"
+                    
                   />
                   <h3>
                     {currentUser.first_name}, {currentUser.age}
@@ -172,7 +179,7 @@ console.log(fetchedProfile)
               </GlitterCard>
               </div>
             ))}
-          </div>
+          
           {/* <div className="card" >
                           <div className="card-content">
                           <div className="card-image">
@@ -185,32 +192,31 @@ console.log(fetchedProfile)
                           </div>
                         </div> */}
           {/* })} */}
-        </div>
-        <div className="stackedcards--animatable stackedcards-overlay top">
-          <img
-            src="https://image.ibb.co/m1ykYS/rank_army_star_2_3x.png"
-            width="auto"
-            height="auto"
-          />
-        </div>
-        <div className="stackedcards--animatable stackedcards-overlay right">
-          <img
-            src="/assets/images/accept-icon.png"
-            width="auto"
-            height="auto"
-          />
-        </div>
-        <div className="stackedcards--animatable stackedcards-overlay left">
-          <img
-            src="https://image.ibb.co/heTxf7/20_status_close_3x.png"
-            width="auto"
-            height="auto"
-          />
-        </div>
+   
+     
       </div>
       <div className="action-tray global-actions d-flex flex-wrap justify-content-center align-items-center">
-        <button onClick={() => swipe("left")}>Swipe left!</button>
-        <button onClick={() => swipe("right")}>Swipe right!</button>
+           
+        <div class="close-btn tray-btn-s">
+            <a class="left-action" href="javascript:void(0)" onClick={() => swipe("left")}>×</a>
+        </div>
+        <div class="chat tray-btn-l">
+            <a href="javascript:void(0)" onClick={handleComment}>
+                <i class="fas fa-comment"></i>
+            </a>
+        </div>
+        <div class="video-chat tray-btn-l">
+            <a href="javascript:void(0)" onClick={handleVideo}>
+                <i class="fas fa-video"></i>
+            </a>
+        </div>
+        <div class="like-profile tray-btn-s">
+            <a class="right-action" href="javascript:void(0)" onClick={() => swipe("right")}>
+                <i class="fas fa-heart"></i>
+            </a>
+        </div>
+      
+     
         {/* <div className="close-btn tray-btn-s">
                         <a className="left-action" href="javascript:void(0)" onClick={swiped} >×</a>
                       </div>

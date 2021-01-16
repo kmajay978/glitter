@@ -1,4 +1,5 @@
-import React, {Component, useEffect, useState} from 'react';
+import React, {Component, useEffect, useState } from 'react';
+import { useHistory } from "react-router";
 import {useSelector} from 'react-redux';
 import Logo from '../components/Logo';
 import { selectUser } from '../features/userSlice';
@@ -11,11 +12,15 @@ import axios from 'axios';
 import Dummy from '../pages/Dummy'
 
 const Home = () =>{
+    const history = useHistory();
     const user = useSelector(selectUser); //using redux useSelector here
     const [fetchedProfile, setFilterUser] = useState('');
 
     // Adding class to body and removing the class
     addBodyClass('no-bg')('login-body')
+     const handleChat = () => {
+      history.push('/chat')
+     }
     
   return(
           <section className="home-wrapper">
@@ -27,11 +32,10 @@ const Home = () =>{
               <div className="col-lg-3 option-bar p-3 vh-100">
                 <div className="logo-tab mb-5 d-flex justify-content-between align-items-start">
                   <a href="javascript:void(0)">
-                    {/* <img src="/assets/images/glitters.png" alt="Glitters" /> */}
                     <Logo/>
                   </a>
                   <span className="chat-point">
-                    <a href="javascript:void(0)">
+                    <a href="javascript:void(0)" onClick={handleChat}>
                       <i className="fas fa-comment" /> 
                     </a>    
                   </span>                            

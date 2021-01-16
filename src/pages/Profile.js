@@ -10,6 +10,10 @@ import Login from '../pages/Login'
 import { useDispatch } from 'react-redux';
 import {login} from '../features/userSlice';
 import {Modal, ModalBody , Dropdown} from 'react-bootstrap';
+import $ from 'jquery';
+import Logo from '../components/Logo';
+import PrivacyPolicy from '../components/PrivacyPolicy';
+import AboutGlitter from '../components/AboutGlitter';
 // import {addBodyClass} from '../components/CommonFunction'; 
    
 
@@ -22,11 +26,15 @@ const Profile = () =>{
   const dispatch = useDispatch();
   const [profileData, setProfile] = useState('');  
   const [blockData, setBlockData] = useState([]);
+  const [picture, setPicture] = useState([]); //profile-photo
+  const [imgData, setImgData] = useState(null);
   const [GiftData , setGiftData] = useState([]);
   const [step, setStep] = useState(1);
   const [show, setShow] = useState(false);
   const [showBlock , setShowBlock] = useState(false);
   const [showSetting ,setShowSetting] = useState(false);
+  const [showPrivacy ,setShowPrivacy] = useState(false);
+  const [showAbout , setShowAbout] = useState(false);
   const [showCoins , setShowCoin] = useState(false);
   const [showGift , setShowGift] = useState(false);
   const [isOn, toggleIsOn] = useToggle();
@@ -34,7 +42,8 @@ const Profile = () =>{
   const handleShow = () => setShow(true); // show Edit model
   const handleSettingShow = () => setShowSetting(true); //show Setting Model
   const handleCoinsShow = () => setShowCoin(true); //show coins model
-  
+  const handlePrivacy = () => setShowPrivacy(true); 
+  const handleAbout =() => setShowAbout(true);
   // Getting form value here
   const [form , setForm] = useState({
     
@@ -47,7 +56,6 @@ const Profile = () =>{
     weight:"",
     relationStatus:"",
     interest:"",
-      
   });
 
 //  console.log(form);
@@ -82,7 +90,7 @@ const Profile = () =>{
        setProfile(data);
        }
 
-       console.log(profileData);
+      //  console.log(profileData);
    
      //update profile data
      const updateProfile = (e) =>{
@@ -99,12 +107,12 @@ const Profile = () =>{
     height : form.height,
     weight : form.weight,
     interest:form.interest,
+    profile_images: picture ,
     relationship_status :form.relationStatus
    };
    axios.post(EDITPROFILE_API , bodyParameters) 
    .then((response) => {
    if(response.status==200){
-    
     alert("update succesfully")
    }
    }, (error) =>{
@@ -149,16 +157,26 @@ const Profile = () =>{
       setGiftData(result);
    }
 
-   //get gift item
-   const getGiftItem = async(Id) => {
+   //get single  gift item
+   const getGiftItem = async(Uid) => {
     const bodyParameters ={
       session_id : sessionId ,
-      gift_id : Id
+      gift_id : Uid
     }
     const {data : {result}} = await axios.post(GET_GIFT_API , bodyParameters)
    console.log(result);
    }
-  // console.log(blockData);
+ 
+   const handleFileChange = e => {
+    if (e.target.files[0]) {
+      setPicture(e.target.files[0]);
+      const reader = new FileReader();
+      reader.addEventListener("load", () => {
+        setImgData(reader.result);
+      });
+      reader.readAsDataURL(e.target.files[0]);
+    }
+  };
 
    const tabScreen = () =>{
     
@@ -228,7 +246,10 @@ const Profile = () =>{
                   <option value={3}>UnMarried</option>
               </select>
           </div>
-
+          <div className="form-group">
+          <label for="">Profile photo </label>
+          <input type="file" id="profile-photo" name="profile-photo"  onChange={handleFileChange}  accept="image/*" />
+            </div>
 
           <div className="show-gender ft-block d-flex flex-wrap">
               <div className="tab-title">
@@ -281,7 +302,7 @@ const Profile = () =>{
             <div className="d-flex flex-wrap align-items-center">
               <div className="logo-tab d-flex justify-content-between align-items-start">
                 <a href="javascript:void(0)">
-                  <img src="/assets/images/glitters.png" alt="Glitters" />
+                 <Logo/>
                 </a>
               </div>
               <div className="vc-head-title d-flex flex-wrap align-items-center ml-5">
@@ -579,7 +600,7 @@ const Profile = () =>{
      
  </Modal>
 
-  <Modal className ="setting-modal " show={showSetting} onHide={() => setShowSetting(false)} backdrop="static" keyboard={false}>
+  <Modal className ="setting-modal" show={showSetting} onHide={() => setShowSetting(false)} backdrop="static" keyboard={false}>
     <div className="edit-profile-modal__inner">
     <Modal.Header closeButton >
           <Modal.Title> <h4 className="theme-txt text-center mb-4 ">Setting</h4>
@@ -592,10 +613,11 @@ const Profile = () =>{
               <i className="fas fa-chevron-right" />
             </a>
           </li>
-          <li><a href="javascript:void(0)">
-              <h6>Privacy</h6>
+          <li><a href="javascript:void(0)" onClick={handlePrivacy}>
+               <h6>Privacy</h6>
               <i className="fas fa-chevron-right" />
             </a></li>
+
           <li><a href="javascript:void(0)">
               <h6>General</h6>
               <i className="fas fa-chevron-right" />
@@ -610,7 +632,7 @@ const Profile = () =>{
               <i className="fas fa-chevron-right" />
             </a>
           </li>
-          <li><a href="javascript:void(0)">
+          <li><a href="javascript:void(0)" onClick={handleAbout}>
               <h6>About Glitters</h6>
               <i className="fas fa-chevron-right" />
             </a>
@@ -659,6 +681,23 @@ const Profile = () =>{
     </div>
   </Modal>
   
+  <Modal className="privacy-model" show={showPrivacy} onHide={() => setShowPrivacy(false)} >
+  <Modal.Header closeButton >
+    <Modal.Title>
+  <h2> Privacy Policy</h2>
+  </Modal.Title>
+      </Modal.Header>  
+      <PrivacyPolicy/>
+        </Modal>
+
+  <Modal className="" show={showAbout} onHide={() => setShowAbout(false)} little>
+  <Modal.Header closeButton >
+    <Modal.Title>
+  <h2>About Glitter</h2>
+  </Modal.Title>
+      </Modal.Header> 
+      <AboutGlitter/>
+  </Modal>
 
   <div className={isOn ? 'all-gifts-wrapper active': 'all-gifts-wrapper '} >
     <div className="all-gift-inner">
@@ -674,7 +713,7 @@ const Profile = () =>{
         
         <ul className="d-flex flex-wrap text-center">
       {GiftData.map((items , i) => {
-        return <li>
+        return <li onClick={() => getGiftItem(items.id)}>
             <a href="javascript:void(0)" >
               <div>
                 <figure>

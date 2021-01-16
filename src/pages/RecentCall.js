@@ -4,15 +4,24 @@ import {  useHistory } from 'react-router';
 import axios from "axios";
 import NavLinks from '../components/Nav';
 import Logo from '../components/Logo';
-const RecentCall = () =>{
+import {GET_ALL_CALL} from '../components/Api';
 
-const handleAllCall = () => {
+const RecentCall = () =>{
+const[allcalls , setAllCall] =  useState([]);
+
+const handleAllCall = async() => {
   const bodyParameters ={
-    
+    session_id : localStorage.getItem('session_id')
   }
+const {data :{result}} = await axios.post(GET_ALL_CALL , bodyParameters)
+setAllCall(result);
 }
 
-    return(                                               
+useEffect(() => {
+handleAllCall();
+} , [])
+    
+return(                                               
   <section className="home-wrapper">
   <img className="bg-mask" src="/assets/images/mask-bg.png" alt="Mask" />
   <div className="header-bar">
@@ -48,7 +57,7 @@ const handleAllCall = () => {
   <div className="rcall-wrapper">
     <ul id="tabs" className="nav rcall-tabs mb-4" role="tablist">
       <li className="nav-item">
-        <a id="tab-all-call" href="#rcall-all" className="nav-link active" data-toggle="tab" role="tab">All</a>
+        <a id="tab-all-call" href="#rcall-all" className="nav-link active" data-toggle="tab" role="tab" onClick={handleAllCall}>All</a>
       </li>
       <li className="nav-item">
         <a id="tab-missed-call" href="#rcall-missed" className="nav-link" data-toggle="tab" role="tab">Missed</a>
@@ -58,17 +67,18 @@ const handleAllCall = () => {
       </li>
     </ul>
     <div id="content" className="tab-content rcall-history" role="tablist">
-      <div id="rcall-all" className="card tab-pane fade show active" role="tabpanel" aria-labelledby="tab-all-call">
-        <div className="rc-history-card d-flex flex-wrap align-items-center">
+      <div id="rcall-all" className="tab-pane fade show active" role="tabpanel" aria-labelledby="tab-all-call">
+       {allcalls.map((item ,i) => {
+       return <div className="rc-history-card d-flex flex-wrap align-items-center">
           <figure className="rc-user-avtar mb-0 mr-3">
             <img src="/assets/images/vc-user.png" alt="Augugsta Castro" />
           </figure>
           <div className="rc-user-details d-flex flex-wrap">
             <div className="rcu-name mr-3">
-              <h5 className="mb-1">sandeep Castro <span className="age">20</span></h5>
+              <h5 className="mb-1">{item.from_user_data }<span className="age">20</span></h5>
               <div className="rcu-date-time">
-                <span className="time">10:07 AM</span>
-                <span className="date">8/29/2020</span>
+                <span className="time">{item.time +'  '}</span>
+                <span className="date">{item.date}</span>
               </div>
             </div>
             <div className="rcu-call-time">0m 31s</div>
@@ -79,7 +89,8 @@ const handleAllCall = () => {
             </figure>
           </div>
         </div>
-{/*       
+        })}
+      
         <div className="rc-history-card d-flex flex-wrap align-items-center">
           <figure className="rc-user-avtar mb-0 mr-3">
             <img src="/assets/images/vc-user.png" alt="Augugsta Castro" />
@@ -99,10 +110,10 @@ const handleAllCall = () => {
               <img src="/assets/images/missed-call-icon.png" alt="audio" />
             </figure>
           </div>
-        </div> */}
+        </div>
       </div>
 
-      <div id="rcall-missed" className="card tab-pane fade" role="tabpanel" aria-labelledby="tab-missed-call">
+      <div id="rcall-missed" className="tab-pane fade" role="tabpanel" aria-labelledby="tab-missed-call">
         <div className="rc-history-card d-flex flex-wrap align-items-center">
           <figure className="rc-user-avtar mb-0 mr-3">
             <img src="/assets/images/vc-user.png" alt="Augugsta Castro" />
@@ -144,14 +155,15 @@ const handleAllCall = () => {
           </div>
         </div>
       </div>
-      <div id="rcall-matched" className="card tab-pane fade" role="tabpanel" aria-labelledby="tab-matched-call">
+
+      <div id="rcall-matched" className="tab-pane fade" role="tabpanel" aria-labelledby="tab-matched-call">
         <div className="rc-history-card d-flex flex-wrap align-items-center">
           <figure className="rc-user-avtar mb-0 mr-3">
             <img src="/assets/images/vc-user.png" alt="Augugsta Castro" />
           </figure>
           <div className="rc-user-details d-flex flex-wrap">
             <div className="rcu-name mr-3">
-              <h5 className="mb-1">Augusta Castro <span className="age">20</span></h5>
+              <h5 className="mb-1">prabh Castro <span className="age">20</span></h5>
               <div className="rcu-date-time">
                 <span className="time">10:07 AM</span>
                 <span className="date">8/29/2020</span>
@@ -171,67 +183,7 @@ const handleAllCall = () => {
           </figure>
           <div className="rc-user-details d-flex flex-wrap">
             <div className="rcu-name mr-3">
-              <h5 className="mb-1">Augusta Castro <span className="age">20</span></h5>
-              <div className="rcu-date-time">
-                <span className="time">10:07 AM</span>
-                <span className="date">8/29/2020</span>
-              </div>
-            </div>
-            <div className="rcu-call-time">0m 31s</div>
-          </div>
-          <div className="rcu-call-type ml-auto">
-            <figure className="mb-0 bg-grd-clr">
-              <img src="/assets/images/missed-call-icon.png" alt="Missed Call" />
-            </figure>
-          </div>
-        </div>
-        <div className="rc-history-card d-flex flex-wrap align-items-center">
-          <figure className="rc-user-avtar mb-0 mr-3">
-            <img src="/assets/images/vc-user.png" alt="Augugsta Castro" />
-          </figure>
-          <div className="rc-user-details d-flex flex-wrap">
-            <div className="rcu-name mr-3">
-              <h5 className="mb-1">Augusta Castro <span className="age">20</span></h5>
-              <div className="rcu-date-time">
-                <span className="time">10:07 AM</span>
-                <span className="date">8/29/2020</span>
-              </div>
-            </div>
-            <div className="rcu-call-time">0m 31s</div>
-          </div>
-          <div className="rcu-call-type ml-auto">
-            <figure className="mb-0 bg-grd-clr">
-              <img src="/assets/images/missed-call-icon.png" alt="Missed Call" />
-            </figure>
-          </div>
-        </div>
-        <div className="rc-history-card d-flex flex-wrap align-items-center">
-          <figure className="rc-user-avtar mb-0 mr-3">
-            <img src="/assets/images/vc-user.png" alt="Augugsta Castro" />
-          </figure>
-          <div className="rc-user-details d-flex flex-wrap">
-            <div className="rcu-name mr-3">
-              <h5 className="mb-1">Augusta Castro <span className="age">20</span></h5>
-              <div className="rcu-date-time">
-                <span className="time">10:07 AM</span>
-                <span className="date">8/29/2020</span>
-              </div>
-            </div>
-            <div className="rcu-call-time">0m 31s</div>
-          </div>
-          <div className="rcu-call-type ml-auto">
-            <figure className="mb-0 bg-grd-clr">
-              <img src="/assets/images/missed-call-icon.png" alt="Missed Call" />
-            </figure>
-          </div>
-        </div>
-        <div className="rc-history-card d-flex flex-wrap align-items-center">
-          <figure className="rc-user-avtar mb-0 mr-3">
-            <img src="/assets/images/vc-user.png" alt="Augugsta Castro" />
-          </figure>
-          <div className="rc-user-details d-flex flex-wrap">
-            <div className="rcu-name mr-3">
-              <h5 className="mb-1">Augusta Castro <span className="age">20</span></h5>
+              <h5 className="mb-1">sandeep Castro <span className="age">20</span></h5>
               <div className="rcu-date-time">
                 <span className="time">10:07 AM</span>
                 <span className="date">8/29/2020</span>

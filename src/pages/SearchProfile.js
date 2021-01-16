@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import {  useHistory } from 'react-router';
 import axios from "axios";
+import Logo from '../components/Logo';
 
 const SearchProfile = () =>{
     return(
@@ -15,7 +16,7 @@ const SearchProfile = () =>{
             <div className="d-flex flex-wrap align-items-center">
               <div className="logo-tab d-flex justify-content-between align-items-start">
                 <a href="javascript:void(0)">
-                  <img src="/assets/images/glitters.png" alt="Glitters" />
+                 <Logo/>
                 </a>
               </div>
             </div>

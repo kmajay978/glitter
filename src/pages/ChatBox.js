@@ -9,7 +9,7 @@ import { error } from "jquery";
 import {SOCKET} from '../components/Config';
 import {addBodyClass} from '../components/CommonFunction'; 
 import  $ from 'jquery';
-
+import Logo from '../components/Logo';
 
 const ChatBox = () =>{
 
@@ -211,9 +211,9 @@ const sessionId = localStorage.getItem('session_id');
         <div className="col-lg-3 p-3">
           <div className="d-flex flex-wrap align-items-center">
             <div className="logo-tab d-flex justify-content-between align-items-start">
-              <a href="javascript:void(0)">
-                <img src="/assets/images/glitters.png" alt="Glitters" />
-              </a>
+            <a href="javascript:void(0)">
+                 <Logo/>
+                </a>
             </div>
           </div>
         </div>
@@ -313,7 +313,7 @@ const sessionId = localStorage.getItem('session_id');
                   
                   { FriendList.map((item, i) => {
                     return <li className="nav-item">
-                    <a className="nav-link" href="#chat-field" data-toggle="tab" data-id={item.liked_user_id} role="tab" onClick={() =>  setFriendId(item.liked_user_id)}>
+                    <a className="nav-link" href="#chat-field" data-toggle="tab" data-id={item.user_id} role="tab" onClick={() =>  setFriendId(item.user_id)}>
                       
                       <img alt="Mia" className="img-circle medium-image" src={item.profile_images} />
                       <div className="contacts_info">
