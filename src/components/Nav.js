@@ -4,11 +4,12 @@ import {  useHistory } from 'react-router';
 import axios from "axios";
 import { Link } from 'react-router-dom';
 
-const NavLinks = () =>{
-
+const NavLinks = (props) =>{
+console.log(props, "props..")
   let pathname = window.location.pathname;
     useEffect(() => {
         pathname = window.location.pathname;
+        // alert()
     }, [window.location.pathname]);
 
     return(

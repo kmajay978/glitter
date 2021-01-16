@@ -28,6 +28,7 @@
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.2",
     "express": "^4.17.1",
+    "hookrouter": "^1.2.5",
     "jquery": "^3.5.1",
     "material-ui-phone-number": "^2.2.6",
     "node-sass": "^4.14.1",
