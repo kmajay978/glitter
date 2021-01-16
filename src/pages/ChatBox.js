@@ -481,7 +481,7 @@ const ChatBox = () =>{
                                                                     {
                                                                         !!data.audio &&
                                                                         <div  className="audio-socket">
-                                                                            <audio controls preload={"none"}>
+                                                                            <audio controls preload={"none"} className="audio-left">
                                                                                 <source src={data.audio} type={"audio/mp3"}/>
                                                                             </audio>
                                                                         </div>
@@ -508,7 +508,7 @@ const ChatBox = () =>{
                                                                     {
                                                                         !!data.audio &&
                                                                         <div>
-                                                                            <audio controls preload={"none"}>
+                                                                            <audio controls preload={"none"} className="audio-right">
                                                                                 <source src={data.audio} type={"audio/mp3"}/>
                                                                             </audio>
                                                                         </div>
@@ -560,26 +560,7 @@ const ChatBox = () =>{
                                 </div>
 
                             </div>
-                </ul>
-              </div>
-            </div>
-            <div id="chat" className="contacts-outter-wrapper tab-pane fade" role="tabpanel" aria-labelledby="tab-chat">
-              <div className="contacts-outter">
-                <ul className="nav contacts" role="tablist">
-                  
-                  { FriendList.map((item, i) => {
-                    return <li className="nav-item">
-                    <a className="nav-link" href="#chat-field" data-toggle="tab" data-id={item.liked_user_id} role="tab" onClick={() =>  setFriendId(item.liked_user_id)}>
-                      
-                      <img alt="Mia" className="img-circle medium-image" src={item.profile_images} />
-                      <div className="contacts_info">
-                        <div className="user_detail">
-                          <span className="message-time">{item.created_at}</span>
-                          <h5 className="mb-0 name">{item.first_name}</h5>
-                          {/* <div className="message-count">2</div> */}
-                        </div>
-                        <div className="vcentered info-combo">
-                          <p>Yep, I'm new in town and I wanted</p>
+
                         </div>
                         {/* End chat box here */}
                     </div>
