@@ -5,26 +5,40 @@ import axios from "axios";
 import NavLinks from '../components/Nav';
 import {GIFT_LIST_API , GET_GIFT_API , GET_LOGGEDPROFILE_API , EDITPROFILE_API , BLOCK_USERLIST_API , LOGOUT_API} from '../components/Api';
 import useToggle from '../components/CommonFunction';
+import {removeStorage} from '../components/CommonFunction';
 import Login from '../pages/Login'
 import { useDispatch } from 'react-redux';
 import {login, profile, ProfileData} from '../features/userSlice';
 import {Modal, ModalBody , Dropdown} from 'react-bootstrap';
+import $ from 'jquery';
+import Logo from '../components/Logo';
+import PrivacyPolicy from '../components/PrivacyPolicy';
+import AboutGlitter from '../components/AboutGlitter';
+// import {addBodyClass} from '../components/CommonFunction'; 
+   
 
+const Profile = () =>{
 
-const Profile = (props) =>{
+   //Adding class to body and removing the class
+  // addBodyClass('no-bg')('login-body')
+
   const history = useHistory();
   const dispatch = useDispatch();
   const [profileData, setProfile] = useState('');  
   const [blockData, setBlockData] = useState([]);
   const [picture, setPicture] = useState(null);
   const [imgData, setImgData] = useState(null);
+  const [GiftData , setGiftData] =useState([]);
   const [step, setStep] = useState(1);
   const [show, setShow] = useState(false);
   const [showBlock , setShowBlock] = useState(false);
   const [showSetting ,setShowSetting] = useState(false);
+  const [showPrivacy ,setShowPrivacy] = useState(false);
+  const [showAbout , setShowAbout] = useState(false);
   const [showCoins , setShowCoin] = useState(false);
   const [showGift , setShowGift] = useState(false);
   const [showImage , setShowImage] = useState(false);
+
   const [isOn, toggleIsOn] = useToggle();
   const [isProfile, toggleProfile] = useToggle();
   const handleShow = () => setShow(true); // show Edit model
@@ -32,6 +46,8 @@ const Profile = (props) =>{
   const handleCoinsShow = () => setShowCoin(true); //show coins model
   const handleGiftShow = () => setShowGift(true); 
   const handleImage =() => setShowImage(true);
+  const handlePrivacy =() => setShowPrivacy(true);
+  const handleAbout = () => setShowAbout(true);
   // Getting form value here
   const [form , setForm] = useState({
     
@@ -44,7 +60,6 @@ const Profile = (props) =>{
     weight:"",
     relationStatus:"",
     interest:"",
-      
   });
 
 //  console.log(form);
@@ -60,10 +75,31 @@ const Profile = (props) =>{
 
   // Fetching profile Data
   var sessionId = localStorage.getItem("session_id")
+  const ProfileData = async() =>{
+    const bodyParameters = {
+      session_id: sessionId,
+      };
+     const {data:{data}}= await axios.post(GET_LOGGEDPROFILE_API,bodyParameters)
 
+    //  Setting data variable to state object 
+      form.firstName = data.first_name
+      form.lastName = data.last_name
+      form.dob = data.dob
+      form.aboutMe = data.about_me
+      form.height = data.height
+      form.weight = data.weight
+      form.gender = data.gender
+      form.interest = data.interest
+      form.relationStatus = data.relationship_status
+       setProfile(data);
+       dispatch(
+            profile({
+                profile: data
+            })
+        );
+       }
 
-
-      //console.log(profileData);
+      //  console.log(profileData);
    
      //update profile data
      const updateProfile = (e) =>{
@@ -72,20 +108,20 @@ const Profile = (props) =>{
     session_id : sessionId,
     device_token : "uhydfdfghdertyt445t6y78755t5jhyhyy" ,
     device_type : 0 ,
-    firstName : form.firstName,
-    lastName : form.lastName,
+    first_name : form.firstName,
+    last_name : form.lastName,
     dob : form.dob,
     gender :form.gender,
     aboutMe : form.aboutMe,
     height : form.height,
     weight : form.weight,
     interest:form.interest,
+    profile_images: picture ,
     relationship_status :form.relationStatus
    };
    axios.post(EDITPROFILE_API , bodyParameters) 
    .then((response) => {
    if(response.status==200){
-    
     alert("update succesfully")
    }
    }, (error) =>{
@@ -93,17 +129,7 @@ const Profile = (props) =>{
    });
    }
  
-   const handleFileChange = e => {
-    if (e.target.files[0]) {
-      // console.log("picture: ", e.target.files);
-      setPicture(e.target.files[0]);
-      const reader = new FileReader();
-      reader.addEventListener("load", () => {
-        setImgData(reader.result);
-      });
-      reader.readAsDataURL(e.target.files[0]);
-    }
-  };
+  
   
    const config = {
     headers : {
@@ -147,7 +173,7 @@ const Profile = (props) =>{
     };
     axios.post(LOGOUT_API , bodyParameters)
     .then((response) => { 
-      localStorage.removeItem("session_id");
+      removeStorage('session_id');
       history.push('/login');
       alert("logout successfully")
     }, (error) =>{
@@ -166,7 +192,43 @@ const Profile = (props) =>{
    
    }
 
-  // console.log(blockData);
+ 
+
+   //all gift
+   const handleGift = async() =>{
+    toggleIsOn(true);
+     const bodyParameters = {
+       session_id : sessionId,
+     }
+    const {data:{result}} = await axios.post(GIFT_LIST_API , bodyParameters)
+      setGiftData(result);
+   }
+
+   //get single  gift item
+   const getGiftItem = async(Uid) => {
+    const bodyParameters ={
+      session_id : sessionId ,
+      gift_id : Uid
+    }
+    const {data : {result}} = await axios.post(GET_GIFT_API , bodyParameters)
+   console.log(result);
+   }
+ 
+   const handleFileChange = e => {
+    if (e.target.files[0]) {
+      setPicture(e.target.files[0]);
+      const reader = new FileReader();
+      reader.addEventListener("load", () => {
+        setImgData(reader.result);
+      });
+      reader.readAsDataURL(e.target.files[0]);
+    }
+  };
+
+    useEffect(() =>{
+    ProfileData(dispatch)
+  //handleBlock();
+  },[])
 
    const tabScreen = () =>{
     
@@ -236,7 +298,10 @@ const Profile = (props) =>{
                   <option value={3}>UnMarried</option>
               </select>
           </div>
-
+          <div className="form-group">
+          <label for="">Profile photo </label>
+          <input type="file" id="profile-photo" name="profile-photo"  onChange={handleFileChange}  accept="image/*" />
+            </div>
 
           <div className="show-gender ft-block d-flex flex-wrap">
               <div className="tab-title">
@@ -270,34 +335,8 @@ const Profile = (props) =>{
     }
 
   }
-    const  ProfileData = async(dispatch) => {
-        const bodyParameters = {
-            session_id: sessionId,
-        };
-        const {data: {data}} = await axios.post(GET_LOGGEDPROFILE_API, bodyParameters)
 
 
-        //  Setting data variable to state object
-        form.firstName = data.first_name
-        form.lastName = data.last_name
-        form.dob = data.dob
-        form.aboutMe = data.about_me
-        form.height = data.height
-        form.weight = data.weight
-        form.gender = data.gender
-        form.interest = data.interest
-        form.relationStatus = data.relationship_status
-        setProfile(data);
-        dispatch(
-            profile({
-                profile: data
-            })
-        );
-    }
-  useEffect(() =>{
-    ProfileData(dispatch)
-  //handleBlock();
-  },[])
 
 
   return(
@@ -311,7 +350,7 @@ const Profile = (props) =>{
             <div className="d-flex flex-wrap align-items-center">
               <div className="logo-tab d-flex justify-content-between align-items-start">
                 <a href="javascript:void(0)">
-                  <img src="/assets/images/glitters.png" alt="Glitters" />
+                 <Logo/>
                 </a>
               </div>
               <div className="vc-head-title d-flex flex-wrap align-items-center ml-5">
@@ -387,7 +426,7 @@ const Profile = (props) =>{
           <div className="user-profile__options becomevip-wrapper__innerblock">
             <ul>
            
-              <li><a href="javascript:void(0)" id="gift-modal" onClick={toggleIsOn}><img src="/assets/images/gift-icon.png" alt="gifts" />
+              <li><a href="javascript:void(0)" id="gift-modal" onClick={handleGift}><img src="/assets/images/gift-icon.png" alt="gifts" />
                   <h6>Gifts</h6> <i className="fas fa-chevron-right"/>
                 </a></li>
               <li><a href="javascript:void(0)" id="edit-profile" onClick={handleShow}><img src="/assets/images/edit-profile.png" alt="Edit Profile" />
@@ -599,13 +638,16 @@ const Profile = (props) =>{
      
     
     {blockData.map((item, i) => {
-      <div className="coin-spend">
-        <div className="coin-spend__hostimg">
-          <img src="/assets/images/host.png" alt="host" />
+  
+     return <div className="coin-spend">
+        <div className="coin-spend__host">
+          <img src={item.profile_images} alt="host" />
         </div>
         <div className="coins-spend__hostname">
-          <span>{blockData.first_name}</span> <span className="counter">20</span>
-          <div className="coin-spend__total"><img src="/assets/images/diamond-sm.png" /> 75</div>
+          <span>{item.first_name}</span> <span className="counter">{item.age}</span>
+          <div className="coin-spend__total" > 
+              <a className="theme-txt" href="javascript:void(0)">Unblock</a>
+            </div>
         </div>
      
       </div>
@@ -614,7 +656,7 @@ const Profile = (props) =>{
      
  </Modal>
 
-  <Modal className ="setting-modal " show={showSetting} onHide={() => setShowSetting(false)} backdrop="static" keyboard={false}>
+  <Modal className ="setting-modal" show={showSetting} onHide={() => setShowSetting(false)} backdrop="static" keyboard={false}>
     <div className="edit-profile-modal__inner">
     <Modal.Header closeButton >
           <Modal.Title> <h4 className="theme-txt text-center mb-4 ">Setting</h4>
@@ -627,10 +669,11 @@ const Profile = (props) =>{
               <i className="fas fa-chevron-right" />
             </a>
           </li>
-          <li><a href="javascript:void(0)">
-              <h6>Privacy</h6>
+          <li><a href="javascript:void(0)" onClick={handlePrivacy}>
+               <h6>Privacy</h6>
               <i className="fas fa-chevron-right" />
             </a></li>
+
           <li><a href="javascript:void(0)">
               <h6>General</h6>
               <i className="fas fa-chevron-right" />
@@ -645,7 +688,7 @@ const Profile = (props) =>{
               <i className="fas fa-chevron-right" />
             </a>
           </li>
-          <li><a href="javascript:void(0)">
+          <li><a href="javascript:void(0)" onClick={handleAbout}>
               <h6>About Glitters</h6>
               <i className="fas fa-chevron-right" />
             </a>
@@ -694,6 +737,23 @@ const Profile = (props) =>{
     </div>
   </Modal>
   
+  <Modal className="privacy-model" show={showPrivacy} onHide={() => setShowPrivacy(false)} >
+  <Modal.Header closeButton >
+    <Modal.Title>
+  <h2> Privacy Policy</h2>
+  </Modal.Title>
+      </Modal.Header>  
+      <PrivacyPolicy/>
+        </Modal>
+
+  <Modal className="" show={showAbout} onHide={() => setShowAbout(false)} little>
+  <Modal.Header closeButton >
+    <Modal.Title>
+  <h2>About Glitter</h2>
+  </Modal.Title>
+      </Modal.Header> 
+      <AboutGlitter/>
+  </Modal>
 
   <div className={isOn ? 'all-gifts-wrapper active': 'all-gifts-wrapper '} >
     <div className="all-gift-inner">
@@ -706,397 +766,23 @@ const Profile = (props) =>{
         </div>
       </div>
       <div className="all-gift-body">
+        
         <ul className="d-flex flex-wrap text-center">
-          <li>
-            <a href="javascript:void(0)">
+      {GiftData.map((items , i) => {
+        return <li onClick={() => getGiftItem(items.id)}>
+            <a href="javascript:void(0)" >
               <div>
                 <figure>
-                  <img src="/assets/images/rose-pink.png" alt="Rose" />
+                  <img src={items.image} alt={items.name} />
                 </figure>
                 <div className="gift-price">
                   <img src="/assets/images/diamond-coin.png" alt="Coins" />
-                  <span>50</span>
+                  <span>{items.coins}</span>
                 </div>
               </div>
             </a>
           </li>
-          <li>
-            <a href="javascript:void(0)">
-              <div>
-                <figure>
-                  <img src="/assets/images/lips-red.png" alt="Lips" />
-                </figure>
-                <div className="gift-price">
-                  <img src="/assets/images/diamond-coin.png" alt="Coins" />
-                  <span>75</span>
-                </div>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)">
-              <div>
-                <figure>
-                  <img src="/assets/images/gift-3.png" alt="Gift" />
-                </figure>
-                <div className="gift-price">
-                  <img src="/assets/images/diamond-coin.png" alt="Coins" />
-                  <span>100</span>
-                </div>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)">
-              <div>
-                <figure>
-                  <img src="/assets/images/heart-balloons.png" alt="Hearts" />
-                </figure>
-                <div className="gift-price">
-                  <img src="/assets/images/diamond-coin.png" alt="Coins" />
-                  <span>150</span>
-                </div>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)">
-              <div>
-                <figure>
-                  <img src="/assets/images/cheese.png" alt="Cheese" />
-                </figure>
-                <div className="gift-price">
-                  <img src="/assets/images/diamond-coin.png" alt="Coins" />
-                  <span>200</span>
-                </div>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)">
-              <div>
-                <figure>
-                  <img src="/assets/images/heart-gift.png" alt="Heart" />
-                </figure>
-                <div className="gift-price">
-                  <img src="/assets/images/diamond-coin.png" alt="Coins" />
-                  <span>250</span>
-                </div>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)">
-              <div>
-                <figure>
-                  <img src="/assets/images/coffee.png" alt="Coffee" />
-                </figure>
-                <div className="gift-price">
-                  <img src="/assets/images/diamond-coin.png" alt="Coins" />
-                  <span>300</span>
-                </div>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)">
-              <div>
-                <figure>
-                  <img src="/assets/images/teddy-bear.png" alt="Teddy" />
-                </figure>
-                <div className="gift-price">
-                  <img src="/assets/images/diamond-coin.png" alt="Coins" />
-                  <span>400</span>
-                </div>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)">
-              <div>
-                <figure>
-                  <img src="/assets/images/lipstick.png" alt="Lipstick" />
-                </figure>
-                <div className="gift-price">
-                  <img src="/assets/images/diamond-coin.png" alt="Coins" />
-                  <span>500</span>
-                </div>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)">
-              <div>
-                <figure>
-                  <img src="/assets/images/girl-heel.png" alt="Heels" />
-                </figure>
-                <div className="gift-price">
-                  <img src="/assets/images/diamond-coin.png" alt="Coins" />
-                  <span>600</span>
-                </div>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)">
-              <div>
-                <figure>
-                  <img src="/assets/images/juice.png" alt="Juice" />
-                </figure>
-                <div className="gift-price">
-                  <img src="/assets/images/diamond-coin.png" alt="Coins" />
-                  <span>750</span>
-                </div>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)">
-              <div>
-                <figure>
-                  <img src="/assets/images/shampion.png" alt="Shampion" />
-                </figure>
-                <div className="gift-price">
-                  <img src="/assets/images/diamond-coin.png" alt="Coins" />
-                  <span>900</span>
-                </div>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)">
-              <div>
-                <figure>
-                  <img src="/assets/images/gift-4.png" alt="Gift" />
-                </figure>
-                <div className="gift-price">
-                  <img src="/assets/images/diamond-coin.png" alt="Coins" />
-                  <span>1000</span>
-                </div>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)">
-              <div>
-                <figure>
-                  <img src="/assets/images/perfume.png" alt="perfume" />
-                </figure>
-                <div className="gift-price">
-                  <img src="/assets/images/diamond-coin.png" alt="Coins" />
-                  <span>1500</span>
-                </div>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)">
-              <div>
-                <figure>
-                  <img src="/assets/images/locket.png" alt="Locket" />
-                </figure>
-                <div className="gift-price">
-                  <img src="/assets/images/diamond-coin.png" alt="Coins" />
-                  <span>2000</span>
-                </div>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)">
-              <div>
-                <figure>
-                  <img src="/assets/images/shop-bag.png" alt="Shopping Bag" />
-                </figure>
-                <div className="gift-price">
-                  <img src="/assets/images/diamond-coin.png" alt="Coins" />
-                  <span>2500</span>
-                </div>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)">
-              <div>
-                <figure>
-                  <img src="/assets/images/diamond.png" alt="Diamond" />
-                </figure>
-                <div className="gift-price">
-                  <img src="/assets/images/diamond-coin.png" alt="Coins" />
-                  <span>3000</span>
-                </div>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)">
-              <div>
-                <figure>
-                  <img src="/assets/images/rings.png" alt="Rings" />
-                </figure>
-                <div className="gift-price">
-                  <img src="/assets/images/diamond-coin.png" alt="Coins" />
-                  <span>3500</span>
-                </div>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)">
-              <div>
-                <figure>
-                  <img src="/assets/images/bouquet.png" alt="Bouquet" />
-                </figure>
-                <div className="gift-price">
-                  <img src="/assets/images/diamond-coin.png" alt="Coins" />
-                  <span>4000</span>
-                </div>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)">
-              <div>
-                <figure>
-                  <img src="/assets/images/crown.png" alt="Crow" />
-                </figure>
-                <div className="gift-price">
-                  <img src="/assets/images/diamond-coin.png" alt="Coins" />
-                  <span>5000</span>
-                </div>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)">
-              <div>
-                <figure>
-                  <img src="/assets/images/dress.png" alt="Dress" />
-                </figure>
-                <div className="gift-price">
-                  <img src="/assets/images/diamond-coin.png" alt="Coins" />
-                  <span>6000</span>
-                </div>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)">
-              <div>
-                <figure>
-                  <img src="/assets/images/aeroplane.png" alt="Aeroplane" />
-                </figure>
-                <div className="gift-price">
-                  <img src="/assets/images/diamond-coin.png" alt="Coins" />
-                  <span>7500</span>
-                </div>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)">
-              <div>
-                <figure>
-                  <img src="/assets/images/undergarments.png" alt="Undergarments" />
-                </figure>
-                <div className="gift-price">
-                  <img src="/assets/images/diamond-coin.png" alt="Coins" />
-                  <span>10.000</span>
-                </div>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)">
-              <div>
-                <figure>
-                  <img src="/assets/images/gift-5.png" alt="Gift" />
-                </figure>
-                <div className="gift-price">
-                  <img src="/assets/images/diamond-coin.png" alt="Coins" />
-                  <span>15.000</span>
-                </div>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)">
-              <div>
-                <figure>
-                  <img src="/assets/images/bike.png" alt="Bike" />
-                </figure>
-                <div className="gift-price">
-                  <img src="/assets/images/diamond-coin.png" alt="Coins" />
-                  <span>20.000</span>
-                </div>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)">
-              <div>
-                <figure>
-                  <img src="/assets/images/car.png" alt="Car" />
-                </figure>
-                <div className="gift-price">
-                  <img src="/assets/images/diamond-coin.png" alt="Coins" />
-                  <span>30.000</span>
-                </div>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)">
-              <div>
-                <figure>
-                  <img src="/assets/images/rocket.png" alt="Rocket" />
-                </figure>
-                <div className="gift-price">
-                  <img src="/assets/images/diamond-coin.png" alt="Coins" />
-                  <span>40.000</span>
-                </div>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)">
-              <div>
-                <figure>
-                  <img src="/assets/images/color-fan.png" alt="Color Fan" />
-                </figure>
-                <div className="gift-price">
-                  <img src="/assets/images/diamond-coin.png" alt="Coins" />
-                  <span>50.000</span>
-                </div>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)">
-              <div>
-                <figure>
-                  <img src="/assets/images/boat.png" alt="Boat" />
-                </figure>
-                <div className="gift-price">
-                  <img src="/assets/images/diamond-coin.png" alt="Coins" />
-                  <span>75.000</span>
-                </div>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)">
-              <div>
-                <figure>
-                  <img src="/assets/images/building.png" alt="Building" />
-                </figure>
-                <div className="gift-price">
-                  <img src="/assets/images/diamond-coin.png" alt="Coins" />
-                  <span>100.000</span>
-                </div>
-              </div>
-            </a>
-          </li>
+        })}
           <li>
           </li>
           <li>                                                    
