@@ -24,6 +24,7 @@ export const BLOCK_USER_API=getApiUrl("block_user");
 export const REPORT_USER_API = getApiUrl("report_user");
 export const GIFT_LIST_API = getApiUrl("all_gifts");
 export const GET_GIFT_API = getApiUrl("single_gift");
+export const GET_ALL_CALL = getApiUrl("all_calls");
 
 // Not done yet
 export const CALL_ACTION_API=getApiUrl("call_action");

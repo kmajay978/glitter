@@ -230,8 +230,8 @@ useEffect(()=>{
                     </Typography>
                       
                       <PrettoSlider value={valueweight} onChange={handleChangeweight} valueLabelDisplay="auto" 
-        aria-labelledby="range-slider"  min={18}
-        max={100} getAriaValueText={valuetextweight}/>
+                      aria-labelledby="range-slider"  min={18}
+                      max={100} getAriaValueText={valuetextweight}/>
                     </div>
                     <div className="btns-group d-flex justify-content-between flex-wrap my-5">
                       <button className="btn bg-grd-clr" type="submit" onClick={filterHandle}>Done</button>

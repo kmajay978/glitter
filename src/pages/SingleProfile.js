@@ -4,7 +4,8 @@ import axios from "axios";
 import NavLinks from '../components/Nav';
 import {DISLIKE_USER , LIKE_USER, GET_USERPROFILE_API , BLOCK_USER_API , REPORT_USER_API } from '../components/Api';
 import {Modal, ModalBody , Dropdown} from 'react-bootstrap';
-import Carousel from 'react-bootstrap/Carousel'
+import Carousel from 'react-bootstrap/Carousel';
+import Logo from '../components/Logo';
 
 const SingleProfile = (props) =>{
     const [userData, setUser] = useState('');
@@ -98,6 +99,7 @@ const SingleProfile = (props) =>{
    useEffect(() =>{
     getUser();
     },[])
+    
     return(
        <section className="home-wrapper">
   <img className="bg-mask" src="/assets/images/mask-bg.png" alt="Mask" />
@@ -107,7 +109,7 @@ const SingleProfile = (props) =>{
         <div className="col-lg-3 p-3">
           <div className="logo-tab d-flex justify-content-between align-items-start">
             <a href="javascript:void(0)">
-              <img src="/assets/images/glitters.png" alt="Glitters" />
+             <Logo/>
             </a>
           </div>
         </div>

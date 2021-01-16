@@ -12,7 +12,7 @@ const SearchHome = () =>{
   const history = useHistory();
   const [fetchedProfile, setFilterUser] = useState('');
  const [ friendList  , setFriendlist] = useState([]);
- const [mouseIsClicked, setmouseIsClicked] = useState("false");
+
  const [Click, setClick] = useState(false);
  const [StartPosition, setStartPosition] = useState([])
 

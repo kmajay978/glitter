@@ -1135,6 +1135,15 @@ span.live {
     border-radius: 60px;
 }
 
+.swipe__card_layout img{
+    width: 300px;
+    height: 452px;
+}
+.swipe__card_layout card{
+    overflow: hidden;
+}
+
+
 .profile-carousel .item {
     position: relative;
 }
@@ -1787,7 +1796,7 @@ span.live {
 .stage {
     position: absolute;
     opacity: 1;
-    max-width: 265px;
+    max-width: 600px;
     top: 50%;
     left: 50%;
     -webkit-transform: translate(-50%, -50%);
@@ -3290,12 +3299,16 @@ input:checked + .slider:before {
 }
 
 .profile-swipe-wrapper {
-    position: fixed;
+    position: absolute;
     top: 50%;
     left: 0;
     right: 0;
     margin: 0 auto;
     transform: translateY(-50%);
+}
+
+.profile-swipe-wrapper card{
+    height: 452px;
 }
 
 .daily-matches {
@@ -3358,9 +3371,6 @@ screen and (max-height: 768px) {
     justify-content: center;
     
 }
-.swipe {
-    position: absolute;
-  }
   
   .cardContainer {
     width: 90vw;

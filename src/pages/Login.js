@@ -425,7 +425,7 @@ const registerHandle = (e) =>{
           </div>
           <div className="form-group upload-field mb-5">
             <label htmlFor="profile-photo" id="PreviewPicture" style={{ backgroundImage: `url("${imgData}")` }}   />
-            <input type="file" id="profile-photo" name="profile-photo" id="profile-photo" onChange={handleFileChange} accept="image/*" />
+            <input type="file" id="profile-photo" name="profile-photo" onChange={handleFileChange} accept="image/*" />
             <span className="camera-icon">
               <img src="/assets/images/Icon%20feather-camera.png" alt="Camera" />
             </span>
