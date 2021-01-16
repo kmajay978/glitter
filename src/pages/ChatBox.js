@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import {useSelector} from 'react-redux';
 import axios from "axios";
 import NavLinks from '../components/Nav';
 import { LIKED_LIST, VISITOR_LIST_API ,FRIENDLIST_API, GET_USERPROFILE_API ,VIDEOCALL_API} from '../components/Api';
@@ -6,6 +7,7 @@ import {SOCKET} from '../components/Config';
 import  $ from 'jquery';
 import { css } from "@emotion/core";
 import BarLoader from "react-spinners/BarLoader";
+import {selectUser, userProfile} from "../features/userSlice";
 
 const override = css`
   display: block;
@@ -14,16 +16,16 @@ const override = css`
   width: 95%;
 `;
 
-let messageList = [], receiver_id;
+let messageList = [], receiver_id, userData;
 
 const scrollToBottom = () => {
     var div = document.getElementById('chat-body');
-    if(!!div)
+    if (!!div)
     div.scroll({ top: div.scrollHeight, behavior: 'smooth' });
 }
 
 const ChatBox = () =>{
-
+    // window.setTimeout()
     const[Likes, setLikes] = useState([]);
     const[Visitors, setVisitors] = useState([]);
     const[FriendList, setFriendlist] = useState([]);
@@ -40,6 +42,8 @@ const ChatBox = () =>{
 
 // console.log(UserMessage);
     const[GetActivity, setActivity] = useState(0);
+
+    userData = useSelector(userProfile).user.profile; //using redux useSelector here
 
 
     console.log(CompleteMessageList, "nowwww")
@@ -168,7 +172,6 @@ const ChatBox = () =>{
 
 // console.log(FriendUserId);
     useEffect(()=>{
-
         window.setTimeout(() => {
             $('#uploadfile').bind('change', function(e){
                 var data = e.originalEvent.target.files[0];
@@ -183,46 +186,62 @@ const ChatBox = () =>{
             console.log(messageList, "CompleteMessageList")
             let messagesList = messageList;
             if (!!messages) {
-                messagesList.push(messages.obj);
-                messageList = messagesList;
-                console.log(messagesList, "messageList...")
-                setMessages(messagesList);
-                setRandomNumber(Math.random());
-                scrollToBottom()
+
+                if ((messages.obj.user_from_id === userData.user_id && messages.obj.user_to_id === receiver_id)
+                    ||
+                    (messages.obj.user_from_id === receiver_id && messages.obj.user_to_id === userData.user_id)
+                ) { // check one-to-one data sync
+                    messagesList.push(messages.obj);
+                    messageList = messagesList;
+                    console.log(messagesList, "messageList...")
+                    setMessages(messagesList);
+                    setRandomNumber(Math.random());
+                    scrollToBottom()
+                }
             }
         });
         SOCKET.on('media_file', (messages) => {
             console.log(messageList, "CompleteMessageList")
             let messagesList = messageList;
             if (!!messages) {
-                messagesList.push(messages.obj);
-                messageList = messagesList;
-                console.log(messagesList, "messageList... pic")
-                setMessages(messagesList);
-                setuserMessage(''); //Empty user input here
-                setLoading(false);
-                setRandomNumber(Math.random());
-                scrollToBottom()
+                if ((messages.obj.user_from_id === userData.user_id && messages.obj.user_to_id === receiver_id)
+                    ||
+                    (messages.obj.user_from_id === receiver_id && messages.obj.user_to_id === userData.user_id)
+                ) {
+                    messagesList.push(messages.obj);
+                    messageList = messagesList;
+                    console.log(messagesList, "messageList... pic")
+                    setMessages(messagesList);
+                    setuserMessage(''); //Empty user input here
+                    setLoading(false);
+                    setRandomNumber(Math.random());
+                    scrollToBottom()
+                }
             }
         });
         SOCKET.on('voice', function(arrayBuffer) {
             let messagesList = messageList;
             console.log(messageList, "CompleteMessageList")
             if (!!arrayBuffer) {
-                messagesList.push(arrayBuffer.obj);
-                messageList = messagesList;
-                console.log(messagesList, "messageList... pic")
-                setMessages(messagesList);
-                setuserMessage(''); //Empty user input here
-                setRandomNumber(Math.random());
-                scrollToBottom()
+                if ((arrayBuffer.obj.user_from_id === userData.user_id && arrayBuffer.obj.user_to_id === receiver_id)
+                    ||
+                    (arrayBuffer.obj.user_from_id === receiver_id && arrayBuffer.obj.user_to_id === userData.user_id)
+                ) {
+                    messagesList.push(arrayBuffer.obj);
+                    messageList = messagesList;
+                    console.log(messagesList, "messageList... pic")
+                    setMessages(messagesList);
+                    setuserMessage(''); //Empty user input here
+                    setRandomNumber(Math.random());
+                    scrollToBottom()
+                }
             }
             // src= window.URL.createObjectURL(blob);
 
         });
 
-    },[])
 
+    },[])
     useEffect(()=>{
         if (GetActivity === 2) {
             console.log("connect socket")
@@ -455,7 +474,7 @@ const ChatBox = () =>{
                                     </div>
                                 </div>
 
-                                <div className="chat-date text-center my-2">Today</div>
+                                {/*<div className="chat-date text-center my-2">Today</div>*/}
                                 <div className="message-chat">
 
                                     <div className="chat-body" id={"chat-body"}>
