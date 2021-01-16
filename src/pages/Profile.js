@@ -125,15 +125,17 @@ const Profile = () =>{
    });
    }
 
-   const handleLogout = () =>{
-    const bodyParameters= {
-     session_id : sessionId
-    };
-    axios.post(LOGOUT_API , bodyParameters)
-    .then((response) => { 
-      removeStorage('session_id');
-      history.push('/login');
-      alert("logout successfully")
+  const handleLogout = () =>{
+  const bodyParameters= {
+  session_id : sessionId
+ };
+ axios.post(LOGOUT_API , bodyParameters)
+ .then((response) => { 
+   localStorage.removeItem("session_id");
+   history.push('/login');
+   dispatch(login(null));
+   dispatch(profile({profile: null}));
+
     }, (error) =>{
 
     });

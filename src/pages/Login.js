@@ -197,18 +197,18 @@ const verifyHandle = () =>{
 
       axios.post(VERIFY_API,bodyParameters)
   .then((response) => {
-    if(response.data.data != null)
-    {
-         localStorage.setItem('session_id', response.data.data.session_id);
-         history.push("/");
-         dispatch(
-           login({
-              logged: response.data.data,
-              loggedIn: true,
-           })
-         );
-
-    }
+   if(response.data.data != null)
+{
+     localStorage.setItem('session_id', response.data.data.session_id);
+     history.push("/");
+     dispatch(
+       login({
+          logged: response.data.data,
+          loggedIn: true,
+       })
+     );
+     dispatch(profile({profile: response.data.data}))
+}
     else
     {
     const ifvalid = otpValidation();
