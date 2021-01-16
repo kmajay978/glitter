@@ -27,6 +27,7 @@ function App() {
        
           {/* Private routes */}
           <ProtectedRoute exact path='/' component={Home} />
+          <ProtectedRoute exact path='/dummy' component={Dummy} />
           <ProtectedRoute exact path='/profile' component={Profile} />
           <ProtectedRoute exact path="/answer-calling" component={AnswerCalling} />
           <ProtectedRoute exact path='/chat' component={ChatBox} />

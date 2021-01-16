@@ -99,6 +99,7 @@ const SingleProfile = (props) =>{
    useEffect(() =>{
     getUser();
     },[])
+    
     return(
        <section className="home-wrapper">
   <img className="bg-mask" src="/assets/images/mask-bg.png" alt="Mask" />

@@ -10,7 +10,6 @@ var distance=require('google-distance-matrix');
 const config=require('config');
 
 exports.getMessage=function(data,user2_id,callback) {
-    console.log(data)
     async.waterfall([
         function (cb) {
             var sql = 'SELECT * FROM `messages` WHERE (`user_from_id`='+data+' AND `user_to_id`='+user2_id+') OR (`user_from_id`='+user2_id+' AND `user_to_id`='+data+')';
@@ -37,7 +36,6 @@ exports.getMessage=function(data,user2_id,callback) {
 
 exports.sendMessage=function(data,callback)
 {
-    console.log('data..........',data);
     var reciever_id=data.reciever_id;
     var session_id=data.session_id;
     var message=data.message;
@@ -76,7 +74,7 @@ exports.sendMessage=function(data,callback)
                   var device_type=user[0]['device_type'];
                   var sql = "INSERT INTO `messages` (`user_from_id`,`user_to_id`,`message`,`created_at`,`updated_at`, `message_is_read`) VALUES(?,?,?,?,?,?)";
                     var query=connection.query(sql,[sender_id,reciever_id,message,datetime,datetime, 1], (error, user)=> {
-                        console.log(query, "ggggg")
+
                         if (error) {
                           console.log(error);
                             cb({
@@ -191,7 +189,6 @@ exports.getOrderData=function(response_data,callback){
                             {   
                                 if(order[0].status==0)
                                 {
-                                    console.log('yeye');
                                     getLatLong(order[0].fromaddress,function(err,from_lat,from_long){
                                      var from_latitude=from_lat;
                                       var from_longitude=from_long;
@@ -215,7 +212,6 @@ exports.getOrderData=function(response_data,callback){
                                 }
                                 else
                                 {
-                                    console.log('hhd');
                                     var sql2 = "SELECT * FROM shipmentprocess WHERE refshipmentid = ?";
                                     connection.query(sql2, [order_id], function(error, order_data)
                                     {
@@ -346,6 +342,89 @@ function getDistance(req,res)
 });
 }
 
+exports.sendVoiceToSql = function (data, callback) {
+    console.log('data', data);
+    var reciever_id = data.reciever_id;
+    var session_id = data.sessionId;
+    var datetime = moment.utc().format('YYYY-MM-DD HH:mm:ss');
+    async.waterfall([
+        function (cb) {
+            console.log(session_id, "session_id..")
+            var sql = `SELECT * FROM app_login WHERE session_id = ?`;
+            connection.query(sql, [session_id], (error, user) => {
+                if (error) {
+                    cb({
+                        message: constants.responseMessages.ERROR_IN_EXECUTION,
+                        status: constants.responseFlags.ERROR_IN_EXECUTION,
+                        response_data: {}
+                    });
+
+                } else {
+
+                    cb(null, user);
+                }
+            });
+        },
+        function (user, cb) {
+            if (!user || (user && user.length === 0)) {
+                //console.log('yes');
+                return cb({
+                    message: constants.responseMessages.INVALID_ACCESS,
+                    status: constants.responseFlags.INVALID_ACCESS,
+                    driver_payment_response: {}
+                });
+            } else {
+                //console.log(user);
+                var sender_id = user[0]['user_id'];
+                var sql = 'INSERT INTO `messages` (`user_from_id`,`user_to_id`,`message`, `media`, `audio`, `created_at`,`updated_at`, `message_is_read`) VALUES(?,?,?,?,?,?,?,?)'
+                var query = connection.query(sql, [sender_id, reciever_id, "", "", data.blob, datetime, datetime, 1], (error, user) => {
+                    if (error) {
+                        console.log(error);
+                        cb({
+                            message: constants.responseMessages.ERROR_IN_EXECUTION,
+                            status: constants.responseFlags.ERROR_IN_EXECUTION,
+                            response_data: {}
+                        });
+
+                    } else {
+
+                        var message_id = user.insertId;
+
+                        var sql1 = `SELECT * FROM messages where user_from_id = ? AND user_to_id = ? ORDER BY id DESC`;
+                        //var sql1=`SELECT * FROM messages where msg_id = ?  ORDER BY id DESC`;
+                        connection.query(sql1, [sender_id, reciever_id], (error, message_data) => {
+                            if (error) {
+                                console.log(error);
+                                cb({
+                                    message: constants.responseMessages.ERROR_IN_EXECUTION,
+                                    status: constants.responseFlags.ERROR_IN_EXECUTION,
+                                    response_data: {}
+                                });
+                            } else {
+                                var obj = {};
+                                obj['status'] = 200;
+                                obj['message'] = message_data[0]['message'];
+                                obj['media'] = message_data[0]['media'];
+                                obj['audio'] = message_data[0]['audio'];
+                                obj['user_from_id'] = message_data[0]['user_from_id'];
+                                obj['user_to_id'] = message_data[0]['user_to_id'];
+                                obj['message_id'] = message_data[0]['id'];
+                                obj['created_at'] = message_data[0]['created_at'];
+                                obj['updated_at'] = message_data[0]['updated_at'];
+                                cb(null, {obj});
+
+
+                            }
+                        })
+                    }})
+
+                // console.log(query, "query...")
+            }
+        }
+    ], function (error, result) {
+        return callback(error, result);
+    })
+}
 exports.sendImageToSql = function (data, callback) { // file, filename,
     console.log('data', data);
     var reciever_id = data.reciever_id;
