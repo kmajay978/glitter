@@ -1,8 +1,6 @@
-
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import {GET_LOGGEDPROFILE_API} from "../components/Api";
-
 export const userSlice = createSlice({ 
     name: "user", 
     initialState: { 
@@ -17,17 +15,11 @@ export const userSlice = createSlice({
             state.user = null;
         },
         profile: (state, action) =>{
-            console.log(action, "action....")
             state.profile = action.payload.profile;
         },
-
     }
 });
-
 export const { login, logout, profile } = userSlice.actions;
-
 export const selectUser = (state) => state.user.user;
 export const userProfile = (state) => state;
-
 export default userSlice.reducer;
-
