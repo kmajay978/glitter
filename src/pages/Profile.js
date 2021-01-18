@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import {  useHistory } from 'react-router';
 import axios from "axios";
 import NavLinks from '../components/Nav';
-import { GET_GIFT_API , GIFT_LIST_API , GET_LOGGEDPROFILE_API , EDITPROFILE_API , BLOCK_USERLIST_API , LOGOUT_API, BLOCK_USER_API} from '../components/Api';
+import {GIFT_LIST_API , GET_GIFT_API , GET_LOGGEDPROFILE_API , EDITPROFILE_API , BLOCK_USERLIST_API , LOGOUT_API} from '../components/Api';
 import useToggle from '../components/CommonFunction';
 import {removeStorage} from '../components/CommonFunction';
 import Login from '../pages/Login'
@@ -26,9 +26,9 @@ const Profile = () =>{
   const dispatch = useDispatch();
   const [profileData, setProfile] = useState('');  
   const [blockData, setBlockData] = useState([]);
-  const [picture, setPicture] = useState([]); //profile-photo
+  const [picture, setPicture] = useState(null);
   const [imgData, setImgData] = useState(null);
-  const [GiftData , setGiftData] = useState([]);
+  const [GiftData , setGiftData] =useState([]);
   const [step, setStep] = useState(1);
   const [show, setShow] = useState(false);
   const [showBlock , setShowBlock] = useState(false);
@@ -37,13 +37,17 @@ const Profile = () =>{
   const [showAbout , setShowAbout] = useState(false);
   const [showCoins , setShowCoin] = useState(false);
   const [showGift , setShowGift] = useState(false);
+  const [showImage , setShowImage] = useState(false);
+
   const [isOn, toggleIsOn] = useToggle();
   const [isProfile, toggleProfile] = useToggle();
   const handleShow = () => setShow(true); // show Edit model
   const handleSettingShow = () => setShowSetting(true); //show Setting Model
   const handleCoinsShow = () => setShowCoin(true); //show coins model
-  const handlePrivacy = () => setShowPrivacy(true); 
-  const handleAbout =() => setShowAbout(true);
+  const handleGiftShow = () => setShowGift(true); 
+  const handleImage =() => setShowImage(true);
+  const handlePrivacy =() => setShowPrivacy(true);
+  const handleAbout = () => setShowAbout(true);
   // Getting form value here
   const [form , setForm] = useState({
     
@@ -102,7 +106,7 @@ const Profile = () =>{
      console.log("working");
      const bodyParameters ={
     session_id : sessionId,
-    device_token : "uhydfdfghdertyt445t6y78755t5jhyhyy",
+    device_token : "uhydfdfghdertyt445t6y78755t5jhyhyy" ,
     device_type : 0 ,
     first_name : form.firstName,
     last_name : form.lastName,
@@ -119,6 +123,44 @@ const Profile = () =>{
    .then((response) => {
    if(response.status==200){
     alert("update succesfully")
+   }
+   }, (error) =>{
+
+   });
+   }
+ 
+  
+  
+   const config = {
+    headers : {
+              Accept: "application/json",
+              "Content-Type": "multipart/form-data",
+          }
+    }
+   const updateImage = (e) => {
+    const bodyParameters = new FormData();
+      bodyParameters.append("session_id", "" + sessionId);
+      bodyParameters.append("device_token", "" + "uhydfdfghdertyt445t6y78755t5jhyhyy" );
+      bodyParameters.append("device_type", "" + 0);
+      bodyParameters.append("first_name", "" + form.firstName);
+      bodyParameters.append("last_name", form.lastName);
+      bodyParameters.append("dob", "" + form.dob);
+      bodyParameters.append("gender", "" + form.gender);
+      bodyParameters.append("aboutMe", "" +  form.aboutMe);
+      bodyParameters.append("height",  form.height);
+      bodyParameters.append("weight",  form.weight);
+      bodyParameters.append("interest", "" + form.interest);
+      bodyParameters.append('profile_photo', picture);
+      console.log(picture,"picture......");
+      bodyParameters.append("relationship_status", form.relationStatus);
+    
+    axios.post(EDITPROFILE_API , bodyParameters , config) 
+   .then((response) => {
+   if(response.status==200){
+    
+   setShowImage(false);
+   alert("update successfully");
+  
    }
    }, (error) =>{
 
@@ -359,9 +401,8 @@ const Profile = () =>{
         <div className="col-md-4 border-rt">
           <div className="user-profile becomevip-wrapper__innerblock p-0">
             <div className="user-profile__details text-center">
-            
-              <img src={profileData.profile_images} alt="user" className="user-profile__image img-circle medium-image" />
-                 
+            < img src={profileData.profile_images} alt="user" className="user-profile__image img-circle medium-image" onClick={handleImage}/> 
+           
               <div className="user-profile__details__data">
                 <h5 className="user-profile__name">{profileData.first_name +' '+ profileData.last_name } </h5>
                 <div className="user-profile__level d-inline-block">
@@ -494,6 +535,15 @@ const Profile = () =>{
     </div>
   </section>
 
+<Modal className="Image-model" show={showImage}  onHide= {() => setShowImage(false)}>
+<form>
+  <div className="profile-image-inner">
+<input type="file" id="profile-photo" name="profile-photo" onChange={handleFileChange} accept="image/*" />
+<a href="javascript:void(0)" onClick={updateImage} >Upload</a>
+{/* <button onClick={updateImage}>Upload</button> */}
+</div>
+</form>
+</Modal>
    {/* <div class="edit-profile-modal modal-wrapper"> */}
    <Modal className =" edit-profile-modal" show={show} onHide={() => setShow(false)} backdrop="static" keyboard={false}>
         <div className="edit-profile-modal__inner">
