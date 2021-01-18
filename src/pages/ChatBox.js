@@ -297,8 +297,8 @@ const ChatBox = () =>{
         console.log(recording, "recordddddddd")
         if (!dummyMediaRc) {
             var constraints = {audio: true};
-            console.log( navigator.mediaDevices.getUserMedia(constraints), "hiii")
             let recordAudio = false;
+            if ( !!navigator.mediaDevices) {
             navigator.mediaDevices.getUserMedia(constraints).then(function (mediaStream) {
                 recordAudio = true;
                 var mediaRecorder = new MediaRecorder(mediaStream);
@@ -323,6 +323,10 @@ const ChatBox = () =>{
             }).catch(function (err) {
                 alert(err.message)
             })
+            }
+            else {
+                alert("You need a secure https connection in order to record voice")
+            }
         }
         else {
             console.log(dummyMediaRc, "media rec...")

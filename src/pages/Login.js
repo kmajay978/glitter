@@ -109,20 +109,24 @@ const tokencheck = () =>{
     const isValid = formValidation();
     if(isValid)
     {
-    const bodyParameters = {
-      phone: phoneNumber,
-      country_code: '+'+cntCode
-    };
-
-      axios.post(SENDOTP_API,bodyParameters)
-  .then((response) => {
-   setStep(step + 1)
-  
-  }, (error) => {
-    
-  });
-
+      setStep(step + 1)
     }
+  //   if(isValid)
+  //   {
+  //   const bodyParameters = {
+  //     phone: phoneNumber,
+  //     country_code: '+'+cntCode
+  //   };
+
+  //     axios.post(SENDOTP_API,bodyParameters)
+  // .then((response) => {
+  //  setStep(step + 1)
+  
+  // }, (error) => {
+    
+  // });
+
+  //   }
   
 
    }
@@ -186,53 +190,55 @@ const tokencheck = () =>{
   // Verify OTP Function 
 const verifyHandle = () =>{
 
-   const bodyParameters = {
-      phone: phoneNumber,
-      country_code: '+'+cntCode,
-      otp: otp,
-      device_type:0,
-      device_token:"",
-    };
+//    const bodyParameters = {
+//       phone: phoneNumber,
+//       country_code: '+'+cntCode,
+//       otp: otp,
+//       device_type:0,
+//       device_token:"",
+//     };
 
-      axios.post(VERIFY_API,bodyParameters)
-  .then((response) => {
-   if(response.data.data != null)
-{
-     localStorage.setItem('session_id', response.data.data.session_id);
-     history.push("/");
-     dispatch(
-       login({
-          logged: response.data.data,
-          loggedIn: true,
-       })
-     );
-     dispatch(profile({profile: response.data.data}))
-}
-    else
-    {
-    const ifvalid = otpValidation();
-    if(ifvalid){
-    setStep(step + 1)
-    localStorage.clear();
-    }
+//       axios.post(VERIFY_API,bodyParameters)
+//   .then((response) => {
+//    if(response.data.data != null)
+// {
+//      localStorage.setItem('session_id', response.data.data.session_id);
+//      history.push("/");
+//      dispatch(
+//        login({
+//           logged: response.data.data,
+//           loggedIn: true,
+//        })
+//      );
+//      dispatch(profile({profile: response.data.data}))
+// }
+//     else
+//     {
+//     const ifvalid = otpValidation();
+//     if(ifvalid){
+//     setStep(step + 1)
+//     localStorage.clear();
+//     }
+localStorage.setItem('session_id', "5Dzxm3uQ9ddGt1oKe3sYiZxvUvnxRYgH");
+history.push("/");
   }
   
-  }, (error) => {
+  // }, (error) => {
     
-     localStorage.clear();
-  });
-}
+  //    localStorage.clear();
+  // });
+// }
 //otp validation
-const otpValidation = () =>{
-  const phoneErr = {};
-  let ifvalid = true;
+// const otpValidation = () =>{
+//   const phoneErr = {};
+//   let ifvalid = true;
 
-  if(otp.length == "")
-  {
-    ifvalid = false;
-  }
-  return ifvalid;
-}
+//   if(otp.length == "")
+//   {
+//     ifvalid = false;
+//   }
+//   return ifvalid;
+// }
   // End verify otp 
 
   // Register user here

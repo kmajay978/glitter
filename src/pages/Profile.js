@@ -186,19 +186,22 @@ const Profile = () =>{
    }
 
   const handleLogout = () =>{
-  const bodyParameters= {
-  session_id : sessionId
- };
- axios.post(LOGOUT_API , bodyParameters)
- .then((response) => { 
-   localStorage.removeItem("session_id");
-   history.push('/login');
-   dispatch(login(null));
-   dispatch(profile({profile: null}));
 
-    }, (error) =>{
+  localStorage.removeItem("session_id");
+    history.push('/login');
+//   const bodyParameters= {
+//   session_id : sessionId
+//  };
+//  axios.post(LOGOUT_API , bodyParameters)
+//  .then((response) => { 
+//    localStorage.removeItem("session_id");
+//    history.push('/login');
+//    dispatch(login(null));
+//    dispatch(profile({profile: null}));
 
-    });
+//     }, (error) =>{
+
+//     });
    }
 
    //block list
