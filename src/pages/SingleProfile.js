@@ -41,13 +41,12 @@ const SingleProfile = (props) =>{
           };
             axios.post(GET_USERPROFILE_API,bodyParameters)
             .then((response) => {
-            console.log(response);
             setUser(response.data.data);
             
          }, (error) => {
         });
         }
-   
+   console.log(userData);
           //all gift
        const handleGift = async() =>{
        toggleIsOn(true);
@@ -188,12 +187,12 @@ const SingleProfile = (props) =>{
             </div>
           </div>
           {/* <div className="owl-carousel owl-theme profile-carousel"> */}
-          <Carousel id="images_crousal">
+          <Carousel id="images_crousal" >
           <Carousel.Item interval={900}>
             <div className="items">
            
               <figure>
-                <img src={userData.profile_images} alt="Marlene" />
+              <img src={userData.profile_images} alt="Marlene" />
               </figure>
       
               <div className="sp-meta-info">
@@ -330,7 +329,11 @@ const SingleProfile = (props) =>{
             <div className="bio-looking">
               <h5 className="mb-3">Looking For</h5>
               <div className="looking-for">
-                <span className="d-inline-block">{userData.looking_for}</span>
+                <span className="d-inline-block">
+                {userData.looking_for == '1' ? "Men" 
+                : userData.looking_for == '2'  ? "Women" 
+                : "Both"}
+                </span>
               </div>
             </div>
           </div>

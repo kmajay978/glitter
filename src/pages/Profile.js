@@ -76,7 +76,7 @@ const Profile = () =>{
     height:"",
     weight:"",
     relationStatus:"",
-    interest:"",
+    looking_for:"",
   });
 
 //  console.log(form);
@@ -108,7 +108,7 @@ const Profile = () =>{
       form.height = data.height
       form.weight = data.weight
       form.gender = data.gender
-      form.interest = data.interest
+      form.looking_for = data.looking_for
       form.relationStatus = data.relationship_status
        setProfile(data);
        dispatch(
@@ -134,7 +134,7 @@ const Profile = () =>{
     aboutMe : form.aboutMe,
     height : form.height,
     weight : form.weight,
-    interest:form.interest,
+    looking_for:form.looking_for,
     relationship_status :form.relationStatus
    };
    axios.post(EDITPROFILE_API , bodyParameters) 
@@ -320,23 +320,26 @@ const Profile = () =>{
           </div>
          
 
-          <div className="show-gender ft-block d-flex flex-wrap">
+          <div className="choose-gender ft-block d-flex flex-wrap">
+              
               <div className="tab-title">
                   <label>Looking For</label>
               </div>
-
-              <div className="form-group">
-                  <input type="checkbox"  name="interest" id="man" value={1} onChange={handleChange} />
-                  <label for="man">Man</label>
-              </div>
-              <div className="form-group">
-                  <input type="checkbox" name="interest" id="woman" value={2} onChange={handleChange} />
-                  <label for="woman">Woman</label>
-              </div>
-              <div className="form-group">
-                  <input type="checkbox" name="interest" id="both" value={3} onChange={handleChange} />
-                  <label for="both">Both</label>
-              </div>
+                            <div className="form-group">
+                        
+                              <input type="radio" id="female" name="looking_for" value={1} checked={form.looking_for == 1 ? "checked" : ""} onChange={ handleChange }  placeholder="Female" />
+                              <label htmlFor="female">Men</label>
+                            </div>
+                            <div className="form-group">
+                              <input type="radio" id="male" name="looking_for" value={2} checked={form.looking_for == 2 ? "checked" : ""}  onChange={ handleChange } placeholder="Male" />
+                              <label htmlFor="male">Women</label>
+                            </div>
+                              
+                            <div className="form-group">
+                              <input type="radio" id="more" value={3}  checked={form.looking_for == 3 ? "checked" : ""} onChange={ handleChange }  name="looking_for" />
+                              <label htmlFor="more">Both</label>
+                          </div>
+                          
 
               
               
@@ -781,30 +784,37 @@ const Profile = () =>{
         <div className="share__icons">
 
         
-        <div className="Demo__some-network">
+        <div className="some-network">
+          <FacebookShareButton url={shareUrl} quote={title} className="share-button" >
+            <FacebookIcon  round />
+          </FacebookShareButton>
+          </div>
+        
+        <div className="some-network">
           <TwitterShareButton url={shareUrl} title={title} className="share-button" >
             <TwitterIcon  round />
           </TwitterShareButton>
         </div>
 
-        <div className="Demo__some-network">
+        <div className="some-network">
           <TelegramShareButton url={shareUrl} title={title} className="share-button">
             <TelegramIcon round />
           </TelegramShareButton>
         </div>
          
-         <div className="Demo__some-network">
+         <div className="some-network">
           <EmailShareButton url={shareUrl} subject={title} body="body" className="share-button">
             <EmailIcon round />
           </EmailShareButton>
         </div>
 
 
-        <div className="Demo__some-network">
+        <div className="some-network">
           <WhatsappShareButton url={shareUrl} title={title} separator=":: " className="share-button">
             <WhatsappIcon round />
           </WhatsappShareButton>
         </div>
+
         </div>
   </Modal>
 
