@@ -1,6 +1,6 @@
 import { format } from 'date-fns';
 import { useDispatch } from 'react-redux';
-import {login} from '../features/userSlice';
+import {login, profile} from '../features/userSlice';
 
 import React, { useState, useEffect } from "react";
 import DateFnsUtils from '@date-io/date-fns';
