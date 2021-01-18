@@ -2,22 +2,27 @@ import React, { useState, useEffect } from "react";
 import {  useHistory } from 'react-router';
 import axios from "axios";
 import NavLinks from '../components/Nav';
-import {DISLIKE_USER , LIKE_USER, GET_USERPROFILE_API , BLOCK_USER_API , REPORT_USER_API } from '../components/Api';
+import {GIFT_LIST_API , GET_GIFT_API , DISLIKE_USER , LIKE_USER, GET_USERPROFILE_API , BLOCK_USER_API , REPORT_USER_API } from '../components/Api';
 import {Modal, ModalBody , Dropdown} from 'react-bootstrap';
 import Carousel from 'react-bootstrap/Carousel';
 import Logo from '../components/Logo';
+import useToggle from '../components/CommonFunction';
 
 const SingleProfile = (props) =>{
-    const [userData, setUser] = useState('');
+    const [userData, setUser] = useState([]);
+   
     const [count, setCount] = useState('0');
     const [checkUid, setUserId] = useState(props.location.userId);
     const [blk, setBlock ]= useState(false);
     const [smShow, setSmShow] = useState(false);
-
+    const [showGift , setShowGift] = useState(false);
     const[ form, setForm] =useState({ report :""})
+    const [GiftData , setGiftData] =useState([]);
+    const [blockData , setBlockData] = useState(false);
+    const [isOn, toggleIsOn] = useToggle();
     
     const history = useHistory()
-
+   
     const handleBack = () =>{
       history.push("/")
     }
@@ -38,9 +43,31 @@ const SingleProfile = (props) =>{
             .then((response) => {
             console.log(response);
             setUser(response.data.data);
+            
          }, (error) => {
         });
         }
+   
+          //all gift
+       const handleGift = async() =>{
+       toggleIsOn(true);
+       const bodyParameters = {
+       session_id :  localStorage.getItem('session_id'),
+       }
+       const {data:{result}} = await axios.post(GIFT_LIST_API , bodyParameters)
+       setGiftData(result);
+       }
+
+   //get single  gift item
+      const getGiftItem = async(Uid) => {
+      const bodyParameters ={
+      session_id :  localStorage.getItem('session_id') ,
+      gift_id : Uid
+      }
+       const {data : {result}} = await axios.post(GET_GIFT_API , bodyParameters)
+       console.log(result);
+        }
+ 
         const handleblock = async() => {
           const bodyParameters={
             session_id : localStorage.getItem('session_id'),
@@ -49,11 +76,15 @@ const SingleProfile = (props) =>{
           axios.post(BLOCK_USER_API , bodyParameters)
           .then((response)=>
           {
-          if(response.status==200 ) {
+          if(response.status==200 && !response.error) {
+            setBlockData(true);
           alert("block successfully")
           }
+          else {
+            setBlockData(false);
+          }
           }, (error) =>{
-  
+            setBlockData(false);
           });
         }
 
@@ -133,7 +164,8 @@ const SingleProfile = (props) =>{
         <div className="col-md-7">
           <div className="report-tab d-flex flex-wrap align-items-center justify-content-end ml-auto">
             <span className="block-cta">
-              <a className="theme-txt" href="javascript:void(0)" onClick={handleblock}>{blk ?'unblock':'Block'}</a>
+              <a className="theme-txt" href="javascript:void(0)" onClick={handleblock}>{blockData ?'unblock':'block'}</a>
+          
             </span>
             <span className="report-cta">
               <a className="theme-txt" href="javascript:void(0)" onClick={() => setSmShow(true)}>Report</a>
@@ -148,20 +180,22 @@ const SingleProfile = (props) =>{
               <span className="d-inline-block">maerineiw</span>
               <span className="d-inline-block">ID:2837289739</span>
             </div>
-            <div className="pphoto-count">
+            <div className="photo-count">
               <i className="far fa-image" />
               <span className="d-inline-block"> 
-               {/* {setCount(count+1)} */}
+               {/* {setCount(count+1)} */}4
               </span>
             </div>
           </div>
           {/* <div className="owl-carousel owl-theme profile-carousel"> */}
-          <Carousel id="images_crousal" >
-          <Carousel.Item interval={900} >
-            <div className="item">
+          <Carousel id="images_crousal">
+          <Carousel.Item interval={900}>
+            <div className="items">
+           
               <figure>
                 <img src={userData.profile_images} alt="Marlene" />
               </figure>
+      
               <div className="sp-meta-info">
                 <div className="meta-info-data">
                   <h4>{userData.first_name}, {userData.age}</h4>
@@ -263,7 +297,7 @@ const SingleProfile = (props) =>{
               <div className="flex-wrapper d-flex align-items-center mb-3">
                 <h5 className="mb-0">Gifts</h5>
                 <span className="see-all ml-5">
-                  <a href="javascript:void(0)" className="theme-txt all-gift-btn">Send Gifts</a>
+                  <a href="javascript:void(0)" className="theme-txt all-gift-btn"onClick={handleGift}>Send Gifts</a>
                 </span>
               </div>
               <div className="gifts-wrapper d-flex flex-wrap">
@@ -337,6 +371,40 @@ const SingleProfile = (props) =>{
        
     </Modal>
   
+    <div className={isOn ? 'all-gifts-wrapper active': 'all-gifts-wrapper '} >
+    <div className="all-gift-inner">
+    <a href="javascript:void(0)" className="close-gift-btn modal-close" onClick={toggleIsOn}><img src="/assets/images/btn_close.png" /></a>
+      <div className="all-gift-header d-flex flex-wrap align-items-center mb-3">
+        <h5 className="mb-0 mr-4">Send Gift</h5>
+        <div className="remaining-coins">
+          <img src="/assets/images/diamond-coin.png" alt="Coins" />
+          <span>152</span>
+        </div>
+      </div>
+      <div className="all-gift-body">
+        
+        <ul className="d-flex flex-wrap text-center">
+      {GiftData.map((items , i) => {
+        return <li onClick={() => getGiftItem(items.id)}>
+            <a href="javascript:void(0)" >
+              <div>
+                <figure>
+                  <img src={items.image} alt={items.name} />
+                </figure>
+                <div className="gift-price">
+                  <img src="/assets/images/diamond-coin.png" alt="Coins" />
+                  <span>{items.coins}</span>
+                </div>
+              </div>
+            </a>
+          </li>
+        })}
+          <li>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
 </section>
 
 

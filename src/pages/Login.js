@@ -1,6 +1,6 @@
 import { format } from 'date-fns';
 import { useDispatch } from 'react-redux';
-import {login, profile} from '../features/userSlice';
+import {login , profile} from '../features/userSlice';
 
 import React, { useState, useEffect } from "react";
 import DateFnsUtils from '@date-io/date-fns';
@@ -18,7 +18,6 @@ import LoginSidebar from '../components/LoginSidebar';
 import { SENDOTP_API, VERIFY_API, SIGNUP_API } from '../components/Api';
 import $ from 'jquery';
 import { FacebookProvider, Like } from 'react-facebook';
-
 
 // Working on login functional component
 const Login = () => {
