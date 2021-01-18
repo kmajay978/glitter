@@ -279,6 +279,16 @@ const ChatBox = () =>{
 
     },[FriendUserId])
 
+    var blobToBase64 = function(blob, callback) {
+        var reader = new FileReader();
+        reader.onload = function() {
+            var dataUrl = reader.result;
+            var base64 = dataUrl.split(',')[1];
+            return callback(base64);
+        };
+        reader.readAsDataURL(blob);
+    };
+
     useEffect(() => {
         console.log(recording, "record....")
     }, [recording])
@@ -286,8 +296,10 @@ const ChatBox = () =>{
         console.log(recording, "recordddddddd")
         if (!dummyMediaRc) {
             var constraints = {audio: true};
+            console.log( navigator.mediaDevices.getUserMedia(constraints), "hiii")
+            let recordAudio = false;
             navigator.mediaDevices.getUserMedia(constraints).then(function (mediaStream) {
-
+                recordAudio = true;
                 var mediaRecorder = new MediaRecorder(mediaStream);
 
                 mediaRecorder.onstart = function (e) {
@@ -300,12 +312,16 @@ const ChatBox = () =>{
                 mediaRecorder.onstop = function (e) {
                     var blob = new Blob(this.chunks,);
                     console.log(blob, "blob.....")
-                    SOCKET.emit('radio', {blob: URL.createObjectURL(blob), sessionId, reciever_id: FriendUserId});
+                    blobToBase64(blob, (output) => {
+                        SOCKET.emit('radio', {blob: 'data:audio/mp3;base64,' + output, sessionId, reciever_id: FriendUserId});
+                    })
                 };
 
                 // Start recording
                 mediaRecorder.start();
-            });
+            }).catch(function (err) {
+                alert(err.message)
+            })
         }
         else {
             console.log(dummyMediaRc, "media rec...")
@@ -501,9 +517,7 @@ const ChatBox = () =>{
                                                                     {
                                                                         !!data.audio &&
                                                                         <div  className="audio-socket">
-                                                                            <audio controls preload={"none"} className="audio-left">
-                                                                                <source src={data.audio} type={"audio/mp3"}/>
-                                                                            </audio>
+                                                                            <audio controls src={data.audio} className="audio-left"/>
                                                                         </div>
                                                                     }
 
@@ -528,9 +542,7 @@ const ChatBox = () =>{
                                                                     {
                                                                         !!data.audio &&
                                                                         <div>
-                                                                            <audio controls preload={"none"} className="audio-right">
-                                                                                <source src={data.audio} type={"audio/mp3"}/>
-                                                                            </audio>
+                                                                            <audio controls src={data.audio} className="audio-right"/>
                                                                         </div>
                                                                     }
 
