@@ -1116,6 +1116,11 @@ span.live {
     overflow: hidden;
 }
 
+
+#images_crousal .carousel-indicators .active {
+    display: none;
+}
+
 .profile-carousel .item figure::before {
     position: absolute;
     top: 0;
@@ -3332,6 +3337,18 @@ input:checked + .slider:before {
 
 
 
+/* share modal */
+
+.share__icons {
+    display: flex;
+    flex-wrap: wrap;
+}
+.share__icons > div:not(:last-child) {
+    margin-right: 10px;
+}
+.share__icons svg {
+    width: 45px;
+}
 
 
 /** media query start */
