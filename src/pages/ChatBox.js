@@ -7,6 +7,7 @@ import {SOCKET} from '../components/Config';
 import  $ from 'jquery';
 import { css } from "@emotion/core";
 import BarLoader from "react-spinners/BarLoader";
+import Logo from '../components/Logo';
 import {selectUser, userProfile} from "../features/userSlice";
 
 const override = css`
@@ -328,7 +329,7 @@ const ChatBox = () =>{
                             <div className="d-flex flex-wrap align-items-center">
                                 <div className="logo-tab d-flex justify-content-between align-items-start">
                                     <a href="javascript:void(0)">
-                                        <img src="/assets/images/glitters.png" alt="Glitters" />
+                                       <Logo/>
                                     </a>
                                 </div>
                             </div>

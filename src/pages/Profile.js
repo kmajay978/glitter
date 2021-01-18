@@ -14,6 +14,21 @@ import $ from 'jquery';
 import Logo from '../components/Logo';
 import PrivacyPolicy from '../components/PrivacyPolicy';
 import AboutGlitter from '../components/AboutGlitter';
+import {
+  EmailIcon,
+  FacebookIcon,
+  InstapaperIcon,
+  LinkedinIcon,
+  TelegramIcon,
+  TwitterIcon,
+  WhatsappIcon,
+  EmailShareButton,
+  FacebookShareButton,
+  TelegramShareButton,
+  WhatsappShareButton,
+  TwitterShareButton,
+  LinkedinShareButton,
+} from "react-share";
 // import {addBodyClass} from '../components/CommonFunction'; 
    
 
@@ -35,9 +50,10 @@ const Profile = () =>{
   const [showSetting ,setShowSetting] = useState(false);
   const [showPrivacy ,setShowPrivacy] = useState(false);
   const [showAbout , setShowAbout] = useState(false);
+  const [showShare , setShowShare] = useState(false); // state for show share glitter model
   const [showCoins , setShowCoin] = useState(false);
   const [showGift , setShowGift] = useState(false);
-  const [showImage , setShowImage] = useState(false);
+  const [showImage , setShowImage] = useState(false); //state for edit profile image model
 
   const [isOn, toggleIsOn] = useToggle();
   const [isProfile, toggleProfile] = useToggle();
@@ -46,8 +62,9 @@ const Profile = () =>{
   const handleCoinsShow = () => setShowCoin(true); //show coins model
   const handleGiftShow = () => setShowGift(true); 
   const handleImage =() => setShowImage(true);
-  const handlePrivacy =() => setShowPrivacy(true);
-  const handleAbout = () => setShowAbout(true);
+  const handlePrivacy =() => {setShowSetting(false); setShowPrivacy(true);}
+  const handleAbout = () => {setShowSetting(false); setShowAbout(true);}
+  const handleShare =() => {setShowShare(true); setShowSetting(false);} // show share glitter model
   // Getting form value here
   const [form , setForm] = useState({
     
@@ -71,6 +88,8 @@ const Profile = () =>{
     }) 
 }
 
+    const shareUrl = 'http://localhost:3000/';
+    const title = 'gilter-app';
 
 
   // Fetching profile Data
@@ -116,7 +135,6 @@ const Profile = () =>{
     height : form.height,
     weight : form.weight,
     interest:form.interest,
-    profile_images: picture ,
     relationship_status :form.relationStatus
    };
    axios.post(EDITPROFILE_API , bodyParameters) 
@@ -300,10 +318,7 @@ const Profile = () =>{
                   <option value={3}>UnMarried</option>
               </select>
           </div>
-          <div className="form-group">
-          <label for="">Profile photo </label>
-          <input type="file" id="profile-photo" name="profile-photo"  onChange={handleFileChange}  accept="image/*" />
-            </div>
+         
 
           <div className="show-gender ft-block d-flex flex-wrap">
               <div className="tab-title">
@@ -695,7 +710,7 @@ const Profile = () =>{
               <i className="fas fa-chevron-right" />
             </a>
           </li>
-          <li><a href="javascript:void(0)">
+          <li><a href="javascript:void(0)" onClick={handleShare}>
               <h6>Share Gilitters</h6>
               <i className="fas fa-chevron-right" />
             </a>
@@ -748,13 +763,49 @@ const Profile = () =>{
       <PrivacyPolicy/>
         </Modal>
 
-  <Modal className="" show={showAbout} onHide={() => setShowAbout(false)} little>
+  <Modal className="" show={showAbout} onHide={() => setShowAbout(false)} >
   <Modal.Header closeButton >
     <Modal.Title>
   <h2>About Glitter</h2>
   </Modal.Title>
       </Modal.Header> 
       <AboutGlitter/>
+  </Modal>
+
+  <Modal className="" show={showShare} onHide={() => setShowShare(false)} >
+  <Modal.Header closeButton >
+    <Modal.Title>
+  <h4 className="theme-txt">Share Glitter</h4>
+  </Modal.Title>
+      </Modal.Header> 
+        <div className="share__icons">
+
+        
+        <div className="Demo__some-network">
+          <TwitterShareButton url={shareUrl} title={title} className="share-button" >
+            <TwitterIcon  round />
+          </TwitterShareButton>
+        </div>
+
+        <div className="Demo__some-network">
+          <TelegramShareButton url={shareUrl} title={title} className="share-button">
+            <TelegramIcon round />
+          </TelegramShareButton>
+        </div>
+         
+         <div className="Demo__some-network">
+          <EmailShareButton url={shareUrl} subject={title} body="body" className="share-button">
+            <EmailIcon round />
+          </EmailShareButton>
+        </div>
+
+
+        <div className="Demo__some-network">
+          <WhatsappShareButton url={shareUrl} title={title} separator=":: " className="share-button">
+            <WhatsappIcon round />
+          </WhatsappShareButton>
+        </div>
+        </div>
   </Modal>
 
   <div className={isOn ? 'all-gifts-wrapper active': 'all-gifts-wrapper '} >

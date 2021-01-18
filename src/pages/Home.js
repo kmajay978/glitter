@@ -1,6 +1,6 @@
-import React, {Component, useEffect, useState} from 'react';
+import React, {Component, useEffect, useState } from 'react';
 import {useSelector} from 'react-redux';
-
+import {  useHistory } from 'react-router'
 import { selectUser } from '../features/userSlice';
 import FilterSide from '../components/Filter';
 import NavLinks from '../components/Nav';
@@ -8,11 +8,18 @@ import Loader from '../components/Loader';
 import FilterUser from '../components/FilterUser'; 
 import axios from 'axios';
 import Dummy from '../pages/Dummy'
+import Logo from '../components/Logo';
 
 const Home = (props) =>{
+    
+  const history = useHistory();
     const user = useSelector(selectUser); //using redux useSelector here
     const [fetchedProfile, setFilterUser] = useState('');
-    
+   
+    const handleChat = () => {
+       history.push("/chat");
+    }
+
   return(
           <section className="home-wrapper">
            {/* <Loader isLoading={isLoading} />  */}
@@ -23,11 +30,10 @@ const Home = (props) =>{
               <div className="col-lg-3 option-bar p-3 vh-100">
                 <div className="logo-tab mb-5 d-flex justify-content-between align-items-start">
                   <a href="javascript:void(0)">
-                    <img src="/assets/images/glitters.png" alt="Glitters" />
-                    
+              <Logo/>      
                   </a>
                   <span className="chat-point">
-                    <a href="javascript:void(0)">
+                    <a href="javascript:void(0)" onClick={handleChat}>
                       <i className="fas fa-comment" /> 
                     </a>    
                   </span>                            
