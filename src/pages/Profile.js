@@ -187,21 +187,19 @@ const Profile = () =>{
 
   const handleLogout = () =>{
 
-  localStorage.removeItem("session_id");
-    history.push('/login');
-//   const bodyParameters= {
-//   session_id : sessionId
-//  };
-//  axios.post(LOGOUT_API , bodyParameters)
-//  .then((response) => { 
-//    localStorage.removeItem("session_id");
-//    history.push('/login');
-//    dispatch(login(null));
-//    dispatch(profile({profile: null}));
+  const bodyParameters= {
+  session_id : sessionId
+ };
+ axios.post(LOGOUT_API , bodyParameters)
+ .then((response) => { 
+   localStorage.removeItem("session_id");
+   history.push('/login');
+   dispatch(login(null));
+   dispatch(profile({profile: null}));
 
-//     }, (error) =>{
+    }, (error) =>{
 
-//     });
+    });
    }
 
    //block list

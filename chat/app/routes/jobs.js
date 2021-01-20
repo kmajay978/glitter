@@ -33,7 +33,6 @@ exports.getMessage=function(data,user2_id,callback) {
     });
 }
 
-
 exports.sendMessage=function(data,callback)
 {
     var reciever_id=data.reciever_id;
@@ -698,7 +697,7 @@ function order(req, res) {
                                     });
                                 }
                                 else
-                                {
+                                { 
                                     var auto_assignment_response_data = 
                                                     {
                                                         ride_id:insert_data.insertId,

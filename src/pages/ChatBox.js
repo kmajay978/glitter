@@ -40,6 +40,7 @@ const ChatBox = () =>{
     let [loading, setLoading] = useState(false);
     const[recording, setRecording] = useState(false);
     const [dummyMediaRc, setDummyMediaRc] = useState(null)
+    const [chatTyping, setChatTyping] = useState("")
 
 // console.log(UserMessage);
     const[GetActivity, setActivity] = useState(0);
@@ -182,6 +183,23 @@ const ChatBox = () =>{
 
         getAllDetails();
 
+    // Checking the typing user
+  SOCKET.on('typing', (typing) => {
+            if (!!typing) {
+                if ((typing.obj.user_id === userData.user_id && typing.obj.reciever_id === receiver_id)
+                    ||
+                    (typing.obj.user_id === receiver_id && typing.obj.reciever_id === userData.user_id)
+                ) { // check one-to-one data sync
+                if (typing.obj.user_id !== userData.user_id) {
+                    setChatTyping(typing.obj.typing_user)
+                    window.setTimeout(() => {
+                        setChatTyping("")
+                    }, 2000)
+                    
+                }
+                }
+                }
+  })
         SOCKET.on('message_data', (messages) => {
             // console.log(messages, "test..");
             console.log(messageList, "CompleteMessageList")
@@ -243,6 +261,17 @@ const ChatBox = () =>{
 
 
     },[])
+
+     // On text typing value 
+    const changeInput = (e) => {
+        setuserMessage(e.target.value)
+        SOCKET.emit("typing", {
+            user_id: userData.user_id,
+            typing_user: userData.firstName,
+            reciever_id: receiver_id
+        })
+    }
+
     useEffect(()=>{
         if (GetActivity === 2) {
             console.log("connect socket")
@@ -338,6 +367,8 @@ const ChatBox = () =>{
         console.log(CompleteMessageList.length, "CompleteMessageList length...")
         scrollToBottom()
     }, [CompleteMessageList])
+
+   
     return(
 
         <section className="home-wrapper">
@@ -572,7 +603,7 @@ const ChatBox = () =>{
                                                 </div>
                                             </label>
                                             {/* <textarea className="send-message-text" placeholder="Message..." defaultValue={UserMessage} /> */}
-                                            <input className="send-message-text" name="Message" id="Message" type="text" placeholder="Message..." value={UserMessage} onChange={e => setuserMessage(e.target.value)} />
+                                            <input className="send-message-text" name="Message" id="Message" type="text" placeholder="Message..." value={UserMessage} onChange={e => changeInput(e.target.value)} />
                                             <label className="gift-message bg-grd-clr">
                                                 <a href="javascript:void(0)">
                                                     <i className="fas fa-gift" />
@@ -592,6 +623,10 @@ const ChatBox = () =>{
                                                 </a>
                                             </label>
                                             <button type="submit" className="send-message-button bg-grd-clr"><i className="fas fa-paper-plane" /></button>
+                                            {
+                                                !!chatTyping &&
+                                                <div>{chatTyping} is typing...</div>
+                                            }
                                         </div>
                                     </form>
                                 </div>
