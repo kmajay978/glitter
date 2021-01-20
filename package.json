@@ -72,6 +72,7 @@
     "socket.io-client": "^2.4.0",
     "styled-components": "^5.2.1",
     "typeface-roboto": "^1.1.13",
+    "use-position": "0.0.8",
     "web-vitals": "^0.2.4"
   },
   "scripts": {

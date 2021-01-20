@@ -24,8 +24,6 @@ const Login = () => {
 
   // Adding class to body with custom function
 addBodyClass('login-body')('')
-  // alert(moment().format("YYYY MMMM Do"))
-
   const [step, setStep] = useState(1);
   const history = useHistory();
 
