@@ -37,6 +37,7 @@ const  ProfileData = async(dispatch, sessionId) => {
 function App() {
   const dispatch = useDispatch();
   useEffect(() => {
+    alert(process.env.PUBLIC_URL)
     const sessionId = localStorage.getItem("session_id");
     if ((window.location.pathname !== "/profile") && !!sessionId) {
       ProfileData(dispatch, sessionId)

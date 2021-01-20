@@ -16,6 +16,10 @@ const override = css`
   border-radius: 50px !important;
   width: 95%;
 `;
+ // app id: bd7c4ac2265f496dbaa84d9837960c78
+ // app secret: 40082f25ff2a4b88ac1358f7e863cba6
+ // channel: test
+ // token: 006bd7c4ac2265f496dbaa84d9837960c78IAAq1GZbv3moec3u6pFg67UZMEm0pzTuHT21ki9gqV9EXQx+f9gAAAAAEAAH/YchlRMJYAEAAQCYEwlg
 
 let messageList = [], receiver_id, userData;
 
@@ -173,7 +177,69 @@ const ChatBox = () =>{
 
 // console.log(FriendUserId);
     useEffect(()=>{
-        window.setTimeout(() => {
+    // initialize  agora
+        var client = AgoraRTC.createClient({mode: 'live', codec: "h264"});
+
+        client.init(<APPID>, function () {
+            console.log("AgoraRTC client initialized");
+        }, function (err) {
+            console.log("AgoraRTC client init failed", err);
+        });
+
+
+            // enableVideo
+            localStream.init(function() {
+                console.log("getUserMedia successfully");
+                localStream.play('agora_local');
+            }, function (err) {
+                console.log("getUserMedia failed", err);
+            });
+
+
+// -------------------------------------------------------
+            //join channel
+            client.join(<TOKEN_OR_KEY>, <CHANNEL_NAME>, <UID>, function(uid) {
+                console.log("User " + uid + " join channel successfully");
+            }, function(err) {
+                console.log("Join channel failed", err);
+            });
+
+                //publish local stream
+                client.publish(localStream, function (err) {
+                    console.log("Publish local stream error: " + err);
+                });
+
+                client.on('stream-published', function (evt) {
+                    console.log("Publish local stream successfully");
+                });
+
+                //subscribe remote stream
+                client.on('stream-added', function (evt) {
+                    var stream = evt.stream;
+                    console.log("New stream added: " + stream.getId());
+                    client.subscribe(stream, function (err) {
+                    console.log("Subscribe stream failed", err);
+                });
+                });
+
+                client.on('stream-subscribed', function (evt) {
+                    var remoteStream = evt.stream;
+                    console.log("Subscribe remote stream successfully: " + remoteStream.getId());
+                    remoteStream.play('agora_remote' + remoteStream.getId());
+                })
+/* -------------------------------------------- */
+                //leave channel
+
+
+                client.leave(function () {
+                    console.log("Leave channel successfully");
+                }, function (err) {
+                    console.log("Leave channel failed");
+                });
+
+
+
+                window.setTimeout(() => {
             $('#uploadfile').bind('change', function(e){
                 var data = e.originalEvent.target.files[0];
                 readThenSendFile(data);
@@ -297,7 +363,6 @@ const ChatBox = () =>{
         console.log(recording, "recordddddddd")
         if (!dummyMediaRc) {
             var constraints = {audio: true};
-            console.log( navigator.mediaDevices.getUserMedia(constraints), "hiii")
             let recordAudio = false;
             navigator.mediaDevices.getUserMedia(constraints).then(function (mediaStream) {
                 recordAudio = true;
