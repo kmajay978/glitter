@@ -18,9 +18,11 @@ import  ProtectedRoute  from "./protected.route";
 import axios from "axios";
 import {GET_LOGGEDPROFILE_API} from "./components/Api";
 import {login} from "./features/userSlice";
-import {useDispatch} from "react-redux";
-import {profile} from './features/userSlice';
-// import {SOCKET} from './components/Config';
+import {useDispatch, useSelector} from "react-redux";
+import {profile, userAuth} from './features/userSlice';
+// import {usePosition} from './components/CommonFunction';
+
+let is_auth = false;
 
 const  ProfileData = async(dispatch, sessionId) => {
   const bodyParameters = {
@@ -35,7 +37,11 @@ const  ProfileData = async(dispatch, sessionId) => {
 }
 
 function App() {
+  //  const {latitude, longitude, error} = usePosition();
   const dispatch = useDispatch();
+    const is_auth = useSelector(userAuth); //using redux useSelector here
+    console.log(is_auth, "is_auth....")
+
   useEffect(() => {
     alert(process.env.PUBLIC_URL)
     const sessionId = localStorage.getItem("session_id");
@@ -43,6 +49,16 @@ function App() {
       ProfileData(dispatch, sessionId)
     }
   }, [])
+
+   useEffect(() => {
+     if (is_auth) {
+       // logic to handle 10 min location time interval....
+      //  window.setInterval(() => {
+         
+      //  }, 600000);
+     }
+  }, [is_auth])
+
   return (
     <Router>
         <Switch>

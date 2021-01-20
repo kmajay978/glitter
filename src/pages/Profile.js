@@ -8,7 +8,7 @@ import useToggle from '../components/CommonFunction';
 import {removeStorage} from '../components/CommonFunction';
 import Login from '../pages/Login'
 import { useDispatch } from 'react-redux';
-import {login, profile, ProfileData} from '../features/userSlice';
+import {logout, profile, ProfileData} from '../features/userSlice';
 import {Modal, ModalBody , Dropdown} from 'react-bootstrap';
 import $ from 'jquery';
 import Logo from '../components/Logo';
@@ -194,7 +194,7 @@ const Profile = () =>{
  .then((response) => { 
    localStorage.removeItem("session_id");
    history.push('/login');
-   dispatch(login(null));
+   dispatch(logout());
    dispatch(profile({profile: null}));
 
     }, (error) =>{

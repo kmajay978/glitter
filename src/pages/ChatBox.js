@@ -243,8 +243,7 @@ const ChatBox = () =>{
                 window.setTimeout(() => {
             $('#uploadfile').bind('change', function(e){
                 var data = e.originalEvent.target.files[0];
-                console.log(data, "data...")
-                const fileName = data.fileName.split(".");
+                const fileName = data.name.split(".");
                 const imageFormat = fileName[fileName.length - 1];
                 if (imageFormat === "png" || imageFormat === "jpg" || imageFormat === "jpeg" ||
                     imageFormat === "PNG" || imageFormat === "JPG" || imageFormat === "JPEG") {
@@ -265,15 +264,18 @@ const ChatBox = () =>{
                     ||
                     (typing.user_id === receiver_id && typing.reciever_id === userData.user_id)
                 ) { // check one-to-one data sync
-                    if (typing.user_id !== userData.user_id) {
-                        setChatTyping(typing.typing_user)
-                        window.setTimeout(() => {
-                            setChatTyping("")
-                        }, 2000)
-                    }
-                }
-            }
-        })
+
+                if (typing.user_id !== userData.user_id) {
+                    setChatTyping(typing.typing_user)
+                    window.setTimeout(() => {
+                        setChatTyping("")
+                    }, 2000)
+                    
+        }
+       }
+     }
+  })
+
         SOCKET.on('message_data', (messages) => {
             // console.log(messages, "test..");
             console.log(messageList, "CompleteMessageList")
