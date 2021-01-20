@@ -5,7 +5,7 @@ var job = require('./jobs');
 var socket_id = null;
 var usersConnected = {};
 var array=[];
-exports.socketInitialize = function (httpServer) {
+exports.socketInitialize = function (httpServer) { 
     console.log("INNN");
     var socketIO = require('socket.io').listen(httpServer);
     socketIO.on('connection', function (socket) {
@@ -172,6 +172,10 @@ exports.socketInitialize = function (httpServer) {
          socketIO.to(socket_id).emit('order_data', result);
        });
      });
+     socket.on('typing', function (data) {
+        socketIO.emit('typing', data);     
+     });
+
      socket.on('disconnect', function (data) {
             console.log("disconnect socket",data);
             usersConnected={};

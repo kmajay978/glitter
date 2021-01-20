@@ -23,7 +23,7 @@ const Home = (props) =>{
   return(
           <section className="home-wrapper">
            {/* <Loader isLoading={isLoading} />  */}
-          
+  
         <div className="home-inner">
           <div className="container-fluid p-0">
             <div className="row no-gutters">

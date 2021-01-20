@@ -14,6 +14,8 @@ import $ from 'jquery';
 import Logo from '../components/Logo';
 import PrivacyPolicy from '../components/PrivacyPolicy';
 import AboutGlitter from '../components/AboutGlitter';
+import {NotificationContainer, NotificationManager} from 'react-notifications';
+
 import {
   EmailIcon,
   FacebookIcon,
@@ -140,14 +142,15 @@ const Profile = () =>{
    axios.post(EDITPROFILE_API , bodyParameters) 
    .then((response) => {
    if(response.status==200){
-    alert("update succesfully")
+   createNotification('success');
+ 
    }
    }, (error) =>{
-
+   createNotification('error');
    });
    }
  
-  
+
   
    const config = {
     headers : {
@@ -175,10 +178,8 @@ const Profile = () =>{
     axios.post(EDITPROFILE_API , bodyParameters , config) 
    .then((response) => {
    if(response.status==200){
-    
+    createNotification('success');
     setShowImage(false);
-   alert("update successfully");
-  
    }
    }, (error) =>{
 
@@ -186,6 +187,7 @@ const Profile = () =>{
    }
 
   const handleLogout = () =>{
+
   const bodyParameters= {
   session_id : sessionId
  };
@@ -250,6 +252,20 @@ const Profile = () =>{
     ProfileData(dispatch)
   //handleBlock();
   },[])
+
+ const createNotification = (type) => {
+  
+    switch (type) {
+      case 'success':
+        NotificationManager.success('update Successfully ', 'profile');
+        break;
+      case 'error':
+        NotificationManager.error('Error message', 'Click me!', 5000, () => {
+          alert('callback');
+        });
+        break; 
+  };
+  };
 
    const tabScreen = () =>{
     
@@ -345,9 +361,10 @@ const Profile = () =>{
               
               
           </div>
-
+         
           <a className="btn bg-grd-clr d-block btn-countinue-3" id="edit-second-step" href="javascript:void(0)" onClick={updateProfile}>Update</a>
-
+          <NotificationContainer/>
+     
       </div>
   
         );
@@ -559,6 +576,7 @@ const Profile = () =>{
   <div className="profile-image-inner">
 <input type="file" id="profile-photo" name="profile-photo" onChange={handleFileChange} accept="image/*" />
 <a href="javascript:void(0)" onClick={updateImage} >Upload</a>
+<NotificationContainer/>
 {/* <button onClick={updateImage}>Upload</button> */}
 </div>
 </form>
@@ -767,7 +785,7 @@ const Profile = () =>{
       <PrivacyPolicy/>
         </Modal>
 
-  <Modal className="" show={showAbout} onHide={() => setShowAbout(false)} >
+  <Modal className="about-model" show={showAbout} onHide={() => setShowAbout(false)} >
   <Modal.Header closeButton >
     <Modal.Title>
   <h2>About Glitter</h2>
@@ -776,7 +794,7 @@ const Profile = () =>{
       <AboutGlitter/>
   </Modal>
 
-  <Modal className="" show={showShare} onHide={() => setShowShare(false)} >
+  <Modal className="share-model" show={showShare} onHide={() => setShowShare(false)} >
   <Modal.Header closeButton >
     <Modal.Title>
   <h4 className="theme-txt">Share Glitter</h4>

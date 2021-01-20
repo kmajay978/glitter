@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import {  useHistory } from 'react-router';
 import axios from "axios";
 import NavLinks from '../components/Nav';
-import {GIFT_LIST_API , GET_GIFT_API , DISLIKE_USER , LIKE_USER, GET_USERPROFILE_API , BLOCK_USER_API , REPORT_USER_API } from '../components/Api';
+import {GET_SINGLE_STATUS , GIFT_LIST_API , GET_GIFT_API , DISLIKE_USER , LIKE_USER, GET_USERPROFILE_API , BLOCK_USER_API , REPORT_USER_API } from '../components/Api';
 import {Modal, ModalBody , Dropdown} from 'react-bootstrap';
 import Carousel from 'react-bootstrap/Carousel';
 import Logo from '../components/Logo';
@@ -19,8 +19,11 @@ const SingleProfile = (props) =>{
     const[ form, setForm] =useState({ report :""})
     const [GiftData , setGiftData] =useState([]);
     const [blockData , setBlockData] = useState(false);
+    const [statusData , setStatusData] = useState([]);
     const [isOn, toggleIsOn] = useToggle();
-    
+    const [ showStatus , setShowStatus] =useState(false);
+
+    const showAllStatus = () => setShowStatus(true);
     const history = useHistory()
    
     const handleBack = () =>{
@@ -33,7 +36,14 @@ const SingleProfile = (props) =>{
         [e.target.name]: e.target.value,
       }) 
   }
-    
+    const handleStatus = async() =>{
+      const bodyParameters = {
+        user_id: checkUid,
+      };
+    const {data :{result}} = await  axios.post(GET_SINGLE_STATUS,bodyParameters)
+        setStatusData(result);
+    }
+    console.log(statusData);
       const getUser=()=> {
         const bodyParameters = {
             user_id: checkUid,
@@ -46,7 +56,7 @@ const SingleProfile = (props) =>{
          }, (error) => {
         });
         }
-   console.log(userData);
+    
           //all gift
        const handleGift = async() =>{
        toggleIsOn(true);
@@ -64,7 +74,7 @@ const SingleProfile = (props) =>{
       gift_id : Uid
       }
        const {data : {result}} = await axios.post(GET_GIFT_API , bodyParameters)
-       console.log(result);
+      
         }
  
         const handleblock = async() => {
@@ -128,6 +138,7 @@ const SingleProfile = (props) =>{
         }
    useEffect(() =>{
     getUser();
+    handleStatus();
     },[])
     
     return(
@@ -268,29 +279,23 @@ const SingleProfile = (props) =>{
               <div className="flex-wrapper d-flex align-items-center mb-3">
                 <h5 className="mb-0">Archived Stories</h5>
                 <span className="see-all ml-5">
-                  <a href="javascript:void(0)" className="theme-txt">See All</a>
+                  <a href="javascript:void(0)" onClick={showAllStatus} className="theme-txt">See All</a>
                 </span>
               </div>
-              <div className="archived-stories d-flex flex-wrap">
-                <div className="single-stories locked">
+            <div className="archived-stories d-flex flex-wrap">
+            <div className="single-stories locked">
                   <i className="fas fa-lock" />
                 </div>
-                <div className="single-stories">
+                
+                {statusData.slice(0, 3).map((item, i) => {
+             return   <div className="single-stories">
                   <figure>
-                    <img src="/assets/images/archived-stories-1.png" alt="Archived Story" />
+                  {item.status_type==1 ?<img src={item.file} alt="Archived Story" />:<video src={item.file} alt="Archived Story" />}
                   </figure>
                 </div>
-                <div className="single-stories">
-                  <figure>
-                    <img src="/assets/images/archived-stories-2.png" alt="Archived Story" />
-                  </figure>
-                </div>
-                <div className="single-stories">
-                  <figure>
-                    <img src="/assets/images/archived-stories-3.png" alt="Archived Story" />
-                  </figure>
-                </div>
+                  })}  
               </div>
+            
             </div>
             <div className="bio-gift">
               <div className="flex-wrapper d-flex align-items-center mb-3">
@@ -342,6 +347,29 @@ const SingleProfile = (props) =>{
     </div>
   </div>
   
+  <Modal className ="status-modal"   show={showStatus} onHide={() => setShowStatus(false)}   aria-labelledby="example-modal-sizes-title-sm"> 
+  <div className="bio-stories">
+              <div className="flex-wrapper d-flex align-items-center mb-3">
+                <h5 className="mb-0">Archived Stories</h5>
+
+              </div>
+            <div className="archived-stories d-flex flex-wrap">
+            <div className="single-stories locked">
+                  <i className="fas fa-lock" />
+                </div>
+                
+                {statusData.map((item, i) => {
+             return   <div className="single-stories">
+                  <figure>
+                  {item.status_type==1 ?<img src={item.file} alt="Archived Story" />:<video src={item.file} alt="Archived Story" />}
+                  </figure>
+                </div>
+                  })}  
+              </div>
+            
+            </div>
+  </Modal>
+ 
   <Modal className =" report-modal"   show={smShow} onHide={() => setSmShow(false)}   aria-labelledby="example-modal-sizes-title-sm">
         <div className="edit-profile-modal__inner">
         <Modal.Header  id="example-modal-sizes-title-sm">

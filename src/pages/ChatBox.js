@@ -40,6 +40,7 @@ const ChatBox = () =>{
     let [loading, setLoading] = useState(false);
     const[recording, setRecording] = useState(false);
     const [dummyMediaRc, setDummyMediaRc] = useState(null)
+    const [chatTyping, setChatTyping] = useState("")
 
 // console.log(UserMessage);
     const[GetActivity, setActivity] = useState(0);
@@ -182,6 +183,23 @@ const ChatBox = () =>{
 
         getAllDetails();
 
+    // Checking the typing user
+  SOCKET.on('typing', (typing) => {
+            if (!!typing) {
+                if ((typing.user_id === userData.user_id && typing.reciever_id === receiver_id)
+                    ||
+                    (typing.user_id === receiver_id && typing.reciever_id === userData.user_id)
+                ) { // check one-to-one data sync
+                if (typing.user_id !== userData.user_id) {
+                    setChatTyping(typing.typing_user)
+                    window.setTimeout(() => {
+                        setChatTyping("")
+                    }, 2000)
+                    
+        }
+       }
+     }
+  })
         SOCKET.on('message_data', (messages) => {
             // console.log(messages, "test..");
             console.log(messageList, "CompleteMessageList")
@@ -243,6 +261,17 @@ const ChatBox = () =>{
 
 
     },[])
+
+     // On text typing value 
+    const changeInput = (e) => {
+        setuserMessage(e.target.value)
+        SOCKET.emit("typing", {
+            user_id: userData.user_id,
+            typing_user: userData.first_name + " " + userData.last_name,
+            reciever_id: receiver_id
+        })
+    }
+
     useEffect(()=>{
         if (GetActivity === 2) {
             console.log("connect socket")
@@ -297,8 +326,8 @@ const ChatBox = () =>{
         console.log(recording, "recordddddddd")
         if (!dummyMediaRc) {
             var constraints = {audio: true};
-            console.log( navigator.mediaDevices.getUserMedia(constraints), "hiii")
             let recordAudio = false;
+            if ( !!navigator.mediaDevices) {
             navigator.mediaDevices.getUserMedia(constraints).then(function (mediaStream) {
                 recordAudio = true;
                 var mediaRecorder = new MediaRecorder(mediaStream);
@@ -323,6 +352,10 @@ const ChatBox = () =>{
             }).catch(function (err) {
                 alert(err.message)
             })
+            }
+            else {
+                alert("You need a secure https connection in order to record voice")
+            }
         }
         else {
             console.log(dummyMediaRc, "media rec...")
@@ -334,6 +367,8 @@ const ChatBox = () =>{
         console.log(CompleteMessageList.length, "CompleteMessageList length...")
         scrollToBottom()
     }, [CompleteMessageList])
+
+   
     return(
 
         <section className="home-wrapper">
@@ -568,7 +603,7 @@ const ChatBox = () =>{
                                                 </div>
                                             </label>
                                             {/* <textarea className="send-message-text" placeholder="Message..." defaultValue={UserMessage} /> */}
-                                            <input className="send-message-text" name="Message" id="Message" type="text" placeholder="Message..." value={UserMessage} onChange={e => setuserMessage(e.target.value)} />
+                                            <input className="send-message-text" name="Message" id="Message" type="text" placeholder="Message..." value={UserMessage} onChange={e => changeInput(e)} />
                                             <label className="gift-message bg-grd-clr">
                                                 <a href="javascript:void(0)">
                                                     <i className="fas fa-gift" />
@@ -588,6 +623,10 @@ const ChatBox = () =>{
                                                 </a>
                                             </label>
                                             <button type="submit" className="send-message-button bg-grd-clr"><i className="fas fa-paper-plane" /></button>
+                                            {
+                                                !!chatTyping &&
+                                                <div>{chatTyping} is typing...</div>
+                                            }
                                         </div>
                                     </form>
                                 </div>
