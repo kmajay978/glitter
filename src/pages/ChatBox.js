@@ -179,13 +179,13 @@ const ChatBox = () =>{
 // console.log(FriendUserId);
     useEffect(()=>{
     // initialize  agora
-        var client = AgoraRTC.createClient({mode: 'live', codec: "h264"});
-
-        client.init(<APPID>, function () {
-            console.log("AgoraRTC client initialized");
-        }, function (err) {
-            console.log("AgoraRTC client init failed", err);
-        });
+//         var client = AgoraRTC.createClient({mode: 'live', codec: "h264"});
+//
+//         client.init(<APPID>, function () {
+//             console.log("AgoraRTC client initialized");
+//         }, function (err) {
+//             console.log("AgoraRTC client init failed", err);
+//         });
 //
 //
 //             // enableVideo
@@ -243,29 +243,37 @@ const ChatBox = () =>{
                 window.setTimeout(() => {
             $('#uploadfile').bind('change', function(e){
                 var data = e.originalEvent.target.files[0];
-                readThenSendFile(data);
+                console.log(data, "data...")
+                const fileName = data.fileName.split(".");
+                const imageFormat = fileName[fileName.length - 1];
+                if (imageFormat === "png" || imageFormat === "jpg" || imageFormat === "jpeg" ||
+                    imageFormat === "PNG" || imageFormat === "JPG" || imageFormat === "JPEG") {
+                    readThenSendFile(data);
+                }
+                else {
+                    alert("Only .png, .jpg, .jpeg image formats supported.")
+                }
             })
         }, 1000);
 
         getAllDetails();
 
     // Checking the typing user
-  SOCKET.on('typing', (typing) => {
+        SOCKET.on('typing', (typing) => {
             if (!!typing) {
-                if ((typing.obj.user_id === userData.user_id && typing.obj.reciever_id === receiver_id)
+                if ((typing.user_id === userData.user_id && typing.reciever_id === receiver_id)
                     ||
-                    (typing.obj.user_id === receiver_id && typing.obj.reciever_id === userData.user_id)
+                    (typing.user_id === receiver_id && typing.reciever_id === userData.user_id)
                 ) { // check one-to-one data sync
-                if (typing.obj.user_id !== userData.user_id) {
-                    setChatTyping(typing.obj.typing_user)
-                    window.setTimeout(() => {
-                        setChatTyping("")
-                    }, 2000)
-                    
+                    if (typing.user_id !== userData.user_id) {
+                        setChatTyping(typing.typing_user)
+                        window.setTimeout(() => {
+                            setChatTyping("")
+                        }, 2000)
+                    }
                 }
-                }
-                }
-  })
+            }
+        })
         SOCKET.on('message_data', (messages) => {
             // console.log(messages, "test..");
             console.log(messageList, "CompleteMessageList")
@@ -333,7 +341,7 @@ const ChatBox = () =>{
         setuserMessage(e.target.value)
         SOCKET.emit("typing", {
             user_id: userData.user_id,
-            typing_user: userData.firstName,
+            typing_user: userData.first_name + " " + userData.last_name,
             reciever_id: receiver_id
         })
     }
@@ -664,12 +672,12 @@ const ChatBox = () =>{
                                             </div>
                                             <label className="upload-file">
                                                 <div>
-                                                    <input id="uploadfile" type="file" />
+                                                    <input id="uploadfile" type="file" accept=".png, .jpg, .jpeg, .PNG, .JPG, .JPEG" />
                                                     <i className="far fa-image" />
                                                 </div>
                                             </label>
                                             {/* <textarea className="send-message-text" placeholder="Message..." defaultValue={UserMessage} /> */}
-                                            <input className="send-message-text" name="Message" id="Message" type="text" placeholder="Message..." value={UserMessage} onChange={e => changeInput(e.target.value)} />
+                                            <input className="send-message-text" name="Message" id="Message" type="text" placeholder="Message..." value={UserMessage} onChange={e => changeInput(e)} />
                                             <label className="gift-message bg-grd-clr">
                                                 <a href="javascript:void(0)">
                                                     <i className="fas fa-gift" />
