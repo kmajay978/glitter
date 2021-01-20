@@ -150,7 +150,7 @@ const Profile = () =>{
    });
    }
  
-
+   
   
    const config = {
     headers : {
@@ -261,7 +261,6 @@ const Profile = () =>{
         break;
       case 'error':
         NotificationManager.error('Error message', 'Click me!', 5000, () => {
-          alert('callback');
         });
         break; 
   };
@@ -373,7 +372,6 @@ const Profile = () =>{
     }
 
   }
-
 
 
 

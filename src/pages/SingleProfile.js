@@ -56,7 +56,7 @@ const SingleProfile = (props) =>{
          }, (error) => {
         });
         }
-    
+    console.log(userData.profile_images);
           //all gift
        const handleGift = async() =>{
        toggleIsOn(true);
@@ -106,7 +106,7 @@ const SingleProfile = (props) =>{
          axios.post(REPORT_USER_API , bodyParameters)
          .then((response) => {
           if(response.status==200)
-          { alert("report successfully")
+          { 
            setSmShow(false) }
          } ,(error) => {
 
