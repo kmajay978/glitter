@@ -1,5 +1,5 @@
 import io from 'socket.io-client'
-export const SOCKET = io('http://167.172.209.57:3001/', {
+export const SOCKET = io('http://3.17.161.217:3001/', {
     // autoConnect: false,
     // reconnectionDelay: 1000,
     // reconnection: true,

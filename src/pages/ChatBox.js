@@ -186,19 +186,19 @@ const ChatBox = () =>{
     // Checking the typing user
   SOCKET.on('typing', (typing) => {
             if (!!typing) {
-                if ((typing.obj.user_id === userData.user_id && typing.obj.reciever_id === receiver_id)
+                if ((typing.user_id === userData.user_id && typing.reciever_id === receiver_id)
                     ||
-                    (typing.obj.user_id === receiver_id && typing.obj.reciever_id === userData.user_id)
+                    (typing.user_id === receiver_id && typing.reciever_id === userData.user_id)
                 ) { // check one-to-one data sync
-                if (typing.obj.user_id !== userData.user_id) {
-                    setChatTyping(typing.obj.typing_user)
+                if (typing.user_id !== userData.user_id) {
+                    setChatTyping(typing.typing_user)
                     window.setTimeout(() => {
                         setChatTyping("")
                     }, 2000)
                     
-                }
-                }
-                }
+        }
+       }
+     }
   })
         SOCKET.on('message_data', (messages) => {
             // console.log(messages, "test..");
@@ -267,7 +267,7 @@ const ChatBox = () =>{
         setuserMessage(e.target.value)
         SOCKET.emit("typing", {
             user_id: userData.user_id,
-            typing_user: userData.firstName,
+            typing_user: userData.first_name + " " + userData.last_name,
             reciever_id: receiver_id
         })
     }
@@ -603,7 +603,7 @@ const ChatBox = () =>{
                                                 </div>
                                             </label>
                                             {/* <textarea className="send-message-text" placeholder="Message..." defaultValue={UserMessage} /> */}
-                                            <input className="send-message-text" name="Message" id="Message" type="text" placeholder="Message..." value={UserMessage} onChange={e => changeInput(e.target.value)} />
+                                            <input className="send-message-text" name="Message" id="Message" type="text" placeholder="Message..." value={UserMessage} onChange={e => changeInput(e)} />
                                             <label className="gift-message bg-grd-clr">
                                                 <a href="javascript:void(0)">
                                                     <i className="fas fa-gift" />
