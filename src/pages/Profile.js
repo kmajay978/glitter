@@ -186,6 +186,7 @@ const Profile = () =>{
    }
 
   const handleLogout = () =>{
+
   const bodyParameters= {
   session_id : sessionId
  };

@@ -107,6 +107,7 @@ const tokencheck = () =>{
   const sendHandle = () =>{
     
     const isValid = formValidation();
+   
     if(isValid)
     {
     const bodyParameters = {
@@ -123,8 +124,6 @@ const tokencheck = () =>{
   });
 
     }
-  
-
    }
 
    const handleNextClick = () =>
@@ -215,6 +214,7 @@ const verifyHandle = () =>{
     setStep(step + 1)
     localStorage.clear();
     }
+
   }
   
   }, (error) => {
@@ -222,7 +222,7 @@ const verifyHandle = () =>{
      localStorage.clear();
   });
 }
-//otp validation
+// otp validation
 const otpValidation = () =>{
   const phoneErr = {};
   let ifvalid = true;
@@ -233,7 +233,7 @@ const otpValidation = () =>{
   }
   return ifvalid;
 }
-  // End verify otp 
+ 
 
   // Register user here
       const config = {

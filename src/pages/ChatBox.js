@@ -44,6 +44,7 @@ const ChatBox = () =>{
     let [loading, setLoading] = useState(false);
     const[recording, setRecording] = useState(false);
     const [dummyMediaRc, setDummyMediaRc] = useState(null)
+    const [chatTyping, setChatTyping] = useState("")
 
 // console.log(UserMessage);
     const[GetActivity, setActivity] = useState(0);
@@ -185,58 +186,58 @@ const ChatBox = () =>{
         }, function (err) {
             console.log("AgoraRTC client init failed", err);
         });
-
-
-            // enableVideo
-            localStream.init(function() {
-                console.log("getUserMedia successfully");
-                localStream.play('agora_local');
-            }, function (err) {
-                console.log("getUserMedia failed", err);
-            });
-
-
-// -------------------------------------------------------
-            //join channel
-            client.join(<TOKEN_OR_KEY>, <CHANNEL_NAME>, <UID>, function(uid) {
-                console.log("User " + uid + " join channel successfully");
-            }, function(err) {
-                console.log("Join channel failed", err);
-            });
-
-                //publish local stream
-                client.publish(localStream, function (err) {
-                    console.log("Publish local stream error: " + err);
-                });
-
-                client.on('stream-published', function (evt) {
-                    console.log("Publish local stream successfully");
-                });
-
-                //subscribe remote stream
-                client.on('stream-added', function (evt) {
-                    var stream = evt.stream;
-                    console.log("New stream added: " + stream.getId());
-                    client.subscribe(stream, function (err) {
-                    console.log("Subscribe stream failed", err);
-                });
-                });
-
-                client.on('stream-subscribed', function (evt) {
-                    var remoteStream = evt.stream;
-                    console.log("Subscribe remote stream successfully: " + remoteStream.getId());
-                    remoteStream.play('agora_remote' + remoteStream.getId());
-                })
-/* -------------------------------------------- */
-                //leave channel
-
-
-                client.leave(function () {
-                    console.log("Leave channel successfully");
-                }, function (err) {
-                    console.log("Leave channel failed");
-                });
-
+//
+//
+//             // enableVideo
+//             localStream.init(function() {
+//                 console.log("getUserMedia successfully");
+//                 localStream.play('agora_local');
+//             }, function (err) {
+//                 console.log("getUserMedia failed", err);
+//             });
+//
+//
+// // -------------------------------------------------------
+//             //join channel
+//             client.join(<TOKEN_OR_KEY>, <CHANNEL_NAME>, <UID>, function(uid) {
+//                 console.log("User " + uid + " join channel successfully");
+//             }, function(err) {
+//                 console.log("Join channel failed", err);
+//             });
+//
+//                 //publish local stream
+//                 client.publish(localStream, function (err) {
+//                     console.log("Publish local stream error: " + err);
+//                 });
+//
+//                 client.on('stream-published', function (evt) {
+//                     console.log("Publish local stream successfully");
+//                 });
+//
+//                 //subscribe remote stream
+//                 client.on('stream-added', function (evt) {
+//                     var stream = evt.stream;
+//                     console.log("New stream added: " + stream.getId());
+//                     client.subscribe(stream, function (err) {
+//                     console.log("Subscribe stream failed", err);
+//                 });
+//                 });
+//
+//                 client.on('stream-subscribed', function (evt) {
+//                     var remoteStream = evt.stream;
+//                     console.log("Subscribe remote stream successfully: " + remoteStream.getId());
+//                     remoteStream.play('agora_remote' + remoteStream.getId());
+//                 })
+// /* -------------------------------------------- */
+//                 //leave channel
+//
+//
+//                 client.leave(function () {
+//                     console.log("Leave channel successfully");
+//                 }, function (err) {
+//                     console.log("Leave channel failed");
+//                 });
+//
 
 
                 window.setTimeout(() => {
@@ -248,6 +249,23 @@ const ChatBox = () =>{
 
         getAllDetails();
 
+    // Checking the typing user
+  SOCKET.on('typing', (typing) => {
+            if (!!typing) {
+                if ((typing.obj.user_id === userData.user_id && typing.obj.reciever_id === receiver_id)
+                    ||
+                    (typing.obj.user_id === receiver_id && typing.obj.reciever_id === userData.user_id)
+                ) { // check one-to-one data sync
+                if (typing.obj.user_id !== userData.user_id) {
+                    setChatTyping(typing.obj.typing_user)
+                    window.setTimeout(() => {
+                        setChatTyping("")
+                    }, 2000)
+                    
+                }
+                }
+                }
+  })
         SOCKET.on('message_data', (messages) => {
             // console.log(messages, "test..");
             console.log(messageList, "CompleteMessageList")
@@ -309,6 +327,17 @@ const ChatBox = () =>{
 
 
     },[])
+
+     // On text typing value 
+    const changeInput = (e) => {
+        setuserMessage(e.target.value)
+        SOCKET.emit("typing", {
+            user_id: userData.user_id,
+            typing_user: userData.firstName,
+            reciever_id: receiver_id
+        })
+    }
+
     useEffect(()=>{
         if (GetActivity === 2) {
             console.log("connect socket")
@@ -364,6 +393,7 @@ const ChatBox = () =>{
         if (!dummyMediaRc) {
             var constraints = {audio: true};
             let recordAudio = false;
+            if ( !!navigator.mediaDevices) {
             navigator.mediaDevices.getUserMedia(constraints).then(function (mediaStream) {
                 recordAudio = true;
                 var mediaRecorder = new MediaRecorder(mediaStream);
@@ -388,6 +418,10 @@ const ChatBox = () =>{
             }).catch(function (err) {
                 alert(err.message)
             })
+            }
+            else {
+                alert("You need a secure https connection in order to record voice")
+            }
         }
         else {
             console.log(dummyMediaRc, "media rec...")
@@ -399,6 +433,8 @@ const ChatBox = () =>{
         console.log(CompleteMessageList.length, "CompleteMessageList length...")
         scrollToBottom()
     }, [CompleteMessageList])
+
+   
     return(
 
         <section className="home-wrapper">
@@ -633,7 +669,7 @@ const ChatBox = () =>{
                                                 </div>
                                             </label>
                                             {/* <textarea className="send-message-text" placeholder="Message..." defaultValue={UserMessage} /> */}
-                                            <input className="send-message-text" name="Message" id="Message" type="text" placeholder="Message..." value={UserMessage} onChange={e => setuserMessage(e.target.value)} />
+                                            <input className="send-message-text" name="Message" id="Message" type="text" placeholder="Message..." value={UserMessage} onChange={e => changeInput(e.target.value)} />
                                             <label className="gift-message bg-grd-clr">
                                                 <a href="javascript:void(0)">
                                                     <i className="fas fa-gift" />
@@ -653,6 +689,10 @@ const ChatBox = () =>{
                                                 </a>
                                             </label>
                                             <button type="submit" className="send-message-button bg-grd-clr"><i className="fas fa-paper-plane" /></button>
+                                            {
+                                                !!chatTyping &&
+                                                <div>{chatTyping} is typing...</div>
+                                            }
                                         </div>
                                     </form>
                                 </div>
