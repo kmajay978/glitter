@@ -40,9 +40,10 @@ function App() {
   //  const {latitude, longitude, error} = usePosition();
   const dispatch = useDispatch();
     const is_auth = useSelector(userAuth); //using redux useSelector here
-    console.log(is_auth, "is_auth....")
+    // console.log(is_auth, "is_auth....")
 
   useEffect(() => {
+    
     const sessionId = localStorage.getItem("session_id");
     if ((window.location.pathname !== "/profile") && !!sessionId) {
       ProfileData(dispatch, sessionId)
