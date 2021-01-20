@@ -46,7 +46,7 @@ const SingleProfile = (props) =>{
          }, (error) => {
         });
         }
-   console.log(userData);
+  //  console.log(userData);
           //all gift
        const handleGift = async() =>{
        toggleIsOn(true);
