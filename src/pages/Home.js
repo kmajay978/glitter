@@ -12,7 +12,7 @@ import Logo from '../components/Logo';
 
 const Home = (props) =>{
     
-  const history = useHistory();
+    const history = useHistory();
     const user = useSelector(selectUser); //using redux useSelector here
     const [fetchedProfile, setFilterUser] = useState('');
    

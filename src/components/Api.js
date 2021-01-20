@@ -35,5 +35,6 @@ export const TOKEN_AGORA_FORLIVE_API=getApiUrl("liveUserToken");
 export const ENDLIVE_API=getApiUrl("disconnectLive");
 export const GET_LIVE_USER_TOKEN_API=getApiUrl("getLiveUserToken");
 export const VISITOR_API=getApiUrl("view");
+export const ADD_STATUS_API=getApiUrl("add_status");
 
 

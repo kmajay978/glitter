@@ -121,10 +121,7 @@ const tokencheck = () =>{
   }, (error) => {
     
   });
-
     }
-  
-
    }
 
    const handleNextClick = () =>

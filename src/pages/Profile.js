@@ -64,7 +64,7 @@ const Profile = () =>{
   const handleImage =() => setShowImage(true);
   const handlePrivacy =() => {setShowSetting(false); setShowPrivacy(true);}
   const handleAbout = () => {setShowSetting(false); setShowAbout(true);}
-  const handleShare =() => {setShowShare(true); setShowSetting(false);} // show share glitter model
+  const handleShare =() => {setShowSetting(false); setShowShare(true);} // show share glitter model
   // Getting form value here
   const [form , setForm] = useState({
     
@@ -168,15 +168,15 @@ const Profile = () =>{
       bodyParameters.append("height",  form.height);
       bodyParameters.append("weight",  form.weight);
       bodyParameters.append("interest", "" + form.interest);
-      bodyParameters.append('profile_photo', picture);
-      console.log(picture,"picture......");
+      bodyParameters.append('profile_photo[]', picture);
+      console.log(picture,"picture.....");
       bodyParameters.append("relationship_status", form.relationStatus);
     
     axios.post(EDITPROFILE_API , bodyParameters , config) 
    .then((response) => {
    if(response.status==200){
     
-   setShowImage(false);
+    setShowImage(false);
    alert("update successfully");
   
    }
@@ -235,12 +235,13 @@ const Profile = () =>{
    }
  
    const handleFileChange = e => {
-    if (e.target.files[0]) {
+    if (e.target.files[0]) 
+    {
       setPicture(e.target.files[0]);
       const reader = new FileReader();
       reader.addEventListener("load", () => {
         setImgData(reader.result);
-      });
+       });
       reader.readAsDataURL(e.target.files[0]);
     }
   };
