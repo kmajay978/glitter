@@ -7,6 +7,7 @@ import {Modal, ModalBody , Dropdown} from 'react-bootstrap';
 import Carousel from 'react-bootstrap/Carousel';
 import Logo from '../components/Logo';
 import useToggle from '../components/CommonFunction';
+import moment from 'moment'
 
 const SingleProfile = (props) =>{
     const [userData, setUser] = useState([]);
@@ -22,14 +23,24 @@ const SingleProfile = (props) =>{
     const [statusData , setStatusData] = useState([]);
     const [isOn, toggleIsOn] = useToggle();
     const [ showStatus , setShowStatus] =useState(false);
-
+    const joinDate = userData.joined_date;
+    const dates = moment(joinDate.date).format('YYYY-M-D');
+    
+ console.log(joinDate.date);
     const showAllStatus = () => setShowStatus(true);
     const history = useHistory()
    
-    const handleBack = () =>{
-      history.push("/")
+    const handleBack = () => {
+      history.push("/");
     }
 
+    const handleChat = () => {
+      history.push("/chat");
+    }
+    
+    const handleVideo =() => {
+      history.push("/searching-profile");
+    }
       const handleChange = e => { 
       setForm({
         ...form,
@@ -56,7 +67,7 @@ const SingleProfile = (props) =>{
          }, (error) => {
         });
         }
-    console.log(userData.profile_images);
+    console.log(userData);
           //all gift
        const handleGift = async() =>{
        toggleIsOn(true);
@@ -222,12 +233,12 @@ const SingleProfile = (props) =>{
               <a href="javascript:void(0)" onClick={handleDislike}>×</a>
             </div>
             <div className="chat tray-btn-l">
-              <a href="javascript:void(0)">
+              <a href="javascript:void(0)" onClick={handleChat}>
                 <i className="fas fa-comment" />
               </a>
             </div>
             <div className="video-chat tray-btn-l">
-              <a href="javascript:void(0)">
+              <a href="javascript:void(0)" onClick={handleVideo}>
                 <i className="fas fa-video" />
               </a>
             </div>
@@ -270,8 +281,10 @@ const SingleProfile = (props) =>{
                   <div>{userData.occupation}</div>
                 </li>
                 <li>
-                  <div className="theme-txt">dob:</div>
-                  <div>{userData.dob}</div>
+                  <div className="theme-txt">join date:</div>
+                 {/* { dates ?
+                  <div>{dates}</div>} */}
+                  <div>{dates}</div>
                 </li>
               </ul>
             </div>
