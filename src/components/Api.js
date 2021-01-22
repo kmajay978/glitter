@@ -19,12 +19,13 @@ export const VISITOR_LIST_API=getApiUrl("getVisitorList");
 export const FILTER_LIST_API=getApiUrl("filter_user");
 export const GET_LOGGEDPROFILE_API=getApiUrl("logged_profile");
 export const DISLIKE_USER=getApiUrl("dislike_user");
-export const VIDEOCALL_API=getApiUrl("make_call");
+export const VIDEOCALL_API=getApiUrl("makGET_ALL_STATUSe_call");
 export const BLOCK_USER_API=getApiUrl("block_user");
 export const REPORT_USER_API = getApiUrl("report_user");
 export const GIFT_LIST_API = getApiUrl("all_gifts");
 export const GET_GIFT_API = getApiUrl("single_gift");
 export const GET_ALL_CALL = getApiUrl("all_calls");
+export const GET_SINGLE_STATUS = getApiUrl("all_status"); 
 
 // Not done yet
 export const CALL_ACTION_API=getApiUrl("call_action");
@@ -35,5 +36,6 @@ export const TOKEN_AGORA_FORLIVE_API=getApiUrl("liveUserToken");
 export const ENDLIVE_API=getApiUrl("disconnectLive");
 export const GET_LIVE_USER_TOKEN_API=getApiUrl("getLiveUserToken");
 export const VISITOR_API=getApiUrl("view");
+export const ADD_STATUS_API=getApiUrl("add_status");
 
 

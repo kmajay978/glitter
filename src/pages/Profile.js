@@ -14,6 +14,8 @@ import $ from 'jquery';
 import Logo from '../components/Logo';
 import PrivacyPolicy from '../components/PrivacyPolicy';
 import AboutGlitter from '../components/AboutGlitter';
+import {NotificationContainer, NotificationManager} from 'react-notifications';
+
 import {
   EmailIcon,
   FacebookIcon,
@@ -64,7 +66,7 @@ const Profile = () =>{
   const handleImage =() => setShowImage(true);
   const handlePrivacy =() => {setShowSetting(false); setShowPrivacy(true);}
   const handleAbout = () => {setShowSetting(false); setShowAbout(true);}
-  const handleShare =() => {setShowShare(true); setShowSetting(false);} // show share glitter model
+  const handleShare =() => {setShowSetting(false); setShowShare(true);} // show share glitter model
   // Getting form value here
   const [form , setForm] = useState({
     
@@ -140,14 +142,15 @@ const Profile = () =>{
    axios.post(EDITPROFILE_API , bodyParameters) 
    .then((response) => {
    if(response.status==200){
-    alert("update succesfully")
+   createNotification('success');
+ 
    }
    }, (error) =>{
-
+   createNotification('error');
    });
    }
  
-  
+   
   
    const config = {
     headers : {
@@ -168,17 +171,15 @@ const Profile = () =>{
       bodyParameters.append("height",  form.height);
       bodyParameters.append("weight",  form.weight);
       bodyParameters.append("interest", "" + form.interest);
-      bodyParameters.append('profile_photo', picture);
-      console.log(picture,"picture......");
+      bodyParameters.append('profile_photo[]', picture);
+      console.log(picture,"picture.....");
       bodyParameters.append("relationship_status", form.relationStatus);
     
     axios.post(EDITPROFILE_API , bodyParameters , config) 
    .then((response) => {
    if(response.status==200){
-    
-   setShowImage(false);
-   alert("update successfully");
-  
+    createNotification('success');
+    setShowImage(false);
    }
    }, (error) =>{
 
@@ -236,12 +237,13 @@ const Profile = () =>{
    }
  
    const handleFileChange = e => {
-    if (e.target.files[0]) {
+    if (e.target.files[0]) 
+    {
       setPicture(e.target.files[0]);
       const reader = new FileReader();
       reader.addEventListener("load", () => {
         setImgData(reader.result);
-      });
+       });
       reader.readAsDataURL(e.target.files[0]);
     }
   };
@@ -250,6 +252,19 @@ const Profile = () =>{
     ProfileData(dispatch)
   //handleBlock();
   },[])
+
+ const createNotification = (type) => {
+  
+    switch (type) {
+      case 'success':
+        NotificationManager.success('update Successfully ', 'profile');
+        break;
+      case 'error':
+        NotificationManager.error('Error message', 'Click me!', 5000, () => {
+        });
+        break; 
+  };
+  };
 
    const tabScreen = () =>{
     
@@ -345,9 +360,10 @@ const Profile = () =>{
               
               
           </div>
-
+         
           <a className="btn bg-grd-clr d-block btn-countinue-3" id="edit-second-step" href="javascript:void(0)" onClick={updateProfile}>Update</a>
-
+          <NotificationContainer/>
+     
       </div>
   
         );
@@ -356,7 +372,6 @@ const Profile = () =>{
     }
 
   }
-
 
 
 
@@ -559,6 +574,7 @@ const Profile = () =>{
   <div className="profile-image-inner">
 <input type="file" id="profile-photo" name="profile-photo" onChange={handleFileChange} accept="image/*" />
 <a href="javascript:void(0)" onClick={updateImage} >Upload</a>
+<NotificationContainer/>
 {/* <button onClick={updateImage}>Upload</button> */}
 </div>
 </form>
@@ -767,7 +783,7 @@ const Profile = () =>{
       <PrivacyPolicy/>
         </Modal>
 
-  <Modal className="" show={showAbout} onHide={() => setShowAbout(false)} >
+  <Modal className="about-model" show={showAbout} onHide={() => setShowAbout(false)} >
   <Modal.Header closeButton >
     <Modal.Title>
   <h2>About Glitter</h2>
@@ -776,7 +792,7 @@ const Profile = () =>{
       <AboutGlitter/>
   </Modal>
 
-  <Modal className="" show={showShare} onHide={() => setShowShare(false)} >
+  <Modal className="share-model" show={showShare} onHide={() => setShowShare(false)} >
   <Modal.Header closeButton >
     <Modal.Title>
   <h4 className="theme-txt">Share Glitter</h4>

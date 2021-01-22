@@ -9,6 +9,7 @@ import { css } from "@emotion/core";
 import BarLoader from "react-spinners/BarLoader";
 import Logo from '../components/Logo';
 import {selectUser, userProfile} from "../features/userSlice";
+import {NotificationContainer, NotificationManager} from 'react-notifications';
 
 const override = css`
   display: block;
@@ -124,6 +125,27 @@ const ChatBox = () =>{
 
             });
     }
+
+    const createNotification = (type) => {
+        return () => {
+          switch (type) {
+            case 'info':
+              NotificationManager.info('Info message');
+              break;
+            case 'success':
+              NotificationManager.success('Success message', 'Title here');
+              break;
+            case 'warning':
+              NotificationManager.warning('Warning message', 'Close after 3000ms', 3000);
+              break;
+            case 'error':
+              NotificationManager.error('Error message', 'Click me!', 5000, () => {
+                alert('callback');
+              });
+              break;
+          }
+        };
+      };
 
     /************************************* Working here socket *******************************************************/
 
@@ -250,6 +272,7 @@ const ChatBox = () =>{
                     readThenSendFile(data);
                 }
                 else {
+                    createNotification('error')
                     alert("Only .png, .jpg, .jpeg image formats supported.")
                 }
             })

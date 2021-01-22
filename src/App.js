@@ -2,25 +2,16 @@
 import './App.css';
 import React, { useState , useEffect } from 'react';
 import {BrowserRouter as Router, Switch, Route, useParams } from 'react-router-dom';
-// import {useLocation} from "react-router-dom"
-import Home from './pages/Home';
-import Login from './pages/Login';
-import ChatBox from './pages/ChatBox';
-import SearchHome from './pages/SearchHome';
-import SearchProfile from './pages/SearchProfile'; 
-import AnswerCalling from './pages/AnswerCalling';
-import SignupCompleted from './pages/SignupCompleted';
-import Profile from './pages/Profile';
-import SingleProfile from './pages/SingleProfile';
-import RecentCall from './pages/RecentCall';
-import Dummy from './pages/Dummy';
+// Importing all pages from index.js 
+import {Home,Login,ChatBox,SearchHome,AnswerCalling,SignupCompleted,Profile,SingleProfile,RecentCall,VideoChat,SearchProfile,Dummy} from './pages'
+
 import  ProtectedRoute  from "./protected.route";
 import axios from "axios";
 import {GET_LOGGEDPROFILE_API} from "./components/Api";
 import {login} from "./features/userSlice";
 import {useDispatch, useSelector} from "react-redux";
 import {profile, userAuth} from './features/userSlice';
-// import {usePosition} from './components/CommonFunction';
+
 
 let is_auth = false;
 
@@ -43,7 +34,7 @@ function App() {
     // console.log(is_auth, "is_auth....")
 
   useEffect(() => {
-    
+
     const sessionId = localStorage.getItem("session_id");
     if ((window.location.pathname !== "/profile") && !!sessionId) {
       ProfileData(dispatch, sessionId)
@@ -75,7 +66,8 @@ function App() {
           <ProtectedRoute exact path='/search-home' component={SearchHome} />
           <ProtectedRoute exact path='/single-profile' component={SingleProfile} />
           <ProtectedRoute exact path='/recent-call' component={RecentCall} />
-           <ProtectedRoute exact path='/dummy' component={Dummy} />
+          <ProtectedRoute exact path='/dummy' component={Dummy} />
+           <ProtectedRoute exact path='/video-chat' component={VideoChat} />
            
            
         </Switch>

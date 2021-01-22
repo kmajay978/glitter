@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import {  useHistory } from 'react-router';
 import axios from "axios";
 import Logo from '../components/Logo';
+import NavLinks from '../components/Nav';
 
 const SearchProfile = () =>{
     return(
@@ -34,32 +35,7 @@ const SearchProfile = () =>{
           </div>
           <div className="col-lg-4 p-3">
             <div className="tab-top d-flex flex-wrap align-items-center justify-content-end">
-              <ul className="feature-menu">
-                <li>
-                  <a href="javascript:void(0)">
-                    <i className="fas fa-compass" />
-                    <span>Discover</span>
-                  </a>
-                </li>
-                <li className="active">
-                  <a href="javascript:void(0)">
-                    <i className="fas fa-video" />
-                    <span>Video Chat</span>
-                  </a>
-                </li>
-                <li>
-                  <a href="javascript:void(0)">
-                    <img src="/assets/images/Album.png" alt="album" />
-                    <span>Activity</span>
-                  </a>
-                </li>
-                <li>
-                  <a href="javascript:void(0)">
-                    <i className="fas fa-user" />
-                    <span>Profile</span>
-                  </a>
-                </li>
-              </ul>
+              <NavLinks />
             </div>
           </div>
         </div>

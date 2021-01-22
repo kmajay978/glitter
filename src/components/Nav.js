@@ -20,14 +20,14 @@ console.log(props, "props..")
                     <span>Discover</span>
                   </Link>
                 </li>
-                <li className={`${pathname.match('/chat') ? 'active' : ''}`}>
-                    <Link to="/chat">
+                <li className={`${pathname.match('/searching-profile') ? 'active' : ''}`}>
+                    <Link to="/searching-profile">
                      <i className="fas fa-video" />
                     <span>Video Chat</span>
                   </Link>
                 </li>
-                <li className={`${pathname.match('/activity') ? 'active' : ''}`}>
-                   <Link to="/activity">
+                <li className={`${pathname.match('/chat') ? 'active' : ''}`}>
+                   <Link to="/chat">
                      <i className="fas fa-layer-group" />
                     <span>Activity</span>
                 </Link>

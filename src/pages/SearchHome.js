@@ -6,6 +6,7 @@ import axios from "axios";
 import NavLinks from '../components/Nav';
 import FilterSide from '../components/Filter';
 import { FRIENDLIST_API} from '../components/Api';
+import {Modal, ModalBody , Dropdown} from 'react-bootstrap';
 
 let isMouseClick = false, startingPos = [], glitterUid;
 const SearchHome = () =>{
@@ -15,6 +16,9 @@ const SearchHome = () =>{
 
  const [Click, setClick] = useState(false);
  const [StartPosition, setStartPosition] = useState([])
+ const [showStatus , setShowStatus] = useState(false);
+
+ const handleStatus = () => setShowStatus(true);
 
   const handleFriendList = async() => {
     const bodyParameters ={
@@ -100,7 +104,7 @@ const SearchHome = () =>{
                     <img src="/assets/images/marlene_user.jpg" alt="marlene" />
                   </div>
                 </div>
-                <div className="users-listing__slider__items">
+                <div className="users-listing__slider__items" onClick={handleStatus}>
                   <div className="users-listing__slider__items__image">
                     <img src="/assets/images/marlene_user.jpg" alt="marlene" />
                   </div>
@@ -262,6 +266,8 @@ const SearchHome = () =>{
       </div>
     </div>
   </div>
+  <Modal className =" status-modal"   show={showStatus} onHide={() => setShowStatus(false)}   aria-labelledby="example-modal-sizes-title-sm">
+  </Modal>
 </section>
 
 

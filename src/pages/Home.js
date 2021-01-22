@@ -12,7 +12,7 @@ import Logo from '../components/Logo';
 
 const Home = (props) =>{
     
-  const history = useHistory();
+    const history = useHistory();
     const user = useSelector(selectUser); //using redux useSelector here
     const [fetchedProfile, setFilterUser] = useState('');
    
@@ -23,7 +23,7 @@ const Home = (props) =>{
   return(
           <section className="home-wrapper">
            {/* <Loader isLoading={isLoading} />  */}
-          
+  
         <div className="home-inner">
           <div className="container-fluid p-0">
             <div className="row no-gutters">
