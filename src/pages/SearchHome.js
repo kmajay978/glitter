@@ -5,8 +5,9 @@ import {  useHistory } from 'react-router';
 import axios from "axios";
 import NavLinks from '../components/Nav';
 import FilterSide from '../components/Filter';
-import { FRIENDLIST_API} from '../components/Api';
+import { FRIENDLIST_API , GET_STATUS} from '../components/Api';
 import {Modal, ModalBody , Dropdown} from 'react-bootstrap';
+import OwlCarousel from 'react-owl-carousel2';
 
 let isMouseClick = false, startingPos = [], glitterUid;
 const SearchHome = () =>{
@@ -16,9 +17,35 @@ const SearchHome = () =>{
 
  const [Click, setClick] = useState(false);
  const [StartPosition, setStartPosition] = useState([])
- const [showStatus , setShowStatus] = useState(false);
+ const [statusData , setStatusData] = useState({});
+ const [storyData , setStoryData] = useState([]);
+ const[ friendId , setFriendId] = useState('');
+ 
+ const options = {
+  loop: false,
+  margin: 15,
+  items: 18,
+  nav: false,
+  autoplay: true
+};
 
- const handleStatus = () => setShowStatus(true);
+const statusoptions = {
+  loop: false,
+  slideSpeed: 3000,
+  dots:true,
+  margin: 0,
+  items: 1,
+  smartSpeed: 1000,
+  nav: false,
+  autoplay: true,
+  autoplayTimeout: 3000,
+   
+
+};
+
+
+
+
 
   const handleFriendList = async() => {
     const bodyParameters ={
@@ -26,11 +53,38 @@ const SearchHome = () =>{
     }
     const {data :{data}}= await axios.post(FRIENDLIST_API,bodyParameters)
     setFriendlist(data); 
-    
   }
- 
+
+  useEffect  (() => {
+   handleStatus();
+   
+  },[friendId])
+
+  console.log(friendId);
+  const handleStatus = () => 
+  {
+    const bodyParameters = {
+      user_id: friendId,
+    };
+    axios.post(GET_STATUS,bodyParameters)
+    .then((response) => {
+      if (response.status === 200 && !response.status.error) {
+        setStatusData(response.data);
+        setStoryData(response.data.result);
+      }
+      else {
+        setStatusData('');
+      }
+      
+ }, (error) => {
+    setStatusData('');
+});
+  }
+console.log(statusData);
+ console.log(storyData);
   useEffect (() => {
     handleFriendList();
+  
     window.setTimeout(() => {
        $(".main")
     .mousedown(function (evt) {
@@ -68,8 +122,9 @@ const SearchHome = () =>{
                   })
   }
   },[Click])
- console.log(friendList);
-  console.log(fetchedProfile);
+//  console.log(friendList);
+//   console.log(fetchedProfile);
+
     return(
   <section className="home-wrapper">
   <img className="bg-mask" src="/assets/images/mask-bg.png" alt="Mask" />
@@ -98,133 +153,23 @@ const SearchHome = () =>{
           </div>
           <div className="search-section-wrapper mt-4 px-4">
             <div className="users-listing">
-              <div className="owl-carousel owl-theme users-listing__slider">
-                <div className="users-listing__slider__items">
-                  <div className="users-listing__slider__items__image users-listing__slider__items-grey">
-                    <img src="/assets/images/marlene_user.jpg" alt="marlene" />
-                  </div>
-                </div>
-                <div className="users-listing__slider__items" onClick={handleStatus}>
-                  <div className="users-listing__slider__items__image">
-                    <img src="/assets/images/marlene_user.jpg" alt="marlene" />
-                  </div>
-                  <span className="live">Live</span>
-                </div>
-                <div className="users-listing__slider__items">
-                  <div className="users-listing__slider__items__image">
-                    <img src="/assets/images/marlene_user.jpg" alt="marlene" />
-                    <span className="circle-shape" />
-                  </div>
-                </div>
-                <div className="users-listing__slider__items">
-                  <div className="users-listing__slider__items__image">
-                    <img src="/assets/images/marlene_user.jpg" alt="marlene" />
-                  </div>
-                  <span className="circle-shape" />
-                </div>
-                <div className="users-listing__slider__items">
-                  <div className="users-listing__slider__items__image">
-                    <img src="/assets/images/marlene_user.jpg" alt="marlene" />
-                  </div>
-                  <span className="circle-shape" />
-                </div>
-                <div className="users-listing__slider__items">
-                  <div className="users-listing__slider__items__image">
-                    <img src="/assets/images/marlene_user.jpg" alt="marlene" />
-                  </div>
-                  <span className="circle-shape" />
-                </div>
-                <div className="users-listing__slider__items">
-                  <div className="users-listing__slider__items__image">
-                    <img src="/assets/images/marlene_user.jpg" alt="marlene" />
-                  </div>
-                  <span className="circle-shape" />
-                </div>
-                <div className="users-listing__slider__items">
-                  <div className="users-listing__slider__items__image">
-                    <img src="/assets/images/marlene_user.jpg" alt="marlene" />
-                  </div>
-                  <span className="circle-shape" />
-                </div>
-                <div className="users-listing__slider__items">
-                  <div className="users-listing__slider__items__image">
-                    <img src="/assets/images/marlene_user.jpg" alt="marlene" />
-                  </div>
-                  <span className="circle-shape" />
-                </div>
-                <div className="users-listing__slider__items">
-                  <div className="users-listing__slider__items__image">
-                    <img src="/assets/images/marlene_user.jpg" alt="marlene" />
-                  </div>
-                </div>
-                <div className="users-listing__slider__items">
-                  <div className="users-listing__slider__items__image">
-                    <img src="/assets/images/marlene_user.jpg" alt="marlene" />
-                  </div>
-                  <span className="circle-shape" />
-                </div>
-                <div className="users-listing__slider__items">
-                  <div className="users-listing__slider__items__image">
-                    <img src="/assets/images/marlene_user.jpg" alt="marlene" />
-                  </div>
-                  <span className="circle-shape" />
-                </div>
-                <div className="users-listing__slider__items">
-                  <div className="users-listing__slider__items__image">
-                    <img src="/assets/images/marlene_user.jpg" alt="marlene" />
-                  </div>
-                  <span className="live">Live</span>
-                </div>
-                <div className="users-listing__slider__items">
-                  <div className="users-listing__slider__items__image">
-                    <img src="/assets/images/marlene_user.jpg" alt="marlene" />
-                  </div>
-                  <span className="circle-shape" />
-                </div>
-                <div className="users-listing__slider__items">
-                  <div className="users-listing__slider__items__image">
-                    <img src="/assets/images/marlene_user.jpg" alt="marlene" />
-                  </div>
-                  <span className="live">Live</span>
-                </div>
-                <div className="users-listing__slider__items">
-                  <div className="users-listing__slider__items__image">
-                    <img src="/assets/images/marlene_user.jpg" alt="marlene" />
-                  </div>
-                  <span className="circle-shape" />
-                </div>
-                <div className="users-listing__slider__items">
-                  <div className="users-listing__slider__items__image">
-                    <img src="/assets/images/marlene_user.jpg" alt="marlene" />
-                  </div>
-                  <span className="live">Live</span>
-                </div>
-                <div className="users-listing__slider__items">
-                  <div className="users-listing__slider__items__image">
-                    <img src="/assets/images/marlene_user.jpg" alt="marlene" />
-                  </div>
-                  <span className="circle-shape" />
-                </div>
-                <div className="users-listing__slider__items">
-                  <div className="users-listing__slider__items__image">
-                    <img src="/assets/images/marlene_user.jpg" alt="marlene" />
-                  </div>
-                  <span className="circle-shape" />
-                </div>
-                <div className="users-listing__slider__items">
-                  <div className="users-listing__slider__items__image">
-                    <img src="/assets/images/marlene_user.jpg" alt="marlene" />
-                  </div>
-                  <span className="circle-shape" />
-                </div>
-                <div className="users-listing__slider__items">
-                  <div className="users-listing__slider__items__image">
-                    <img src="/assets/images/marlene_user.jpg" alt="marlene" />
-                  </div>
-                  <span className="circle-shape" />
-                </div>
-              </div>
+
+   
+      
+        <OwlCarousel  options={options}  >
+        {friendList.map((item, i) =>{   
+         return<div className="users-listing__slider__items" onClick={() =>  setFriendId(item.user_id)} id={item.user_id}  >
+            <div className="users-listing__slider__items__image"  data-toggle="modal" data-target="#status-modal" >
+           {!!friendList ? <img src={item.profile_images} alt="marlene" /> : ""}
+              <span className="circle-shape" />
             </div>
+          </div>
+         })} 
+        </OwlCarousel>
+
+        
+    
+      </div>
             <div className="search-people-row">
               <div className="row">
                 {friendList.map((item,i) => {
@@ -266,8 +211,56 @@ const SearchHome = () =>{
       </div>
     </div>
   </div>
-  <Modal className =" status-modal"   show={showStatus} onHide={() => setShowStatus(false)}   aria-labelledby="example-modal-sizes-title-sm">
-  </Modal>
+  <div className="modal fade" id="status-modal" tabIndex={-1} role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  
+  <div className="modal-dialog" role="document">
+  
+         <div className="modal-body p-0">
+        <div className="status-info">
+          <div className="status_image">
+            <img src="/assets/images/marlene_user.jpg" alt="user" />
+          </div>
+          <div className="status_heading">
+            <h6>{statusData.first_name}• {statusData.age}</h6>
+            <span className="timer d-block">9 Seconds</span>
+           
+            <span className="status_view"><img src="/assets/images/eye-icon.svg" alt="eye" />{storyData.totalviews}</span>
+      
+           </div>
+        </div>
+        <OwlCarousel  options={statusoptions} id="status-bar">
+     
+           {storyData.map((items ,i) => { 
+       return <div className="status-bar__items">
+         {items.statuses_type==1 ?  <img src={items.file} alt="status" /> : <video src={items.file} alt="status" />}
+           
+          </div>
+        })} 
+         
+        </OwlCarousel>
+ 
+        
+      
+      </div>
+   
+    <div className="status_footer">
+      <div className="status_like">
+        <span><img src="/assets/images/heart-icon.svg" alt="like status" /> 2,190</span>
+      </div>
+      <div className="user_connect ml-auto">
+        <ul>
+          <li className="bg-grd-clr"><img src="/assets/images/message.svg" alt="message" /></li>
+          <li className="bg-grd-clr"><img src="/assets/images/call-answer.svg" alt="call" /></li>
+          <li className="bg-grd-clr"><img src="/assets/images/video-call.svg" alt="video call" /></li>
+          <li className="bg-grd-clr"><img src="/assets/images/gift.svg" alt="gift" /></li>
+          <li className="bg-grd-clr"><img src="/assets/images/dots-icon.svg" alt="gift" /></li>
+        </ul>
+      </div>    
+    </div>
+  </div>
+
+</div>
+
 </section>
 
 

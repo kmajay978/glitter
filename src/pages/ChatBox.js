@@ -119,6 +119,7 @@ const ChatBox = () =>{
             .then((response) => {
                 if(response.status==200)
                 {
+                    createNotification('sucess');
                     alert("call made successfully");
                 }
             }, (error) => {
@@ -618,7 +619,9 @@ const ChatBox = () =>{
                                     </div>
                                     <div className="chat-call-opt">
                                         <a className="bg-grd-clr" onClick = {handleCall} href="javascript:void(0)">
+                                        <NotificationContainer/>
                                             <i className="fas fa-phone-alt" />
+                                           
                                         </a>
                                     </div>
                                 </div>

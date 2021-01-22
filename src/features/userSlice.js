@@ -6,6 +6,7 @@ export const userSlice = createSlice({
     initialState: { 
         user: null,
         profile: null,
+        filterData: [],
         is_authanticated: !!localStorage.getItem("session_id") ? true : false
     }, 
     reducers: { 
@@ -20,10 +21,14 @@ export const userSlice = createSlice({
         profile: (state, action) =>{
             state.profile = action.payload.profile;
         },
+        filterData: (state , action) => {
+            state.filterData = action.payload.filterData;
+        }
     }
 });
-export const { login, logout, profile } = userSlice.actions;
+export const { login, logout, profile , filterData} = userSlice.actions;
 export const selectUser = (state) => state.user.user;
 export const userProfile = (state) => state;
 export const userAuth = (state) => state.user.is_authanticated;
+export const filterDataUser = (state) => state.user.filterData;
 export default userSlice.reducer;

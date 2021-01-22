@@ -10,7 +10,7 @@ import useToggle from '../components/CommonFunction';
 import moment from 'moment'
 
 const SingleProfile = (props) =>{
-    const [userData, setUser] = useState([]);
+    const [userData, setUser] = useState(null);
    
     const [count, setCount] = useState('0');
     const [checkUid, setUserId] = useState(props.location.userId);
@@ -23,10 +23,7 @@ const SingleProfile = (props) =>{
     const [statusData , setStatusData] = useState([]);
     const [isOn, toggleIsOn] = useToggle();
     const [ showStatus , setShowStatus] =useState(false);
-    const joinDate = userData.joined_date;
-    const dates = moment(joinDate.date).format('YYYY-M-D');
     
- console.log(joinDate.date);
     const showAllStatus = () => setShowStatus(true);
     const history = useHistory()
    
@@ -47,6 +44,7 @@ const SingleProfile = (props) =>{
         [e.target.name]: e.target.value,
       }) 
   }
+  
     const handleStatus = async() =>{
       const bodyParameters = {
         user_id: checkUid,
@@ -62,8 +60,10 @@ const SingleProfile = (props) =>{
           };
             axios.post(GET_USERPROFILE_API,bodyParameters)
             .then((response) => {
+              if (response.status === 200 && !response.status.error) {
             setUser(response.data.data);
-            
+            console.log(response.data.data, "jjjj")
+              }
          }, (error) => {
         });
         }
@@ -214,15 +214,35 @@ const SingleProfile = (props) =>{
             <div className="items">
            
               <figure>
-              <img src={userData.profile_images} alt="Marlene" />
+                {
+                  !!userData &&
+                  <img src={userData.profile_images} alt="Marlene" />
+                }
+                {
+                  !userData &&
+                  <img src="" alt="Marlene" />
+                }
+              
               </figure>
       
               <div className="sp-meta-info">
                 <div className="meta-info-data">
-                  <h4>{userData.first_name}, {userData.age}</h4>
-                  <span>{userData.distance}, {userData.occupation}</span>
+                  {
+                    !!userData &&
+                    <>
+                      <h4>{userData.first_name}, {userData.age}</h4>
+                      <span>{userData.distance}, {userData.occupation}</span>
+                    </>
+                  }
+                  {
+                    <>
+                      <h4> , </h4>
+                      <span> , </span>
+                  </>
+                  }
+                  
                 </div>
-                <span className="liked"><i className="fas fa-heart" /> {userData.likes}</span>
+                <span className="liked"><i className="fas fa-heart" /> {!!userData ? userData.likes : ""}</span>
              </div>
             </div>
             </Carousel.Item>
@@ -253,7 +273,7 @@ const SingleProfile = (props) =>{
           <div className="profile-bio-inner my-3">
             <div className="bio-about">
               <h5 className="mb-3">About me</h5>
-              <p className="mb-0">{userData.about_me}</p>
+              <p className="mb-0">{!!userData ? userData.about_me : ""}</p>
             </div>
             <div className="bio-interest">
               <h5 className="mb-3">Interests</h5>
@@ -270,21 +290,21 @@ const SingleProfile = (props) =>{
               <ul>
                 <li>
                   <div className="theme-txt">Height:</div>
-              <div>{userData.height}</div>
+              <div>{!!userData ? userData.height: ""}</div>
                 </li>
                 <li>
                   <div className="theme-txt">Weight:</div>
-                  <div>{userData.weight}</div>
+                  <div>{!!userData ? userData.weight : ""}</div>
                 </li>
                 <li>
                   <div className="theme-txt">Relationship status:</div>
-                  <div>{userData.occupation}</div>
+                  <div>{!!userData ? userData.occupation : ""}</div>
                 </li>
                 <li>
                   <div className="theme-txt">join date:</div>
-                 {/* { dates ?
-                  <div>{dates}</div>} */}
-                  <div>{dates}</div>
+
+                  <div>{!!userData ? moment(userData.joined_date.date).format('YYYY/M/D') : ""}</div>
+                 
                 </li>
               </ul>
             </div>
@@ -348,9 +368,13 @@ const SingleProfile = (props) =>{
               <h5 className="mb-3">Looking For</h5>
               <div className="looking-for">
                 <span className="d-inline-block">
+                 {!!userData &&
+                 <>
                 {userData.looking_for == '1' ? "Men" 
                 : userData.looking_for == '2'  ? "Women" 
                 : "Both"}
+                 </>}
+                 { <> </>}
                 </span>
               </div>
             </div>

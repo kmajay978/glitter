@@ -7,6 +7,8 @@ import { makeStyles , withStyles } from '@material-ui/core/styles';
 import { FILTER_LIST_API } from './Api';
 import Loader from '../components/Loader';
 import {Typography} from '@material-ui/core';
+import {filterData} from '../features/userSlice';
+import { useDispatch } from 'react-redux';
 
 const useStyles = makeStyles({
   root: {
@@ -53,7 +55,7 @@ const PrettoSlider = withStyles({
 const SideFilter = ({setFilterUser}) =>{
 
   const history = useHistory();
-
+  const dispatch = useDispatch();
   function valuetextHeight(value) {
   return '${valueHeight}°C';
 }
@@ -122,8 +124,8 @@ function valuetextweight(value) {
      show:valueGender,
      age_to: valueAge[1],
      distance: valueDistance,
-     height_from:valueHeight[0],
-     height_to:valueHeight[1],
+    //  height_from:valueHeight[0],
+    //  height_to:valueHeight[1],
      weight_from:valueweight[0],
      weight_to:valueweight[1],
      latitude:30.7,
@@ -132,11 +134,14 @@ function valuetextweight(value) {
 
      axios.post(FILTER_LIST_API,bodyParameters)
   .then((response) => { 
-  
-  
    if (response.status == 200) {
     setLoading(true);
-    setFilterUser(response)
+    setFilterUser(response.data.data);
+    dispatch(
+      filterData({
+        filterData: response.data.data
+      })
+  );
    //console.log(response);
    setTimeout(() => {
    
@@ -154,7 +159,7 @@ function valuetextweight(value) {
 }
 
 useEffect(()=>{
-  
+
     
 },[])
 

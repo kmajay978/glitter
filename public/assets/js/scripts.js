@@ -141,27 +141,27 @@ $(document).ready(function () {
 
     /** user search slider **/
 
-    $('.users-listing__slider').owlCarousel({
-        loop: false,
-        margin: 15,
-        nav: false,
-        autoplay: false,
-        merge: true,
-        autoplayTimeout: 6000,
-        responsive: {
-            0: {
-                items: 1
-            },
-            600: {
-                items: 1
-            },
-            1000: {
-                mergeFit: true,
-                items: 18,
+    // $('.users-listing__slider').owlCarousel({
+    //     loop: false,
+    //     margin: 15,
+    //     nav: false,
+    //     autoplay: false,
+    //     merge: true,
+    //     autoplayTimeout: 6000,
+    //     responsive: {
+    //         0: {
+    //             items: 1
+    //         },
+    //         600: {
+    //             items: 1
+    //         },
+    //         1000: {
+    //             mergeFit: true,
+    //             items: 18,
 
-            }
-        }
-    });
+    //         }
+    //     }
+    // });
     
     
         
@@ -383,6 +383,30 @@ $(document).ready(function () {
         $(".edit-first-step").addClass("disable-first-step");
     })    
     
+    
+    /* var owl = $('#status-bar').owlCarousel({
+        loop: false,
+         slideSpeed: 3000,
+        dots:true,
+        margin: 0,
+       smartSpeed: 1000,
+        nav: false,
+        autoplay: true,
+        autoplayTimeout: 3000,
+        responsive: {
+            0: {
+                items: 1
+            },
+            600: {
+                items: 1
+            },
+            1000: {
+                items: 1,
+
+            }
+        }
+    });
+    */
     
     
 });

@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useMemo } from "react";
 import $ from 'jquery';
+import {useSelector} from "react-redux"
 import { useHistory } from "react-router";
+import {filterDataUser} from "../features/userSlice"
 import axios from "axios";
 import Slider from "@material-ui/core/Slider";
 import { makeStyles } from "@material-ui/core/styles";
@@ -14,6 +16,7 @@ import Swipe from "./Swipe";
 const alreadyRemoved = [];
 let isMouseClick = false, startingPos = [], glitterUid;
 
+
 const FilterUser = ({ fetchedProfile }) => {
   const history = useHistory();
   const [lastDirection, setLastDirection] = useState();
@@ -22,7 +25,11 @@ const FilterUser = ({ fetchedProfile }) => {
   const [mouseIsClicked, setmouseIsClicked] = useState("false");
   const [cardClick, setCardClick] = useState(false);
   const [cardStartPosition, setStartPosition] = useState([])
+  const [userData , setUserData] = useState([]);
 
+  const filters = useSelector(filterDataUser); //using redux useSelector here
+
+  
   const handleUserData = async () => {
     const bodyParameters = {
       session_id: localStorage.getItem("session_id"),
@@ -31,17 +38,15 @@ const FilterUser = ({ fetchedProfile }) => {
     setAllData(data);
   };
 
-//   fetchedProfile =[
-// { user_id :1 ,first_name:"sandeep" , age: 20, distance: 30, weight : "49", gender:"female"},
-// { user_id :2 ,first_name:"oishee" , age: 25, distance: 40, weight : "55" , gender:"female"}
-//   ]
+
+// var myprofile = !!fetchedProfile ? fetchedProfile.data.data:"yo";
+
+//   console.log(myprofile,"myprofile.....");
 
   // Click here
 const handleUserId = (e, userId) =>{
 
 }
-console.log(fetchedProfile)
-
 
   const childRefs = allData;
   const swiped = (direction, userId) => {
@@ -97,7 +102,7 @@ console.log(fetchedProfile)
   };
 
  useEffect(() => {
-   console.log(cardClick, isMouseClick, "test...");
+
    if (cardClick) {
       history.push({
                     pathname: '/single-profile',
@@ -106,8 +111,13 @@ console.log(fetchedProfile)
   }
  }, [cardClick])
 
+//  useEffect (() => {
+//    console.log(filters, "cccc")
+//     setUserData(filters)
+//  }, [filters])
+
   useEffect(() => {
-    handleUserData();
+    setUserData(filters);
     window.setTimeout(() => {
        $(".main_wrapper")
     .mousedown(function (evt) {
@@ -134,7 +144,7 @@ console.log(fetchedProfile)
         setStartPosition(startingPos)
     });
     }, 1000); 
-  }, []);
+  }, [filters]);
 
   const handleComment =() => {
     history.push ({
@@ -152,7 +162,7 @@ console.log(fetchedProfile)
   return (
     <div className="stage">
       <div id=""  className="swipe__card_layout">              
-            {allData.reverse().map((currentUser, index) => (
+            {userData.map((currentUser, index) => (
               <div className="main_wrapper" id={currentUser.user_id}>
               <GlitterCard
                 ref={childRefs[index]}
@@ -179,7 +189,8 @@ console.log(fetchedProfile)
               </GlitterCard>
               </div>
             ))}
-          
+           </div>
+
           {/* <div className="card" >
                           <div className="card-content">
                           <div className="card-image">
@@ -194,7 +205,7 @@ console.log(fetchedProfile)
           {/* })} */}
    
      
-      </div>
+     
       <div className="action-tray global-actions d-flex flex-wrap justify-content-center align-items-center">
            
         <div class="close-btn tray-btn-s">
@@ -216,7 +227,8 @@ console.log(fetchedProfile)
             </a>
         </div>
       
-     
+   
+
         {/* <div className="close-btn tray-btn-s">
                         <a className="left-action" href="javascript:void(0)" onClick={swiped} >×</a>
                       </div>
@@ -227,6 +239,7 @@ console.log(fetchedProfile)
                       </div> */}
       </div>
     </div>
+   
   );
 };
 export default FilterUser;
