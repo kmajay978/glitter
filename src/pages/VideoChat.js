@@ -1,11 +1,20 @@
 
 import React, { useState, useEffect } from "react";
-import {  useHistory } from 'react-router';
+import {  useHistory, useParams } from 'react-router';
 import axios from "axios";
 import Logo from '../components/Logo';
 import NavLinks from '../components/Nav';
+import { joinChannel, leaveEventAudience, leaveEventHost } from "../components/VideoComponent";
 
 const SearchProfile = () =>{
+  const params = useParams();
+  const history = useHistory();
+
+  useEffect(()=> {
+    if (!params.channel_id) {
+      history.push("/")
+    }
+  })
     return(
    <section className="home-wrapper">
   <img className="bg-mask" src="/assets/images/mask-bg.png" alt="Mask" />
@@ -32,6 +41,17 @@ const SearchProfile = () =>{
               </div>
             </div>
           </div>
+        </div>
+        <div>
+            <button onClick={() => joinChannel('host')}>Join Channel as Host</button>
+            <button onClick={() => joinChannel('audience')}>Join Channel as Audience</button>
+            <button onClick={() => leaveEventHost('host')}>Leave Event Host</button>
+            <button onClick={() => leaveEventAudience('audience')}>Leave Event Audience</button>
+            <div id="local_stream" className="local_stream" style={{ width: "400px", height: "400px" }}></div>
+            <div
+                id="remote_video_"
+                style={{ width: "400px", height: "400px" }}
+            />
         </div>
         <div className="col-lg-7 p-3">
           <div className="tab-top d-flex flex-wrap-wrap align-items-center">

@@ -1,11 +1,35 @@
 
 import React, { useState, useEffect } from "react";
 import {  useHistory } from 'react-router';
+import { useSelector, useDispatch} from "react-redux"; 
 import axios from "axios";
 import Logo from '../components/Logo';
 import NavLinks from '../components/Nav';
+import { VIDEO_CALL_START } from "../components/Api";
+import { videoCall, videoCallUser } from "../features/userSlice";
+import { generateVideoChatToken } from "../api/videoApi";
 
-const SearchProfile = () =>{
+const SearchProfile = (props) =>{
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const videoCallState = useSelector(videoCallUser); //using redux useSelector here
+  useEffect(() => {
+    document.getElementById("stacked-cards-block").classList.remove("init");
+    // call api to post data...
+    if(!videoCallState.user_from_id && !videoCallState.user_to_id) {
+      // redirect..
+      history.push("/chat");
+    }
+    else {
+      // const bodyParameters = videoCallState;
+      const bodyParameters ={
+        session_id: localStorage.getItem("session_id"),
+        user_id: videoCallState.user_to_id,
+        type: 1
+      }
+       generateVideoChatToken(dispatch, bodyParameters, videoCallState)
+    }
+  }, [])
     return(
      <div>
   <section className="home-wrapper">
