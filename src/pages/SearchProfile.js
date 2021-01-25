@@ -22,7 +22,7 @@ const SearchProfile = (props) =>{
     }
     else {
       // const bodyParameters = videoCallState;
-      const bodyParameters ={
+      const bodyParameters ={  
         session_id: localStorage.getItem("session_id"),
         user_id: videoCallState.user_to_id,
         type: 1

@@ -4,7 +4,7 @@ import { videoCall } from "../features/userSlice";
 
 export const generateVideoChatToken = (dispatch, bodyParameters, startVideoChatInitParams) => {
       axios.post(TOKEN_AGORA_API,bodyParameters)
-      .then((response) => {
+      .then((response) => { 
         if (response.status === 200) {
             const newState = {
                 channel_name: response.data.channelName,

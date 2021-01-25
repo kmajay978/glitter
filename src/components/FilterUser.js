@@ -159,7 +159,7 @@ const handleUserId = (e, userId) =>{
   }
 
 
-  return (
+  return ( 
     <div className="stage">
       <div id=""  className="swipe__card_layout">              
             {userData.map((currentUser, index) => (
