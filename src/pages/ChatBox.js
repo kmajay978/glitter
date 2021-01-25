@@ -391,7 +391,7 @@ const ChatBox = (props) =>{
                 createNotification('error-message')
                 alert(err.message)
             })
-            }
+            } 
             else {
                 alert("You need a secure https connection in order to record voice")
             }
