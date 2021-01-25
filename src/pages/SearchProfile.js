@@ -18,7 +18,7 @@ const SearchProfile = (props) =>{
     // call api to post data...
     if(!videoCallState.user_from_id && !videoCallState.user_to_id) {
       // redirect..
-      history.push("/chat");
+      //history.push("/chat");
     }
     else {
       // const bodyParameters = videoCallState;

@@ -28,7 +28,7 @@ export const GET_ALL_CALL = getApiUrl("all_calls");
 export const GET_SINGLE_STATUS = getApiUrl("all_status"); 
 export const GET_STATUS = getApiUrl("limit_status"); 
 export const VIDEO_CALL_START = getApiUrl("videoCallInit"); 
-export const VIDEO_CALL_START = getApiUrl("videoCallInit"); 
+ 
 // Not done yet
 export const CALL_ACTION_API=getApiUrl("call_action");
 export const CHECK_CALLSTATUS_API=getApiUrl("fetch_action");

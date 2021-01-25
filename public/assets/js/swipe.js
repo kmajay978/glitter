@@ -1,3 +1,4 @@
+window.setInterval(() => {
 // JavaScript Document
 document.addEventListener("DOMContentLoaded", function(event) {
 
@@ -707,3 +708,5 @@ document.addEventListener("DOMContentLoaded", function(event) {
 	stackedCards();
 	
 });
+
+},1000)

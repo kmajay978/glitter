@@ -13,6 +13,7 @@ import { Card, CardImg, CardText, CardBody, CardTitle } from "reactstrap";
 import { GETALLUSER_API } from "../components/Api";
 import GlitterCard from "react-tinder-card";
 import Swipe from "./Swipe";
+import TinderCardTest from "./TinderCard";
 const alreadyRemoved = [];
 let isMouseClick = false, startingPos = [], glitterUid;
 
@@ -159,7 +160,7 @@ const handleUserId = (e, userId) =>{
   }
 
 
-  return ( 
+  return (
     <div className="stage">
       <div id=""  className="swipe__card_layout">              
             {userData.map((currentUser, index) => (
@@ -190,21 +191,8 @@ const handleUserId = (e, userId) =>{
               </div>
             ))}
            </div>
-
-          {/* <div className="card" >
-                          <div className="card-content">
-                          <div className="card-image">
-                            <Image src={item.profile_images} alt={item.first_name} width="100%" height="100%"/>
-                             </div>
-                            <div className="card-titles">
-                             <h3>{item.first_name}, {item.age}</h3>
-                            <span>{item.distance},{item.occupation}</span>
-                           </div>  
-                          </div>
-                        </div> */}
-          {/* })} */}
    
-     
+    
      
       <div className="action-tray global-actions d-flex flex-wrap justify-content-center align-items-center">
            
@@ -238,6 +226,9 @@ const handleUserId = (e, userId) =>{
                         </a>
                       </div> */}
       </div>
+
+       {/*Test Here  */}
+    <TinderCardTest />
     </div>
    
   );
