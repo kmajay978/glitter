@@ -3,18 +3,162 @@ import React, { useState, useEffect } from "react";
 import {  useHistory, useParams } from 'react-router';
 import axios from "axios";
 import Logo from '../components/Logo';
+import {SOCKET} from '../components/Config';
 import NavLinks from '../components/Nav';
 import { joinChannel, leaveEventAudience, leaveEventHost } from "../components/VideoComponent";
+import {useSelector, useDispatch} from "react-redux";
+import {userProfile, videoCall, videoCallUser} from "../features/userSlice";
+
+let videoCallStatus = 0;
+
+const clearChatState = (dispatch) => {
+  dispatch(videoCall(null))
+}
 
 const SearchProfile = () =>{
   const params = useParams();
   const history = useHistory();
+  const dispatch = useDispatch();
+  const videoCallState = useSelector(videoCallUser); //using redux useSelector here
 
-  useEffect(()=> {
-    if (!params.channel_id) {
-      history.push("/")
+  const [isExpired, setIsExpired] = useState(false);
+
+  const userData = useSelector(userProfile).user.profile; //using redux useSelector here
+
+  const componentWillUnmount = () => {
+    if (videoCallStatus === 3) {
+      SOCKET.emit("unauthorize_video_call", {
+        sender: {user_from_id: videoCallState.user_from_id, session_id: localStorage.getItem("session_id")},
+        reciever_id: videoCallState.user_to_id,
+        channel_name: params.channel_name,
+        type: 0,
+        status: 3
+      });
     }
-  })
+    localStorage.removeItem("videoCallPageRefresh");
+    SOCKET.disconnect();
+    clearChatState(dispatch);
+  }
+
+  useEffect(() => {
+    if (!params.channel_name) {
+          history.push("/chat");
+    }
+    else {
+      const getPageRefresh = localStorage.getItem("videoCallPageRefresh");
+      if (!getPageRefresh) {
+        localStorage.setItem("videoCallPageRefresh", "1");
+      }
+      else {
+        videoCallStatus = 3
+        history.push("/chat");
+      }
+      // check with backend + socket if this channel exist...
+      SOCKET.emit("authenticate_video_call", {
+        sender: {user_from_id: videoCallState.user_from_id, session_id: localStorage.getItem("session_id")},
+        reciever_id: videoCallState.user_to_id,
+        channel_name: videoCallState.channel_name,
+        type: 0
+      });
+    }
+    SOCKET.on('unauthorize_video_call', (data) => {
+        if ((data.user_from_id === videoCallState.user_from_id && data.user_to_id === videoCallState.user_to_id)
+            ||
+            (data.user_from_id === videoCallState.user_to_id && data.user_to_id === videoCallState.user_from_id)
+        ) { // check one-to-one data sync
+          alert("leaving...")
+          history.push("/chat");
+          alert("unauthorize...");
+        }
+    });
+
+    SOCKET.on('timeCounter_video_call', (data) => {
+      if ((data.user_from_id === videoCallState.user_from_id && data.user_to_id === videoCallState.user_to_id)
+          ||
+          (data.user_from_id === videoCallState.user_to_id && data.user_to_id === videoCallState.user_from_id)
+      ) { // check one-to-one data sync
+        if (data.isExpired) {
+          history.push("/chat");
+        }
+      }
+    });
+
+    SOCKET.on('sender_show_video_call', (data) => {
+      if ((data.user_from_id === videoCallState.user_from_id && data.user_to_id === videoCallState.user_to_id)
+          ||
+          (data.user_from_id === videoCallState.user_to_id && data.user_to_id === videoCallState.user_from_id)
+      ) { // check one-to-one data sync
+        if (data.user_from_id === userData.user_id) {
+          const option = {
+            appID: "52cacdcd9b5e4b418ac2dca58f69670c",
+            channel: videoCallState.channel_name,
+            uid: 0,
+            token: videoCallState.channel_token,
+            key: '',
+            secret: ''
+          }
+          alert("sender receive acjnowledged connection....")
+          joinChannel('audience', option)
+        }
+      }
+    })
+          SOCKET.on('authorize_video_call', (data) => {
+      if ((data.user_from_id === videoCallState.user_from_id && data.user_to_id === videoCallState.user_to_id)
+          ||
+          (data.user_from_id === videoCallState.user_to_id && data.user_to_id === videoCallState.user_from_id)
+      ) { // check one-to-one data sync
+
+        // change backend status === 1 if loggedIn user is "user_to"
+
+        if (data.user_to_id === userData.user_id) {
+          SOCKET.emit("acknowledged_video_call", {
+            sender: {user_from_id: videoCallState.user_from_id, session_id: localStorage.getItem("session_id")},
+            reciever_id: videoCallState.user_to_id,
+            channel_name: videoCallState.channel_name,
+            type: 0,
+            status: 1
+          });
+          // initate video call for receiver...
+          const option = {
+            appID: "52cacdcd9b5e4b418ac2dca58f69670c",
+            channel: videoCallState.channel_name,
+            uid: 0,
+            token: videoCallState.channel_token,
+            key: '',
+            secret: ''
+          }
+          alert("receiver")
+          joinChannel('audience', option);
+          joinChannel('host', option);
+
+          // add timer... after 1 min to detect the expire of the link
+
+          SOCKET.emit("timeCounter_video_call", {
+            sender: {user_from_id: videoCallState.user_from_id, session_id: localStorage.getItem("session_id")},
+            reciever_id: videoCallState.user_to_id,
+            channel_name: videoCallState.channel_name,
+            type: 0,
+            status: 1
+          });
+        }
+        else {
+          // initate video call for sender...
+          const option = {
+            appID: "52cacdcd9b5e4b418ac2dca58f69670c",
+            channel: videoCallState.channel_name,
+            uid: 0,
+            token: videoCallState.channel_token,
+            key: '',
+            secret: ''
+          }
+          alert("sender")
+          joinChannel('host', option)
+        }
+      }
+    });
+
+    return componentWillUnmount
+  }, [])
     return(
    <section className="home-wrapper">
   <img className="bg-mask" src="/assets/images/mask-bg.png" alt="Mask" />

@@ -5,6 +5,7 @@ import {GET_LOGGEDPROFILE_API} from "../components/Api";
 const videoInitState = {
     user_from_id: null,
     user_to_id: null,
+    user_to_image: null,
     channel_id: null,
     channel_name: null,
     channel_token: null
@@ -16,7 +17,7 @@ export const userSlice = createSlice({
         user: null,
         profile: null,
         filterData: [],
-        is_authanticated: !!localStorage.getItem("session_id") ? true : false,
+        is_authanticated: !!localStorage.getItem("session_id"),
         video: videoInitState
     }, 
     reducers: { 
@@ -37,7 +38,8 @@ export const userSlice = createSlice({
             state.filterData = action.payload.filterData;
         },
         videoCall: (state , action) => {
-            state.video = !!action.payload ? {...action.payload, ...state.video} : videoInitState;
+
+            state.video = !!action.payload  ? action.payload : videoInitState;
         }
     }
 });
