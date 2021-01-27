@@ -5,7 +5,7 @@ import moment from "moment";
 
 export const generateVideoChatToken = (history, dispatch, bodyParameters, startVideoChatInitParams) => {
       axios.post(TOKEN_AGORA_API,bodyParameters)
-      .then((response) => {
+      .then((response) => { 
         if (response.status === 200) {
             let nowDate = moment().format();
             nowDate = nowDate.replace("T", " ").replace("+", " ");

@@ -20,12 +20,12 @@ const SearchProfile = () =>{
     // call api to post data...
     if(!videoCallState.user_from_id && !videoCallState.user_to_id) {
       // redirect..
-      history.push("/chat");
+      //history.push("/chat");
     }
     else {
       setUserTo({image: videoCallState.user_to_image})
       // const bodyParameters = videoCallState;
-      const bodyParameters ={
+      const bodyParameters ={  
         session_id: localStorage.getItem("session_id"),
         user_id: videoCallState.user_to_id,
         type: 1

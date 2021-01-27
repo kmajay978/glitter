@@ -30,7 +30,7 @@ export const userSlice = createSlice({
             state.user = null;
             state.is_authanticated = false;
         },
-        profile: (state, action) =>{
+        profile: (state, action) =>{ 
             console.log(state, "state,,,,")
             state.profile = action.payload.profile; 
         },
