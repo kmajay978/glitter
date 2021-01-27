@@ -11,7 +11,7 @@ import {GET_LOGGEDPROFILE_API} from "./components/Api";
 import {login} from "./features/userSlice";
 import {useDispatch, useSelector} from "react-redux";
 import {profile, userAuth} from './features/userSlice';
-
+import moment from "moment";
 
 let is_auth = false;
 
@@ -67,7 +67,7 @@ function App() {
           <ProtectedRoute exact path='/single-profile' component={SingleProfile} />
           <ProtectedRoute exact path='/recent-call' component={RecentCall} />
           <ProtectedRoute exact path='/dummy' component={Dummy} />
-           <ProtectedRoute exact path='/:channel_id/video-chat' component={VideoChat} />
+           <ProtectedRoute exact path='/:receiver/:user_from_id/:user_to_id/:channel_id/:channel_name/video-chat' component={VideoChat} />
            
            
         </Switch>

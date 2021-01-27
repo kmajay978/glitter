@@ -9,10 +9,12 @@ import { VIDEO_CALL_START } from "../components/Api";
 import { videoCall, videoCallUser } from "../features/userSlice";
 import { generateVideoChatToken } from "../api/videoApi";
 
-const SearchProfile = (props) =>{
+const SearchProfile = () =>{
   const dispatch = useDispatch();
   const history = useHistory();
-  const videoCallState = useSelector(videoCallUser); //using redux useSelector here
+
+  const [user_to, setUserTo] = useState({image: ""});
+  let videoCallState = useSelector(videoCallUser); //using redux useSelector here
   useEffect(() => {
     document.getElementById("stacked-cards-block").classList.remove("init");
     // call api to post data...
@@ -21,15 +23,21 @@ const SearchProfile = (props) =>{
       //history.push("/chat");
     }
     else {
+      setUserTo({image: videoCallState.user_to_image})
       // const bodyParameters = videoCallState;
       const bodyParameters ={  
         session_id: localStorage.getItem("session_id"),
         user_id: videoCallState.user_to_id,
         type: 1
       }
-       generateVideoChatToken(dispatch, bodyParameters, videoCallState)
+       generateVideoChatToken(history, dispatch, bodyParameters, videoCallState)
     }
   }, [])
+
+  const goToChat = () => {
+    dispatch(videoCall(null))
+    history.push("/chat")
+  }
     return(
      <div>
   <section className="home-wrapper">
@@ -81,12 +89,15 @@ const SearchProfile = (props) =>{
                     <div className="three" />
                   </div>
                   <div className="cancel-call">
-                    Cancel
+                    <a href="javascript:void(0)" onClick={goToChat} style={{color:"#F3C661"}}>
+                      Cancel
+                    </a>
+
                   </div>   
                   <div className="stackedcards-container">
                     <div className="card">
                       <div className="card-content">
-                        <div className="card-image"><img src="/assets/images/profile-card.png" alt="Emma" width="100%" height="100%" /></div>
+                        <div className="card-image"><img src={!!user_to.image ? user_to.image : ""} alt="Emma" width="100%" height="100%" /></div>
                         {/*
                                           <div class="card-titles">
                                               <h3>Emma, 22</h3>
@@ -97,7 +108,7 @@ const SearchProfile = (props) =>{
                     </div>
                     <div className="card">
                       <div className="card-content">
-                        <div className="card-image"><img src="/assets/images/profile-card.png" alt="Emma" width="100%" height="100%" /></div>
+                        <div className="card-image"><img src={!!user_to.image ? user_to.image : ""} alt="Emma" width="100%" height="100%" /></div>
                         {/*
                                           <div class="card-titles">
                                               <h3>Emma, 22</h3>
@@ -108,7 +119,7 @@ const SearchProfile = (props) =>{
                     </div>
                     <div className="card">
                       <div className="card-content">
-                        <div className="card-image"><img src="/assets/images/profile-card.png" alt="Emma" width="100%" height="100%" /></div>
+                        <div className="card-image"><img src={!!user_to.image ? user_to.image : ""} alt="Emma" width="100%" height="100%" /></div>
                         {/*
                                           <div class="card-titles">
                                               <h3>Emma, 22</h3>
@@ -119,7 +130,7 @@ const SearchProfile = (props) =>{
                     </div>
                     <div className="card">
                       <div className="card-content">
-                        <div className="card-image"><img src="/assets/images/profile-card.png" alt="Emma" width="100%" height="100%" /></div>
+                        <div className="card-image"><img src={!!user_to.image ? user_to.image : ""} alt="Emma" width="100%" height="100%" /></div>
                         <div className="card-titles">
                           <h3>Emma, 22</h3>
                           <span>72km, Lawyer</span>
@@ -128,7 +139,7 @@ const SearchProfile = (props) =>{
                     </div>
                     <div className="card">
                       <div className="card-content">
-                        <div className="card-image"><img src="/assets/images/profile-card.png" alt="Emma" width="100%" height="100%" /></div>
+                        <div className="card-image"><img src={!!user_to.image ? user_to.image : ""} alt="Emma" width="100%" height="100%" /></div>
                         {/*
                                           <div class="card-titles">
                                               <h3>Emma, 22</h3>

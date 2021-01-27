@@ -8,19 +8,10 @@ var rtc = {
     params: {}
 };
 // Options for joining a channel
-let url = new URL(window.location.href)
-let params = new URLSearchParams(url.search);
-let sourceid = params.get('id') // 'chrome-instant'
+// let url = new URL(window.location.href)
+// let params = new URLSearchParams(url.search);
 
-var option = {
-    appID: "52cacdcd9b5e4b418ac2dca58f69670c",
-    channel: "rrr",
-    uid: sourceid,
-    token: "00652cacdcd9b5e4b418ac2dca58f69670cIAAzMCzSlbWjkaANJuEChSTJ1QRXYlywddpAyAMPVb69JUhuNgsAAAAAEABI+NBcZbMPYAEAAQBgsw9g",
-    key: '',
-    secret: ''
-}
-export function joinChannel(role) {
+export function joinChannel(role, option) {
     // Create a client
     rtc.client = AgoraRTC.createClient({ mode: "live", codec: "h264" });
     // Initialize the client
