@@ -409,12 +409,13 @@ const ChatBox = (props) =>{
 
 /*=============================== Video Call ========================================================*/
 
-const handleVideo = () =>{
+const handleVideo = (image) =>{
     var secondUserDataId = FriendUserId;
     dispatch(
         videoCall({
            user_from_id: userData.user_id,
            user_to_id: secondUserDataId,
+            user_to_image: image,
            channel_id: uuidv4(),
            channel_name: null,
            channel_token: null
@@ -581,7 +582,7 @@ const handleVideo = () =>{
                                     </div>
                                     {/* Video call */}
                                     <div className="chat-call-opt">
-                                        <a className="bg-grd-clr" onClick = {handleVideo} href="javascript:void(0)">
+                                        <a className="bg-grd-clr" onClick = {() => handleVideo(AllData.profile_images[0])} href="javascript:void(0)">
                                         <NotificationContainer/>
                                             <i className="fas fa-video" />
                                            
