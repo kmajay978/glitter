@@ -2,7 +2,6 @@
   "name": "glitter",
   "version": "0.1.0",
   "private": true,
-  "homepage": "http://167.172.209.57:8080",
   "dependencies": {
     "@coreui/chartjs": "^2.0.0",
     "@coreui/coreui": "^3.2.2",
@@ -20,6 +19,7 @@
     "@testing-library/jest-dom": "^5.11.8",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.6.0",
+    "agora-rtc-sdk": "^2.9.0",
     "axios": "^0.21.1",
     "classnames": "^2.2.6",
     "core-js": "^3.8.2",
@@ -75,6 +75,7 @@
     "styled-components": "^5.2.1",
     "typeface-roboto": "^1.1.13",
     "use-position": "0.0.8",
+    "uuid": "^8.3.2",
     "web-vitals": "^0.2.4"
   },
   "scripts": {

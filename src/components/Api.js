@@ -27,6 +27,8 @@ export const GET_GIFT_API = getApiUrl("single_gift");
 export const GET_ALL_CALL = getApiUrl("all_calls");
 export const GET_SINGLE_STATUS = getApiUrl("all_status"); 
 export const GET_STATUS = getApiUrl("limit_status"); 
+export const VIDEO_CALL_START = getApiUrl("videoCallInit"); 
+export const INTEREST_HOBBIES_LIST = getApiUrl("interests_hobbies"); 
 
 // Not done yet
 export const CALL_ACTION_API=getApiUrl("call_action");

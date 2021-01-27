@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import {  useHistory } from 'react-router';
 import axios from "axios";
 import NavLinks from '../components/Nav';
-import {GIFT_LIST_API , GET_GIFT_API , GET_LOGGEDPROFILE_API , EDITPROFILE_API , BLOCK_USERLIST_API , LOGOUT_API} from '../components/Api';
+import {INTEREST_HOBBIES_LIST , GIFT_LIST_API , GET_GIFT_API , GET_LOGGEDPROFILE_API , EDITPROFILE_API , BLOCK_USERLIST_API , LOGOUT_API} from '../components/Api';
 import useToggle from '../components/CommonFunction';
 import {removeStorage} from '../components/CommonFunction';
 import Login from '../pages/Login'
@@ -56,6 +56,7 @@ const Profile = () =>{
   const [showCoins , setShowCoin] = useState(false);
   const [showGift , setShowGift] = useState(false);
   const [showImage , setShowImage] = useState(false); //state for edit profile image model
+  const [interestData , showInterestData] = useState([]);
 
   const [isOn, toggleIsOn] = useToggle();
   const [isProfile, toggleProfile] = useToggle();
@@ -79,15 +80,21 @@ const Profile = () =>{
     weight:"",
     relationStatus:"",
     looking_for:"",
+    interests_hobbie: [],
   });
 
-//  console.log(form);
+ console.log(form);
   
   const handleChange = e => { 
     setForm({
       ...form,
       [e.target.name]: e.target.value,
+
     }) 
+}
+ const checkvalue = (e) =>{
+ 
+  console.log('checkbox checked:', (e.target.checked));
 }
 
     const shareUrl = 'http://localhost:3000/';
@@ -112,6 +119,7 @@ const Profile = () =>{
       form.gender = data.gender
       form.looking_for = data.looking_for
       form.relationStatus = data.relationship_status
+      form.interests_hobbie = data.interests_hobbies
        setProfile(data);
        dispatch(
             profile({
@@ -119,7 +127,7 @@ const Profile = () =>{
             })
         );
        }
-
+      
       //  console.log(profileData);
    
      //update profile data
@@ -137,7 +145,8 @@ const Profile = () =>{
     height : form.height,
     weight : form.weight,
     looking_for:form.looking_for,
-    relationship_status :form.relationStatus
+    relationship_status :form.relationStatus,
+    interests_hobbies  : form.interests_hobbie ,
    };
    axios.post(EDITPROFILE_API , bodyParameters) 
    .then((response) => {
@@ -236,6 +245,19 @@ const Profile = () =>{
    console.log(result);
    }
  
+   //get interest hobbies
+   const handleInterest = () =>
+   {
+     axios.get(INTEREST_HOBBIES_LIST)
+     .then((response) => { 
+      showInterestData(response.data);
+      console.log(response.data);
+   
+       }, (error) =>{
+   
+       });
+    
+   }
    const handleFileChange = e => {
     if (e.target.files[0]) 
     {
@@ -250,6 +272,7 @@ const Profile = () =>{
 
     useEffect(() =>{
     ProfileData(dispatch)
+    handleInterest();
   //handleBlock();
   },[])
 
@@ -354,13 +377,22 @@ const Profile = () =>{
                             <div className="form-group">
                               <input type="radio" id="more" value={3}  checked={form.looking_for == 3 ? "checked" : ""} onChange={ handleChange }  name="looking_for" />
                               <label htmlFor="more">Both</label>
-                          </div>
-                          
-
-              
-              
+                          </div>                
           </div>
-         
+        
+         <div className="choose-intersest ft-block d-flex flex-wrap"  >
+         <div className="tab-title">
+         <label>Interest hobbies</label>
+           </div>
+           {interestData.map((item , i) => {
+          return <div className="form-group">
+          <input type="checkbox" id="interests_hobbie" name="interests_hobbie" value={item.id}/>
+           <label htmlFor="more">  {item.interests_or_hobbies}</label>
+                          
+                          </div>  
+                            })}
+         </div>
+       
           <a className="btn bg-grd-clr d-block btn-countinue-3" id="edit-second-step" href="javascript:void(0)" onClick={updateProfile}>Update</a>
           <NotificationContainer/>
      

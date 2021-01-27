@@ -13,6 +13,7 @@ import { Card, CardImg, CardText, CardBody, CardTitle } from "reactstrap";
 import { GETALLUSER_API } from "../components/Api";
 import GlitterCard from "react-tinder-card";
 import Swipe from "./Swipe";
+import TinderCardTest from "./TinderCard";
 const alreadyRemoved = [];
 let isMouseClick = false, startingPos = [], glitterUid;
 
@@ -84,12 +85,12 @@ const handleUserId = (e, userId) =>{
   };
 
   const swipe = (dir, userId) => {
-    const cardsLeft = allData.filter(
+    const cardsLeft = userData.filter(
       (currentUser) => !alreadyRemoved.includes(currentUser.user_id)
     );
     if (cardsLeft.length) {
       const toBeRemoved = cardsLeft[cardsLeft.length - 1].user_id; // Find the card object to be removed
-      const index = allData
+      const index = userData
         .map((person) => person.user_id)
         .indexOf(toBeRemoved); // Find the index of which to make the reference to
       alreadyRemoved.push(toBeRemoved); // Make sure the next card gets removed next time if this card do not have time to exit the screen
@@ -190,40 +191,27 @@ const handleUserId = (e, userId) =>{
               </div>
             ))}
            </div>
-
-          {/* <div className="card" >
-                          <div className="card-content">
-                          <div className="card-image">
-                            <Image src={item.profile_images} alt={item.first_name} width="100%" height="100%"/>
-                             </div>
-                            <div className="card-titles">
-                             <h3>{item.first_name}, {item.age}</h3>
-                            <span>{item.distance},{item.occupation}</span>
-                           </div>  
-                          </div>
-                        </div> */}
-          {/* })} */}
    
-     
+    
      
       <div className="action-tray global-actions d-flex flex-wrap justify-content-center align-items-center">
            
-        <div class="close-btn tray-btn-s">
-            <a class="left-action" href="javascript:void(0)" onClick={() => swipe("left")}>×</a>
+        <div className="close-btn tray-btn-s">
+            <a className="left-action" href="javascript:void(0)" onClick={() => swipe("left")}>×</a>
         </div>
-        <div class="chat tray-btn-l">
+        <div className="chat tray-btn-l">
             <a href="javascript:void(0)" onClick={handleComment}>
-                <i class="fas fa-comment"></i>
+                <i className="fas fa-comment"></i>
             </a>
         </div>
-        <div class="video-chat tray-btn-l">
+        <div className="video-chat tray-btn-l">
             <a href="javascript:void(0)" onClick={handleVideo}>
-                <i class="fas fa-video"></i>
+                <i className="fas fa-video"></i>
             </a>
         </div>
-        <div class="like-profile tray-btn-s">
-            <a class="right-action" href="javascript:void(0)" onClick={() => swipe("right")}>
-                <i class="fas fa-heart"></i>
+        <div className="like-profile tray-btn-s">
+            <a className="right-action" href="javascript:void(0)" onClick={() => swipe("right")}>
+                <i className="fas fa-heart"></i>
             </a>
         </div>
       
@@ -238,6 +226,9 @@ const handleUserId = (e, userId) =>{
                         </a>
                       </div> */}
       </div>
+
+       {/*Test Here  */}
+    {/* <TinderCardTest /> */}
     </div>
    
   );

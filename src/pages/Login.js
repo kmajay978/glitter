@@ -18,9 +18,12 @@ import LoginSidebar from '../components/LoginSidebar';
 import { SENDOTP_API, VERIFY_API, SIGNUP_API } from '../components/Api';
 import $ from 'jquery';
 import { FacebookProvider, Like } from 'react-facebook';
+import { usePosition } from 'use-position';
 
 // Working on login functional component
 const Login = () => {
+
+  const {latitude,longitude,speed,timestamp,accuracy,error,} = usePosition();
 
   // Adding class to body with custom function
 addBodyClass('login-body')('')
@@ -443,7 +446,7 @@ const registerHandle = (e) =>{
 
 
   useEffect(() => {
-  
+
   // Jquery code here 
  function countryDropdown(seletor) {
     var Selected = $(seletor);

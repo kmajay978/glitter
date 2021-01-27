@@ -1,20 +1,22 @@
-import React, {Component, useEffect} from 'react';
-
+import React, {useEffect} from 'react';
 
 // Common function toggle
 export default function useToggle(initialValue = false) {
-  const [value, setValue] = React.useState(initialValue);
-  const toggle = React.useCallback(() => {
-    setValue(v => !v);
-  }, []);
-  return [value, toggle];
+    const [value,
+        setValue] = React.useState(initialValue);
+    const toggle = React.useCallback(() => {
+        setValue(v => !v);
+    }, []);
+    return [value, toggle];
 }
 
 export function addBodyClass(className) {
-   return ()  => useEffect(() => {
-  document.body.className = className;
-  return () => { document.body.className = 'no-bg'; }
-});
+    return () => useEffect(() => {
+        document.body.className = className;
+        return () => {
+            document.body.className = 'no-bg';
+        }
+    });
 
 }
 
@@ -27,45 +29,12 @@ export function removeStorage(key) {
 }
 
 export function randomString(len = 5) {
-	let text = '';
-	const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let text = '';
+    const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
-	for (let i = 0; i < len; i++) {
-		text += possible.charAt(Math.floor(Math.random() * possible.length));
-	}
+    for (let i = 0; i < len; i++) {
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
 
-	return text;
+    return text;
 }
-
-// Geo location 
-// export const usePosition = () => {
-//   const [position, setPosition] = useState({});
-//   const [error, setError] = useState(null);
-  
-//   const onChange = ({coords}) => {
-//     setPosition({
-//       latitude: coords.latitude,
-//       longitude: coords.longitude,
-//     });
-//   };
-//   const onError = (error) => {
-//     setError(error.message);
-//   };
-//   useEffect(() => {
-//     const geo = navigator.geolocation;
-//     if (!geo) {
-//       setError('Geolocation is not supported');
-//       return;
-//     }
-//     watcher = geo.watchPosition(onChange, onError);
-//     return () => geo.clearWatch(watcher);
-//   }, []);
-//   return {...position, error};
-// }
-
-
-
-
-
-
-

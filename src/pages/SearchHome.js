@@ -225,18 +225,24 @@ console.log(statusData);
             <h6>{statusData.first_name}• {statusData.age}</h6>
             <span className="timer d-block">9 Seconds</span>
            
-            <span className="status_view"><img src="/assets/images/eye-icon.svg" alt="eye" />{storyData.totalviews}</span>
+            <span className="status_view"><img src="/assets/images/eye-icon.svg" alt="eye" /></span>
       
            </div>
         </div>
         <OwlCarousel  options={statusoptions} id="status-bar">
-     
-           {storyData.map((items ,i) => { 
+     {!!storyData && <>  
+     {storyData.map((items ,i) => { 
        return <div className="status-bar__items">
          {items.statuses_type==1 ?  <img src={items.file} alt="status" /> : <video src={items.file} alt="status" />}
            
           </div>
-        })} 
+        })}
+        </>
+     }
+        {
+          <></>
+        }
+         
          
         </OwlCarousel>
  

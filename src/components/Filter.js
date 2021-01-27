@@ -68,11 +68,11 @@ function valuetextweight(value) {
   return '${valueweight}°C';
 }
  const filter ={
-   gender: 3,
-   age: {from: 20, to: 37},
-   distance: 20,
-   height: {from: 10, to: 37},
-   weight: {from: 38, to: 50}
+   gender: 2,
+   age: {from: 23, to: 40},
+   distance: 5,
+   height: {from: 100, to: 170},
+   weight: {from: 40, to: 70}
  };
   const [valueHeight, setValueHeight] = useState([filter.height.from, filter.height.to]);
   const handleChangeHeight = (event, newValue) => {
@@ -116,6 +116,7 @@ function valuetextweight(value) {
   }
 
   const filterHandle = (e) =>{
+    if (!!e)
         e.preventDefault();
 
   const bodyParameters = {
@@ -124,12 +125,12 @@ function valuetextweight(value) {
      show:valueGender,
      age_to: valueAge[1],
      distance: valueDistance,
-    //  height_from:valueHeight[0],
-    //  height_to:valueHeight[1],
+     height_from:valueHeight[0],
+     height_to:valueHeight[1],
      weight_from:valueweight[0],
      weight_to:valueweight[1],
-     latitude:30.7,
-     longitude:76.0, 
+     latitude:30.70 ,
+     longitude:76.71 
    };
 
      axios.post(FILTER_LIST_API,bodyParameters)
@@ -159,7 +160,7 @@ function valuetextweight(value) {
 }
 
 useEffect(()=>{
-
+   filterHandle();
     
 },[])
 
@@ -167,7 +168,7 @@ useEffect(()=>{
    
         <div className="filter-tab">
          
-         <Loader isLoading={isLoading} />
+         {/* <Loader isLoading={isLoading} /> */}
                   <h4 className="mb-4">Filter</h4>
                   <form action="#" method="post"  className="form">
                     <div className="show-gender ft-block d-flex flex-wrap" onChange={radioHandle}>
@@ -183,7 +184,7 @@ useEffect(()=>{
                         <label htmlFor="woman">Woman</label>
                       </div>
                       <div className="form-group">
-                        <input type="radio" defaultChecked name="gender" value={3} id="both" />
+                        <input type="radio" name="gender" value={"1,2"} id="both" />
                         <label htmlFor="both">Both</label>
                       </div>
                     </div>
@@ -195,7 +196,7 @@ useEffect(()=>{
                       <Typography  id="age" className="two-range"  >
                          {`+${valueAge[0]} - ${valueAge[1]}`}
                     </Typography>
-                      <PrettoSlider value={valueAge} onChange={handleChangeAge} valueLabelDisplay="auto"
+                      <PrettoSlider value={valueAge}   min={18} max={50} onChange={handleChangeAge} valueLabelDisplay="auto"
                        aria-labelledby="range-slider" getAriaValueText={valuetextAge}/>
 
                     </div>
@@ -208,7 +209,7 @@ useEffect(()=>{
                       <Typography  id="distance" className="two-range"  >
                       {`${valueDistance} miles`}
                       </Typography>
-                      <PrettoSlider value={valueDistance} onChange={handleChangeDistance} valueLabelDisplay="auto"
+                      <PrettoSlider value={valueDistance} max={10} onChange={handleChangeDistance} valueLabelDisplay="auto"
                        aria-labelledby="range-slider" aria-labelledby="continuous-slider" />
                       </div>
                     </div>
@@ -221,7 +222,7 @@ useEffect(()=>{
                       {`${valueHeight[0]} - ${valueHeight[1]} cm`} 
                     </Typography>
                       
-                      <PrettoSlider value={valueHeight} onChange={handleChangeHeight}  valueLabelDisplay="auto"
+                      <PrettoSlider value={valueHeight} min={130} max={200} onChange={handleChangeHeight}  valueLabelDisplay="auto"
                        aria-labelledby="range-slider" getAriaValueText={valuetextHeight}/>
 
                     </div>
@@ -235,7 +236,7 @@ useEffect(()=>{
                     </Typography>
                       
                       <PrettoSlider value={valueweight} onChange={handleChangeweight} valueLabelDisplay="auto" 
-                      aria-labelledby="range-slider"  min={18}
+                      aria-labelledby="range-slider"  min={30}
                       max={100} getAriaValueText={valuetextweight}/>
                     </div>
                     <div className="btns-group d-flex justify-content-between flex-wrap my-5">

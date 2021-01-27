@@ -3230,7 +3230,7 @@ input:checked + .slider:before {
 }
 
 .profile-swipe-wrapper {
-    position: absolute;
+    position: fixed;
     top: 50%;
     left: 0;
     right: 0;
