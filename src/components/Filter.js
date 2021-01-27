@@ -68,8 +68,8 @@ function valuetextweight(value) {
   return '${valueweight}°C';
 }
  const filter ={
-   gender: 2,
-   age: {from: 18, to: 24},
+   gender: 1,
+   age: {from: 18, to: 26},
    distance: 2,
    height: {from: 160, to: 178},
    weight: {from: 50, to: 65}

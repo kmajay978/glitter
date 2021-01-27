@@ -16,7 +16,7 @@ const handleAllCall = async() => {
 const {data :{result}} = await axios.post(GET_ALL_CALL , bodyParameters)
 setAllCall(result);
 }
-
+console.log(allcalls,"allcalls....");
 useEffect(() => {
 handleAllCall();
 } , [])
@@ -68,39 +68,19 @@ return(
     </ul>
     <div id="content" className="tab-content rcall-history" role="tablist">
       <div id="rcall-all" className="tab-pane fade show active" role="tabpanel" aria-labelledby="tab-all-call">
-       {allcalls.map((item ,i) => {
-       return <div className="rc-history-card d-flex flex-wrap align-items-center">
+    
+    {/* all Calls here */}
+        {allcalls.map((item,i) =>{
+        return <div className="rc-history-card d-flex flex-wrap align-items-center">
           <figure className="rc-user-avtar mb-0 mr-3">
             <img src="/assets/images/vc-user.png" alt="Augugsta Castro" />
           </figure>
           <div className="rc-user-details d-flex flex-wrap">
             <div className="rcu-name mr-3">
-              <h5 className="mb-1">{item.from_user_data }<span className="age">20</span></h5>
+              <h5 className="mb-1">{item.from_user_data} <span className="age">20</span></h5>
               <div className="rcu-date-time">
-                <span className="time">{item.time +'  '}</span>
-                <span className="date">{item.date}</span>
-              </div>
-            </div>
-            <div className="rcu-call-time">0m 31s</div>
-          </div>
-          <div className="rcu-call-type ml-auto">
-            <figure className="mb-0 bg-grd-clr">
-              <img src="/assets/images/video-icon.png" alt="Video" />
-            </figure>
-          </div>
-        </div>
-        })}
-      
-        <div className="rc-history-card d-flex flex-wrap align-items-center">
-          <figure className="rc-user-avtar mb-0 mr-3">
-            <img src="/assets/images/vc-user.png" alt="Augugsta Castro" />
-          </figure>
-          <div className="rc-user-details d-flex flex-wrap">
-            <div className="rcu-name mr-3">
-              <h5 className="mb-1">Augusta Castro <span className="age">20</span></h5>
-              <div className="rcu-date-time">
-                <span className="time">10:07 AM</span>
-                <span className="date">8/29/2020</span>
+                <span className="time">{item.time} </span>
+                {/* <span className="date">{ moment(item.date).format('l')}</span> */}
               </div>
             </div>
             <div className="rcu-call-time">0m 31s</div>
@@ -111,9 +91,12 @@ return(
             </figure>
           </div>
         </div>
+        })}
       </div>
 
+{/* Missed Calls here */}
       <div id="rcall-missed" className="tab-pane fade" role="tabpanel" aria-labelledby="tab-missed-call">
+
         <div className="rc-history-card d-flex flex-wrap align-items-center">
           <figure className="rc-user-avtar mb-0 mr-3">
             <img src="/assets/images/vc-user.png" alt="Augugsta Castro" />
@@ -134,29 +117,12 @@ return(
             </figure>
           </div>
         </div>
-        <div className="rc-history-card d-flex flex-wrap align-items-center">
-          <figure className="rc-user-avtar mb-0 mr-3">
-            <img src="/assets/images/vc-user.png" alt="Augugsta Castro" />
-          </figure>
-          <div className="rc-user-details d-flex flex-wrap">
-            <div className="rcu-name mr-3">
-              <h5 className="mb-1">Augusta Castro <span className="age">20</span></h5>
-              <div className="rcu-date-time">
-                <span className="time">10:07 AM</span>
-                <span className="date">8/29/2020</span>
-              </div>
-            </div>
-            <div className="rcu-call-time">0m 31s</div>
-          </div>
-          <div className="rcu-call-type ml-auto">
-            <figure className="mb-0 bg-grd-clr">
-              <img src="/assets/images/missed-call-icon.png" alt="Missed Call" />
-            </figure>
-          </div>
-        </div>
+
       </div>
 
+{/* Matched Calls here */}
       <div id="rcall-matched" className="tab-pane fade" role="tabpanel" aria-labelledby="tab-matched-call">
+
         <div className="rc-history-card d-flex flex-wrap align-items-center">
           <figure className="rc-user-avtar mb-0 mr-3">
             <img src="/assets/images/vc-user.png" alt="Augugsta Castro" />
@@ -177,26 +143,7 @@ return(
             </figure>
           </div>
         </div>
-        <div className="rc-history-card d-flex flex-wrap align-items-center">
-          <figure className="rc-user-avtar mb-0 mr-3">
-            <img src="/assets/images/vc-user.png" alt="Augugsta Castro" />
-          </figure>
-          <div className="rc-user-details d-flex flex-wrap">
-            <div className="rcu-name mr-3">
-              <h5 className="mb-1">sandeep Castro <span className="age">20</span></h5>
-              <div className="rcu-date-time">
-                <span className="time">10:07 AM</span>
-                <span className="date">8/29/2020</span>
-              </div>
-            </div>
-            <div className="rcu-call-time">0m 31s</div>
-          </div>
-          <div className="rcu-call-type ml-auto">
-            <figure className="mb-0 bg-grd-clr">
-              <img src="/assets/images/missed-call-icon.png" alt="Missed Call" />
-            </figure>
-          </div>
-        </div>
+        
       </div>
     </div>
   </div>

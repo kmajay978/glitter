@@ -32,6 +32,7 @@
     "hookrouter": "^1.2.5",
     "jquery": "^3.5.1",
     "material-ui-phone-number": "^2.2.6",
+    "moment": "^2.29.1",
     "node-sass": "^4.14.1",
     "owl.carousel": "^2.3.4",
     "prop-types": "^15.7.2",
