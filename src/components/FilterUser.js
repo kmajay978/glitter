@@ -228,7 +228,7 @@ const handleUserId = (e, userId) =>{
       </div>
 
        {/*Test Here  */}
-    <TinderCardTest />
+    {/* <TinderCardTest /> */}
     </div>
    
   );
