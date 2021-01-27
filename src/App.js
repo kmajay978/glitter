@@ -67,7 +67,7 @@ function App() {
           <ProtectedRoute exact path='/single-profile' component={SingleProfile} />
           <ProtectedRoute exact path='/recent-call' component={RecentCall} />
           <ProtectedRoute exact path='/dummy' component={Dummy} />
-           <ProtectedRoute exact path='/:channel_name/video-chat' component={VideoChat} />
+           <ProtectedRoute exact path='/:receiver/:user_from_id/:user_to_id/:channel_id/:channel_name/video-chat' component={VideoChat} />
            
            
         </Switch>

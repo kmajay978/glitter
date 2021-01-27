@@ -47,6 +47,18 @@ const SearchProfile = () =>{
     else {
       const getPageRefresh = localStorage.getItem("videoCallPageRefresh");
       if (!getPageRefresh) {
+        if (params.receiver == "true") {
+          const videoCallParams = {
+            user_from_id: params.user_from_id,
+            user_to_id: params.user_to_id,
+            channel_id: params.channel_id,
+            channel_name: params.channel_name,
+            channel_token: null,
+            user_to_image: null
+          }
+          console.log(videoCallParams, "videoCallParams...")
+          dispatch(videoCall(videoCallParams))
+        }
         localStorage.setItem("videoCallPageRefresh", "1");
       }
       else {
@@ -54,11 +66,13 @@ const SearchProfile = () =>{
         history.push("/chat");
       }
       // check with backend + socket if this channel exist...
+      alert(typeof params.receiver)
       SOCKET.emit("authenticate_video_call", {
         sender: {user_from_id: videoCallState.user_from_id, session_id: localStorage.getItem("session_id")},
         reciever_id: videoCallState.user_to_id,
         channel_name: videoCallState.channel_name,
-        type: 0
+        type: 0,
+        videoCallState: params.receiver == "false" ? videoCallState : null
       });
     }
     SOCKET.on('unauthorize_video_call', (data) => {
@@ -121,9 +135,9 @@ const SearchProfile = () =>{
           // initate video call for receiver...
           const option = {
             appID: "52cacdcd9b5e4b418ac2dca58f69670c",
-            channel: videoCallState.channel_name,
+            channel: data.videoCallState.channel_name,
             uid: 0,
-            token: videoCallState.channel_token,
+            token: data.videoCallState.channel_token,
             key: '',
             secret: ''
           }
