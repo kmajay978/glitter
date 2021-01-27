@@ -10,7 +10,8 @@ import {Modal, ModalBody , Dropdown} from 'react-bootstrap';
 import OwlCarousel from 'react-owl-carousel2';
 
 let isMouseClick = false, startingPos = [], glitterUid;
-const SearchHome = () =>{
+const SearchHome = () =>
+{
   const history = useHistory();
   const [fetchedProfile, setFilterUser] = useState('');
  const [ friendList  , setFriendlist] = useState([]);

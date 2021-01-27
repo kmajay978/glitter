@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import {useSelector} from 'react-redux';
 import axios from "axios";
 import NavLinks from '../components/Nav';
-import { LIKED_LIST, VISITOR_LIST_API ,FRIENDLIST_API, GET_USERPROFILE_API ,VIDEOCALL_API} from '../components/Api';
+import { GIFT_LIST_API , GET_GIFT_API ,LIKED_LIST, VISITOR_LIST_API ,FRIENDLIST_API, GET_USERPROFILE_API ,VIDEOCALL_API} from '../components/Api';
 import {SOCKET} from '../components/Config';
 import  $ from 'jquery';
 import { css } from "@emotion/core";
@@ -10,6 +10,7 @@ import BarLoader from "react-spinners/BarLoader";
 import Logo from '../components/Logo';
 import {selectUser, userProfile} from "../features/userSlice";
 import {NotificationContainer, NotificationManager} from 'react-notifications';
+import useToggle from '../components/CommonFunction';
 
 const override = css`
   display: block;
@@ -41,6 +42,8 @@ const ChatBox = () =>{
     const[CompleteMessageList, setMessages] = useState([]);
     const[UserMessage, setuserMessage] = useState('');
     const[randomNumber, setRandomNumber] = useState('');
+    const [isOn, toggleIsOn] = useToggle();
+    const [GiftData , setGiftData] =useState([]);
 
     let [loading, setLoading] = useState(false);
     const[recording, setRecording] = useState(false);
@@ -146,6 +149,26 @@ const ChatBox = () =>{
         };
       };
 
+
+           //all gift
+           const handleGift = async() =>{
+            toggleIsOn(true);
+            const bodyParameters = {
+            session_id :  localStorage.getItem('session_id'),
+            }
+            const {data:{result}} = await axios.post(GIFT_LIST_API , bodyParameters)
+            setGiftData(result);
+            }
+     
+        //get single  gift item
+           const getGiftItem = async(Uid) => {
+           const bodyParameters ={
+           session_id :  localStorage.getItem('session_id') ,
+           gift_id : Uid
+           }
+            const {data : {result}} = await axios.post(GET_GIFT_API , bodyParameters)
+           
+             }
     /************************************* Working here socket *******************************************************/
 
     function readThenSendFile(data){
@@ -191,7 +214,6 @@ const ChatBox = () =>{
         console.log(messages.message_list,"messages.message_list....")
 
     }
-
 
     useEffect(() => {
         scrollToBottom();
@@ -611,10 +633,15 @@ const ChatBox = () =>{
                             <div className="tab-pane tab-pane fade" id="chat-field">
                                 <div className="message-top d-flex flex-wrap align-items-center justify-content-between">
                                     <div className="chat-header-info d-flex align-items-center">
-                                        <img alt="Mia" className="img-circle medium-image" src={AllData.profile_images}/>
+                                      {!!AllData ? <img alt="Mia" className="img-circle medium-image" src={AllData.profile_images}/> : ""}  
                                         <div className="chat-user-info ml-2">
-                                            <h5 className="mb-0 name">{AllData.first_name}</h5>
-                                            <div className="info">{AllData.occupation},  {AllData.age}</div>
+                                         {!!AllData ? <h5 className="mb-0 name">{AllData.first_name}</h5> : <h5>  </h5> }   
+                                            <div className="info"> 
+                                            {!!AllData && 
+                                            <>{AllData.occupation},  {AllData.age} </>
+                                            }
+                                            {<> , </>}
+                                            </div>
                                         </div>
                                     </div>
                                     <div className="chat-call-opt">
@@ -705,7 +732,7 @@ const ChatBox = () =>{
                                             {/* <textarea className="send-message-text" placeholder="Message..." defaultValue={UserMessage} /> */}
                                             <input className="send-message-text" name="Message" id="Message" type="text" placeholder="Message..." value={UserMessage} onChange={e => changeInput(e)} />
                                             <label className="gift-message bg-grd-clr">
-                                                <a href="javascript:void(0)">
+                                                <a href="javascript:void(0)" onClick={handleGift} >
                                                     <i className="fas fa-gift" />
                                                 </a>
                                             </label>
@@ -736,6 +763,40 @@ const ChatBox = () =>{
 
                         </div>
                         {/* End chat box here */}
+                        <div className={isOn ? 'all-gifts-wrapper active': 'all-gifts-wrapper '} >
+    <div className="all-gift-inner">
+    <a href="javascript:void(0)" className="close-gift-btn modal-close" onClick={toggleIsOn}><img src="/assets/images/btn_close.png" /></a>
+      <div className="all-gift-header d-flex flex-wrap align-items-center mb-3">
+        <h5 className="mb-0 mr-4">Send Gift</h5>
+        <div className="remaining-coins">
+          <img src="/assets/images/diamond-coin.png" alt="Coins" />
+          <span>152</span>
+        </div>
+      </div>
+      <div className="all-gift-body">
+        
+        <ul className="d-flex flex-wrap text-center">
+      {GiftData.map((items , i) => {
+        return <li onClick={() => getGiftItem(items.id)}>
+            <a href="javascript:void(0)" >
+              <div>
+                <figure>
+                  <img src={items.image} alt={items.name} />
+                </figure>
+                <div className="gift-price">
+                  <img src="/assets/images/diamond-coin.png" alt="Coins" />
+                  <span>{items.coins}</span>
+                </div>
+              </div>
+            </a>
+          </li>
+        })}
+          <li>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
                     </div>
                 </div>
             </div>
