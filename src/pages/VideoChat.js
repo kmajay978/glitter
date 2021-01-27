@@ -9,7 +9,7 @@ import { joinChannel, leaveEventAudience, leaveEventHost } from "../components/V
 import {useSelector, useDispatch} from "react-redux";
 import {userProfile, videoCall, videoCallUser} from "../features/userSlice";
 
-let videoCallStatus = 0;
+let videoCallStatus = 0, videoCallParams;
 
 const clearChatState = (dispatch) => {
   dispatch(videoCall(null))
@@ -26,10 +26,10 @@ const SearchProfile = () =>{
   const userData = useSelector(userProfile).user.profile; //using redux useSelector here
 
   const componentWillUnmount = () => {
-    if (videoCallStatus === 3) {
+    if (videoCallStatus == 3) {
       SOCKET.emit("unauthorize_video_call", {
-        sender: {user_from_id: videoCallState.user_from_id, session_id: localStorage.getItem("session_id")},
-        reciever_id: videoCallState.user_to_id,
+        sender: {user_from_id: videoCallParams.user_from_id, session_id: localStorage.getItem("session_id")},
+        reciever_id: videoCallParams.user_to_id,
         channel_name: params.channel_name,
         type: 0,
         status: 3
@@ -47,6 +47,19 @@ const SearchProfile = () =>{
     else {
       const getPageRefresh = localStorage.getItem("videoCallPageRefresh");
       if (!getPageRefresh) {
+        // if (params.receiver == "true") {
+        alert("no page refreshg")
+        console.log(params, "params...");
+          videoCallParams = {
+            user_from_id: params.user_from_id,
+            user_to_id: params.user_to_id,
+            channel_id: params.channel_id,
+            channel_name: params.channel_name,
+            channel_token: null,
+            user_to_image: null
+          }
+          dispatch(videoCall(videoCallParams))
+        // }
         localStorage.setItem("videoCallPageRefresh", "1");
       }
       else {
@@ -54,17 +67,23 @@ const SearchProfile = () =>{
         history.push("/chat");
       }
       // check with backend + socket if this channel exist...
+      alert(params.receiver)
+      if (params.receiver == "false") {
+        console.log(videoCallState, "test..")
+      }
+      console.log(videoCallParams, "videoCallParams...")
       SOCKET.emit("authenticate_video_call", {
-        sender: {user_from_id: videoCallState.user_from_id, session_id: localStorage.getItem("session_id")},
-        reciever_id: videoCallState.user_to_id,
-        channel_name: videoCallState.channel_name,
-        type: 0
+        sender: {user_from_id: videoCallParams.user_from_id, session_id: localStorage.getItem("session_id")},
+        reciever_id: videoCallParams.user_to_id,
+        channel_name: videoCallParams.channel_name,
+        type: 0,
+        videoCallState: params.receiver == "false" ? videoCallState : null
       });
     }
     SOCKET.on('unauthorize_video_call', (data) => {
-        if ((data.user_from_id === videoCallState.user_from_id && data.user_to_id === videoCallState.user_to_id)
+        if ((data.user_from_id == videoCallParams.user_from_id && data.user_to_id == videoCallParams.user_to_id)
             ||
-            (data.user_from_id === videoCallState.user_to_id && data.user_to_id === videoCallState.user_from_id)
+            (data.user_from_id == videoCallParams.user_to_id && data.user_to_id == videoCallParams.user_from_id)
         ) { // check one-to-one data sync
           alert("leaving...")
           history.push("/chat");
@@ -73,9 +92,9 @@ const SearchProfile = () =>{
     });
 
     SOCKET.on('timeCounter_video_call', (data) => {
-      if ((data.user_from_id === videoCallState.user_from_id && data.user_to_id === videoCallState.user_to_id)
+      if ((data.user_from_id == videoCallParams.user_from_id && data.user_to_id == videoCallParams.user_to_id)
           ||
-          (data.user_from_id === videoCallState.user_to_id && data.user_to_id === videoCallState.user_from_id)
+          (data.user_from_id == videoCallParams.user_to_id && data.user_to_id == videoCallParams.user_from_id)
       ) { // check one-to-one data sync
         if (data.isExpired) {
           history.push("/chat");
@@ -84,11 +103,11 @@ const SearchProfile = () =>{
     });
 
     SOCKET.on('sender_show_video_call', (data) => {
-      if ((data.user_from_id === videoCallState.user_from_id && data.user_to_id === videoCallState.user_to_id)
+      if ((data.user_from_id == videoCallParams.user_from_id && data.user_to_id == videoCallParams.user_to_id)
           ||
-          (data.user_from_id === videoCallState.user_to_id && data.user_to_id === videoCallState.user_from_id)
+          (data.user_from_id == videoCallParams.user_to_id && data.user_to_id == videoCallParams.user_from_id)
       ) { // check one-to-one data sync
-        if (data.user_from_id === userData.user_id) {
+        if (data.user_from_id == 19) {
           const option = {
             appID: "52cacdcd9b5e4b418ac2dca58f69670c",
             channel: videoCallState.channel_name,
@@ -103,27 +122,27 @@ const SearchProfile = () =>{
       }
     })
           SOCKET.on('authorize_video_call', (data) => {
-      if ((data.user_from_id === videoCallState.user_from_id && data.user_to_id === videoCallState.user_to_id)
+      if ((data.user_from_id == videoCallParams.user_from_id && data.user_to_id == videoCallParams.user_to_id)
           ||
-          (data.user_from_id === videoCallState.user_to_id && data.user_to_id === videoCallState.user_from_id)
+          (data.user_from_id == videoCallParams.user_to_id && data.user_to_id == videoCallParams.user_from_id)
       ) { // check one-to-one data sync
 
         // change backend status === 1 if loggedIn user is "user_to"
 
-        if (data.user_to_id === userData.user_id) {
+        if (data.user_to_id == 19) {
           SOCKET.emit("acknowledged_video_call", {
-            sender: {user_from_id: videoCallState.user_from_id, session_id: localStorage.getItem("session_id")},
-            reciever_id: videoCallState.user_to_id,
-            channel_name: videoCallState.channel_name,
+            sender: {user_from_id: videoCallParams.user_from_id, session_id: localStorage.getItem("session_id")},
+            reciever_id: videoCallParams.user_to_id,
+            channel_name: videoCallParams.channel_name,
             type: 0,
             status: 1
           });
           // initate video call for receiver...
           const option = {
             appID: "52cacdcd9b5e4b418ac2dca58f69670c",
-            channel: videoCallState.channel_name,
+            channel: data.videoCallState.channel_name,
             uid: 0,
-            token: videoCallState.channel_token,
+            token: data.videoCallState.channel_token,
             key: '',
             secret: ''
           }
@@ -134,9 +153,9 @@ const SearchProfile = () =>{
           // add timer... after 1 min to detect the expire of the link
 
           SOCKET.emit("timeCounter_video_call", {
-            sender: {user_from_id: videoCallState.user_from_id, session_id: localStorage.getItem("session_id")},
-            reciever_id: videoCallState.user_to_id,
-            channel_name: videoCallState.channel_name,
+            sender: {user_from_id: videoCallParams.user_from_id, session_id: localStorage.getItem("session_id")},
+            reciever_id: videoCallParams.user_to_id,
+            channel_name: videoCallParams.channel_name,
             type: 0,
             status: 1
           });

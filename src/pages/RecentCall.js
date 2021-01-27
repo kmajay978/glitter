@@ -141,7 +141,7 @@ return(
           </div>
           <div className="rcu-call-type ml-auto">
             <figure className="mb-0 bg-grd-clr">
-              <img src="/assets/images/missed-call-icon.png" alt="audio" />
+            <img src="/assets/images/video-icon.png" alt="Video" />
             </figure>
           </div>
         </div> :""
