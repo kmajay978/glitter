@@ -68,11 +68,11 @@ function valuetextweight(value) {
   return '${valueweight}°C';
 }
  const filter ={
-   gender: 1,
-   age: {from: 18, to: 26},
-   distance: 2,
-   height: {from: 160, to: 178},
-   weight: {from: 50, to: 65}
+   gender: 2,
+   age: {from: 23, to: 40},
+   distance: 5,
+   height: {from: 100, to: 170},
+   weight: {from: 40, to: 70}
  };
   const [valueHeight, setValueHeight] = useState([filter.height.from, filter.height.to]);
   const handleChangeHeight = (event, newValue) => {
@@ -129,8 +129,8 @@ function valuetextweight(value) {
      height_to:valueHeight[1],
      weight_from:valueweight[0],
      weight_to:valueweight[1],
-     latitude:30.7,
-     longitude:76.0, 
+     latitude:30.70 ,
+     longitude:76.71 
    };
 
      axios.post(FILTER_LIST_API,bodyParameters)
@@ -184,7 +184,7 @@ useEffect(()=>{
                         <label htmlFor="woman">Woman</label>
                       </div>
                       <div className="form-group">
-                        <input type="radio" name="gender" value={3} id="both" />
+                        <input type="radio" name="gender" value={"1,2"} id="both" />
                         <label htmlFor="both">Both</label>
                       </div>
                     </div>

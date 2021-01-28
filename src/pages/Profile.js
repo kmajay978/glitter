@@ -1,9 +1,10 @@
-
 import React, { useState, useEffect, useRef } from "react";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
 import {  useHistory } from 'react-router';
 import axios from "axios";
 import NavLinks from '../components/Nav';
-import {GIFT_LIST_API , GET_GIFT_API , GET_LOGGEDPROFILE_API , EDITPROFILE_API , BLOCK_USERLIST_API , LOGOUT_API} from '../components/Api';
+import {INTEREST_HOBBIES_LIST , GIFT_LIST_API , GET_GIFT_API , GET_LOGGEDPROFILE_API , EDITPROFILE_API , BLOCK_USERLIST_API , LOGOUT_API, GET_STRIPE_PACKAGE,ACTIVATE_STRIPE_PACKAGE } from '../components/Api';
 import useToggle from '../components/CommonFunction';
 import {removeStorage} from '../components/CommonFunction';
 import Login from '../pages/Login'
@@ -15,7 +16,6 @@ import Logo from '../components/Logo';
 import PrivacyPolicy from '../components/PrivacyPolicy';
 import AboutGlitter from '../components/AboutGlitter';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
-
 import {
   EmailIcon,
   FacebookIcon,
@@ -33,14 +33,18 @@ import {
 } from "react-share";
 // import {addBodyClass} from '../components/CommonFunction'; 
    
+const stripe = loadStripe(
+  "{pk_test_51HYm96CCuLYI2aV0fK3RrIAT8wXVzKScEtomL2gzY9XCMrgBa4KMPmhWmsCorW2cqL2MLSJ45GKAAZW7WxEmytDs009WzuDby2}"
+);
 
-const Profile = () =>{
+const Profile = (props) =>{
 
    //Adding class to body and removing the class
   // addBodyClass('no-bg')('login-body')
-
+ 
   const history = useHistory();
   const dispatch = useDispatch();
+  const [packageList,setPackage] = useState([]);
   const [profileData, setProfile] = useState('');  
   const [blockData, setBlockData] = useState([]);
   const [picture, setPicture] = useState(null);
@@ -56,7 +60,14 @@ const Profile = () =>{
   const [showCoins , setShowCoin] = useState(false);
   const [showGift , setShowGift] = useState(false);
   const [showImage , setShowImage] = useState(false); //state for edit profile image model
+  const [interestData , showInterestData] = useState([]);
 
+  const [curentStripePlan , setStripPlan] = useState({
+    session_id : "" ,
+    plan_id : "",
+    token : ""
+  });
+  
   const [isOn, toggleIsOn] = useToggle();
   const [isProfile, toggleProfile] = useToggle();
   const handleShow = () => setShow(true); // show Edit model
@@ -79,15 +90,21 @@ const Profile = () =>{
     weight:"",
     relationStatus:"",
     looking_for:"",
+    interests_hobbie: [],
   });
 
-//  console.log(form);
+ console.log(form);
   
   const handleChange = e => { 
     setForm({
       ...form,
       [e.target.name]: e.target.value,
+
     }) 
+}
+ const checkvalue = (e) =>{
+ 
+  console.log('checkbox checked:', (e.target.checked));
 }
 
     const shareUrl = 'http://localhost:3000/';
@@ -112,6 +129,7 @@ const Profile = () =>{
       form.gender = data.gender
       form.looking_for = data.looking_for
       form.relationStatus = data.relationship_status
+      form.interests_hobbie = data.interests_hobbies
        setProfile(data);
        dispatch(
             profile({
@@ -119,7 +137,7 @@ const Profile = () =>{
             })
         );
        }
-
+      
       //  console.log(profileData);
    
      //update profile data
@@ -137,7 +155,8 @@ const Profile = () =>{
     height : form.height,
     weight : form.weight,
     looking_for:form.looking_for,
-    relationship_status :form.relationStatus
+    relationship_status :form.relationStatus,
+    interests_hobbies  : form.interests_hobbie ,
    };
    axios.post(EDITPROFILE_API , bodyParameters) 
    .then((response) => {
@@ -236,6 +255,19 @@ const Profile = () =>{
    console.log(result);
    }
  
+   //get interest hobbies
+   const handleInterest = () =>
+   {
+     axios.get(INTEREST_HOBBIES_LIST)
+     .then((response) => { 
+      showInterestData(response.data);
+      console.log(response.data);
+   
+       }, (error) =>{
+   
+       });
+    
+   }
    const handleFileChange = e => {
     if (e.target.files[0]) 
     {
@@ -248,8 +280,40 @@ const Profile = () =>{
     }
   };
 
+
+  // ------------------------------ Stipe payment module -----------------------------------------------//
+
+  const GetStipePackage = async() =>{
+    const {data:{plan_list}} = await axios.get(GET_STRIPE_PACKAGE)
+      setPackage(plan_list);
+  }
+
+  // Get id of current plan 
+
+  const Stripehandler = (stripePlanId) =>{
+
+    setStripPlan({
+      session_id : sessionId ,
+      plan_id : stripePlanId,
+      token : "UgPrRjts9yzVQ15yKJY22wp3LKYtBIhxIuBDk76y"
+    })
+      
+    // axios.post(ACTIVATE_STRIPE_PACKAGE,bodyParameters)
+    // .then((response) => {
+
+    //   console.log(response,"response.......");
+    
+    // }, (error) => {
+      
+    // });
+  }
+
+
+
     useEffect(() =>{
+    GetStipePackage();
     ProfileData(dispatch)
+    handleInterest();
   //handleBlock();
   },[])
 
@@ -354,13 +418,22 @@ const Profile = () =>{
                             <div className="form-group">
                               <input type="radio" id="more" value={3}  checked={form.looking_for == 3 ? "checked" : ""} onChange={ handleChange }  name="looking_for" />
                               <label htmlFor="more">Both</label>
-                          </div>
-                          
-
-              
-              
+                          </div>                
           </div>
-         
+        
+         <div className="choose-intersest ft-block d-flex flex-wrap"  >
+         <div className="tab-title">
+         <label>Interest hobbies</label>
+           </div>
+           {interestData.map((item , i) => {
+          return <div className="form-group">
+          <input type="checkbox" id="interests_hobbie" name="interests_hobbie" value={item.id}/>
+           <label htmlFor="more">  {item.interests_or_hobbies}</label>
+                          
+                          </div>  
+                            })}
+         </div>
+       
           <a className="btn bg-grd-clr d-block btn-countinue-3" id="edit-second-step" href="javascript:void(0)" onClick={updateProfile}>Update</a>
           <NotificationContainer/>
      
@@ -372,8 +445,6 @@ const Profile = () =>{
     }
 
   }
-
-
 
   return(
    <div>
@@ -490,51 +561,31 @@ const Profile = () =>{
         <div className="col-md-4">
           <div className="membership-plans">
             <h5 className="text-white text-uppercase"><img src="/assets/images/Crown-white.png" alt="crown" /> Become vip</h5>
+
+{packageList.map((item,i) =>(
+           (item.duration === "12") ?
             <div className="membership-plans__block active mt-5">
-              <a href="javascript:void(0)">
-                <span className="membership-discount">save 57%</span>
-                <h5 className="text-white text-uppercase mb-0">12 months</h5>
-                <div className="membership-plans__price">
-                  <span>$50.00</span>
-                  <span>then $4.16/Month</span>
-                </div>
-              </a>
+            <a href="javascript:void(0)" key={i} onClick={() => Stripehandler(item.plan_id)}>
+              <span className="membership-discount">{`save ${item.save}`}</span>
+              <h5 className="text-white text-uppercase mb-0">{item.name}</h5>
+              <div className="membership-plans__price">
+                <span>{`$${item.rate}.00`} </span>
+                <span>{`$${item.per_monthRate} per month`}</span>
+              </div>
+            </a>
+          </div>
+          : <div className="membership-plans__block" key={i} onClick={() => Stripehandler(item.plan_id)}>
+          <a href="javascript:void(0)">
+            <h5 className="text-uppercase mb-0">{item.name}</h5>
+            <div className="membership-plans__price">
+              <span>{`$${item.rate}.00`}</span>
+              <span>{`$${item.per_monthRate} per month`}</span>
             </div>
-            <div className="membership-plans__block">
-              <a href="javascript:void(0)">
-                <h5 className="text-uppercase mb-0">6 months</h5>
-                <div className="membership-plans__price">
-                  <span>$30.00</span>
-                  <span>$5 per month</span>
-                </div>
-              </a>
-            </div>
-            <div className="membership-plans__block">
-              <a href="javascript:void(0)">
-                <h5 className="text-uppercase mb-0">3 months</h5>
-                <div className="membership-plans__price">
-                  <span>$20.00</span>
-                  <span>$6.66 per month</span>
-                </div>
-              </a>
-            </div>
-            <div className="membership-plans__block">
-              <a href="javascript:void(0)">
-                <h5 className="text-uppercase mb-0">1 month</h5>
-                <div className="membership-plans__price">
-                  <span>$5.00</span>
-                  <span>10$ renew automatically.</span>
-                </div>
-              </a>
-            </div>
-            <div className="membership-plans__block">
-              <a href="javascript:void(0)">
-                <h5 className="text-uppercase mb-0">1 Day vip pass</h5>
-                <div className="membership-plans__price">
-                  <span>$1.00</span>
-                </div>
-              </a>
-            </div>
+          </a>
+        </div>
+            
+))}
+
           </div>
         </div>
         <div className="col-md-4">

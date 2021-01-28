@@ -47,6 +47,7 @@ const SearchProfile = () =>{
     else {
       const getPageRefresh = localStorage.getItem("videoCallPageRefresh");
       if (!getPageRefresh) {
+        // SOCKET.connect();
         // if (params.receiver == "true") {
         alert("no page refreshg")
         console.log(params, "params...");
