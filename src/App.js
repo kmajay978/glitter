@@ -58,16 +58,16 @@ function App() {
        
        
           {/* Private routes */}
-          <ProtectedRoute exact path='/' component={Home} />
-          <ProtectedRoute exact path='/profile' component={Profile} />
-          <ProtectedRoute exact path="/answer-calling" component={AnswerCalling} />
-          <ProtectedRoute exact path='/chat' component={ChatBox} />
-          <ProtectedRoute exact path='/searching-profile' component={SearchProfile} />
-          <ProtectedRoute exact path='/search-home' component={SearchHome} />
-          <ProtectedRoute exact path='/single-profile' component={SingleProfile} />
-          <ProtectedRoute exact path='/recent-call' component={RecentCall} />
-          <ProtectedRoute exact path='/dummy' component={Dummy} />
-           <ProtectedRoute exact path='/:receiver/:user_from_id/:user_to_id/:channel_id/:channel_name/video-chat' component={VideoChat} />
+          <Route exact path='/' component={Home} />
+          <Route exact path='/profile' component={Profile} />
+          <Route exact path="/answer-calling" component={AnswerCalling} />
+          <Route exact path='/chat' component={ChatBox} />
+          <Route exact path='/searching-profile' component={SearchProfile} />
+          <Route exact path='/search-home' component={SearchHome} />
+          <Route exact path='/single-profile' component={SingleProfile} />
+          <Route exact path='/recent-call' component={RecentCall} />
+          <Route exact path='/dummy' component={Dummy} />
+           <Route exact path='/:receiver/:user_from_id/:user_to_id/:channel_id/:channel_name/video-chat' component={VideoChat} />
            
            
         </Switch>

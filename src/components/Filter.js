@@ -176,11 +176,11 @@ useEffect(()=>{
                         <h5>Show Me</h5>
                       </div>
                       <div className="form-group">
-                        <input type="radio" defaultChecked name="gender" value={1} id="man" />
+                        <input type="radio" name="gender" value={1} id="man" />
                         <label htmlFor="man">Man</label>
                       </div>
                       <div className="form-group">
-                        <input type="radio" name="gender" value={2} id="woman" />
+                        <input type="radio" defaultChecked name="gender" value={2} id="woman" />
                         <label htmlFor="woman">Woman</label>
                       </div>
                       <div className="form-group">

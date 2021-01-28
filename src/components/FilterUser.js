@@ -14,6 +14,7 @@ import { GETALLUSER_API } from "../components/Api";
 import GlitterCard from "react-tinder-card";
 import Swipe from "./Swipe";
 import TinderCardTest from "./TinderCard";
+import useToggle from '../components/CommonFunction';
 const alreadyRemoved = [];
 let isMouseClick = false, startingPos = [], glitterUid;
 
@@ -27,7 +28,10 @@ const FilterUser = ({ fetchedProfile }) => {
   const [cardClick, setCardClick] = useState(false);
   const [cardStartPosition, setStartPosition] = useState([])
   const [userData , setUserData] = useState([]);
-
+  const [showAccept, setShowAccept] = useState(false);
+  const [isOn, toggleIsOn] = useToggle(false);
+  const [liked_clicked, setLiked] = useState(false);
+  const [disliked_clicked , setDislike] = useState(false);
   const filters = useSelector(filterDataUser); //using redux useSelector here
 
   
@@ -36,7 +40,7 @@ const FilterUser = ({ fetchedProfile }) => {
       session_id: localStorage.getItem("session_id"),
     };
     const { data: { data }} = await axios.post(GETALLUSER_API, bodyParameters);
-    setAllData(data);
+    setUserData(data);
   };
 
 
@@ -49,37 +53,52 @@ const handleUserId = (e, userId) =>{
 
 }
 
-  const childRefs = allData;
+  const childRefs = userData;
   const swiped = (direction, userId) => {
     if (direction == "left") {
+      setDislike(true);
       const bodyParameters = {
         session_id: localStorage.getItem("session_id"),
         user_id: userId,
       };
       axios.post(DISLIKE_USER, bodyParameters).then(
         (response) => {
+         
           if (response.status == 200) {
+          
             console.log(direction);
             console.log("removing: " + userId);
             alreadyRemoved.push(userId);
+            setTimeout(() => {
+              setDislike(false);
+            }, 2);
+            
           }
         },
-        (error) => {}
+        (error) => {
+          setTimeout(() => {
+            setDislike(false);
+          }, 2);
+        }
       );
     } else if (direction == "right") {
+      setLiked(true);
       const bodyParameters = {
         session_id: localStorage.getItem("session_id"),
         user_id: userId,
       };
       axios.post(LIKE_USER, bodyParameters).then(
         (response) => {
-          if (response.status == 200) {
+        
             console.log(direction);
             console.log("removing: " + userId);
             alreadyRemoved.push(userId);
-          }
+            setTimeout(() => {
+              setLiked(false)
+            }, 2);
+    
         },
-        (error) => {}
+        (error) => {setLiked(false)}
       );
     }
   };
@@ -118,7 +137,7 @@ const handleUserId = (e, userId) =>{
 //  }, [filters])
 
   useEffect(() => {
-    setUserData(filters);
+    handleUserData();
     window.setTimeout(() => {
        $(".main_wrapper")
     .mousedown(function (evt) {
@@ -161,10 +180,11 @@ const handleUserId = (e, userId) =>{
 
 
   return (
-    <div className="stage">
-      <div id=""  className="swipe__card_layout">              
+    <>
+    
+      <div className="cardContainer">              
             {userData.map((currentUser, index) => (
-              <div className="main_wrapper" id={currentUser.user_id}>
+              <div className="main_wrapper" id={currentUser.user_id}> 
               <GlitterCard
                 ref={childRefs[index]}
                 className="swipe"
@@ -172,29 +192,41 @@ const handleUserId = (e, userId) =>{
                 onSwipe={(dir) => swiped(dir, currentUser.user_id)}
                
               >
-                <div className="card">
+                <div className="user__card position-relative">
+                {liked_clicked ? <div className="accept__user"><img src="/assets/images/accept-icon.png" width="auto" height="auto" /></div>:""}
+               {disliked_clicked ?<div class="accept__user"><img src="https://image.ibb.co/heTxf7/20_status_close_3x.png" width="auto" height="auto"/></div> : ""} 
                   <img
                     src={currentUser.profile_images}
                     alt={currentUser.first_name}
                     width="100%"
                     
                   />
+                  <div className="card-titles">
+
                   <h3>
                     {currentUser.first_name}, {currentUser.age}
                   </h3>
-                  <h4>
+                  <span>
                     {currentUser.distance},{currentUser.occupation}
-                  </h4>
+                  </span>
+                  </div>
+
+                 
                 </div>
                 
               </GlitterCard>
-              </div>
+              
+              
+              
+
+               </div> 
             ))}
+            
            </div>
    
     
      
-      <div className="action-tray global-actions d-flex flex-wrap justify-content-center align-items-center">
+      <div className="action-tray global-actions d-flex flex-wrap justify-content-center align-items-center mt-3">
            
         <div className="close-btn tray-btn-s">
             <a className="left-action" href="javascript:void(0)" onClick={() => swipe("left")}>×</a>
@@ -227,9 +259,9 @@ const handleUserId = (e, userId) =>{
                       </div> */}
       </div>
 
-       {/*Test Here  */}
-    {/* <TinderCardTest /> */}
-    </div>
+      </>
+      
+    
    
   );
 };
