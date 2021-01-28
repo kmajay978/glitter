@@ -1,6 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import { loadStripe } from "@stripe/stripe-js";
-import { Elements } from "@stripe/react-stripe-js";
 import {  useHistory } from 'react-router';
 import axios from "axios";
 import NavLinks from '../components/Nav';
@@ -16,26 +14,10 @@ import Logo from '../components/Logo';
 import PrivacyPolicy from '../components/PrivacyPolicy';
 import AboutGlitter from '../components/AboutGlitter';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
-import {
-  EmailIcon,
-  FacebookIcon,
-  InstapaperIcon,
-  LinkedinIcon,
-  TelegramIcon,
-  TwitterIcon,
-  WhatsappIcon,
-  EmailShareButton,
-  FacebookShareButton,
-  TelegramShareButton,
-  WhatsappShareButton,
-  TwitterShareButton,
-  LinkedinShareButton,
-} from "react-share";
-// import {addBodyClass} from '../components/CommonFunction'; 
+import { EmailIcon, FacebookIcon,  TelegramIcon, TwitterIcon, WhatsappIcon,EmailShareButton,FacebookShareButton,TelegramShareButton,WhatsappShareButton, TwitterShareButton,} from "react-share";
+import {CardElement} from '@stripe/react-stripe-js';
    
-const stripe = loadStripe(
-  "{pk_test_51HYm96CCuLYI2aV0fK3RrIAT8wXVzKScEtomL2gzY9XCMrgBa4KMPmhWmsCorW2cqL2MLSJ45GKAAZW7WxEmytDs009WzuDby2}"
-);
+
 
 const Profile = (props) =>{
 
@@ -61,6 +43,10 @@ const Profile = (props) =>{
   const [showGift , setShowGift] = useState(false);
   const [showImage , setShowImage] = useState(false); //state for edit profile image model
   const [interestData , showInterestData] = useState([]);
+  const [hobbies , setHobbies] = useState([]);
+  const [selected , setSlelected] = useState(true);
+
+  const [showStripe , setShowStripe] = useState(false);
 
   const [curentStripePlan , setStripPlan] = useState({
     session_id : "" ,
@@ -68,6 +54,7 @@ const Profile = (props) =>{
     token : ""
   });
   
+console.log(showStripe,"showStripe.....")
   const [isOn, toggleIsOn] = useToggle();
   const [isProfile, toggleProfile] = useToggle();
   const handleShow = () => setShow(true); // show Edit model
@@ -90,10 +77,10 @@ const Profile = (props) =>{
     weight:"",
     relationStatus:"",
     looking_for:"",
-    interests_hobbie: [],
+    interests_hobbie :[]
   });
 
- console.log(form);
+//  console.log(form);
   
   const handleChange = e => { 
     setForm({
@@ -102,11 +89,32 @@ const Profile = (props) =>{
 
     }) 
 }
- const checkvalue = (e) =>{
- 
-  console.log('checkbox checked:', (e.target.checked));
+
+const handlehobbies = e => {
+  setSlelected(
+    prevState => ({ selected: !prevState.selected }),
+    () => this.props.onOptionChange(this.props.option, this.state.selected)
+  )
 }
 
+const  options = []
+const handleHobbies = ( e) => { 
+  setForm({
+    ...form,
+    [e.target.name]: e.target.value,
+  }) 
+  // const options = hobbies
+  // let index
+  // if (e.target.checked) {
+  //   options.push(+e.target.value)
+  // } else {
+  //   index = options.indexOf(+e.target.value);
+  //   options.splice(index, 1);
+  // }
+  // setHobbies({ options: options })
+  }
+
+ console.log(hobbies);
     const shareUrl = 'http://localhost:3000/';
     const title = 'gilter-app';
 
@@ -156,7 +164,7 @@ const Profile = (props) =>{
     weight : form.weight,
     looking_for:form.looking_for,
     relationship_status :form.relationStatus,
-    interests_hobbies  : form.interests_hobbie ,
+    interests_hobbies  : form.interests_hobbie
    };
    axios.post(EDITPROFILE_API , bodyParameters) 
    .then((response) => {
@@ -168,9 +176,7 @@ const Profile = (props) =>{
    createNotification('error');
    });
    }
- 
-   
-  
+
    const config = {
     headers : {
               Accept: "application/json",
@@ -261,7 +267,7 @@ const Profile = (props) =>{
      axios.get(INTEREST_HOBBIES_LIST)
      .then((response) => { 
       showInterestData(response.data);
-      console.log(response.data);
+      // console.log(response.data);
    
        }, (error) =>{
    
@@ -292,12 +298,12 @@ const Profile = (props) =>{
 
   const Stripehandler = (stripePlanId) =>{
 
-    setStripPlan({
-      session_id : sessionId ,
-      plan_id : stripePlanId,
-      token : "UgPrRjts9yzVQ15yKJY22wp3LKYtBIhxIuBDk76y"
-    })
-      
+    // setStripPlan({
+    //   session_id : sessionId ,
+    //   plan_id : stripePlanId,
+    //   token : "UgPrRjts9yzVQ15yKJY22wp3LKYtBIhxIuBDk76y"
+    // })
+    setShowStripe(true);
     // axios.post(ACTIVATE_STRIPE_PACKAGE,bodyParameters)
     // .then((response) => {
 
@@ -317,6 +323,7 @@ const Profile = (props) =>{
   //handleBlock();
   },[])
 
+  
  const createNotification = (type) => {
   
     switch (type) {
@@ -331,7 +338,6 @@ const Profile = (props) =>{
   };
 
    const tabScreen = () =>{
-    
     switch(step) {
       case 1:
         return (
@@ -379,7 +385,7 @@ const Profile = (props) =>{
         return (
           
           <div className="edit-second-step">
-             <a href="javascript:void(0)" className="login-back-2 btn-back" onClick={() => setStep(step - 1)} ><i className="fas fa-chevron-left" /></a>
+             
           <div className="form-group">
               <label for="">Height</label>
               <input className="form-control bg-trsp" name="height" type="text" value={form.height} onChange ={handleChange}/>
@@ -425,13 +431,14 @@ const Profile = (props) =>{
          <div className="tab-title">
          <label>Interest hobbies</label>
            </div>
-           {interestData.map((item , i) => {
+          {interestData.map((item , i) => {
           return <div className="form-group">
-          <input type="checkbox" id="interests_hobbie" name="interests_hobbie" value={item.id}/>
-           <label htmlFor="more">  {item.interests_or_hobbies}</label>
-                          
-                          </div>  
-                            })}
+              <input type="checkbox" id={"interests_hobbie"+i}  onChange={handleHobbies} name="interests_hobbie" value={item.id}/>
+            <label for={"interests_hobbie"+i}>  {item.interests_or_hobbies}</label>
+          
+            </div>  
+           
+          })}
          </div>
        
           <a className="btn bg-grd-clr d-block btn-countinue-3" id="edit-second-step" href="javascript:void(0)" onClick={updateProfile}>Update</a>
@@ -588,6 +595,7 @@ const Profile = (props) =>{
 
           </div>
         </div>
+      
         <div className="col-md-4">
           <div className="user-actions">
             <div className="becomevip-wrapper__innerblock">
@@ -620,6 +628,37 @@ const Profile = (props) =>{
     </div>
   </section>
 
+  <Modal className =" edit-payment-modal" show={show} onHide={() => setShowStripe(false)} backdrop="static" keyboard={false}>
+        <div className="edit-payment-modal__inner">
+        
+          <div className="d-flex align-items-center">
+            <h4 className="theme-txt text-center mb-4 ml-3">Your Card details</h4>
+          </div>
+      
+        <form>
+      
+          <CardElement
+  options={{
+    style: {
+      base: {
+        fontSize: '16px',
+        color: '#424770',
+        '::placeholder': {
+          color: '#aab7c4',
+        },
+      },
+      invalid: {
+        color: '#9e2146',
+      },
+    },
+  }}
+/>
+         
+          </form>
+           </div>
+           <a href="javascript:void(0)" className="modal-close" onClick={() => setShowStripe(false)}><img src="/assets/images/btn_close.png" /></a>
+    </Modal>
+
 <Modal className="Image-model" show={showImage}  onHide= {() => setShowImage(false)}>
 <form>
   <div className="profile-image-inner">
@@ -633,22 +672,22 @@ const Profile = (props) =>{
    {/* <div class="edit-profile-modal modal-wrapper"> */}
    <Modal className =" edit-profile-modal" show={show} onHide={() => setShow(false)} backdrop="static" keyboard={false}>
         <div className="edit-profile-modal__inner">
-        <Modal.Header closeButton >
-          <Modal.Title> <h4 className="theme-txt text-center mb-4 ">Your Information</h4>
-          </Modal.Title>
-        </Modal.Header>
+        
+          <div className="d-flex align-items-center"> <a href="javascript:void(0)" className="login-back-2 btn-back position-relative mb-4" onClick={() => setStep(step - 1)} ><i className="fas fa-chevron-left" /></a> <h4 className="theme-txt text-center mb-4 ml-3">Your Information</h4>
+          </div>
+      
         <form>
       
           {tabScreen()}
          
           </form>
            </div>
-       
+           <a href="javascript:void(0)" className="modal-close" onClick={() => setShow(false)}><img src="/assets/images/btn_close.png" /></a>
     </Modal>
   
     <Modal className ="coin-spend-modal" show={showCoins} onHide={() => setShowCoin(false)} backdrop="static" keyboard={false}>
     <div className="edit-profile-modal__inner">
-    <Modal.Header closeButton >
+    <Modal.Header  >
           <Modal.Title> <h4 className="theme-txt text-center mb-4 ">Coin Spend</h4>
           <h4 className="total-coins-spend text-center mb-4">152,922</h4>
           </Modal.Title>
@@ -714,12 +753,12 @@ const Profile = (props) =>{
         </div>
       </div>
     </div>
-   
+    <a href="javascript:void(0)" className="modal-close" onClick={() => setShowCoin(false)}><img src="/assets/images/btn_close.png" /></a>
   </Modal>
  
   <Modal className ="blacklist-modal " show={showBlock} onHide={()=> setShowBlock(false)} backdrop="static" keyboard={false}>
     <div className="edit-profile-modal__inner">
-    <Modal.Header closeButton >
+    <Modal.Header  >
           <Modal.Title> <h4 className="theme-txt text-center mb-4 ">Blacklist</h4>
           </Modal.Title>
       </Modal.Header>
@@ -741,12 +780,13 @@ const Profile = (props) =>{
       </div>
     })}
     </div>
-     
+    <a href="javascript:void(0)" className="modal-close" onClick={() => setShowBlock(false)}><img src="/assets/images/btn_close.png" /></a>
+   
  </Modal>
 
   <Modal className ="setting-modal" show={showSetting} onHide={() => setShowSetting(false)} backdrop="static" keyboard={false}>
     <div className="edit-profile-modal__inner">
-    <Modal.Header closeButton >
+    <Modal.Header>
           <Modal.Title> <h4 className="theme-txt text-center mb-4 ">Setting</h4>
           </Modal.Title>
       </Modal.Header>
@@ -823,6 +863,8 @@ const Profile = (props) =>{
         </ul>
       </div>
     </div>
+    <a href="javascript:void(0)" className="modal-close" onClick={() => setShowSetting(false)}><img src="/assets/images/btn_close.png" /></a>
+   
   </Modal>
   
   <Modal className="privacy-model" show={showPrivacy} onHide={() => setShowPrivacy(false)} >

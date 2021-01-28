@@ -9,12 +9,11 @@ import  ProtectedRoute  from "./protected.route";
 import axios from "axios";
 import createBrowserHistory from 'history/createBrowserHistory';
 import {GET_LOGGEDPROFILE_API} from "./components/Api";
-import {login, userProfile} from "./features/userSlice";
+import {login, userProfile, videoCall} from "./features/userSlice";
 import {useDispatch, useSelector} from "react-redux";
 import {profile, userAuth} from './features/userSlice';
 import {SOCKET} from "./components/Config";
 let is_auth = false, userData;
-
 const history = createBrowserHistory({forceRefresh: true});
 const  ProfileData = async(dispatch, sessionId) => {
   const bodyParameters = {
@@ -27,7 +26,6 @@ const  ProfileData = async(dispatch, sessionId) => {
       })
   );
 }
-
 const stripePromise = loadStripe('pk_test_51HYm96CCuLYI2aV0fK3RrIAT8wXVzKScEtomL2gzY9XCMrgBa4KMPmhWmsCorW2cqL2MLSJ45GKAAZW7WxEmytDs009WzuDby2');
 function App() {
   //  const {latitude, longitude, error} = usePosition();
@@ -43,10 +41,18 @@ function App() {
     }
     SOCKET.on('pick_video_call', (data) => {
       if (!!userData && (data.user_to_id == userData.user_id)) { // check one-to-one data sync
-        console.log(data.receiver_details, "hhhh")
-        localStorage.setItem("receiverDetails", JSON.stringify({...data.receiver_details, ...{link: data.link}}))
+        localStorage.setItem("receiverDetails", JSON.stringify(data.receiver_details))
         history.push("/answer-calling")
       }
+    })
+    SOCKET.on('receiver_decline_video_call', (data) => {
+      localStorage.removeItem("videoCallPageRefresh");
+      // SOCKET.disconnect();
+      dispatch(videoCall(null))
+      if (!!userData && (data.user_from_id == userData.user_id)) { // check one-to-one data sync
+        alert("receiver declined your call...")
+      }
+      history.push("/chat")
     })
   }, [])
   useEffect(() => {
@@ -57,10 +63,9 @@ function App() {
     }
   }, [is_auth])
   return (
-    <Elements stripe={stripePromise}>
       <Router>
         <Switch>
-        
+        <Elements stripe={stripePromise}>
           <Route exact path="/login" component={Login} />
           <Route exact path='/signup-completed' component={SignupCompleted} />
           {/* Private routes */}
@@ -74,10 +79,9 @@ function App() {
           <ProtectedRoute exact path='/recent-call' component={RecentCall} />
           <ProtectedRoute exact path='/dummy' component={Dummy} />
           <ProtectedRoute exact path='/:receiver/:user_from_id/:user_to_id/:channel_id/:channel_name/video-chat' component={VideoChat} />
-    
+       </Elements>
         </Switch>
       </Router>
-      </Elements>
   );
 }
 export default withRouter(App);

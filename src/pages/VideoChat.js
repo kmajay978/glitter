@@ -36,7 +36,6 @@ const SearchProfile = () =>{
       });
     }
     localStorage.removeItem("videoCallPageRefresh");
-    SOCKET.disconnect();
     clearChatState(dispatch);
   }
 
