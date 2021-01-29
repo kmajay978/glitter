@@ -27,7 +27,6 @@ const SearchProfile = () =>{
 
   const componentWillUnmount = () => {
     if (videoCallStatus == 3) {
-      alert(3333)
       console.log(videoCallParams, "videoCallParams... test")
       SOCKET.emit("unauthorize_video_call", {
         sender: {user_from_id: videoCallParams.user_from_id, session_id: localStorage.getItem("session_id")},
@@ -60,14 +59,12 @@ const SearchProfile = () =>{
       if (!getPageRefresh) {
         // SOCKET.connect();
         // if (params.receiver == "true") {
-        alert("no page refreshg")
         console.log(params, "params...");
           dispatch(videoCall(videoCallParams))
         // }
         localStorage.setItem("videoCallPageRefresh", "1");
       }
       else {
-        alert("change status...")
         videoCallStatus = 3
          componentWillUnmount()
       }
@@ -89,9 +86,7 @@ const SearchProfile = () =>{
             ||
             (data.user_from_id == videoCallParams.user_to_id && data.user_to_id == videoCallParams.user_from_id)
         ) { // check one-to-one data sync
-          alert("leaving...")
           componentWillUnmount()
-          alert("unauthorize...");
         }
     });
 
@@ -112,16 +107,16 @@ const SearchProfile = () =>{
           (data.user_from_id == videoCallParams.user_to_id && data.user_to_id == videoCallParams.user_from_id)
       ) { // check one-to-one data sync
         if (!!userData && (data.user_from_id == userData.user_id)) {
-          const option = {
-            appID: "52cacdcd9b5e4b418ac2dca58f69670c",
-            channel: videoCallState.channel_name,
-            uid: 0,
-            token: videoCallState.channel_token,
-            key: '',
-            secret: ''
-          }
-          alert("sender receive acjnowledged connection....")
-          joinChannel('audience', option)
+          // const option = {
+          //   appID: "52cacdcd9b5e4b418ac2dca58f69670c",
+          //   channel: videoCallState.channel_name,
+          //   uid: 0,
+          //   token: videoCallState.channel_token,
+          //   key: '',
+          //   secret: ''
+          // }
+          // alert("sender receive acjnowledged connection....")
+          // joinChannel('audience', option)
         }
       }
     })
@@ -150,7 +145,6 @@ const SearchProfile = () =>{
             key: '',
             secret: ''
           }
-          alert("receiver")
           joinChannel('audience', option);
           joinChannel('host', option);
 
@@ -174,7 +168,6 @@ const SearchProfile = () =>{
             key: '',
             secret: ''
           }
-          alert("sender")
           joinChannel('host', option)
         }
       }
