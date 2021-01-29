@@ -16,13 +16,34 @@ import PrivacyPolicy from '../components/PrivacyPolicy';
 import AboutGlitter from '../components/AboutGlitter';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import { EmailIcon, FacebookIcon,  TelegramIcon, TwitterIcon, WhatsappIcon,EmailShareButton,FacebookShareButton,TelegramShareButton,WhatsappShareButton, TwitterShareButton,} from "react-share";
-import StripeForm from '../components/StripeForm';
+import StripeForm from '../components/StripeForm'
+
 import CardSection from "../components/CardSection";
+
 
    
 
 
 const Profile = (props) =>{
+
+
+  
+  const handleSubmit = async event => {
+     event.preventDefault();
+     const { stripe, elements } = props;
+     if (!stripe || !elements) {
+       return;
+     }
+ 
+     const card = elements.getElement(CardElement);
+     const result = await stripe.createToken(card);
+     if (result.error) {
+       console.log(result.error.message);
+     } else {
+       console.log(result.token);  
+      
+     }
+   };
 
    //Adding class to body and removing the class
   // addBodyClass('no-bg')('login-body')
@@ -299,11 +320,7 @@ const handleHobbies = ( e) => {
   // Get id of current plan 
 
   const Stripehandler = (stripePlanId) =>{
-    // setStripPlan({
-    //   session_id : sessionId ,
-    //   plan_id : stripePlanId,
-    //   token : "UgPrRjts9yzVQ15yKJY22wp3LKYtBIhxIuBDk76y"
-    // })
+    setStripPlan(stripePlanId);
     setShowStripe(true);
     // axios.post(ACTIVATE_STRIPE_PACKAGE,bodyParameters)
     // .then((response) => {
@@ -455,6 +472,7 @@ const handleHobbies = ( e) => {
   }
 
   return(
+   
    <div>
   <section className="home-wrapper">
     <img className="bg-mask" src="/assets/images/mask-bg.png" alt="Mask" />
@@ -636,6 +654,14 @@ const handleHobbies = ( e) => {
             <h4 className="theme-txt text-center mb-4 ml-3">Your Card details</h4>
           </div>
         
+          <div>
+        <form onSubmit={handleSubmit}>
+          <CardSection />
+          <button disabled={!props.stripe} className="btn-pay">
+            Buy Now
+          </button>
+        </form>
+      </div>
           {/* <StripeForm /> */}
 
            </div>
@@ -951,8 +977,11 @@ const handleHobbies = ( e) => {
 
 
     )
+
+    
 }
 export default Profile;
+
 
 
 

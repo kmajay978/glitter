@@ -46,7 +46,7 @@ function App() {
     }
     SOCKET.on('pick_video_call', (data) => {
       if (!!userData && (data.user_to_id == userData.user_id)) { // check one-to-one data sync
-        localStorage.setItem("receiverDetails", JSON.stringify({...data.receiver_details, ...{link: data.link}}))
+        localStorage.setItem("receiverDetails", JSON.stringify(data))
         history.push("/answer-calling")
       }
     })

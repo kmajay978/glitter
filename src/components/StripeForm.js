@@ -3,13 +3,13 @@ import { useDispatch } from 'react-redux';
 import { ElementsConsumer, CardElement } from "@stripe/react-stripe-js";
 
 import CardSection from "./CardSection";
-import { stripeToken } from "../features/userSlice";
 
 const CheckoutForm = (props) =>{
     const dispatch = useDispatch();
  const handleSubmit = async event => {
     event.preventDefault();
 
+    console.log(props,"curentStripePlan.....")
     const { stripe, elements } = props;
     if (!stripe || !elements) {
       return;
