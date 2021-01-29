@@ -116,6 +116,10 @@ const SearchProfile = () =>{
             secret: ''
           }
           joinChannel('audience', option)
+          window.setTimeout(() => {
+            var list = document.getElementById("local_stream");   // Get the <ul> element with id="myList"
+                    list.remove() // Remove <ul>'s first child node (index 0)
+          }, 1000)
         }
       }
     })
@@ -146,6 +150,10 @@ const SearchProfile = () =>{
           }
           joinChannel('audience', option);
           joinChannel('host', option);
+          window.setTimeout(() => {
+            var list = document.getElementById("remote_video_");   // Get the <ul> element with id="myList"
+            list.removeChild(list.childNodes[0]);           // Remove <ul>'s first child node (index 0)
+          }, 1000)
 
           // add timer... after 1 min to detect the expire of the link
 
