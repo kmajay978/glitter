@@ -107,16 +107,15 @@ const SearchProfile = () =>{
           (data.user_from_id == videoCallParams.user_to_id && data.user_to_id == videoCallParams.user_from_id)
       ) { // check one-to-one data sync
         if (!!userData && (data.user_from_id == userData.user_id)) {
-          // const option = {
-          //   appID: "52cacdcd9b5e4b418ac2dca58f69670c",
-          //   channel: videoCallState.channel_name,
-          //   uid: 0,
-          //   token: videoCallState.channel_token,
-          //   key: '',
-          //   secret: ''
-          // }
-          // alert("sender receive acjnowledged connection....")
-          // joinChannel('audience', option)
+          const option = {
+            appID: "52cacdcd9b5e4b418ac2dca58f69670c",
+            channel: videoCallState.channel_name,
+            uid: 0,
+            token: videoCallState.channel_token,
+            key: '',
+            secret: ''
+          }
+          joinChannel('audience', option)
         }
       }
     })
