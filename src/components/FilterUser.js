@@ -52,7 +52,7 @@ const FilterUser = ({ fetchedProfile }) => {
 const handleUserId = (e, userId) =>{
 
 }
-
+console.log(fetchedProfile);
   const childRefs = userData;
   const swiped = (direction, userId) => {
     if (direction == "left") {
@@ -131,12 +131,14 @@ const handleUserId = (e, userId) =>{
   }
  }, [cardClick])
 
-//  useEffect (() => {
-//    console.log(filters, "cccc")
-//     setUserData(filters)
-//  }, [filters])
+ useEffect (() => {
+  if(fetchedProfile!==""){
+    setUserData(fetchedProfile);
+  }
+ }, [fetchedProfile])
 
   useEffect(() => {
+
     handleUserData();
     window.setTimeout(() => {
        $(".main_wrapper")
@@ -181,26 +183,47 @@ const handleUserId = (e, userId) =>{
 
   return (
     <>
-    
-      <div className="cardContainer">              
-            {userData.map((currentUser, index) => (
+      <div className="cardContainer">  
+      {!!fetchedProfile &&
+      <>
+      {userData.map((currentUser, index) => (
               <div className="main_wrapper" id={currentUser.user_id}> 
-              <GlitterCard
-                ref={childRefs[index]}
-                className="swipe"
-                key={currentUser.user_id}
-                onSwipe={(dir) => swiped(dir, currentUser.user_id)}
-               
-              >
+              <GlitterCard ref={childRefs[index]} className="swipe" key={currentUser.user_id} onSwipe={(dir) => swiped(dir, currentUser.user_id)} >
                 <div className="user__card position-relative">
                 {liked_clicked ? <div className="accept__user"><img src="/assets/images/accept-icon.png" width="auto" height="auto" /></div>:""}
                {disliked_clicked ?<div class="accept__user"><img src="https://image.ibb.co/heTxf7/20_status_close_3x.png" width="auto" height="auto"/></div> : ""} 
-                  <img
-                    src={currentUser.profile_images}
-                    alt={currentUser.first_name}
-                    width="100%"
-                    
-                  />
+                  <img src={currentUser.profile_images}  alt={currentUser.first_name} width="100%"/>
+                  <div className="card-titles">
+
+                  <h3>
+                    {currentUser.first_name}, {currentUser.age}
+                  </h3>
+                  <span>
+                    {currentUser.distance},{currentUser.occupation}
+                  </span>
+                  </div>
+
+                 
+                </div>
+                
+              </GlitterCard>
+              
+              
+              
+
+               </div> 
+            ))} 
+            </>
+             }
+             {
+            <>
+            {userData.map((currentUser, index) => (
+              <div className="main_wrapper" id={currentUser.user_id}> 
+              <GlitterCard ref={childRefs[index]} className="swipe" key={currentUser.user_id} onSwipe={(dir) => swiped(dir, currentUser.user_id)} >
+                <div className="user__card position-relative">
+                {liked_clicked ? <div className="accept__user"><img src="/assets/images/accept-icon.png" width="auto" height="auto" /></div>:""}
+               {disliked_clicked ?<div class="accept__user"><img src="https://image.ibb.co/heTxf7/20_status_close_3x.png" width="auto" height="auto"/></div> : ""} 
+                  <img src={currentUser.profile_images}  alt={currentUser.first_name} width="100%"/>
                   <div className="card-titles">
 
                   <h3>
@@ -221,6 +244,9 @@ const handleUserId = (e, userId) =>{
 
                </div> 
             ))}
+            </>
+            }            
+           
             
            </div>
    

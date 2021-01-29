@@ -80,28 +80,18 @@ const Profile = () =>{
     }) 
 }
 
-const handlehobbies = e => {
-  setSlelected(
-    prevState => ({ selected: !prevState.selected }),
-    () => this.props.onOptionChange(this.props.option, this.state.selected)
-  )
-}
 
-const  options = []
+var  options = []
 const handleHobbies = ( e) => { 
-  setForm({
-    ...form,
-    [e.target.name]: e.target.value,
-  }) 
-  // const options = hobbies
-  // let index
-  // if (e.target.checked) {
-  //   options.push(+e.target.value)
-  // } else {
-  //   index = options.indexOf(+e.target.value);
-  //   options.splice(index, 1);
-  // }
-  // setHobbies({ options: options })
+  const options = hobbies
+  let index
+  if (e.target.checked) {
+    options.push(+e.target.value)
+  } else {
+    index = options.indexOf(+e.target.value);
+    options.splice(index, 1);
+  }
+  setHobbies({ options: options })
   }
 
  console.log(hobbies);
@@ -112,6 +102,7 @@ const handleHobbies = ( e) => {
   // Fetching profile Data
   var sessionId = localStorage.getItem("session_id")
   const ProfileData = async() =>{
+
     const bodyParameters = {
       session_id: sessionId,
       };
@@ -139,8 +130,10 @@ const handleHobbies = ( e) => {
       //  console.log(profileData);
    
      //update profile data
+     
      const updateProfile = (e) =>{
      console.log("working");
+     console.log(hobbies, "hobbies..")
      const bodyParameters ={
     session_id : sessionId,
     device_token : "uhydfdfghdertyt445t6y78755t5jhyhyy" ,
@@ -154,7 +147,7 @@ const handleHobbies = ( e) => {
     weight : form.weight,
     looking_for:form.looking_for,
     relationship_status :form.relationStatus,
-    interests_hobbies  : form.interests_hobbie
+    "interests_hobbies[]"  : hobbies.interests_hobbie
    };
    axios.post(EDITPROFILE_API , bodyParameters) 
    .then((response) => {
