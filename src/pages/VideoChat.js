@@ -9,7 +9,7 @@ import { joinChannel, leaveEventAudience, leaveEventHost } from "../components/V
 import {useSelector, useDispatch} from "react-redux";
 import {userProfile, videoCall, videoCallUser} from "../features/userSlice";
 
-let videoCallStatus = 0, videoCallParams;
+let videoCallStatus = 0, videoCallParams, interval;
 
 const clearChatState = (dispatch) => {
   dispatch(videoCall(null))
@@ -116,9 +116,12 @@ const SearchProfile = () =>{
             secret: ''
           }
           joinChannel('audience', option)
-          window.setTimeout(() => {
+          interval = window.setInterval(() => {
             var list = document.getElementById("local_stream");   // Get the <ul> element with id="myList"
-                    list.remove() // Remove <ul>'s first child node (index 0)
+                   if (!!list) {
+                     list.remove() // Remove <ul>'s first child node (index 0)
+                     clearInterval(interval)
+                   }
           }, 1000)
         }
       }
@@ -150,9 +153,12 @@ const SearchProfile = () =>{
           }
           joinChannel('audience', option);
           joinChannel('host', option);
-          window.setTimeout(() => {
-            var list = document.getElementById("remote_video_");   // Get the <ul> element with id="myList"
-            list.removeChild(list.childNodes[0]);           // Remove <ul>'s first child node (index 0)
+          interval = window.setInterval(() => {
+            var list = document.getElementById("remote_video_");
+            if (!!list) {
+              list.removeChild(list.childNodes[0]);
+              clearInterval(interval)// Remove <ul>'s first child node (index 0)
+            }
           }, 1000)
 
           // add timer... after 1 min to detect the expire of the link
@@ -241,52 +247,6 @@ const SearchProfile = () =>{
            <NavLinks />
           </div>
         </div>
-      </div>
-    </div>
-  </div>
-  <div className="vc-screen-wrapper">
-    <div className="vc-screen">
-      <img src="/assets/images/video-chat-bg.jpg" alt="Video Calling" />
-    </div>
-    <div className="charges-reminder-txt">
-      <p>After 25 Seconds, you will be charged 120 coins per minute</p>
-    </div>
-    <div className="vc-timer-box text-center">
-      <div className="timer">
-        <i className="far fa-clock" />
-        <span>25 Sec</span>
-      </div>
-      <div className="vc-sppiner">
-        <a className="sppiner bg-grd-clr" href="javascript:void(0)">
-          <img src="/assets/images/sppiner.png" alt="Sppiner" />
-        </a>
-      </div>
-    </div>
-    <div className="vc-option-block d-flex flex-wrap align-items-end">
-      <div className="vc-options">
-        <ul>
-          <li>
-            <a className="btn-round bg-grd-clr" href="javascript:void(0)">
-              <img src="/assets/images/magic-stick.png" alt="Magic" />
-            </a>
-          </li>
-          <li>
-            <a className="btn-round bg-grd-clr" href="javascript:void(0)">
-              <img src="/assets/images/chat.png" alt="Chat" />
-            </a>
-          </li>
-          <li>
-            <a className="btn-round bg-grd-clr" href="javascript:void(0)">
-              <img src="/assets/images/gift.png" alt="Gift" />
-            </a>
-          </li>
-          <li>
-            <a className="btn btn-nxt bg-grd-clr" href="javascript:void(0)">Next</a>
-          </li>
-        </ul>
-      </div>
-      <div className="self-video ml-3">
-        <img src="/assets/images/vc-self.png" alt="Me" />
       </div>
     </div>
   </div>
