@@ -54,7 +54,6 @@ const Profile = (props) =>{
     token : ""
   });
   
-console.log(showStripe,"showStripe.....")
   const [isOn, toggleIsOn] = useToggle();
   const [isProfile, toggleProfile] = useToggle();
   const handleShow = () => setShow(true); // show Edit model
@@ -540,7 +539,10 @@ const handleHobbies = ( e) => {
           <div className="user-profile__options becomevip-wrapper__innerblock">
             <ul>
            
-              <li><a href="javascript:void(0)" id="gift-modal" onClick={handleGift}><img src="/assets/images/gift-icon.png" alt="gifts" />
+              <li><a href="javascript:void(0)" id="gift-modal" onClick={Stripehandler}><img src="/assets/images/gift-icon.png" alt="gifts" />
+                  <h6>Stripe</h6> <i className="fas fa-chevron-right"/>
+                </a></li>
+                <li><a href="javascript:void(0)" id="gift-modal" onClick={handleGift}><img src="/assets/images/gift-icon.png" alt="gifts" />
                   <h6>Gifts</h6> <i className="fas fa-chevron-right"/>
                 </a></li>
               <li><a href="javascript:void(0)" id="edit-profile" onClick={handleShow}><img src="/assets/images/edit-profile.png" alt="Edit Profile" />
