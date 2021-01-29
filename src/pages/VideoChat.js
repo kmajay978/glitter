@@ -36,6 +36,7 @@ const SearchProfile = () =>{
         type: 0,
         status: 3
       });
+      videoCallStatus = 0;
     }
     localStorage.removeItem("videoCallPageRefresh");
     clearChatState(dispatch);
@@ -110,7 +111,7 @@ const SearchProfile = () =>{
           ||
           (data.user_from_id == videoCallParams.user_to_id && data.user_to_id == videoCallParams.user_from_id)
       ) { // check one-to-one data sync
-        if (data.user_from_id == userData.user_id) {
+        if (!!userData && (data.user_from_id == userData.user_id)) {
           const option = {
             appID: "52cacdcd9b5e4b418ac2dca58f69670c",
             channel: videoCallState.channel_name,
@@ -132,7 +133,7 @@ const SearchProfile = () =>{
 
         // change backend status === 1 if loggedIn user is "user_to"
 
-        if (data.user_to_id == userData.user_id) {
+        if (!!userData && (data.user_to_id == userData.user_id)) {
           SOCKET.emit("acknowledged_video_call", {
             sender: {user_from_id: videoCallParams.user_from_id, session_id: localStorage.getItem("session_id")},
             reciever_id: videoCallParams.user_to_id,
@@ -240,52 +241,6 @@ const SearchProfile = () =>{
            <NavLinks />
           </div>
         </div>
-      </div>
-    </div>
-  </div>
-  <div className="vc-screen-wrapper">
-    <div className="vc-screen">
-      <img src="/assets/images/video-chat-bg.jpg" alt="Video Calling" />
-    </div>
-    <div className="charges-reminder-txt">
-      <p>After 25 Seconds, you will be charged 120 coins per minute</p>
-    </div>
-    <div className="vc-timer-box text-center">
-      <div className="timer">
-        <i className="far fa-clock" />
-        <span>25 Sec</span>
-      </div>
-      <div className="vc-sppiner">
-        <a className="sppiner bg-grd-clr" href="javascript:void(0)">
-          <img src="/assets/images/sppiner.png" alt="Sppiner" />
-        </a>
-      </div>
-    </div>
-    <div className="vc-option-block d-flex flex-wrap align-items-end">
-      <div className="vc-options">
-        <ul>
-          <li>
-            <a className="btn-round bg-grd-clr" href="javascript:void(0)">
-              <img src="/assets/images/magic-stick.png" alt="Magic" />
-            </a>
-          </li>
-          <li>
-            <a className="btn-round bg-grd-clr" href="javascript:void(0)">
-              <img src="/assets/images/chat.png" alt="Chat" />
-            </a>
-          </li>
-          <li>
-            <a className="btn-round bg-grd-clr" href="javascript:void(0)">
-              <img src="/assets/images/gift.png" alt="Gift" />
-            </a>
-          </li>
-          <li>
-            <a className="btn btn-nxt bg-grd-clr" href="javascript:void(0)">Next</a>
-          </li>
-        </ul>
-      </div>
-      <div className="self-video ml-3">
-        <img src="/assets/images/vc-self.png" alt="Me" />
       </div>
     </div>
   </div>
