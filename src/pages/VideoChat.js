@@ -28,10 +28,11 @@ const SearchProfile = () =>{
   const componentWillUnmount = () => {
     if (videoCallStatus == 3) {
       alert(3333)
+      console.log(videoCallParams, "videoCallParams... test")
       SOCKET.emit("unauthorize_video_call", {
         sender: {user_from_id: videoCallParams.user_from_id, session_id: localStorage.getItem("session_id")},
         reciever_id: videoCallParams.user_to_id,
-        channel_name: params.channel_name,
+        channel_name: videoCallParams.channel_name,
         type: 0,
         status: 3
       });
@@ -67,7 +68,7 @@ const SearchProfile = () =>{
       else {
         alert("change status...")
         videoCallStatus = 3
-         componentWillUnmount(videoCallStatus)
+         componentWillUnmount()
       }
       // check with backend + socket if this channel exist...
       if (params.receiver == "false") {
