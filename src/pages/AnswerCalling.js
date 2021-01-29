@@ -34,13 +34,13 @@ const AnswerCalling = () =>{
                             <figure>
                                 {
                                     !!receiverDetails ?
-                                        <img src={"http://167.172.209.57/glitter-101/public/profile_images/"+receiverDetails.profilePics} alt={receiverDetails.receiver_details.firstName}/>
+                                        <img src={"http://167.172.209.57/glitter-101/public/profile_images/"+receiverDetails.profilePics} alt={receiverDetails.firstName}/>
                                         :
                                         <img src={"http://167.172.209.57/glitter-101/public/profile_images/1611574536_download.jpg"} alt="placeholder"/>
                                 }
                                 {
                                     !!receiverDetails &&
-                                    <figcaption><h4>{receiverDetails.firstName +" "+ receiverDetails.receiver_details.lastName +", " + receiverDetails.receiver_details.age}</h4><span>{50+"Km, " + receiverDetails.receiver_details.occupation}</span></figcaption>
+                                    <figcaption><h4>{receiverDetails.firstName +" "+ receiverDetails.lastName +", " + receiverDetails.age}</h4><span>{50+"Km, " + receiverDetails.occupation}</span></figcaption>
                                 }
                                 {
                                     !receiverDetails &&
