@@ -27,6 +27,7 @@ const SearchProfile = () =>{
 
   const componentWillUnmount = () => {
     if (videoCallStatus == 3) {
+      alert(3333)
       SOCKET.emit("unauthorize_video_call", {
         sender: {user_from_id: videoCallParams.user_from_id, session_id: localStorage.getItem("session_id")},
         reciever_id: videoCallParams.user_to_id,
@@ -37,37 +38,38 @@ const SearchProfile = () =>{
     }
     localStorage.removeItem("videoCallPageRefresh");
     clearChatState(dispatch);
+    history.push("/chat");
   }
 
   useEffect(() => {
     if (!params.channel_name) {
-          history.push("/chat");
+          componentWillUnmount()
     }
     else {
       const getPageRefresh = localStorage.getItem("videoCallPageRefresh");
+      videoCallParams = {
+        user_from_id: params.user_from_id,
+        user_to_id: params.user_to_id,
+        channel_id: params.channel_id,
+        channel_name: params.channel_name,
+        channel_token: null,
+        user_to_image: null
+      }
       if (!getPageRefresh) {
         // SOCKET.connect();
         // if (params.receiver == "true") {
         alert("no page refreshg")
         console.log(params, "params...");
-          videoCallParams = {
-            user_from_id: params.user_from_id,
-            user_to_id: params.user_to_id,
-            channel_id: params.channel_id,
-            channel_name: params.channel_name,
-            channel_token: null,
-            user_to_image: null
-          }
           dispatch(videoCall(videoCallParams))
         // }
         localStorage.setItem("videoCallPageRefresh", "1");
       }
       else {
+        alert("change status...")
         videoCallStatus = 3
-        history.push("/chat");
+         componentWillUnmount(videoCallStatus)
       }
       // check with backend + socket if this channel exist...
-      alert(params.receiver)
       if (params.receiver == "false") {
         console.log(videoCallState, "test..")
       }
@@ -86,7 +88,7 @@ const SearchProfile = () =>{
             (data.user_from_id == videoCallParams.user_to_id && data.user_to_id == videoCallParams.user_from_id)
         ) { // check one-to-one data sync
           alert("leaving...")
-          history.push("/chat");
+          componentWillUnmount()
           alert("unauthorize...");
         }
     });
@@ -97,7 +99,7 @@ const SearchProfile = () =>{
           (data.user_from_id == videoCallParams.user_to_id && data.user_to_id == videoCallParams.user_from_id)
       ) { // check one-to-one data sync
         if (data.isExpired) {
-          history.push("/chat");
+          componentWillUnmount()
         }
       }
     });
@@ -107,7 +109,7 @@ const SearchProfile = () =>{
           ||
           (data.user_from_id == videoCallParams.user_to_id && data.user_to_id == videoCallParams.user_from_id)
       ) { // check one-to-one data sync
-        if (data.user_from_id == 19) {
+        if (data.user_from_id == userData.user_id) {
           const option = {
             appID: "52cacdcd9b5e4b418ac2dca58f69670c",
             channel: videoCallState.channel_name,
@@ -129,7 +131,7 @@ const SearchProfile = () =>{
 
         // change backend status === 1 if loggedIn user is "user_to"
 
-        if (data.user_to_id == 19) {
+        if (data.user_to_id == userData.user_id) {
           SOCKET.emit("acknowledged_video_call", {
             sender: {user_from_id: videoCallParams.user_from_id, session_id: localStorage.getItem("session_id")},
             reciever_id: videoCallParams.user_to_id,
@@ -175,8 +177,6 @@ const SearchProfile = () =>{
         }
       }
     });
-
-    return componentWillUnmount
   }, [])
     return(
    <section className="home-wrapper">

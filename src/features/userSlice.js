@@ -18,7 +18,8 @@ export const userSlice = createSlice({
         profile: null,
         filterData: [],
         is_authanticated: !!localStorage.getItem("session_id"),
-        video: videoInitState
+        video: videoInitState,
+        stripeToken:null
     }, 
     reducers: { 
         login: (state, action) =>{ 

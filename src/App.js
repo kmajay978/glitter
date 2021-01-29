@@ -2,7 +2,7 @@ import './App.css';
 import React, { useState , useEffect } from 'react';
 import {Elements} from '@stripe/react-stripe-js';
 import {loadStripe} from '@stripe/stripe-js';
-import {BrowserRouter as Router, Switch, Route, withRouter, useParams } from 'react-router-dom';
+import {BrowserRouter as Router, Switch, Route, withRouter, useParams, useHistory } from 'react-router-dom';
 // Importing all pages from index.js 
 import {Home,Login,ChatBox,SearchHome,AnswerCalling,SignupCompleted,Profile,SingleProfile,RecentCall,VideoChat,SearchProfile,Dummy} from './pages'
 import  ProtectedRoute  from "./protected.route";
@@ -31,6 +31,9 @@ const stripePromise = loadStripe('pk_test_51HYm96CCuLYI2aV0fK3RrIAT8wXVzKScEtomL
 
 function App() {
   //  const {latitude, longitude, error} = usePosition();
+  const new_history = useHistory();
+  const pathname = new_history.location.pathname;
+  console.log(new_history, "new_history...")
   const dispatch = useDispatch();
   const is_auth = useSelector(userAuth); //using redux useSelector here
   // console.log(is_auth, "is_auth....")
@@ -65,7 +68,17 @@ function App() {
         history.push("/chat")
       }
       if (!!userData && (data.user_to_id == userData.user_id)) { // check one-to-one data sync
-        if (history.location.pathname === "/answer-calling") {
+        if (window.location.pathname === "/answer-calling") {
+          history.push("/")
+        }
+      }
+    })
+    SOCKET.on('call_malfunctioned_in_between_receiver_call_video_call', (data) => {
+      localStorage.removeItem("videoCallPageRefresh");
+      // SOCKET.disconnect();
+      dispatch(videoCall(null))
+      if (!!userData && (data.user_to_id == userData.user_id)) { // check one-to-one data sync
+        if (window.location.pathname === "/answer-calling") {
           history.push("/")
         }
       }

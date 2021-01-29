@@ -18,7 +18,7 @@ const CARD_ELEMENT_OPTIONS = {
 
 function CardSection() {
   return (
-    <label>
+    <label className="d-block">
       Card details
       <CardElement options={CARD_ELEMENT_OPTIONS} />
     </label>

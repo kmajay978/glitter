@@ -1,9 +1,12 @@
 import React from "react";
+import { useDispatch } from 'react-redux';
 import { ElementsConsumer, CardElement } from "@stripe/react-stripe-js";
 
 import CardSection from "./CardSection";
+import { stripeToken } from "../features/userSlice";
 
 const CheckoutForm = (props) =>{
+    const dispatch = useDispatch();
  const handleSubmit = async event => {
     event.preventDefault();
 
@@ -17,7 +20,8 @@ const CheckoutForm = (props) =>{
     if (result.error) {
       console.log(result.error.message);
     } else {
-      console.log(result.token);
+      console.log(result.token);  
+     
     }
   };
 

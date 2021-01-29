@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { ElementsConsumer, CardElement } from "@stripe/react-stripe-js";
 import {  useHistory } from 'react-router';
 import axios from "axios";
 import NavLinks from '../components/Nav';
@@ -15,8 +16,8 @@ import PrivacyPolicy from '../components/PrivacyPolicy';
 import AboutGlitter from '../components/AboutGlitter';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import { EmailIcon, FacebookIcon,  TelegramIcon, TwitterIcon, WhatsappIcon,EmailShareButton,FacebookShareButton,TelegramShareButton,WhatsappShareButton, TwitterShareButton,} from "react-share";
-import StripeForm from '../components/StripeForm'
-
+import StripeForm from '../components/StripeForm';
+import CardSection from "../components/CardSection";
 
    
 
@@ -635,7 +636,7 @@ const handleHobbies = ( e) => {
             <h4 className="theme-txt text-center mb-4 ml-3">Your Card details</h4>
           </div>
         
-          <StripeForm />
+          {/* <StripeForm /> */}
 
            </div>
            <a href="javascript:void(0)" className="modal-close" onClick={() => setShowStripe(false)}><img src="/assets/images/btn_close.png" /></a>

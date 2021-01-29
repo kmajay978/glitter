@@ -1,15 +1,24 @@
 
 import React, { useState, useEffect } from "react";
-import {  useHistory } from 'react-router';
-import axios from "axios";
+import {  useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
+import * as path from "path";
+import {videoCall} from "../features/userSlice";
 
 const NavLinks = (props) =>{
+    const dispatch = useDispatch();
 console.log(props, "props..")
   let pathname = window.location.pathname;
     useEffect(() => {
         pathname = window.location.pathname;
-        // alert()
+        // if (pathname !==)/chat   /searching-profile  /video-chat  /answer-calling
+        if (pathname !== "/chat" &&
+            pathname !== "/searching-profile" &&
+            pathname !== "/answer-calling" &&
+            !pathname.match("/video-chat")) {
+            localStorage.removeItem("videoCallPageRefresh");
+            dispatch(videoCall(null))
+        }
     }, [window.location.pathname]);
 
     return(
