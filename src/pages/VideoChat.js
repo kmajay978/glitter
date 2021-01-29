@@ -36,6 +36,7 @@ const SearchProfile = () =>{
         type: 0,
         status: 3
       });
+      videoCallStatus = 0;
     }
     localStorage.removeItem("videoCallPageRefresh");
     clearChatState(dispatch);
@@ -110,7 +111,7 @@ const SearchProfile = () =>{
           ||
           (data.user_from_id == videoCallParams.user_to_id && data.user_to_id == videoCallParams.user_from_id)
       ) { // check one-to-one data sync
-        if (data.user_from_id == userData.user_id) {
+        if (!!userData && (data.user_from_id == userData.user_id)) {
           const option = {
             appID: "52cacdcd9b5e4b418ac2dca58f69670c",
             channel: videoCallState.channel_name,
@@ -132,7 +133,7 @@ const SearchProfile = () =>{
 
         // change backend status === 1 if loggedIn user is "user_to"
 
-        if (data.user_to_id == userData.user_id) {
+        if (!!userData && (data.user_to_id == userData.user_id)) {
           SOCKET.emit("acknowledged_video_call", {
             sender: {user_from_id: videoCallParams.user_from_id, session_id: localStorage.getItem("session_id")},
             reciever_id: videoCallParams.user_to_id,
