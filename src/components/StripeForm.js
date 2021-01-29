@@ -1,15 +1,18 @@
 import React from "react";
-import { useDispatch } from 'react-redux';
 import { ElementsConsumer, CardElement } from "@stripe/react-stripe-js";
 
 import CardSection from "./CardSection";
+import { useSelector } from "react-redux";
+import {stripeDataPlanid } from "../features/userSlice";
+import { ACTIVATE_STRIPE_PACKAGE } from "./Api";
+import axios from "axios";
 
 const CheckoutForm = (props) =>{
-    const dispatch = useDispatch();
+    
+const Selected_Stripe_planid = useSelector(stripeDataPlanid);
+var sessionId = localStorage.getItem("session_id")
  const handleSubmit = async event => {
     event.preventDefault();
-
-    console.log(props,"curentStripePlan.....")
     const { stripe, elements } = props;
     if (!stripe || !elements) {
       return;
@@ -20,8 +23,20 @@ const CheckoutForm = (props) =>{
     if (result.error) {
       console.log(result.error.message);
     } else {
-      console.log(result.token);  
-     
+     // console.log(result.token.id);  
+      const bodyParameters = {
+        session_id:sessionId,
+        plan_id:Selected_Stripe_planid,
+        token: result.token.id
+      }
+      axios.post(ACTIVATE_STRIPE_PACKAGE,bodyParameters)
+    .then((response) => {
+
+      console.log(response,"response.......");
+    
+    }, (error) => {
+      
+    });
     }
   };
 
@@ -37,6 +52,7 @@ const CheckoutForm = (props) =>{
     );
 
 }
+
 
 export default function InjectedCheckoutForm() {
   return (

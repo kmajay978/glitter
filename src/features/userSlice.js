@@ -19,7 +19,7 @@ export const userSlice = createSlice({
         filterData: [],
         is_authanticated: !!localStorage.getItem("session_id"),
         video: videoInitState,
-        stripeToken:null
+        stripePlanId:null
     }, 
     reducers: { 
         login: (state, action) =>{ 
@@ -39,14 +39,19 @@ export const userSlice = createSlice({
             state.filterData = action.payload.filterData;
         },
         videoCall: (state , action) => {
-
             state.video = !!action.payload  ? action.payload : videoInitState;
+        },
+        stripePlanId: (state , action) => {
+            state.stripePlanId = action.payload.stripePlanId;
         }
+       
+
     }
 });
-export const { login, logout, profile , filterData, videoCall} = userSlice.actions;
+export const { login, logout, profile , filterData, videoCall, stripePlanId} = userSlice.actions;
 export const selectUser = (state) => state.user.user;
 export const userProfile = (state) => state;
+export const stripeDataPlanid = (state) => state.user.stripePlanId;
 export const userAuth = (state) => state.user.is_authanticated;
 export const filterDataUser = (state) => state.user.filterData;
 export const videoCallUser = (state) => state.user.video;
