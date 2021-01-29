@@ -23,11 +23,10 @@ export function joinChannel(role, option) {
             option.channel, option.uid ? +option.uid : null, function (uid) {
                 console.log("join channel: " + option.channel + " success, uid: " + uid);
                 rtc.params.uid = uid;
-                alert(rtc.params.uid)
                 if (role === "host") {
-                    alert("host")
                     rtc.client.setClientRole("host");
                     // Create a local stream
+                    console.log(rtc.params.uid, "host id")
                     rtc.localStream = AgoraRTC.createStream({
                         streamID: rtc.params.uid,
                         audio: true,
@@ -50,9 +49,7 @@ export function joinChannel(role, option) {
                     })
                 }
                 if (role === "audience") {
-                    alert("audience")
                     rtc.client.on("connection-state-change", function (evt) {
-                        alert("connection-state-change")
                         console.log("audience", evt)
                     })
                     rtc.client.on("stream-added", function (evt) {
@@ -70,20 +67,17 @@ export function joinChannel(role, option) {
                         console.log('stream-added remote-uid: ', id);
                     });
                     rtc.client.on("stream-removed", function (evt) {
-                        alert("stream removed")
                         var remoteStream = evt.stream;
                         var id = remoteStream.getId();
                         console.log('stream-removed remote-uid: ', id);
                     });
                     rtc.client.on("stream-subscribed", function (evt) {
-                        alert("stream subscribe")
                         var remoteStream = evt.stream;
                         var id = remoteStream.getId();
                         remoteStream.play("remote_video_");
                         console.log('stream-subscribed remote-uid: ', id);
                     })
                     rtc.client.on("stream-unsubscribed", function (evt) {
-                        alert("stream unsubscribe")
                         var remoteStream = evt.stream;
                         var id = remoteStream.getId();
                         remoteStream.pause("remote_video_");
@@ -91,7 +85,6 @@ export function joinChannel(role, option) {
                     })
                 }
             }, function (err) {
-                alert("client join failed")
                 console.error("client join failed", err)
             })
     }, (err) => {
