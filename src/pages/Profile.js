@@ -15,7 +15,9 @@ import PrivacyPolicy from '../components/PrivacyPolicy';
 import AboutGlitter from '../components/AboutGlitter';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import { EmailIcon, FacebookIcon,  TelegramIcon, TwitterIcon, WhatsappIcon,EmailShareButton,FacebookShareButton,TelegramShareButton,WhatsappShareButton, TwitterShareButton,} from "react-share";
-import {CardElement} from '@stripe/react-stripe-js';
+import StripeForm from '../components/StripeForm'
+
+
    
 
 
@@ -296,7 +298,6 @@ const handleHobbies = ( e) => {
   // Get id of current plan 
 
   const Stripehandler = (stripePlanId) =>{
-
     // setStripPlan({
     //   session_id : sessionId ,
     //   plan_id : stripePlanId,
@@ -539,10 +540,7 @@ const handleHobbies = ( e) => {
           <div className="user-profile__options becomevip-wrapper__innerblock">
             <ul>
            
-              <li><a href="javascript:void(0)" id="gift-modal" onClick={Stripehandler}><img src="/assets/images/gift-icon.png" alt="gifts" />
-                  <h6>Stripe</h6> <i className="fas fa-chevron-right"/>
-                </a></li>
-                <li><a href="javascript:void(0)" id="gift-modal" onClick={handleGift}><img src="/assets/images/gift-icon.png" alt="gifts" />
+              <li><a href="javascript:void(0)" id="gift-modal" onClick={handleGift}><img src="/assets/images/gift-icon.png" alt="gifts" />
                   <h6>Gifts</h6> <i className="fas fa-chevron-right"/>
                 </a></li>
               <li><a href="javascript:void(0)" id="edit-profile" onClick={handleShow}><img src="/assets/images/edit-profile.png" alt="Edit Profile" />
@@ -574,7 +572,7 @@ const handleHobbies = ( e) => {
 {packageList.map((item,i) =>(
            (item.duration === "12") ?
             <div className="membership-plans__block active mt-5">
-            <a href="javascript:void(0)" key={i} onClick={() => Stripehandler(item.plan_id)}>
+            <a href="javascript:void(0)" key={i} onClick={(e) => Stripehandler(item.plan_id)}>
               <span className="membership-discount">{`save ${item.save}`}</span>
               <h5 className="text-white text-uppercase mb-0">{item.name}</h5>
               <div className="membership-plans__price">
@@ -583,7 +581,7 @@ const handleHobbies = ( e) => {
               </div>
             </a>
           </div>
-          : <div className="membership-plans__block" key={i} onClick={() => Stripehandler(item.plan_id)}>
+          : <div className="membership-plans__block" key={i} onClick={(e) => Stripehandler(item.plan_id)}>
           <a href="javascript:void(0)">
             <h5 className="text-uppercase mb-0">{item.name}</h5>
             <div className="membership-plans__price">
@@ -630,33 +628,15 @@ const handleHobbies = ( e) => {
     </div>
   </section>
 
-  <Modal className =" edit-payment-modal" show={show} onHide={() => setShowStripe(false)} backdrop="static" keyboard={false}>
+  <Modal className =" edit-payment-modal" show={showStripe} onHide={() => setShowStripe(false)} backdrop="static" keyboard={false}>
         <div className="edit-payment-modal__inner">
         
           <div className="d-flex align-items-center">
             <h4 className="theme-txt text-center mb-4 ml-3">Your Card details</h4>
           </div>
-      
-        <form>
-      
-          <CardElement
-  options={{
-    style: {
-      base: {
-        fontSize: '16px',
-        color: '#424770',
-        '::placeholder': {
-          color: '#aab7c4',
-        },
-      },
-      invalid: {
-        color: '#9e2146',
-      },
-    },
-  }}
-/>
-         
-          </form>
+        
+          <StripeForm />
+
            </div>
            <a href="javascript:void(0)" className="modal-close" onClick={() => setShowStripe(false)}><img src="/assets/images/btn_close.png" /></a>
     </Modal>

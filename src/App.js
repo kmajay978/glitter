@@ -1,5 +1,7 @@
 import './App.css';
 import React, { useState , useEffect } from 'react';
+import {Elements} from '@stripe/react-stripe-js';
+import {loadStripe} from '@stripe/stripe-js';
 import {BrowserRouter as Router, Switch, Route, withRouter, useParams } from 'react-router-dom';
 // Importing all pages from index.js 
 import {Home,Login,ChatBox,SearchHome,AnswerCalling,SignupCompleted,Profile,SingleProfile,RecentCall,VideoChat,SearchProfile,Dummy} from './pages'
@@ -24,6 +26,9 @@ const  ProfileData = async(dispatch, sessionId) => {
       })
   );
 }
+
+const stripePromise = loadStripe('pk_test_51HYm96CCuLYI2aV0fK3RrIAT8wXVzKScEtomL2gzY9XCMrgBa4KMPmhWmsCorW2cqL2MLSJ45GKAAZW7WxEmytDs009WzuDby2');
+
 function App() {
   //  const {latitude, longitude, error} = usePosition();
   const dispatch = useDispatch();
@@ -38,7 +43,7 @@ function App() {
     }
     SOCKET.on('pick_video_call', (data) => {
       if (!!userData && (data.user_to_id == userData.user_id)) { // check one-to-one data sync
-        localStorage.setItem("receiverDetails", JSON.stringify(data.receiver_details))
+        localStorage.setItem("receiverDetails", JSON.stringify({...data.receiver_details, ...{link: data.link}}))
         history.push("/answer-calling")
       }
     })
@@ -76,6 +81,7 @@ function App() {
   return (
       <Router>
         <Switch>
+        <Elements stripe={stripePromise}>
           <Route exact path="/login" component={Login} />
           <Route exact path='/signup-completed' component={SignupCompleted} />
           {/* Private routes */}
@@ -89,6 +95,7 @@ function App() {
           <ProtectedRoute exact path='/recent-call' component={RecentCall} />
           <ProtectedRoute exact path='/dummy' component={Dummy} />
           <ProtectedRoute exact path='/:receiver/:user_from_id/:user_to_id/:channel_id/:channel_name/video-chat' component={VideoChat} />
+        </Elements>
         </Switch>
       </Router>
   );
