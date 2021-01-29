@@ -52,8 +52,9 @@ const FilterUser = ({ fetchedProfile }) => {
 const handleUserId = (e, userId) =>{
 
 }
-console.log(fetchedProfile);
-  const childRefs = userData;
+
+console.log(allData);
+
   const swiped = (direction, userId) => {
     if (direction == "left") {
       setDislike(true);
@@ -102,8 +103,27 @@ console.log(fetchedProfile);
       );
     }
   };
-
+  const childRefs = userData;
   const swipe = (dir, userId) => {
+    if(allData.length> 0) {
+   
+    const cardsLeft = allData.filter(
+      (currentUser) => !alreadyRemoved.includes(currentUser.user_id)
+    );
+    if (cardsLeft.length) {
+      const toBeRemoved = cardsLeft[cardsLeft.length - 1].user_id; // Find the card object to be removed
+      const index = allData
+        .map((person) => person.user_id)
+        .indexOf(toBeRemoved); // Find the index of which to make the reference to
+      alreadyRemoved.push(toBeRemoved); // Make sure the next card gets removed next time if this card do not have time to exit the screen
+      if (!!childRefs && childRefs[index]) {
+        childRefs[index].current.swipe(dir); // Swipe the card!
+      } else {
+        console.log("child ref error", childRefs, "childRefs");
+      }
+    }
+  }
+  else {
     const cardsLeft = userData.filter(
       (currentUser) => !alreadyRemoved.includes(currentUser.user_id)
     );
@@ -119,7 +139,9 @@ console.log(fetchedProfile);
         console.log("child ref error", childRefs, "childRefs");
       }
     }
+  }
   };
+
 
  useEffect(() => {
 
@@ -131,14 +153,13 @@ console.log(fetchedProfile);
   }
  }, [cardClick])
 
- useEffect (() => {
-  if(fetchedProfile!==""){
-    setUserData(fetchedProfile);
-  }
- }, [fetchedProfile])
+//  useEffect (() => {
+//  }, [fetchedProfile])
 
   useEffect(() => {
-
+    if(!!fetchedProfile){
+      setAllData(fetchedProfile);
+    }
     handleUserData();
     window.setTimeout(() => {
        $(".main_wrapper")
@@ -166,7 +187,7 @@ console.log(fetchedProfile);
         setStartPosition(startingPos)
     });
     }, 1000); 
-  }, [filters]);
+  }, [fetchedProfile]);
 
   const handleComment =() => {
     history.push ({
@@ -183,8 +204,34 @@ console.log(fetchedProfile);
 
   return (
     <>
+    {/* {allData.length> 0 ?  set: ""} */}
       <div className="cardContainer">  
-      {!!fetchedProfile &&
+      {allData.length> 0 ? <>
+        {allData.map((currentUser, index) => (
+              <div className="main_wrapper" id={currentUser.user_id}> 
+              <GlitterCard ref={childRefs[index]} className="swipe" key={currentUser.user_id} onSwipe={(dir) => swiped(dir, currentUser.user_id)} >
+                <div className="user__card position-relative">
+                {liked_clicked ? <div className="accept__user"><img src="/assets/images/accept-icon.png" width="auto" height="auto" /></div>:""}
+               {disliked_clicked ?<div class="accept__user"><img src="https://image.ibb.co/heTxf7/20_status_close_3x.png" width="auto" height="auto"/></div> : ""} 
+                  <img src={currentUser.profile_images}  alt={currentUser.first_name} width="100%"/>
+                  <div className="card-titles">
+
+                  <h3>
+                    {currentUser.first_name}, {currentUser.age}
+                  </h3>
+                  <span>
+                    {currentUser.distance},{currentUser.occupation}
+                  </span>
+                  </div>
+
+                 
+                </div>
+                
+              </GlitterCard>
+
+               </div> 
+            ))}  
+      </>: 
       <>
       {userData.map((currentUser, index) => (
               <div className="main_wrapper" id={currentUser.user_id}> 
@@ -207,17 +254,10 @@ console.log(fetchedProfile);
                 </div>
                 
               </GlitterCard>
-              
-              
-              
 
                </div> 
-            ))} 
-            </>
-             }
-             {
-            <>
-            {userData.map((currentUser, index) => (
+            ))} </> }
+      {/* {userData.map((currentUser, index) => (
               <div className="main_wrapper" id={currentUser.user_id}> 
               <GlitterCard ref={childRefs[index]} className="swipe" key={currentUser.user_id} onSwipe={(dir) => swiped(dir, currentUser.user_id)} >
                 <div className="user__card position-relative">
@@ -238,16 +278,9 @@ console.log(fetchedProfile);
                 </div>
                 
               </GlitterCard>
-              
-              
-              
 
                </div> 
-            ))}
-            </>
-            }            
-           
-            
+            ))}   */}
            </div>
    
     

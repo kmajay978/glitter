@@ -1,9 +1,8 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import {  useHistory } from 'react-router';
 import axios from "axios";
 import NavLinks from '../components/Nav';
-import {INTEREST_HOBBIES_LIST , GIFT_LIST_API , GET_GIFT_API , GET_LOGGEDPROFILE_API , EDITPROFILE_API , BLOCK_USERLIST_API , LOGOUT_API} from '../components/Api';
+import {INTEREST_HOBBIES_LIST , GIFT_LIST_API , GET_GIFT_API , GET_LOGGEDPROFILE_API , EDITPROFILE_API , BLOCK_USERLIST_API , LOGOUT_API, GET_STRIPE_PACKAGE,ACTIVATE_STRIPE_PACKAGE } from '../components/Api';
 import useToggle from '../components/CommonFunction';
 import {removeStorage} from '../components/CommonFunction';
 import Login from '../pages/Login'
@@ -16,16 +15,18 @@ import PrivacyPolicy from '../components/PrivacyPolicy';
 import AboutGlitter from '../components/AboutGlitter';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import { EmailIcon, FacebookIcon,  TelegramIcon, TwitterIcon, WhatsappIcon,EmailShareButton,FacebookShareButton,TelegramShareButton,WhatsappShareButton, TwitterShareButton,} from "react-share";
-// import {addBodyClass} from '../components/CommonFunction'; 
+// import {CardElement} from '@stripe/react-stripe-js';
    
 
-const Profile = () =>{
+
+const Profile = (props) =>{
 
    //Adding class to body and removing the class
   // addBodyClass('no-bg')('login-body')
-
+ 
   const history = useHistory();
   const dispatch = useDispatch();
+  const [packageList,setPackage] = useState([]);
   const [profileData, setProfile] = useState('');  
   const [blockData, setBlockData] = useState([]);
   const [picture, setPicture] = useState(null);
@@ -42,9 +43,18 @@ const Profile = () =>{
   const [showGift , setShowGift] = useState(false);
   const [showImage , setShowImage] = useState(false); //state for edit profile image model
   const [interestData , showInterestData] = useState([]);
-  const [hobbies , setHobbies] = useState([]);
+  const [hobbies , setHobbies] = useState("");
   const [selected , setSlelected] = useState(true);
+  const [allChecked, setAllChecked] = useState(false);
+  const [isChecked, setIsChecked] = useState({});
+  const [showStripe , setShowStripe] = useState(false);
 
+  const [curentStripePlan , setStripPlan] = useState({
+    session_id : "" ,
+    plan_id : "",
+    token : ""
+  });
+  
   const [isOn, toggleIsOn] = useToggle();
   const [isProfile, toggleProfile] = useToggle();
   const handleShow = () => setShow(true); // show Edit model
@@ -55,6 +65,7 @@ const Profile = () =>{
   const handlePrivacy =() => {setShowSetting(false); setShowPrivacy(true);}
   const handleAbout = () => {setShowSetting(false); setShowAbout(true);}
   const handleShare =() => {setShowSetting(false); setShowShare(true);} // show share glitter model
+  
   // Getting form value here
   const [form , setForm] = useState({
     
@@ -67,7 +78,7 @@ const Profile = () =>{
     weight:"",
     relationStatus:"",
     looking_for:"",
-    interests_hobbie :[]
+    interests_hobbie : ""
   });
 
 //  console.log(form);
@@ -83,6 +94,7 @@ const Profile = () =>{
 
 var  options = []
 const handleHobbies = ( e) => { 
+  // setHobbies(e.target.value);
   const options = hobbies
   let index
   if (e.target.checked) {
@@ -147,7 +159,7 @@ const handleHobbies = ( e) => {
     weight : form.weight,
     looking_for:form.looking_for,
     relationship_status :form.relationStatus,
-    "interests_hobbies[]"  : hobbies.interests_hobbie
+    "interests_hobbies[]"  : hobbies
    };
    axios.post(EDITPROFILE_API , bodyParameters) 
    .then((response) => {
@@ -269,7 +281,38 @@ const handleHobbies = ( e) => {
     }
   };
 
+
+  // ------------------------------ Stipe payment module -----------------------------------------------//
+
+  const GetStipePackage = async() =>{
+    const {data:{plan_list}} = await axios.get(GET_STRIPE_PACKAGE)
+      setPackage(plan_list);
+  }
+
+  // Get id of current plan 
+
+  const Stripehandler = (stripePlanId) =>{
+
+    // setStripPlan({
+    //   session_id : sessionId ,
+    //   plan_id : stripePlanId,
+    //   token : "UgPrRjts9yzVQ15yKJY22wp3LKYtBIhxIuBDk76y"
+    // })
+    setShowStripe(true);
+    // axios.post(ACTIVATE_STRIPE_PACKAGE,bodyParameters)
+    // .then((response) => {
+
+    //   console.log(response,"response.......");
+    
+    // }, (error) => {
+      
+    // });
+  }
+
+
+
     useEffect(() =>{
+    GetStipePackage();
     ProfileData(dispatch)
     handleInterest();
   //handleBlock();
@@ -385,7 +428,7 @@ const handleHobbies = ( e) => {
            </div>
           {interestData.map((item , i) => {
           return <div className="form-group">
-              <input type="checkbox" id={"interests_hobbie"+i}  onChange={handleHobbies} name="interests_hobbie" value={item.id}/>
+              <input type="checkbox" id={"interests_hobbie"+i}  checked={allChecked ? true : isChecked[item.id]} onChange={handleHobbies} name="interests_hobbie" value={item.id}/>
             <label for={"interests_hobbie"+i}>  {item.interests_or_hobbies}</label>
           
             </div>  
@@ -404,8 +447,6 @@ const handleHobbies = ( e) => {
     }
 
   }
-
-
 
   return(
    <div>
@@ -494,7 +535,10 @@ const handleHobbies = ( e) => {
           <div className="user-profile__options becomevip-wrapper__innerblock">
             <ul>
            
-              <li><a href="javascript:void(0)" id="gift-modal" onClick={handleGift}><img src="/assets/images/gift-icon.png" alt="gifts" />
+              <li><a href="javascript:void(0)" id="gift-modal" onClick={Stripehandler}><img src="/assets/images/gift-icon.png" alt="gifts" />
+                  <h6>Stripe</h6> <i className="fas fa-chevron-right"/>
+                </a></li>
+                <li><a href="javascript:void(0)" id="gift-modal" onClick={handleGift}><img src="/assets/images/gift-icon.png" alt="gifts" />
                   <h6>Gifts</h6> <i className="fas fa-chevron-right"/>
                 </a></li>
               <li><a href="javascript:void(0)" id="edit-profile" onClick={handleShow}><img src="/assets/images/edit-profile.png" alt="Edit Profile" />
@@ -522,53 +566,34 @@ const handleHobbies = ( e) => {
         <div className="col-md-4">
           <div className="membership-plans">
             <h5 className="text-white text-uppercase"><img src="/assets/images/Crown-white.png" alt="crown" /> Become vip</h5>
+
+{packageList.map((item,i) =>(
+           (item.duration === "12") ?
             <div className="membership-plans__block active mt-5">
-              <a href="javascript:void(0)">
-                <span className="membership-discount">save 57%</span>
-                <h5 className="text-white text-uppercase mb-0">12 months</h5>
-                <div className="membership-plans__price">
-                  <span>$50.00</span>
-                  <span>then $4.16/Month</span>
-                </div>
-              </a>
+            <a href="javascript:void(0)" key={i} onClick={() => Stripehandler(item.plan_id)}>
+              <span className="membership-discount">{`save ${item.save}`}</span>
+              <h5 className="text-white text-uppercase mb-0">{item.name}</h5>
+              <div className="membership-plans__price">
+                <span>{`$${item.rate}.00`} </span>
+                <span>{`$${item.per_monthRate} per month`}</span>
+              </div>
+            </a>
+          </div>
+          : <div className="membership-plans__block" key={i} onClick={() => Stripehandler(item.plan_id)}>
+          <a href="javascript:void(0)">
+            <h5 className="text-uppercase mb-0">{item.name}</h5>
+            <div className="membership-plans__price">
+              <span>{`$${item.rate}.00`}</span>
+              <span>{`$${item.per_monthRate} per month`}</span>
             </div>
-            <div className="membership-plans__block">
-              <a href="javascript:void(0)">
-                <h5 className="text-uppercase mb-0">6 months</h5>
-                <div className="membership-plans__price">
-                  <span>$30.00</span>
-                  <span>$5 per month</span>
-                </div>
-              </a>
-            </div>
-            <div className="membership-plans__block">
-              <a href="javascript:void(0)">
-                <h5 className="text-uppercase mb-0">3 months</h5>
-                <div className="membership-plans__price">
-                  <span>$20.00</span>
-                  <span>$6.66 per month</span>
-                </div>
-              </a>
-            </div>
-            <div className="membership-plans__block">
-              <a href="javascript:void(0)">
-                <h5 className="text-uppercase mb-0">1 month</h5>
-                <div className="membership-plans__price">
-                  <span>$5.00</span>
-                  <span>10$ renew automatically.</span>
-                </div>
-              </a>
-            </div>
-            <div className="membership-plans__block">
-              <a href="javascript:void(0)">
-                <h5 className="text-uppercase mb-0">1 Day vip pass</h5>
-                <div className="membership-plans__price">
-                  <span>$1.00</span>
-                </div>
-              </a>
-            </div>
+          </a>
+        </div>
+            
+))}
+
           </div>
         </div>
+      
         <div className="col-md-4">
           <div className="user-actions">
             <div className="becomevip-wrapper__innerblock">
@@ -600,6 +625,37 @@ const handleHobbies = ( e) => {
       </div>
     </div>
   </section>
+
+  <Modal className =" edit-payment-modal" show={showStripe} onHide={() => setShowStripe(false)} backdrop="static" keyboard={false}>
+        <div className="edit-payment-modal__inner">
+        
+          <div className="d-flex align-items-center">
+            <h4 className="theme-txt text-center mb-4 ml-3">Your Card details</h4>
+          </div>
+      
+        <form>
+      
+          {/* <CardElement
+  options={{
+    style: {
+      base: {
+        fontSize: '16px',
+        color: '#424770',
+        '::placeholder': {
+          color: '#aab7c4',
+        },
+      },
+      invalid: {
+        color: '#9e2146',
+      },
+    },
+  }}
+/> */}
+         
+          </form>
+           </div>
+           <a href="javascript:void(0)" className="modal-close" onClick={() => setShowStripe(false)}><img src="/assets/images/btn_close.png" /></a>
+    </Modal>
 
 <Modal className="Image-model" show={showImage}  onHide= {() => setShowImage(false)}>
 <form>

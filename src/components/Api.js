@@ -29,6 +29,10 @@ export const GET_SINGLE_STATUS = getApiUrl("all_status");
 export const GET_STATUS = getApiUrl("limit_status");  
 export const INTEREST_HOBBIES_LIST = getApiUrl("interests_hobbies"); 
 export const VIDEO_CALL_START = getApiUrl("video_call");
+export const GET_STRIPE_PACKAGE = getApiUrl("packages_list");
+export const ACTIVATE_STRIPE_PACKAGE = getApiUrl("activate_package");
+
+
  
 // Not done yet
 export const CALL_ACTION_API=getApiUrl("call_action");

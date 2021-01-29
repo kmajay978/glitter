@@ -339,7 +339,7 @@ const ChatBox = (props) =>{
             SOCKET.connect();
         }
         else {
-            SOCKET.disconnect();
+            // SOCKET.disconnect();
         }
     },[GetActivity])
 
