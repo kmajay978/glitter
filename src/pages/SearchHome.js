@@ -55,7 +55,8 @@ const statusoptions = {
     }
    axios.post(FRIENDLIST_API,bodyParameters)
     .then((response) => {
-      if (response.status === 200 ) {
+      if (response.status === 200 ) 
+      {
         setFriendlist(response.data.data);
         setStatusLength(response.data.data.statuses);
       }

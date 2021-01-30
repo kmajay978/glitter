@@ -65,21 +65,21 @@ console.log(allData);
       axios.post(DISLIKE_USER, bodyParameters).then(
         (response) => {
          
+            setDislike(false);
+     
           if (response.status == 200) {
           
             console.log(direction);
             console.log("removing: " + userId);
             alreadyRemoved.push(userId);
-            setTimeout(() => {
-              setDislike(false);
-            }, 2);
+          
             
           }
         },
         (error) => {
-          setTimeout(() => {
+         
             setDislike(false);
-          }, 2);
+        
         }
       );
     } else if (direction == "right") {
@@ -90,7 +90,7 @@ console.log(allData);
       };
       axios.post(LIKE_USER, bodyParameters).then(
         (response) => {
-        
+            setLiked(false)
             console.log(direction);
             console.log("removing: " + userId);
             alreadyRemoved.push(userId);
