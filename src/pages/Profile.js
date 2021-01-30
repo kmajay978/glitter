@@ -2,12 +2,12 @@ import React, { useState, useEffect, useRef } from "react";
 import {  useHistory } from 'react-router';
 import axios from "axios";
 import NavLinks from '../components/Nav';
-import {INTEREST_HOBBIES_LIST , GIFT_LIST_API , GET_GIFT_API , GET_LOGGEDPROFILE_API , EDITPROFILE_API , BLOCK_USERLIST_API , LOGOUT_API, GET_STRIPE_PACKAGE,ACTIVATE_STRIPE_PACKAGE } from '../components/Api';
+import {GET_ALL_COIN_PACKAGE , INTEREST_HOBBIES_LIST , GIFT_LIST_API , GET_GIFT_API , GET_LOGGEDPROFILE_API , EDITPROFILE_API , BLOCK_USERLIST_API , LOGOUT_API, GET_STRIPE_PACKAGE,ACTIVATE_STRIPE_PACKAGE } from '../components/Api';
 import useToggle from '../components/CommonFunction';
 import {removeStorage} from '../components/CommonFunction';
 import Login from '../pages/Login'
 import { useDispatch } from 'react-redux';
-import {logout, profile, ProfileData, stripePlanId} from '../features/userSlice';
+import {logout, profile, ProfileData, stripePlanId ,stripeCoinPlanId} from '../features/userSlice';
 import {Modal, ModalBody , Dropdown} from 'react-bootstrap';
 import $ from 'jquery';
 import Logo from '../components/Logo';
@@ -38,11 +38,13 @@ const Profile = (props) =>{
   const [showAbout , setShowAbout] = useState(false);
   const [showShare , setShowShare] = useState(false); // state for show share glitter model
   const [showCoins , setShowCoin] = useState(false);
+  const [ showBuyCoins , setShowBuyCoins] = useState(false);
   const [showGift , setShowGift] = useState(false);
   const [showImage , setShowImage] = useState(false); //state for edit profile image model
   const [interestData , showInterestData] = useState([]);
    const [hobbies , setHobbies] = useState([]);
   const [selectedCheck , setSlelected] = useState([]);
+  const [coinPackage , setCoinPackage] = useState([]);
 
   const [showStripe , setShowStripe] = useState(false);
   const [showChecked , setMycheckbox] = useState(false);
@@ -59,6 +61,7 @@ const Profile = (props) =>{
   const handlePrivacy =() => {setShowSetting(false); setShowPrivacy(true);}
   const handleAbout = () => {setShowSetting(false); setShowAbout(true);}
   const handleShare =() => {setShowSetting(false); setShowShare(true);} // show share glitter model
+ 
   // Getting form value here
   const [form , setForm] = useState({
     
@@ -71,7 +74,7 @@ const Profile = (props) =>{
     weight:"",
     relationStatus:"",
     looking_for:"",
-    'interests_hobbie[]' :""
+    interests_hobbie :""
   });
 
   console.log(form, "form...");
@@ -136,7 +139,12 @@ const handleCheck = (e) => {
                 profile: data
             })
         );
+        var obj = [...Object.values(Object.keys(form.interests_hobbie))]
+        setHobbies(obj);
        }
+    
+
+    console.log(hobbies);
       
   // console.log(hobbies,"hobbies......")
      //update profile data
@@ -238,9 +246,18 @@ const handleCheck = (e) => {
    setBlockData(data);
    
    }
-
+   const handleBuyCoins = () => {
+     setShowBuyCoins(true);
+     axios.get(GET_ALL_COIN_PACKAGE)
+     .then((response) => { 
+      setCoinPackage(response.data.coin_list);
+   
+       }, (error) =>{
+   
+       });
+    }
  
-
+    console.log(coinPackage , "packages...");
    //all gift
    const handleGift = async() =>{
     toggleIsOn(true);
@@ -317,14 +334,26 @@ const handleCheck = (e) => {
       })
   );
     setShowStripe(true);
+    
   }
-
+ 
+  const StripeCoinHandler =(id) =>
+  {
+    dispatch(
+      stripeCoinPlanId({
+        stripeCoinPlanId: id
+      })
+    );
+    setShowStripe(true);
+    setShowBuyCoins(false);
+  }
 
 
     useEffect(() =>{
     GetStipePackage();
     ProfileData(dispatch)
     handleInterest();
+    
   //handleBlock();
   },[])
 
@@ -565,6 +594,10 @@ const handleCheck = (e) => {
               <li><a href="javascript:void(0)" id="setting" onClick={handleSettingShow}>
                   <h6><img src="/assets/images/setting-icon.png" alt="setting" />Setting</h6> <i className="fas fa-chevron-right" />
                 </a></li>
+                <li><a href="javascript:void(0)" id="coin-spend" onClick={handleBuyCoins}><img src="/assets/images/diamond-coin.png" alt="Coins" />
+                  <h6>Buy Coins</h6> <i className="fas fa-chevron-right" />
+                </a></li>
+               
             </ul>
           </div>
           <div className="user-profile__logout becomevip-wrapper__innerblock text-center">
@@ -856,14 +889,33 @@ const handleCheck = (e) => {
    
   </Modal>
   
-  <Modal className="privacy-model" show={showPrivacy} onHide={() => setShowPrivacy(false)} >
-  <Modal.Header closeButton >
-    <Modal.Title>
-  <h2> Privacy Policy</h2>
-  </Modal.Title>
-      </Modal.Header>  
-      <PrivacyPolicy/>
-        </Modal>
+  <Modal className="buy-coin-model" show={showBuyCoins} onHide={() => setShowBuyCoins(false)} >
+      <div className="edit-profile-modal__inner">
+      <h4 className="theme-txt text-center mb-4 ">Get coins</h4>
+    
+      <div className="membership-plans">
+        {coinPackage.map((item , i) => (
+          <div className="membership-plans__block  active mt-2">
+              <a href="javascript:void(0)" className="justify-content-start" onClick={(e) => StripeCoinHandler(item.id)}>
+                <div className="buy-gifts__image">
+                <img src="/assets/images/diamond-sm.png" alt="diamond" />
+                </div>
+        
+                <div className="buy-gifts_price text-white">
+                <h5 className="mb-0">{`${item.coins}coins`}</h5>
+                <span className="rate">{`$${item.rates}.00`}</span>
+                </div>        
+                {!!item.tags ? <span className='gift__discount'>{item.tags}</span> :""}
+               
+               </a>
+          </div>
+          ))} 
+       
+       </div>
+       <a href="javascript:void(0)" className="modal-close" onClick={() => setShowBuyCoins(false)}><img src="/assets/images/btn_close.png" /></a>
+           </div>
+          
+</Modal>
 
   <Modal className="about-model" show={showAbout} onHide={() => setShowAbout(false)} >
   <Modal.Header closeButton >

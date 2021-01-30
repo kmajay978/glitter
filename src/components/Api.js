@@ -31,7 +31,8 @@ export const INTEREST_HOBBIES_LIST = getApiUrl("interests_hobbies");
 export const VIDEO_CALL_START = getApiUrl("video_call");
 export const GET_STRIPE_PACKAGE = getApiUrl("packages_list");
 export const ACTIVATE_STRIPE_PACKAGE = getApiUrl("activate_package");
-
+export const GET_ALL_COIN_PACKAGE = getApiUrl("all_coin_packages");
+export const ACTIVATE_COIN_PACKAGE = getApiUrl("purchaseCoins");
 
  
 // Not done yet
