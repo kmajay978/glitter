@@ -114,6 +114,16 @@ const LiveVideoChat = () =>{
                 else { // audience..
                     if (data.user_id === userData.user_id) {
                         // open audience camera...
+                        const option = {
+                            appID: "52cacdcd9b5e4b418ac2dca58f69670c",
+                            channel: videoCallState.channel_name,
+                            uid: 0,
+                            token: videoCallState.channel_token,
+                            key: '',
+                            secret: ''
+                        }
+                        console.log(videoCallState, "videoCallState...")
+                        joinChannel('audience', option)
 
                     }
                 }
