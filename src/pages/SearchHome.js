@@ -117,14 +117,16 @@ console.log(statusData);
     handleFriendList();
 
       SOCKET.on('sendAudienceToLiveVideo', (data) => {
-          let newState = {};
-          newState.user_id = data.user_id;
-          newState.call_type = 2;
-          newState.channel_id = data.channel_id;
-          newState.channel_name = data.channel_name;
-          newState.channel_token = data.channel_token;
-          localStorage.setItem("liveVideoProps", JSON.stringify(newState))
-          history.push(data.user_id+ '/' + data.channel_id +'/'+ data.channel_name + '/live-video-chat')
+          if (userData.user_id === data.user_id) {
+              var newState = {};
+              newState.user_id = data.user_id;
+              newState.call_type = 2;
+              newState.channel_id = data.channel_id;
+              newState.channel_name = data.channel_name;
+              newState.channel_token = data.channel_token;
+              localStorage.setItem("liveVideoProps", JSON.stringify(newState))
+              history.push(data.user_id+ '/' + data.channel_id +'/'+ data.channel_name + '/live-video-chat')
+          }
       })
 
     SOCKET.on('live_friends', (data) => {
@@ -148,7 +150,7 @@ console.log(statusData);
 
       SOCKET.on('start_your_live_video_now', (data) => {
           console.log(data, "start live video link...");
-          if (data.channel_id && data.channel_name) {
+          if ((data.user_id === userData.user_id) && data.channel_id && data.channel_name) {
               history.push(data.user_id+ '/' + data.channel_id +'/'+ data.channel_name + '/live-video-chat')
           }
       });
@@ -217,7 +219,8 @@ console.log(statusData);
             SOCKET.emit("addAudienceToLiveVideo", {
                 user_id: userData.user_id,
                 channel_name: item.channel_name,
-                channel_token: item.channel_token
+                channel_token: item.channel_token,
+                is_host: false
             })
         }
     }

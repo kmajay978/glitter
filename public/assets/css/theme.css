@@ -2150,7 +2150,19 @@ body {
     position: relative;
     width: 305px;
     min-height: 405px;
-    overflow: hidden;
+    overflow-X: hidden;
+    overflow-y: auto;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.contacts-outter-wrapper::-webkit-scrollbar {
+    display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.contacts-outter-wrapper {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }
 
 .contacts-outter {
@@ -4376,3 +4388,5 @@ span.gift__discount {
     width: calc(100% - 48px);
     padding-left: 30px;
 }
+
+
