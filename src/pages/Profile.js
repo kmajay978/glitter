@@ -15,7 +15,7 @@ import PrivacyPolicy from '../components/PrivacyPolicy';
 import AboutGlitter from '../components/AboutGlitter';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import { EmailIcon, FacebookIcon,  TelegramIcon, TwitterIcon, WhatsappIcon,EmailShareButton,FacebookShareButton,TelegramShareButton,WhatsappShareButton, TwitterShareButton,} from "react-share";
-import {CardElement} from '@stripe/react-stripe-js';
+// import {CardElement} from '@stripe/react-stripe-js';
    
 
 
@@ -43,9 +43,10 @@ const Profile = (props) =>{
   const [showGift , setShowGift] = useState(false);
   const [showImage , setShowImage] = useState(false); //state for edit profile image model
   const [interestData , showInterestData] = useState([]);
-  const [hobbies , setHobbies] = useState([]);
+  const [hobbies , setHobbies] = useState("");
   const [selected , setSlelected] = useState(true);
-
+  const [allChecked, setAllChecked] = useState(false);
+  const [isChecked, setIsChecked] = useState({});
   const [showStripe , setShowStripe] = useState(false);
 
   const [curentStripePlan , setStripPlan] = useState({
@@ -64,6 +65,7 @@ const Profile = (props) =>{
   const handlePrivacy =() => {setShowSetting(false); setShowPrivacy(true);}
   const handleAbout = () => {setShowSetting(false); setShowAbout(true);}
   const handleShare =() => {setShowSetting(false); setShowShare(true);} // show share glitter model
+  
   // Getting form value here
   const [form , setForm] = useState({
     
@@ -76,7 +78,7 @@ const Profile = (props) =>{
     weight:"",
     relationStatus:"",
     looking_for:"",
-    interests_hobbie :[]
+    interests_hobbie : ""
   });
 
 //  console.log(form);
@@ -89,28 +91,19 @@ const Profile = (props) =>{
     }) 
 }
 
-const handlehobbies = e => {
-  setSlelected(
-    prevState => ({ selected: !prevState.selected }),
-    () => this.props.onOptionChange(this.props.option, this.state.selected)
-  )
-}
 
-const  options = []
+var  options = []
 const handleHobbies = ( e) => { 
-  setForm({
-    ...form,
-    [e.target.name]: e.target.value,
-  }) 
-  // const options = hobbies
-  // let index
-  // if (e.target.checked) {
-  //   options.push(+e.target.value)
-  // } else {
-  //   index = options.indexOf(+e.target.value);
-  //   options.splice(index, 1);
-  // }
-  // setHobbies({ options: options })
+  // setHobbies(e.target.value);
+  const options = hobbies
+  let index
+  if (e.target.checked) {
+    options.push(+e.target.value)
+  } else {
+    index = options.indexOf(+e.target.value);
+    options.splice(index, 1);
+  }
+  setHobbies({ options: options })
   }
 
  console.log(hobbies);
@@ -121,6 +114,7 @@ const handleHobbies = ( e) => {
   // Fetching profile Data
   var sessionId = localStorage.getItem("session_id")
   const ProfileData = async() =>{
+
     const bodyParameters = {
       session_id: sessionId,
       };
@@ -148,8 +142,10 @@ const handleHobbies = ( e) => {
       //  console.log(profileData);
    
      //update profile data
+     
      const updateProfile = (e) =>{
      console.log("working");
+     console.log(hobbies, "hobbies..")
      const bodyParameters ={
     session_id : sessionId,
     device_token : "uhydfdfghdertyt445t6y78755t5jhyhyy" ,
@@ -163,7 +159,7 @@ const handleHobbies = ( e) => {
     weight : form.weight,
     looking_for:form.looking_for,
     relationship_status :form.relationStatus,
-    interests_hobbies  : form.interests_hobbie
+    "interests_hobbies[]"  : hobbies
    };
    axios.post(EDITPROFILE_API , bodyParameters) 
    .then((response) => {
@@ -432,7 +428,7 @@ const handleHobbies = ( e) => {
            </div>
           {interestData.map((item , i) => {
           return <div className="form-group">
-              <input type="checkbox" id={"interests_hobbie"+i}  onChange={handleHobbies} name="interests_hobbie" value={item.id}/>
+              <input type="checkbox" id={"interests_hobbie"+i}  checked={allChecked ? true : isChecked[item.id]} onChange={handleHobbies} name="interests_hobbie" value={item.id}/>
             <label for={"interests_hobbie"+i}>  {item.interests_or_hobbies}</label>
           
             </div>  
@@ -630,7 +626,7 @@ const handleHobbies = ( e) => {
     </div>
   </section>
 
-  <Modal className =" edit-payment-modal" show={show} onHide={() => setShowStripe(false)} backdrop="static" keyboard={false}>
+  <Modal className =" edit-payment-modal" show={showStripe} onHide={() => setShowStripe(false)} backdrop="static" keyboard={false}>
         <div className="edit-payment-modal__inner">
         
           <div className="d-flex align-items-center">
@@ -639,7 +635,7 @@ const handleHobbies = ( e) => {
       
         <form>
       
-          <CardElement
+          {/* <CardElement
   options={{
     style: {
       base: {
@@ -654,7 +650,7 @@ const handleHobbies = ( e) => {
       },
     },
   }}
-/>
+/> */}
          
           </form>
            </div>

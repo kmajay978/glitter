@@ -8,6 +8,7 @@ import NavLinks from '../components/Nav';
 import { VIDEO_CALL_START } from "../components/Api";
 import { videoCall, videoCallUser } from "../features/userSlice";
 import { generateVideoChatToken } from "../api/videoApi";
+import GlitterCard from "react-tinder-card";
 
 const SearchProfile = () =>{
   const dispatch = useDispatch();
@@ -76,9 +77,8 @@ const SearchProfile = () =>{
     <div className="home-inner">
       <div className="container-fluid p-0">
         <div className="row no-gutters">
-          <div className="col-lg-9 main-bar p-3 searching-profile-wrapper">
-            <div className="profile-swipe-wrapper">
-              <div className="stage">
+          <div className="col-lg-9 main-bar p-3 searching-profile-wrapper mx-auto">
+            <div className="profile-swipe-wrapper">         
                 <div id="stacked-cards-block" className="stackedcards stackedcards--animatable init">
                   <div className="pulse">
                     <span className="searching-label">
@@ -94,61 +94,22 @@ const SearchProfile = () =>{
                     </a>
 
                   </div>   
-                  <div className="stackedcards-container">
-                    <div className="card">
-                      <div className="card-content">
-                        <div className="card-image"><img src={!!user_to.image ? user_to.image : ""} alt="Emma" width="100%" height="100%" /></div>
-                        {/*
-                                          <div class="card-titles">
-                                              <h3>Emma, 22</h3>
-                                              <span>72km, Lawyer</span>
-                                          </div>
-*/}
-                      </div>
-                    </div>
-                    <div className="card">
-                      <div className="card-content">
-                        <div className="card-image"><img src={!!user_to.image ? user_to.image : ""} alt="Emma" width="100%" height="100%" /></div>
-                        {/*
-                                          <div class="card-titles">
-                                              <h3>Emma, 22</h3>
-                                              <span>72km, Lawyer</span>
-                                          </div>
-*/}
-                      </div>
-                    </div>
-                    <div className="card">
-                      <div className="card-content">
-                        <div className="card-image"><img src={!!user_to.image ? user_to.image : ""} alt="Emma" width="100%" height="100%" /></div>
-                        {/*
-                                          <div class="card-titles">
-                                              <h3>Emma, 22</h3>
-                                              <span>72km, Lawyer</span>
-                                          </div>
-*/}
-                      </div>
-                    </div>
-                    <div className="card">
-                      <div className="card-content">
-                        <div className="card-image"><img src={!!user_to.image ? user_to.image : ""} alt="Emma" width="100%" height="100%" /></div>
-                        <div className="card-titles">
-                          <h3>Emma, 22</h3>
-                          <span>72km, Lawyer</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="card">
-                      <div className="card-content">
-                        <div className="card-image"><img src={!!user_to.image ? user_to.image : ""} alt="Emma" width="100%" height="100%" /></div>
-                        {/*
-                                          <div class="card-titles">
-                                              <h3>Emma, 22</h3>
-                                              <span>72km, Lawyer</span>
-                                          </div>
-*/}
-                      </div>
-                    </div>
-                  </div>
+                
+                  <div className="cardContainer"> 
+                 
+                 <GlitterCard className="swipe"   >
+                   <div className="user__card position-relative">
+                  <img src="/assets/images/profile-card.png" alt="hii" width="100%"/> 
+                   </div>
+                   
+                 </GlitterCard>
+                
+                  </div> 
+                  <div className="daily-matches">
+                  <span className="daily-matches__counter">Match: 1280 - Success: 34 - Score: 100</span>
+                  <p className="daily-matches__txt">You have 1000 daily matches. Win 10 extra matches for each success. You will earn 5 points for each video chat</p>
+                </div>
+           
                   <div className="stackedcards--animatable stackedcards-overlay top"><img src="https://image.ibb.co/m1ykYS/rank_army_star_2_3x.png" width="auto" height="auto" /></div>
                   <div className="stackedcards--animatable stackedcards-overlay right"><img src="/assets/images/accept-icon.png" width="auto" height="auto" /></div>
                   <div className="stackedcards--animatable stackedcards-overlay left"><img src="https://image.ibb.co/heTxf7/20_status_close_3x.png" width="auto" height="auto" /></div>
@@ -173,11 +134,8 @@ const SearchProfile = () =>{
                     </a>
                   </div>
                 </div>
-                <div className="daily-matches">
-                  <span className="daily-matches__counter">Match: 1280 - Success: 34 - Score: 100</span>
-                  <p className="daily-matches__txt">You have 1000 daily matches. Win 10 extra matches for each success. You will earn 5 points for each video chat</p>
-                </div>
-              </div>
+                
+              
             </div>
           </div>
         </div>

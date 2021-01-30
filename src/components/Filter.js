@@ -160,7 +160,7 @@ function valuetextweight(value) {
 }
 
 useEffect(()=>{
-   filterHandle();
+  //  filterHandle();
     
 },[])
 
