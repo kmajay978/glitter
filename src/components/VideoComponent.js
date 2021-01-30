@@ -26,11 +26,7 @@ export function joinChannel(role, option) {
                 if (role === "host") {
                     rtc.client.setClientRole("host");
                     // Create a local stream
-<<<<<<< HEAD
-                    console.log(rtc.params.uid,"mine.......")
-=======
                     console.log(rtc.params.uid, "host id")
->>>>>>> 6e2f5c4cc20cfa2fe3874211b68fadabb5338ed2
                     rtc.localStream = AgoraRTC.createStream({
                         streamID: rtc.params.uid,
                         audio: true,

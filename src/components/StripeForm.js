@@ -5,6 +5,7 @@ import CardSection from "./CardSection";
 import {useSelector} from "react-redux";
 import {stripeDataPlanid} from "../features/userSlice";
 import {ACTIVATE_STRIPE_PACKAGE} from "./Api";
+import {NotificationContainer, NotificationManager} from 'react-notifications';
 import axios from "axios";
 
 const CheckoutForm = (props) => {
@@ -22,6 +23,7 @@ const CheckoutForm = (props) => {
         const result = await stripe.createToken(card);
         if (result.error) {
             console.log(result.error.message);
+            createNotification('error',result.error.message);
         } else {
             // console.log(result.token.id);
             const bodyParameters = {
@@ -33,24 +35,23 @@ const CheckoutForm = (props) => {
                 .post(ACTIVATE_STRIPE_PACKAGE, bodyParameters)
                 .then((response) => {
 
-                    console.log(response, "response.......");
-
+                    createNotification('success',response.message);
                 }, (error) => {});
         }
     };
 
-    // const createNotification = (type,message) => {
+    const createNotification = (type,message) => {
   
-    //     switch (type) {
-    //       case 'success':
-    //         NotificationManager.success(message, 'stripe');
-    //         break;
-    //       case 'error':
-    //         NotificationManager.error(message, 'Click me!', 5000, () => {
-    //         });
-    //         break; 
-    //   };
-    //   };
+        switch (type) {
+          case 'success':
+            NotificationManager.success(message, 'You have subscribed the Package');
+            break;
+          case 'error':
+            NotificationManager.error(message, 'Please check your card details', 5000, () => {
+            });
+            break; 
+      };
+      };
 
     return (
         <div>
@@ -60,6 +61,7 @@ const CheckoutForm = (props) => {
                     Buy Now
                 </button>
             </form>
+            <NotificationContainer />
         </div>
     );
 
