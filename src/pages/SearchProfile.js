@@ -26,12 +26,12 @@ const SearchProfile = () =>{
     else {
       setUserTo({image: videoCallState.user_to_image})
       // const bodyParameters = videoCallState;
-      const bodyParameters ={  
+      const bodyParameters ={
         session_id: localStorage.getItem("session_id"),
         user_id: videoCallState.user_to_id,
         type: 1
       }
-       generateVideoChatToken(history, dispatch, bodyParameters, videoCallState)
+      generateVideoChatToken(history, dispatch, bodyParameters, videoCallState)
     }
   }, [])
 
@@ -99,7 +99,7 @@ const SearchProfile = () =>{
                  
                  <GlitterCard className="swipe"   >
                    <div className="user__card position-relative">
-                  <img src="/assets/images/profile-card.png" alt="hii" width="100%"/> 
+        <img src={!!user_to.image ? user_to.image : ""} alt="Emma" width="100%"  />
                    </div>
                    
                  </GlitterCard>
