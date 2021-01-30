@@ -11,4 +11,5 @@ export {default as RecentCall}  from './RecentCall';
 export {default as SearchProfile}  from './SearchProfile';
 export {default as VideoChat}  from './VideoChat';
 export {default as Dummy} from './Dummy';
+export {default as LiveVideoChat} from './LiveVideoChat';
 

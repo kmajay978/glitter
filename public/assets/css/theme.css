@@ -4329,3 +4329,10 @@ div#local_stream {
     background: url(../assets/images/user.jpg);
     background-size: cover;
 }
+
+
+.status__slider{
+
+    width: calc(100% - 48px);
+    padding-left: 30px;
+}
