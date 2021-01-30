@@ -202,20 +202,7 @@ console.log(statusData);
                   </div>
                 </div>
                 })}
-                <div className="col-md-3">
-                  <div className="sp-singular">
-                    <a href="javascript:void(0)">
-                      <figure>
-                        <img src="/assets/images/marlene.png" alt="Marlene" />
-                      </figure>
-                      <div className="sp-singular-content">
-                        <div className="status online">Online</div>
-                        <h4>Marlene, <span className="age">21</span></h4>
-                        <div className="info">55km, Art. Director</div>
-                      </div>
-                    </a>
-                  </div>
-                </div>
+              
              
               </div>
             </div>

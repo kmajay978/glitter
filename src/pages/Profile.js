@@ -41,10 +41,11 @@ const Profile = (props) =>{
   const [showGift , setShowGift] = useState(false);
   const [showImage , setShowImage] = useState(false); //state for edit profile image model
   const [interestData , showInterestData] = useState([]);
-  const [hobbies , setHobbies] = useState([]);
+   const [hobbies , setHobbies] = useState([]);
   const [selectedCheck , setSlelected] = useState([]);
 
   const [showStripe , setShowStripe] = useState(false);
+  const [showChecked , setMycheckbox] = useState(false);
 
   const [curentStripePlan , setStripPlan] = useState();
   
@@ -100,7 +101,6 @@ const handleCheck = (e) => {
   
 }
 
-
     const shareUrl = 'http://localhost:3000/';
     const title = 'gilter-app';
 
@@ -114,6 +114,7 @@ const handleCheck = (e) => {
       };
      const {data:{data}}= await axios.post(GET_LOGGEDPROFILE_API,bodyParameters)
 
+      
     //  Setting data variable to state object 
       form.firstName = data.first_name
       form.lastName = data.last_name
@@ -124,7 +125,11 @@ const handleCheck = (e) => {
       form.gender = data.gender
       form.looking_for = data.looking_for
       form.relationStatus = data.relationship_status
-      form.interests_hobbie = data.interests_hobbies
+      form.interests_hobbie = data.interest_hobbies
+
+      var obj = [...Object.values(Object.keys(form.interests_hobbie))]
+        setHobbies(obj);
+
        setProfile(data);
        dispatch(
             profile({
@@ -133,10 +138,9 @@ const handleCheck = (e) => {
         );
        }
       
-      //  console.log(profileData);
-   
+  // console.log(hobbies,"hobbies......")
      //update profile data
-     
+      
      const updateProfile = (e) =>{
      
       const config = {
@@ -290,6 +294,20 @@ const handleCheck = (e) => {
       setPackage(plan_list);
   }
 
+  const CheckedItem = (id) => {
+    let checkId = false;
+    for (let i in hobbies) {
+      if (hobbies[i] == id) {
+        checkId = true
+      }
+    }
+    if (checkId) {
+      return "checked"
+    }
+    else {
+     return ""
+    }
+  }
   // Get id of current plan 
 
   const Stripehandler = (id) =>{
@@ -418,15 +436,16 @@ const handleCheck = (e) => {
          <div className="tab-title">
          <label>Interest hobbies</label>
            </div>
-          {interestData.map((item , i) => {
-          return <div className="form-group">
+          {interestData.map((item , i) => (
+            // checked={CheckedItem(item.id)}
+          <div className="form-group">
               <input type="checkbox" id={"interests_hobbie"+i}  onClick={handleCheck} name="interests_hobbie" value={item.id}/>
             <label for={"interests_hobbie"+i}>  {item.interests_or_hobbies}</label>
-          
-            </div>  
-           
-          })}
+            </div>
+          ))}
          </div>
+
+         
        
           <a className="btn bg-grd-clr d-block btn-countinue-3" id="edit-second-step" href="javascript:void(0)" onClick={updateProfile}>Update</a>
           <NotificationContainer/>
@@ -557,14 +576,15 @@ const handleCheck = (e) => {
             <h5 className="text-white text-uppercase"><img src="/assets/images/Crown-white.png" alt="crown" /> Become vip</h5>
 
 {packageList.map((item,i) =>(
-           (item.duration === "12") ?
+           (!!item && item.duration === "12") ?
+     
             <div className="membership-plans__block active mt-5">
             <a href="javascript:void(0)" key={i} onClick={(e) => Stripehandler(item.plan_id)}>
               <span className="membership-discount">{`save ${item.save}`}</span>
               <h5 className="text-white text-uppercase mb-0">{item.name}</h5>
               <div className="membership-plans__price">
                 <span>{`$${item.rate}.00`} </span>
-                <span>{`$${item.per_monthRate} per month`}</span>
+                <span>{`${item.per_monthRate}`}</span>
               </div>
             </a>
           </div>
@@ -573,7 +593,7 @@ const handleCheck = (e) => {
             <h5 className="text-uppercase mb-0">{item.name}</h5>
             <div className="membership-plans__price">
               <span>{`$${item.rate}.00`}</span>
-              <span>{`$${item.per_monthRate} per month`}</span>
+              <span>{`${!!item.per_monthRate ? item.per_monthRate : ""}`}</span>
             </div>
           </a>
         </div>
