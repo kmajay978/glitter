@@ -14,7 +14,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {userProfile} from "../features/userSlice";
 import {generateLiveVideoChatToken} from "../api/videoApi";
 
-let isMouseClick = false, startingPos = [], glitterUid, friendLists = [];
+let isMouseClick = false, startingPos = [], glitterUid, friendLists = [], userData= null;
 const SearchHome = () =>
 {
   const history = useHistory();
@@ -31,8 +31,8 @@ const SearchHome = () =>
  const [statusLength , setStatusLength] = useState("");
 const [showLive,setShowLive] = useState(false);
 
-    const userData = useSelector(userProfile).user.profile; //using redux useSelector here
-
+    userData = useSelector(userProfile).user.profile; //using redux useSelector here
+    console.log(userData, "test")
  const options = {
   loop: false,
   margin: 20,
@@ -147,10 +147,9 @@ console.log(statusData);
         setRandomNumber(Math.random());
         console.log(frdList, "data test")
     });
-
       SOCKET.on('start_your_live_video_now', (data) => {
-          console.log(data, "start live video link...");
-          if ((data.user_id === userData.user_id) && data.channel_id && data.channel_name) {
+          console.log(data, userData, "start live video link...");
+          if ((data.user_id == userData.user_id) && data.channel_id && data.channel_name) {
               history.push(data.user_id+ '/' + data.channel_id +'/'+ data.channel_name + '/live-video-chat')
           }
       });
