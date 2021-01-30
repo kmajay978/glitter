@@ -8,6 +8,9 @@ import FilterSide from '../components/Filter';
 import { FRIENDLIST_API , GET_STATUS} from '../components/Api';
 import {Modal, ModalBody , Dropdown} from 'react-bootstrap';
 import OwlCarousel from 'react-owl-carousel2';
+import {SOCKET} from '../components/Config';
+import {useSelector} from "react-redux";
+import {userProfile} from "../features/userSlice";
 
 let isMouseClick = false, startingPos = [], glitterUid;
 const SearchHome = () =>
@@ -22,6 +25,8 @@ const SearchHome = () =>
  const [storyData , setStoryData] = useState([]);
  const[ friendId , setFriendId] = useState('');
  const [statusLength , setStatusLength] = useState("");
+
+    const userData = useSelector(userProfile).user.profile; //using redux useSelector here
 
  const options = {
   loop: false,
@@ -45,10 +50,6 @@ const statusoptions = {
 
 };
 
-
-
-
-
   const handleFriendList = () => {
     const bodyParameters ={
       session_id : localStorage.getItem('session_id')
@@ -56,7 +57,12 @@ const statusoptions = {
    axios.post(FRIENDLIST_API,bodyParameters)
     .then((response) => {
       if (response.status === 200 ) {
-        setFriendlist(response.data.data);
+          let friendList = response.data.data;
+          console.log(friendList, "friendList...")
+          for (let i in friendList) {
+              friendList[i].is_live = false;
+          }
+        setFriendlist(friendList);
         setStatusLength(response.data.data.statuses);
       }
  }, (error) => {
@@ -66,11 +72,10 @@ const statusoptions = {
    console.log(statusLength);
   useEffect  (() => {
    handleStatus();
-   
   },[friendId])
 
   console.log(friendId);
-  const handleStatus = () => 
+  const handleStatus = () =>
   {
     const bodyParameters = {
       user_id: friendId,
@@ -84,22 +89,37 @@ const statusoptions = {
       else {
         setStatusData('');
       }
-      
+
  }, (error) => {
     setStatusData('');
 });
   }
 console.log(statusData);
  console.log(storyData);
+
+ const componentWillUnmount = () => {
+     alert("stop")
+     SOCKET.emit('stop_check_friend_list_live', () => {
+         console.log("stop checking friend list live...")
+     });
+ }
   useEffect (() => {
+    SOCKET.connect();
+      SOCKET.emit("authenticate_friend_list_live", {
+          session_id: localStorage.getItem("session_id")
+      });
     handleFriendList();
-  
+
+    SOCKET.on('live_friends', (data) => {
+        console.log(data, "data...")
+    });
+
     window.setTimeout(() => {
        $(".main")
     .mousedown(function (evt) {
       isMouseClick = true;
       glitterUid =  $(".main")
-     
+
         startingPos = [evt.pageX, evt.pageY]
         glitterUid = evt.currentTarget.id
         // setStartPosition(startingPos);
@@ -120,7 +140,9 @@ console.log(statusData);
         startingPos = [];
         setStartPosition(startingPos)
     });
-    }, 1000); 
+    }, 1000);
+
+    return () => componentWillUnmount()
     },[])
 
   useEffect (() => {
@@ -131,8 +153,17 @@ console.log(statusData);
                   })
   }
   },[Click])
+
+    // useEffect(() => {
+    //     if (!!userData) {
+    //
+    //     }
+    // }, [userData])
 //  console.log(friendList);
 //   console.log(fetchedProfile);
+    const makeMeLive = () => {
+
+    }
 
     return(
   <section className="home-wrapper">
@@ -162,8 +193,8 @@ console.log(statusData);
           </div>
           <div className="search-section-wrapper mt-4 px-4">
             <div className="users-listing">
-              <div class="add__status">+</div>
-      
+              <div class="add__status" onClick={makeMeLive}>+</div>
+
         <OwlCarousel  options={options}  >
         {friendList.map((item, i) =>(
         // (statusLength.error=="") ?
@@ -174,12 +205,12 @@ console.log(statusData);
             </div>
           </div>
           // : ""
-         ))} 
-         
+         ))}
+
         </OwlCarousel>
 
-        
-    
+
+
       </div>
             <div className="search-people-row">
               <div className="row">
@@ -192,7 +223,7 @@ console.log(statusData);
                       </figure>
                       <div className="sp-singular-content">
                       {item.online == '0'? <div className="status offline">Offline</div>: <div className="status online">Online</div>}
-                       
+
                         <h4>{item.first_name + ' ' + item.last_name} <span className="age">{item.age}</span></h4>
                         <div className="info">{item.distance}, {item.occupation}</div>
                       </div>
@@ -214,7 +245,7 @@ console.log(statusData);
                     </a>
                   </div>
                 </div>
-             
+
               </div>
             </div>
           </div>
@@ -223,9 +254,9 @@ console.log(statusData);
     </div>
   </div>
   <div className="modal fade" id="status-modal" tabIndex={-1} role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  
+
   <div className="modal-dialog" role="document">
-  
+
          <div className="modal-body p-0">
         <div className="status-info">
           <div className="status_image">
@@ -234,17 +265,17 @@ console.log(statusData);
           <div className="status_heading">
             <h6>{statusData.first_name}• {statusData.age}</h6>
             <span className="timer d-block">9 Seconds</span>
-           
+
             <span className="status_view"><img src="/assets/images/eye-icon.svg" alt="eye" /></span>
-      
+
            </div>
         </div>
         <OwlCarousel  options={statusoptions} id="status-bar">
-     {!!storyData && <>  
-     {storyData.map((items ,i) => { 
+     {!!storyData && <>
+     {storyData.map((items ,i) => {
        return <div className="status-bar__items">
          {items.statuses_type==1 ?  <img src={items.file} alt="status" /> : <video src={items.file} alt="status" />}
-           
+
           </div>
         })}
         </>
@@ -252,14 +283,14 @@ console.log(statusData);
         {
           <></>
         }
-         
-         
+
+
         </OwlCarousel>
- 
-        
-      
+
+
+
       </div>
-   
+
     <div className="status_footer">
       <div className="status_like">
         <span><img src="/assets/images/heart-icon.svg" alt="like status" /> 2,190</span>
@@ -272,7 +303,7 @@ console.log(statusData);
           <li className="bg-grd-clr"><img src="/assets/images/gift.svg" alt="gift" /></li>
           <li className="bg-grd-clr"><img src="/assets/images/dots-icon.svg" alt="gift" /></li>
         </ul>
-      </div>    
+      </div>
     </div>
   </div>
 
