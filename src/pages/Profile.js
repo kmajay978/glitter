@@ -58,7 +58,6 @@ const Profile = (props) =>{
   const handlePrivacy =() => {setShowSetting(false); setShowPrivacy(true);}
   const handleAbout = () => {setShowSetting(false); setShowAbout(true);}
   const handleShare =() => {setShowSetting(false); setShowShare(true);} // show share glitter model
-
   // Getting form value here
   const [form , setForm] = useState({
     
@@ -109,6 +108,7 @@ const handleCheck = (e) => {
   // Fetching profile Data
   var sessionId = localStorage.getItem("session_id")
   const ProfileData = async() =>{
+
     const bodyParameters = {
       session_id: sessionId,
       };
@@ -136,6 +136,7 @@ const handleCheck = (e) => {
       //  console.log(profileData);
    
      //update profile data
+     
      const updateProfile = (e) =>{
      
       const config = {

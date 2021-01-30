@@ -21,11 +21,12 @@ const SearchHome = () =>
  const [statusData , setStatusData] = useState({});
  const [storyData , setStoryData] = useState([]);
  const[ friendId , setFriendId] = useState('');
- 
+ const [statusLength , setStatusLength] = useState("");
+
  const options = {
   loop: false,
-  margin: 15,
-  items: 18,
+  margin: 20,
+  items: 13,
   nav: false,
   autoplay: true
 };
@@ -48,14 +49,21 @@ const statusoptions = {
 
 
 
-  const handleFriendList = async() => {
+  const handleFriendList = () => {
     const bodyParameters ={
       session_id : localStorage.getItem('session_id')
     }
-    const {data :{data}}= await axios.post(FRIENDLIST_API,bodyParameters)
-    setFriendlist(data); 
+   axios.post(FRIENDLIST_API,bodyParameters)
+    .then((response) => {
+      if (response.status === 200 ) {
+        setFriendlist(response.data.data);
+        setStatusLength(response.data.data.statuses);
+      }
+ }, (error) => {
+  setFriendlist('');
+});
   }
-
+   console.log(statusLength);
   useEffect  (() => {
    handleStatus();
    
@@ -154,18 +162,20 @@ console.log(statusData);
           </div>
           <div className="search-section-wrapper mt-4 px-4">
             <div className="users-listing">
-
-   
+              <div class="add__status">+</div>
       
         <OwlCarousel  options={options}  >
-        {friendList.map((item, i) =>{   
-         return<div className="users-listing__slider__items" onClick={() =>  setFriendId(item.user_id)} id={item.user_id}  >
+        {friendList.map((item, i) =>(
+        // (statusLength.error=="") ?
+         <div className="users-listing__slider__items" onClick={() =>  setFriendId(item.user_id)} id={item.user_id}  >
             <div className="users-listing__slider__items__image"  data-toggle="modal" data-target="#status-modal" >
            {!!friendList ? <img src={item.profile_images} alt="marlene" /> : ""}
               <span className="circle-shape" />
             </div>
           </div>
-         })} 
+          // : ""
+         ))} 
+         
         </OwlCarousel>
 
         
