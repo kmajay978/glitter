@@ -16,6 +16,7 @@ const clearChatState = (dispatch) => {
 }
 
 const SearchProfile = () =>{
+  const [user, setUserData] = useState(null);
   const params = useParams();
   const history = useHistory();
   const dispatch = useDispatch();
@@ -24,7 +25,7 @@ const SearchProfile = () =>{
   const [isExpired, setIsExpired] = useState(false);
 
   const userData = useSelector(userProfile).user.profile; //using redux useSelector here
-
+console.log(userData, "userdata..")
   const componentWillUnmount = () => {
     if (videoCallStatus == 3) {
       console.log(videoCallParams, "videoCallParams... test")
@@ -41,7 +42,11 @@ const SearchProfile = () =>{
     clearChatState(dispatch);
     history.push("/chat");
   }
-
+  useEffect(() =>{
+    if (!!userData) {
+      setUserData(userData)
+    }
+  }, [userData])
   useEffect(() => {
     if (!params.channel_name) {
           componentWillUnmount()
@@ -186,6 +191,27 @@ const SearchProfile = () =>{
       }
     });
   }, [])
+
+  const endCall = () => {
+    if (params.receiver == "false") {
+      SOCKET.emit("sender_decline_video_call", {
+        sender: {user_from_id: videoCallParams.user_from_id},
+        reciever_id: videoCallParams.user_to_id,
+        channel_name: videoCallParams.channel_name,
+        type: 0,
+        status: 2
+      });
+    }
+    else {
+      SOCKET.emit("receiver_decline_video_call", {
+        sender: {user_from_id: videoCallParams.user_from_id},
+        reciever_id: videoCallParams.user_to_id,
+        channel_name: videoCallParams.channel_name,
+        type: 0,
+        status: 2
+      });
+    }
+  }
     return(
    <section className="home-wrapper">
   <img className="bg-mask" src="/assets/images/mask-bg.png" alt="Mask" />
@@ -202,9 +228,23 @@ const SearchProfile = () =>{
             <div className="vc-head-title d-flex flex-wrap align-items-center ml-5">
               <div className="vc-user-name d-flex flex-wrap align-items-center">
                 <figure>
-                  <img src="/assets/images/vc-user.png" alt="Augusta Castro" />
+                  {
+                    !user &&
+                    <img src={"http://167.172.209.57/glitter-101/public/profile_images/1611574536_download.jpg"} alt="placeholder"/>
+                  }
+                  {
+                    !!user &&
+                    <img src={user.profile_images[0]} alt="Augusta Castro" />
+                  }
                 </figure>
-                <div className="name ml-2">Augusta Castro <span className="age">20</span></div>
+                {
+                  !!user &&
+                  <div className="name ml-2">{user.first_name} <span className="age">{user.age}</span></div>
+                }
+                {
+                  !user &&
+                  <div className="name ml-2"> <span className="age"> </span></div>
+                }
               </div>
               <div className="remaining-coins ml-4">
                 <img src="/assets/images/diamond-coin.png" alt="Coins" />
@@ -214,16 +254,8 @@ const SearchProfile = () =>{
           </div>
         </div>
         <div>
-            <button onClick={() => joinChannel('host')}>Join Channel as Host</button>
-            <button onClick={() => joinChannel('audience')}>Join Channel as Audience</button>
-            <button onClick={() => leaveEventHost('host')}>Leave Event Host</button>
-            <button onClick={() => leaveEventAudience('audience')}>Leave Event Audience</button>
-            <div id="local_stream" className="local_stream" style={{ width: "400px", height: "400px" }}></div>
-            <div
-                id="remote_video_"
-                style={{ width: "400px", height: "400px" }}
-            />
         </div>
+
         <div className="col-lg-7 p-3">
           <div className="tab-top d-flex flex-wrap-wrap align-items-center">
             <div className="vc-action-tab ml-auto mr-4 position-relative">
@@ -240,16 +272,65 @@ const SearchProfile = () =>{
                   <a href="javascript:void(0)">Block</a>
                 </li>
                 <li>
-                  <a href="javascript:void(0)">End Video</a>
+                  <a href="javascript:void(0)" onClick={endCall}>End Video</a>
                 </li>
               </ul>
             </div>
            <NavLinks />
+            <a href="javascript:void(0)" className="end-video bg-grd-clr" onClick={endCall}>End Video</a>
           </div>
         </div>
       </div>
     </div>
   </div>
+     <div className="vc-screen-wrapper">
+       <div className="vc-screen">
+         <div id="local_stream" className="local_stream" style={{ width: "400px", height: "400px" }}></div>
+         <div
+             id="remote_video_"
+             style={{ width: "400px", height: "400px" }}
+         />
+         <img src="/assets/images/video-chat-bg.jpg" alt="Video Calling"/>
+       </div>
+       <div className="charges-reminder-txt">
+         <p>After 25 Seconds, you will be charged 120 coins per minute</p>
+       </div>
+       <div className="vc-timer-box text-center">
+         <div className="timer">
+           <i className="far fa-clock"></i>
+           <span>25 Sec</span>
+         </div>
+         <div className="vc-sppiner">
+           <a className="sppiner bg-grd-clr" href="javascript:void(0)">
+             <img src="/assets/images/sppiner.png" alt="Sppiner"/>
+           </a>
+         </div>
+       </div>
+       <div className="vc-option-block d-flex flex-wrap align-items-end">
+         <div className="vc-options">
+           <ul>
+             <li>
+               <a className="btn-round bg-grd-clr" href="javascript:void(0)">
+                 <img src="/assets/images/magic-stick.png" alt="Magic"/>
+               </a>
+             </li>
+             <li>
+               <a className="btn-round bg-grd-clr" href="javascript:void(0)">
+                 <img src="/assets/images/chat.png" alt="Chat"/>
+               </a>
+             </li>
+             <li>
+               <a className="btn-round bg-grd-clr" href="javascript:void(0)">
+                 <img src="/assets/images/gift.png" alt="Gift"/>
+               </a>
+             </li>
+             <li>
+               <a className="btn btn-nxt bg-grd-clr" href="javascript:void(0)">Next</a>
+             </li>
+           </ul>
+         </div>
+       </div>
+     </div>
 </section>
 
 

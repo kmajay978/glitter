@@ -3904,3 +3904,55 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00071930', e
 .react-calendar__month-view__weekdays__weekday abbr {
     text-decoration: none;
 }
+
+/* one to one video */
+
+div#remote_video_ {
+    width: 100% !important;
+    height: 100vh !important;
+}
+
+div#remote_video_ > div:last-child {
+    position: absolute !important;
+    right: 15px;
+    width: 200px !important;
+    height: 200px !important;
+    right: 15px;
+    bottom: 0;
+    border: 1px solid var(--theme-primary-color);
+}
+.vc-screen .vc-option-block{
+    right:300px;
+}
+
+.end-video.bg-grd-clr{
+
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    top: 28px;
+    width: 100px;
+    height: 50px;
+    color: #fff;
+    text-align: center;
+    border-radius: 50px;
+    line-height: 51px;
+}
+
+
+
+div#local_stream {
+    width: 100% !important;
+    height: 100vh !important;
+}
+
+/*div#local_stream > div:last-child {*/
+/*    position: absolute !important;*/
+/*    right: 15px;*/
+/*    width: 200px !important;*/
+/*    height: 200px !important;*/
+/*    right: 15px;*/
+/*    bottom: 0;*/
+/*    border: 1px solid var(--theme-primary-color);*/
+/*}*/
