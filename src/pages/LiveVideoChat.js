@@ -8,7 +8,7 @@ import { joinChannel, leaveEventAudience, leaveEventHost } from "../components/V
 import {useSelector, useDispatch} from "react-redux";
 import {userProfile, liveVideoCall, liveVideoCallUser} from "../features/userSlice";
 
-let videoCallStatus = 0, videoCallParams, interval;
+let videoCallStatus = 0, videoCallParams, interval, userData;
 
 const clearChatState = (dispatch) => {
     dispatch(liveVideoCall(null))
@@ -23,8 +23,8 @@ const LiveVideoChat = () =>{
 
     const [isExpired, setIsExpired] = useState(false);
 
-    const userData = useSelector(userProfile).user.profile; //using redux useSelector here
-    console.log(userData, "userdata..")
+    userData = useSelector(userProfile).user.profile; //using redux useSelector here
+   
     const componentWillUnmount = () => {
         if (videoCallStatus == 4) {
             console.log(videoCallParams, "videoCallParams... test")
@@ -46,11 +46,11 @@ const LiveVideoChat = () =>{
         }
     }, [userData])
     useEffect(() => {
+        console.log(videoCallState, "check..")
         if (!params.channel_name) {
             // componentWillUnmount()
         } else {
             const getPageRefresh = localStorage.getItem("videoCallLivePageRefresh");
-            alert(getPageRefresh)
             videoCallParams = {
                 user_id: params.user_id,
                 channel_id: params.channel_id,
@@ -60,20 +60,19 @@ const LiveVideoChat = () =>{
             if (!getPageRefresh) {
                 // dispatch(liveVideoCall(videoCallParams))
                 // }
-                localStorage.setItem("videoCallLivePageRefresh", "1");
+                // localStorage.setItem("videoCallLivePageRefresh", "1");
             } else {
                 videoCallStatus = 4
                 componentWillUnmount()
             }
             // check with backend + socket if this channel exist...
-            console.log(videoCallParams, "videoCallParams...")
-            console.log(userData, "ffffff")
+            SOCKET.connect()
             SOCKET.emit("authenticate_live_video_call", {
                 host_id: Number(videoCallParams.user_id),
-                user_id: userData.user_id,
+                user_id: videoCallState.user_id,
                 channel_name: videoCallParams.channel_name,
                 type: 1,
-                is_host: Number(videoCallParams.user_id) === userData.user_id,
+                is_host: Number(videoCallParams.user_id) === videoCallState.user_id,
                 // videoCallProps: Number(videoCallParams.user_id) === userData.user_id ?
             });
 
@@ -98,7 +97,6 @@ const LiveVideoChat = () =>{
 
             SOCKET.on('authorize_live_video_call', (data) => {
                 if (data.is_host) {
-                    alert("here")
                     // opnen host camera
                     const option = {
                         appID: "52cacdcd9b5e4b418ac2dca58f69670c",
@@ -112,7 +110,7 @@ const LiveVideoChat = () =>{
                     joinChannel('host', option)
                 }
                 else { // audience..
-                    if (data.user_id === userData.user_id) {
+                    if (data.user_id === videoCallState.user_id) {
                         // open audience camera...
                         const option = {
                             appID: "52cacdcd9b5e4b418ac2dca58f69670c",
@@ -122,7 +120,7 @@ const LiveVideoChat = () =>{
                             key: '',
                             secret: ''
                         }
-                        console.log(videoCallState, "videoCallState...")
+                        console.log(option, "jkjk...")
                         joinChannel('audience', option)
 
                     }
