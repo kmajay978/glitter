@@ -7,7 +7,7 @@ import useToggle from '../components/CommonFunction';
 import {removeStorage} from '../components/CommonFunction';
 import Login from '../pages/Login'
 import { useDispatch } from 'react-redux';
-import {logout, profile, ProfileData} from '../features/userSlice';
+import {logout, profile, ProfileData, stripePlanId} from '../features/userSlice';
 import {Modal, ModalBody , Dropdown} from 'react-bootstrap';
 import $ from 'jquery';
 import Logo from '../components/Logo';
@@ -15,9 +15,7 @@ import PrivacyPolicy from '../components/PrivacyPolicy';
 import AboutGlitter from '../components/AboutGlitter';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import { EmailIcon, FacebookIcon,  TelegramIcon, TwitterIcon, WhatsappIcon,EmailShareButton,FacebookShareButton,TelegramShareButton,WhatsappShareButton, TwitterShareButton,} from "react-share";
-// import {CardElement} from '@stripe/react-stripe-js';
-   
-
+import StripeForm from '../components/StripeForm'
 
 const Profile = (props) =>{
 
@@ -43,17 +41,12 @@ const Profile = (props) =>{
   const [showGift , setShowGift] = useState(false);
   const [showImage , setShowImage] = useState(false); //state for edit profile image model
   const [interestData , showInterestData] = useState([]);
-  const [hobbies , setHobbies] = useState("");
-  const [selected , setSlelected] = useState(true);
-  const [allChecked, setAllChecked] = useState(false);
-  const [isChecked, setIsChecked] = useState({});
+  const [hobbies , setHobbies] = useState([]);
+  const [selectedCheck , setSlelected] = useState([]);
+
   const [showStripe , setShowStripe] = useState(false);
 
-  const [curentStripePlan , setStripPlan] = useState({
-    session_id : "" ,
-    plan_id : "",
-    token : ""
-  });
+  const [curentStripePlan , setStripPlan] = useState();
   
   const [isOn, toggleIsOn] = useToggle();
   const [isProfile, toggleProfile] = useToggle();
@@ -65,7 +58,6 @@ const Profile = (props) =>{
   const handlePrivacy =() => {setShowSetting(false); setShowPrivacy(true);}
   const handleAbout = () => {setShowSetting(false); setShowAbout(true);}
   const handleShare =() => {setShowSetting(false); setShowShare(true);} // show share glitter model
-  
   // Getting form value here
   const [form , setForm] = useState({
     
@@ -78,10 +70,10 @@ const Profile = (props) =>{
     weight:"",
     relationStatus:"",
     looking_for:"",
-    interests_hobbie : ""
+    'interests_hobbie[]' :""
   });
 
-//  console.log(form);
+  console.log(form, "form...");
   
   const handleChange = e => { 
     setForm({
@@ -91,22 +83,24 @@ const Profile = (props) =>{
     }) 
 }
 
-
-var  options = []
-const handleHobbies = ( e) => { 
-  // setHobbies(e.target.value);
-  const options = hobbies
-  let index
-  if (e.target.checked) {
-    options.push(+e.target.value)
-  } else {
-    index = options.indexOf(+e.target.value);
-    options.splice(index, 1);
+const handleCheck = (e) => {
+  const target = e.target;
+  var value = target.value;
+  
+  if(target.checked){
+    let selectedArray = selectedCheck;
+    selectedArray.push(value)
+    setSlelected(selectedArray)
+  }else{
+    let selectedArray = selectedCheck;
+    var index = selectedArray.indexOf(value); 
+    selectedArray.splice(index,1);
+    setSlelected(selectedArray)
   }
-  setHobbies({ options: options })
-  }
+  
+}
 
- console.log(hobbies);
+
     const shareUrl = 'http://localhost:3000/';
     const title = 'gilter-app';
 
@@ -144,24 +138,31 @@ const handleHobbies = ( e) => {
      //update profile data
      
      const updateProfile = (e) =>{
-     console.log("working");
-     console.log(hobbies, "hobbies..")
-     const bodyParameters ={
-    session_id : sessionId,
-    device_token : "uhydfdfghdertyt445t6y78755t5jhyhyy" ,
-    device_type : 0 ,
-    first_name : form.firstName,
-    last_name : form.lastName,
-    dob : form.dob,
-    gender :form.gender,
-    aboutMe : form.aboutMe,
-    height : form.height,
-    weight : form.weight,
-    looking_for:form.looking_for,
-    relationship_status :form.relationStatus,
-    "interests_hobbies[]"  : hobbies
-   };
-   axios.post(EDITPROFILE_API , bodyParameters) 
+     
+      const config = {
+        headers : {
+                  Accept: "application/json",
+                  "Content-Type": "multipart/form-data",
+              }
+        }
+
+      const bodyParameters = new FormData();
+        bodyParameters.append("session_id", "" + sessionId);
+        bodyParameters.append("device_token", "uhydfdfghdertyt445t6y78755t5jhyhyy");
+        bodyParameters.append("device_type", "" + 0);
+        bodyParameters.append("first_name", "" + form.firstName);
+        bodyParameters.append("last_name", "" + form.lastName);
+        bodyParameters.append("dob", "" + form.dob);
+        bodyParameters.append("gender", "" + form.gender);
+        bodyParameters.append("aboutMe", "" + form.aboutMe);
+        bodyParameters.append("height", "" + form.height);
+        bodyParameters.append("weight", "" + form.weight);
+        bodyParameters.append('looking_for', form.looking_for);
+        bodyParameters.append("relationship_status", "" + form.relationStatus);
+        bodyParameters.append('interests_hobbies[]', selectedCheck.join(","));
+        
+
+   axios.post(EDITPROFILE_API , bodyParameters, config) 
    .then((response) => {
    if(response.status==200){
    createNotification('success');
@@ -274,7 +275,7 @@ const handleHobbies = ( e) => {
     {
       setPicture(e.target.files[0]);
       const reader = new FileReader();
-      reader.addEventListener("load", () => {
+      reader.addeListener("load", () => {
         setImgData(reader.result);
        });
       reader.readAsDataURL(e.target.files[0]);
@@ -291,22 +292,13 @@ const handleHobbies = ( e) => {
 
   // Get id of current plan 
 
-  const Stripehandler = (stripePlanId) =>{
-
-    // setStripPlan({
-    //   session_id : sessionId ,
-    //   plan_id : stripePlanId,
-    //   token : "UgPrRjts9yzVQ15yKJY22wp3LKYtBIhxIuBDk76y"
-    // })
+  const Stripehandler = (id) =>{
+    dispatch(
+      stripePlanId({
+        stripePlanId: id
+      })
+  );
     setShowStripe(true);
-    // axios.post(ACTIVATE_STRIPE_PACKAGE,bodyParameters)
-    // .then((response) => {
-
-    //   console.log(response,"response.......");
-    
-    // }, (error) => {
-      
-    // });
   }
 
 
@@ -428,7 +420,7 @@ const handleHobbies = ( e) => {
            </div>
           {interestData.map((item , i) => {
           return <div className="form-group">
-              <input type="checkbox" id={"interests_hobbie"+i}  checked={allChecked ? true : isChecked[item.id]} onChange={handleHobbies} name="interests_hobbie" value={item.id}/>
+              <input type="checkbox" id={"interests_hobbie"+i}  onClick={handleCheck} name="interests_hobbie" value={item.id}/>
             <label for={"interests_hobbie"+i}>  {item.interests_or_hobbies}</label>
           
             </div>  
@@ -535,10 +527,7 @@ const handleHobbies = ( e) => {
           <div className="user-profile__options becomevip-wrapper__innerblock">
             <ul>
            
-              <li><a href="javascript:void(0)" id="gift-modal" onClick={Stripehandler}><img src="/assets/images/gift-icon.png" alt="gifts" />
-                  <h6>Stripe</h6> <i className="fas fa-chevron-right"/>
-                </a></li>
-                <li><a href="javascript:void(0)" id="gift-modal" onClick={handleGift}><img src="/assets/images/gift-icon.png" alt="gifts" />
+              <li><a href="javascript:void(0)" id="gift-modal" onClick={handleGift}><img src="/assets/images/gift-icon.png" alt="gifts" />
                   <h6>Gifts</h6> <i className="fas fa-chevron-right"/>
                 </a></li>
               <li><a href="javascript:void(0)" id="edit-profile" onClick={handleShow}><img src="/assets/images/edit-profile.png" alt="Edit Profile" />
@@ -570,7 +559,7 @@ const handleHobbies = ( e) => {
 {packageList.map((item,i) =>(
            (item.duration === "12") ?
             <div className="membership-plans__block active mt-5">
-            <a href="javascript:void(0)" key={i} onClick={() => Stripehandler(item.plan_id)}>
+            <a href="javascript:void(0)" key={i} onClick={(e) => Stripehandler(item.plan_id)}>
               <span className="membership-discount">{`save ${item.save}`}</span>
               <h5 className="text-white text-uppercase mb-0">{item.name}</h5>
               <div className="membership-plans__price">
@@ -579,7 +568,7 @@ const handleHobbies = ( e) => {
               </div>
             </a>
           </div>
-          : <div className="membership-plans__block" key={i} onClick={() => Stripehandler(item.plan_id)}>
+          : <div className="membership-plans__block" key={i} onClick={(e) => Stripehandler(item.plan_id)}>
           <a href="javascript:void(0)">
             <h5 className="text-uppercase mb-0">{item.name}</h5>
             <div className="membership-plans__price">
@@ -632,27 +621,9 @@ const handleHobbies = ( e) => {
           <div className="d-flex align-items-center">
             <h4 className="theme-txt text-center mb-4 ml-3">Your Card details</h4>
           </div>
-      
-        <form>
-      
-          {/* <CardElement
-  options={{
-    style: {
-      base: {
-        fontSize: '16px',
-        color: '#424770',
-        '::placeholder': {
-          color: '#aab7c4',
-        },
-      },
-      invalid: {
-        color: '#9e2146',
-      },
-    },
-  }}
-/> */}
-         
-          </form>
+        
+          <StripeForm />
+
            </div>
            <a href="javascript:void(0)" className="modal-close" onClick={() => setShowStripe(false)}><img src="/assets/images/btn_close.png" /></a>
     </Modal>
