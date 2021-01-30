@@ -3,14 +3,15 @@ import {ElementsConsumer, CardElement} from "@stripe/react-stripe-js";
 
 import CardSection from "./CardSection";
 import {useSelector} from "react-redux";
-import {stripeDataPlanid} from "../features/userSlice";
-import {ACTIVATE_STRIPE_PACKAGE} from "./Api";
+import {stripeDataPlanid , stripeCoinDataPlanid} from "../features/userSlice";
+import {ACTIVATE_STRIPE_PACKAGE , GET_COIN_PACKAGE} from "./Api";
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import axios from "axios";
 
 const CheckoutForm = (props) => {
 
     const Selected_Stripe_planid = useSelector(stripeDataPlanid);
+    const Selected_Stripe_coinid = useSelector(stripeCoinDataPlanid);
     var sessionId = localStorage.getItem("session_id")
     const handleSubmit = async event => {
         event.preventDefault();
@@ -25,6 +26,7 @@ const CheckoutForm = (props) => {
             console.log(result.error.message);
             createNotification('error',result.error.message);
         } else {
+            if(!!Selected_Stripe_planid){
             // console.log(result.token.id);
             const bodyParameters = {
                 session_id: sessionId,
@@ -34,10 +36,25 @@ const CheckoutForm = (props) => {
             axios
                 .post(ACTIVATE_STRIPE_PACKAGE, bodyParameters)
                 .then((response) => {
-
+                 console.log(response);
                     createNotification('success',response.message);
                 }, (error) => {});
         }
+        if(!!Selected_Stripe_coinid)
+        {
+            const bodyParameters = {
+                session_id: sessionId,
+                coins_package_id: Selected_Stripe_coinid,
+                token: result.token.id
+            }
+            axios
+                .post(GET_COIN_PACKAGE, bodyParameters)
+                .then((response) => {
+                 console.log(response);
+                    createNotification('sucess-coin',response.message);
+                }, (error) => {});
+        }
+    }
     };
 
     const createNotification = (type,message) => {
@@ -50,6 +67,8 @@ const CheckoutForm = (props) => {
             NotificationManager.error(message, 'Please check your card details', 5000, () => {
             });
             break; 
+            case 'sucess-coin':
+            NotificationManager.success(message, 'Your coin package activated');
       };
       };
 

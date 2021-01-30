@@ -3979,6 +3979,46 @@ div#local_stream {
     height: 100vh !important;
 }
 
+/*div#local_stream > div:last-child {*/
+/*    position: absolute !important;*/
+/*    right: 15px;*/
+/*    width: 200px !important;*/
+/*    height: 200px !important;*/
+/*    right: 15px;*/
+/*    bottom: 0;*/
+/*    border: 1px solid var(--theme-primary-color);*/
+/*}*/
+
+
+/* buy gifts */
+
+.buy-gifts__image {
+    width: 30px;
+    height: 30px;
+    background-color: #fff;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 30px;
+}
+
+.buy-gifts_price {
+    width: calc(100% - 30px);
+    padding-left: 10px;
+}
+span.gift__discount {
+    position: absolute;
+    background-color: rgba(255,255,255,0.45);
+    border-radius: 50px;
+    right: 16px;
+    padding: 5px 20px;
+    font-size: 12px;
+    text-transform: uppercase;
+    top: 11px;
+}
+
+.buy-gifts_price span{
+    color: rgba(255,255,255,0.45);
+} 
 /* go live modal */
 .theme-modal .modal-dialog{
     max-width: 800px;
