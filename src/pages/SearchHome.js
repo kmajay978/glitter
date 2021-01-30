@@ -126,7 +126,7 @@ console.log(statusData);
               newState.channel_name = data.channel_name;
               newState.channel_token = data.channel_token;
               localStorage.setItem("liveVideoProps", JSON.stringify(newState))
-              history.push('/'+data.user_id+ '/' + uuidv4() +'/'+ data.channel_name + '/live-video-chat')
+              history.push('/'+data.host_id+ '/' + uuidv4() +'/'+ data.channel_name + '/live-video-chat')
           }
       })
 
