@@ -3,7 +3,7 @@ import  $ from 'jquery';
 import {useSelector, useDispatch} from 'react-redux';
 import axios from "axios";
 import NavLinks from '../components/Nav';
-import { GIFT_LIST_API , GET_GIFT_API ,LIKED_LIST, VISITOR_LIST_API ,FRIENDLIST_API, GET_USERPROFILE_API ,VIDEOCALL_API} from '../components/Api';
+import { GIFT_LIST_API , GET_GIFT_API ,LIKED_LIST, VISITOR_LIST_API ,FRIENDLIST_API, GET_USERPROFILE_API ,VIDEOCALL_API, ACCEPT_REQUEST_API} from '../components/Api';
 import {SOCKET} from '../components/Config';
 import { v4 as uuidv4 } from 'uuid';
 import { css } from "@emotion/core";
@@ -135,7 +135,20 @@ const ChatBox = (props) =>{
     }
 
     const AcceptUserRequest = (LikedUserId) =>{
-        alert(LikedUserId)
+        const bodyParameters = {
+            session_id : sessionId,
+            id : LikedUserId
+        }
+        axios.post(ACCEPT_REQUEST_API , bodyParameters)
+        .then((response) => {
+            if(response.status==200)
+            {
+                createNotification('sucess-like');
+            }
+        }, (error) => {
+
+        });
+
     }
     const createNotification = (type) => {
         return () => {
@@ -508,11 +521,11 @@ const handleVideo = (image) =>{
                                             { Likes.map((item, i) => {
                                                 return   <li className="nav-item">
                                                     <a className="nav-link" href="#chat-field" data-toggle="tab" data-id={item.user_id} role="tab" onClick = {() =>AcceptUserRequest(item.user_id)}>
-                                                        <img alt={item.liked_user_name} className="img-circle medium-image" src={item.liked_user_pic} />
+                                                        <img alt={item.first_name} className="img-circle medium-image" src={item.profile_images} />
                                                         <div className="contacts_info">
                                                             <div className="user_detail">
                                                                 <span className="message-time">{item.created_at}</span>
-                                                                <h5 className="mb-0 name">{item.liked_user_name}</h5>
+                                                                <h5 className="mb-0 name">{item.first_name}</h5>
                                                                 {/* <div className="message-count">2</div> */}
                                                             </div>
                                                             <div className="vcentered info-combo">
@@ -730,7 +743,12 @@ const handleVideo = (image) =>{
                             </div>
 
                         </div>
-                        :"" }
+                        :<div className="nothing-to-see text-center active">
+                        <figure>
+                            <img src="/assets/images/message-circle.png" alt="Message" />
+                            <figcaption>Nothing To See</figcaption>
+                        </figure>
+                    </div> }
                                
                         {/* End chat box here */}
                         <div className={isOn ? 'all-gifts-wrapper active': 'all-gifts-wrapper '} >
