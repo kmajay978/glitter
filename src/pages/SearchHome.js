@@ -119,6 +119,8 @@ console.log(statusData);
       SOCKET.on('sendAudienceToLiveVideo', (data) => {
         console.log(userData, data, "kkkkkk")
           if (userData.user_id === data.user_id) {
+              $('#live-modal').hide();
+              setShowLive(false)
               var newState = {};
               newState.user_id = data.user_id;
               newState.call_type = 2;
@@ -151,6 +153,8 @@ console.log(statusData);
       SOCKET.on('start_your_live_video_now', (data) => {
           console.log(data, userData, "start live video link...");
           if ((data.user_id == userData.user_id) && data.channel_id && data.channel_name) {
+              $('#live-modal').hide();
+              setShowLive(false)
               history.push(data.user_id+ '/' + data.channel_id +'/'+ data.channel_name + '/live-video-chat')
           }
       });

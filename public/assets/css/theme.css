@@ -3965,6 +3965,8 @@ div#remote_video_ > div:last-child {
     bottom: 0;
     border: 1px solid var(--theme-primary-color);
 }
+
+
 .vc-screen .vc-option-block{
     right:300px;
 }
