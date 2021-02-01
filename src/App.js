@@ -5,7 +5,7 @@ import {Elements} from '@stripe/react-stripe-js';
 import {loadStripe} from '@stripe/stripe-js';
 import {BrowserRouter as Router, Switch, Route, withRouter, useParams, useHistory } from 'react-router-dom';
 // Importing all pages from index.js 
-import {Home,Login,ChatBox,SearchHome,AnswerCalling,SignupCompleted,Profile,SingleProfile,RecentCall,VideoChat, LiveVideoChat, SearchProfile,Dummy} from './pages'
+import {Home,Login,ChatBox,SearchHome,AnswerCalling,SignupCompleted,Profile,SingleProfile,RecentCall,VideoChat, LiveVideoChat, SearchProfile,Dummy, SearchHomeBkp} from './pages'
 import  ProtectedRoute  from "./protected.route";
 import axios from "axios";
 import createBrowserHistory from 'history/createBrowserHistory';
@@ -119,8 +119,10 @@ function App() {
           <ProtectedRoute exact path='/single-profile' component={SingleProfile} />
           <ProtectedRoute exact path='/recent-call' component={RecentCall} />
           <ProtectedRoute exact path='/dummy' component={Dummy} />
+          <ProtectedRoute exact path='/status' component={SearchHomeBkp} />
           <ProtectedRoute exact path='/:receiver/:user_from_id/:user_to_id/:channel_id/:channel_name/video-chat' component={VideoChat} />
           <ProtectedRoute exact path='/:user_id/:channel_id/:channel_name/live-video-chat' component={LiveVideoChat} />
+          
         </Elements>
         </Switch>
       </Router>

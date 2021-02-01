@@ -12,4 +12,7 @@ export {default as SearchProfile}  from './SearchProfile';
 export {default as VideoChat}  from './VideoChat';
 export {default as Dummy} from './Dummy';
 export {default as LiveVideoChat} from './LiveVideoChat';
+export {default as SearchHomeBkp} from './SearchHomeBkp';
+
+
 
