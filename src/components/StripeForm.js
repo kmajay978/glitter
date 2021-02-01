@@ -4,7 +4,7 @@ import {ElementsConsumer, CardElement} from "@stripe/react-stripe-js";
 import CardSection from "./CardSection";
 import {useSelector} from "react-redux";
 import {stripeDataPlanid , stripeCoinDataPlanid} from "../features/userSlice";
-import {ACTIVATE_STRIPE_PACKAGE , GET_COIN_PACKAGE} from "./Api";
+import {ACTIVATE_STRIPE_PACKAGE , ACTIVATE_COIN_PACKAGE} from "./Api";
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import axios from "axios";
 
@@ -26,6 +26,7 @@ const CheckoutForm = (props) => {
             console.log(result.error.message);
             createNotification('error',result.error.message);
         } else {
+             // Activating VIP Membership here
             if(!!Selected_Stripe_planid){
             // console.log(result.token.id);
             const bodyParameters = {
@@ -40,6 +41,8 @@ const CheckoutForm = (props) => {
                     createNotification('success',response.message);
                 }, (error) => {});
         }
+
+        // Activating coin package here
         if(!!Selected_Stripe_coinid)
         {
             const bodyParameters = {
@@ -48,7 +51,7 @@ const CheckoutForm = (props) => {
                 token: result.token.id
             }
             axios
-                .post(GET_COIN_PACKAGE, bodyParameters)
+                .post(ACTIVATE_COIN_PACKAGE, bodyParameters)
                 .then((response) => {
                  console.log(response);
                     createNotification('sucess-coin',response.message);

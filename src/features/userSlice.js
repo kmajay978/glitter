@@ -11,6 +11,14 @@ const videoInitState = {
     channel_token: null
 };
 
+const liveVideoInitState = {
+    user_id: null,
+    call_type: null,
+    channel_id: null,
+    channel_name: null,
+    channel_token: null
+};
+
 export const userSlice = createSlice({ 
     name: "user", 
     initialState: { 
@@ -19,6 +27,7 @@ export const userSlice = createSlice({
         filterData: [],
         is_authanticated: !!localStorage.getItem("session_id"),
         video: videoInitState,
+        live_video: liveVideoInitState,
         stripePlanId:null ,
         stripeCoinPlanId :null
     }, 
@@ -45,13 +54,16 @@ export const userSlice = createSlice({
         stripePlanId: (state , action) => {
             state.stripePlanId = action.payload.stripePlanId;
         },
+        liveVideoCall: (state , action) => {
+            state.liveVideo = !!action.payload  ? action.payload : liveVideoInitState;
+        },
         stripeCoinPlanId: (state , action) => {
             state.stripeCoinPlanId = action.payload.stripeCoinPlanId;
-        }   
-
+        }
     }
 });
-export const { login, logout, profile , filterData, videoCall, stripePlanId , stripeCoinPlanId} = userSlice.actions;
+export const { login, logout, profile , filterData, videoCall, stripePlanId , stripeCoinPlanId, liveVideoCall} = userSlice.actions;
+
 export const selectUser = (state) => state.user.user;
 export const userProfile = (state) => state;
 export const stripeDataPlanid = (state) => state.user.stripePlanId;
@@ -59,4 +71,5 @@ export const stripeCoinDataPlanid = (state) => state.user.stripeCoinPlanId;
 export const userAuth = (state) => state.user.is_authanticated;
 export const filterDataUser = (state) => state.user.filterData;
 export const videoCallUser = (state) => state.user.video;
+export const liveVideoCallUser = (state) => state.user.live_video;
 export default userSlice.reducer;

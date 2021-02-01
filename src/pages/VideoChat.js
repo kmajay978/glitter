@@ -161,7 +161,9 @@ console.log(userData, "userdata..")
           interval = window.setInterval(() => {
             var list = document.getElementById("remote_video_");
             if (!!list) {
-              list.removeChild(list.childNodes[0]);
+              if (list.childNodes.length > 1) {
+                list.removeChild(list.childNodes[0]);
+              }
               clearInterval(interval)// Remove <ul>'s first child node (index 0)
             }
           }, 1000)
