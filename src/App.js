@@ -1,4 +1,5 @@
 import './App.css';
+import './components/jqueryfile.js';
 import React, { useState , useEffect } from 'react';
 import {Elements} from '@stripe/react-stripe-js';
 import {loadStripe} from '@stripe/stripe-js';
@@ -13,6 +14,8 @@ import {login, userProfile, videoCall} from "./features/userSlice";
 import {useDispatch, useSelector} from "react-redux";
 import {profile, userAuth} from './features/userSlice';
 import {SOCKET} from "./components/Config";
+
+
 let is_auth = false, userData;
 const history = createBrowserHistory({forceRefresh: true});
 const  ProfileData = async(dispatch, sessionId) => {
