@@ -99,7 +99,7 @@ const SearchProfile = () =>{
                  
                  <GlitterCard className="swipe"   >
                    <div className="user__card position-relative">
-        <img src={!!user_to.image ? user_to.image : ""} alt="Emma" width="100%"  />
+         <img src={!!user_to.image ? user_to.image : "/assets/images/profile-card.png"} alt="Emma" width="100%"  />
                    </div>
                    
                  </GlitterCard>

@@ -129,6 +129,19 @@ console.log(statusData);
 //          console.log("stop checking friend list live...")
 //      });
 //  }
+
+
+const uploadImage = () => {
+  // Click event for status uplaod screen
+  $(document).on("click", "#upload__media", function () {
+    $('#upload_fle').trigger("click");
+  });
+
+  $(document).on("click", "#upload_fle", function (e) {
+    e.stopPropagation();
+    //some code
+});
+}
   useEffect (() => {
     SOCKET.connect();
       SOCKET.emit("authenticate_friend_list_live", {
@@ -205,29 +218,14 @@ console.log(statusData);
         startingPos = [];
         setStartPosition(startingPos)
     });
-    // $(".upload__media").on("click", function(){
-    //   alert(12)
-    //   $(this).find("input").trigger("click");
-    // });
-
     }, 1000);
     // return () => componentWillUnmount()
 
-// File upload view
 
+// Status upload screen
+uploadImage();
     },[])
-    const uploadImage = () => {
-      $(document).on('click', '.modal-content', function(){ 
-        alert("button is clicked");
-        console.log("test", "working");
-      });
-    }
-
-    const hiddenFileInput = useRef('');
-
-    const handleClick = () => {
-      hiddenFileInput.current.click();
-    }
+         
 
   useEffect (() => {
     if (Click) {
@@ -420,25 +418,23 @@ console.log(statusData);
       <Modal className ="theme-modal edit-payment-modal" id="live-modal" show={showLive} onHide={() => setShowLive(false)} backdrop="static" keyboard={false}>
           {/* Modal start here */}
           {/* <div className="theme-modal" id="live-modal" tabIndex={-1} role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"> */}
-          <div className="modal-dialog" role="document">
           <form action="">
                   <div className="modal-body p-0">
                     <h2>Upload Status</h2>
                     <div className="upload-status d-flex">
-                      <a id="upload__media" className="upload__media bg-grd-clr" onClick={handleClick}  href="javascript:void(0)">
+                      <a id="upload__media" className="upload__media bg-grd-clr"  href="javascript:void(0)">
                       <i className="fas fa-camera"></i>
-                      <input type="file"  name="file" value="" id="upload_fle" className="d-none" onChange={handleFileChange} accept="image/*"  />
-
+                      <input type="file"  name="file" value="" id="upload_fle" className="d-none" onChange={handleFileChange}accept="image/*"  />
+                      <label htmlFor="upload_fle" id="PreviewPicture" style={{ backgroundImage: `url("${imgData}")` }}   />
                       </a>
                       <a className="upload__text bg-grd-clr" href="javascript:void(0)">
                         <i className="fas fa-pencil-alt"></i>
                         </a>
                         </div>
-                        <textarea/>
+                        {/* <textarea/> */}
 
                     </div>
              </form>
-          </div>
           {/* </div> */}
           {/* End Modal start here */}
           <a href="javascript:void(0)" className="modal-close" onClick={() => setShowLive(false)}><img src="/assets/images/btn_close.png" /></a>

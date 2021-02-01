@@ -3,7 +3,7 @@ import  $ from 'jquery';
 import {useSelector, useDispatch} from 'react-redux';
 import axios from "axios";
 import NavLinks from '../components/Nav';
-import { GIFT_LIST_API , GET_GIFT_API ,LIKED_LIST, VISITOR_LIST_API ,FRIENDLIST_API, GET_USERPROFILE_API ,VIDEOCALL_API} from '../components/Api';
+import { GIFT_LIST_API , GIFT_PURCHASE_API ,LIKED_LIST, VISITOR_LIST_API ,FRIENDLIST_API, GET_USERPROFILE_API ,VIDEOCALL_API, ACCEPT_REQUEST_API} from '../components/Api';
 import {SOCKET} from '../components/Config';
 import { v4 as uuidv4 } from 'uuid';
 import { css } from "@emotion/core";
@@ -48,7 +48,7 @@ const ChatBox = (props) =>{
     const[randomNumber, setRandomNumber] = useState('');
     const [isOn, toggleIsOn] = useToggle();
     const [GiftData , setGiftData] =useState([]);
-
+    
     let [loading, setLoading] = useState(false);
     const[recording, setRecording] = useState(false);
     const [dummyMediaRc, setDummyMediaRc] = useState(null)
@@ -134,6 +134,22 @@ const ChatBox = (props) =>{
             });
     }
 
+    const AcceptUserRequest = (LikedUserId) =>{
+        const bodyParameters = {
+            session_id : sessionId,
+            id : LikedUserId
+        }
+        axios.post(ACCEPT_REQUEST_API , bodyParameters)
+        .then((response) => {
+            if(response.status==200)
+            {
+                createNotification('sucess-like');
+            }
+        }, (error) => {
+
+        });
+
+    }
     const createNotification = (type) => {
         return () => {
           switch (type) {
@@ -168,9 +184,10 @@ const ChatBox = (props) =>{
            const getGiftItem = async(Uid) => {
            const bodyParameters ={
            session_id :  localStorage.getItem('session_id') ,
-           gift_id : Uid
+           gift_id : Uid ,
+           given_to : FriendUserId
            }
-            const {data : {result}} = await axios.post(GET_GIFT_API , bodyParameters)
+            const {data : {result}} = await axios.post(GIFT_PURCHASE_API , bodyParameters)
            
              }
     /************************************* Working here socket *******************************************************/
@@ -504,12 +521,12 @@ const handleVideo = (image) =>{
 
                                             { Likes.map((item, i) => {
                                                 return   <li className="nav-item">
-                                                    <a className="nav-link" href="#chat-field" data-toggle="tab" role="tab">
-                                                        <img alt={item.liked_user_name} className="img-circle medium-image" src={item.liked_user_pic} />
+                                                    <a className="nav-link" href="#chat-field" data-toggle="tab" data-id={item.user_id} role="tab" onClick = {() =>AcceptUserRequest(item.user_id)}>
+                                                        <img alt={item.first_name} className="img-circle medium-image" src={item.profile_images} />
                                                         <div className="contacts_info">
                                                             <div className="user_detail">
                                                                 <span className="message-time">{item.created_at}</span>
-                                                                <h5 className="mb-0 name">{item.liked_user_name}</h5>
+                                                                <h5 className="mb-0 name">{item.first_name}</h5>
                                                                 {/* <div className="message-count">2</div> */}
                                                             </div>
                                                             <div className="vcentered info-combo">
@@ -579,6 +596,7 @@ const handleVideo = (image) =>{
                             </div>
                         </div>
                         {/* Chat box here */}
+                        {GetActivity === 2 ?
                         <div className="col-md-8 tab-content chat-block" role="tablist">
                             <div className="nothing-to-see text-center active">
                                 <figure>
@@ -726,6 +744,13 @@ const handleVideo = (image) =>{
                             </div>
 
                         </div>
+                        :<div className="nothing-to-see text-center active">
+                        <figure>
+                            <img src="/assets/images/message-circle.png" alt="Message" />
+                            <figcaption>Nothing To See</figcaption>
+                        </figure>
+                    </div> }
+                               
                         {/* End chat box here */}
                         <div className={isOn ? 'all-gifts-wrapper active': 'all-gifts-wrapper '} >
     <div className="all-gift-inner">
