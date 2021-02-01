@@ -86,7 +86,7 @@ const LiveVideoChat = () =>{
                     }
                     else { // audience..
                         alert("decline audience with id:"+ data.user_id);
-
+                        componentWillUnmount();
                     }
                 }
             })
