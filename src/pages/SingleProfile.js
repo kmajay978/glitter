@@ -236,8 +236,8 @@ const SingleProfile = (props) =>{
                   }
                   {
                     <>
-                      <h4> , </h4>
-                      <span> , </span>
+                      <h4>  </h4>
+                      <span>  </span>
                   </>
                   }
                   

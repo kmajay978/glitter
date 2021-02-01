@@ -291,6 +291,7 @@ const handleCheck = (e) => {
        });
     
    }
+   
    const handleFileChange = e => {
     if (e.target.files[0]) 
     {
@@ -924,6 +925,15 @@ const handleCheck = (e) => {
   </Modal.Title>
       </Modal.Header> 
       <AboutGlitter/>
+  </Modal>
+
+  <Modal className="privacy-model" show={showPrivacy} onHide={() => setShowPrivacy(false)} >
+  <Modal.Header closeButton >
+    <Modal.Title>
+  <h2>Privacy policy</h2>
+  </Modal.Title>
+      </Modal.Header> 
+      <PrivacyPolicy/>
   </Modal>
 
   <Modal className="share-model" show={showShare} onHide={() => setShowShare(false)} >

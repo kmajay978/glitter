@@ -381,8 +381,7 @@ $(document).ready(function () {
     $("#edit-first-step").click(function(){ 
         $(".edit-second-step").addClass("active-second-step");
         $(".edit-first-step").addClass("disable-first-step");
-    })    
-    
+    })   
     
     /* var owl = $('#status-bar').owlCarousel({
         loop: false,

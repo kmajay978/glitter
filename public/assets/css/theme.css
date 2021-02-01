@@ -3730,6 +3730,21 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00071930', e
 	height: 18px;
 }
 
+.upload-status a {
+    width: 70px;
+    height: 70px;
+    display: flex;
+    border-radius: 50%;
+    margin: 0 20px;
+    align-items: center;
+    justify-content: center;
+}
+.upload-status a i {
+    color: #fff;
+    font-size: 30px;
+}
+
+
 /*Swipe card*/
 *, *:before, *:after {
     box-sizing: border-box;

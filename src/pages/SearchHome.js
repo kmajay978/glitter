@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import $ from 'jquery';
 import {  useHistory } from 'react-router';
 import { v4 as uuidv4 } from 'uuid';
@@ -17,43 +17,63 @@ import {generateLiveVideoChatToken} from "../api/videoApi";
 let isMouseClick = false, startingPos = [], glitterUid, friendLists = [], userData= null;
 const SearchHome = () =>
 {
-  const history = useHistory();
+
+    const history = useHistory();
     const dispatch = useDispatch();
     const[randomNumber, setRandomNumber] = useState('');
-  const [fetchedProfile, setFilterUser] = useState('');
- const [ friendList  , setFriendlist] = useState([]);
+    const [fetchedProfile, setFilterUser] = useState('');
+    const [ friendList  , setFriendlist] = useState([]);
 
- const [Click, setClick] = useState(false);
- const [StartPosition, setStartPosition] = useState([])
- const [statusData , setStatusData] = useState({});
- const [storyData , setStoryData] = useState([]);
- const[ friendId , setFriendId] = useState('');
- const [statusLength , setStatusLength] = useState("");
-const [showLive,setShowLive] = useState(false);
+    const [Click, setClick] = useState(false);
+    const [StartPosition, setStartPosition] = useState([])
+    const [statusData , setStatusData] = useState({});
+    const [storyData , setStoryData] = useState([]);
+    const[ friendId , setFriendId] = useState('');
+    const [statusLength , setStatusLength] = useState("");
+    const [showImage , setShowImage] = useState(false); //state for edit profile image model
+    const [picture, setPicture] = useState(null);
+    const [imgData, setImgData] = useState(null);
+
+    const handleImage =() => setShowImage(true);//upload status model
+    const [showLive,setShowLive] = useState(false);
+
+
 
     userData = useSelector(userProfile).user.profile; //using redux useSelector here
-    console.log(userData, "test")
- const options = {
-  loop: false,
-  margin: 20,
-  items: 13,
-  nav: false,
-  autoplay: true
-};
+    
+    const options = {
+      loop: false,
+      margin: 20,
+      items: 13,
+      nav: false,
+      autoplay: true
+      };
 
-const statusoptions = {
-  loop: false,
-  slideSpeed: 3000,
-  dots:true,
-  margin: 0,
-  items: 1,
-  smartSpeed: 1000,
-  nav: false,
-  autoplay: true,
-  autoplayTimeout: 3000,
+   const statusoptions = {
+     loop: false,
+     slideSpeed: 3000,
+     dots:true,
+     margin: 0,
+     items: 1,
+     smartSpeed: 1000,
+     nav: false,
+     autoplay: true,
+     autoplayTimeout: 3000,
+   };
+
    
-
-};
+  const handleFileChange = e => {
+    if (e.target.files[0]) {
+     console.log("picture: ", e.target.files);
+      setPicture(e.target.files[0]);
+      const reader = new FileReader();
+      reader.addEventListener("load", () => {
+        setImgData(reader.result); 
+       
+      });
+      reader.readAsDataURL(e.target.files[0]);
+     }
+  };
 
   const handleFriendList = () => {
     const bodyParameters ={
@@ -81,6 +101,7 @@ const statusoptions = {
   },[friendId])
 
   console.log(friendId);
+  
   const handleStatus = () =>
   {
     const bodyParameters = {
@@ -100,15 +121,26 @@ const statusoptions = {
     setStatusData('');
 });
   }
-console.log(statusData);
- console.log(storyData);
 
- const componentWillUnmount = () => {
-     alert("stop")
-     SOCKET.emit('stop_check_friend_list_live', () => {
-         console.log("stop checking friend list live...")
-     });
- }
+//  const componentWillUnmount = () => {
+//      //alert("stop")
+//      SOCKET.emit('stop_check_friend_list_live', () => {
+//          console.log("stop checking friend list live...")
+//      });
+//  }
+
+
+const uploadImage = () => {
+  // Click event for status uplaod screen
+  $(document).on("click", "#upload__media", function () {
+    $('#upload_fle').trigger("click");
+  });
+
+  $(document).on("click", "#upload_fle", function (e) {
+    e.stopPropagation();
+    //some code
+});
+}
   useEffect (() => {
     SOCKET.connect();
       SOCKET.emit("authenticate_friend_list_live", {
@@ -186,9 +218,13 @@ console.log(statusData);
         setStartPosition(startingPos)
     });
     }, 1000);
+    // return () => componentWillUnmount()
 
-    return () => componentWillUnmount()
+
+// Status upload screen
+uploadImage();
     },[])
+         
 
   useEffect (() => {
     if (Click) {
@@ -381,103 +417,28 @@ console.log(statusData);
       <Modal className ="theme-modal edit-payment-modal" id="live-modal" show={showLive} onHide={() => setShowLive(false)} backdrop="static" keyboard={false}>
           {/* Modal start here */}
           {/* <div className="theme-modal" id="live-modal" tabIndex={-1} role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"> */}
-          <div className="modal-dialog" role="document">
-              <div className="modal-content">
+         
+          <form action="" id="glitter_status" >
                   <div className="modal-body p-0">
-                      <div className="live-wrapper">
-                          <div className="live__leftblk">
-                              <div className="live_info d-flex">
-                                  <div className="live_img">
-                                      <img src="/assets/images/go-live.jpg" alt="live user" />
-                                      <span>change cover</span>
-                                  </div>
-                                  <div className="live_title">
-                                      <h5>Add a title to chat</h5>
-                                  </div>
-                              </div>
-                              <div className="live_share">
-                                  <span>Share to</span>
-                                  <ul>
-                                      <li><a href="javascript:void(0)"><i className="fab fa-facebook-f" /></a></li>
-                                      <li><a href><i className="fab fa-instagram" /></a></li>
-                                  </ul>
-                              </div>
-                              <div className="block_countries">
-                                  <div className="block_countries__list">
-                                      <img src="/assets/images/add-countries.svg" alt="add countries" />
-                                  </div>
-                                  <div className="block_countries__list">
-                                      <img src="/assets/images/india-flag.svg" alt="india" />
-                                      <div className="block_countries__info">
-                                          <span>India</span>
-                                          <a href="javascript:void(0)" className="del-country"><img src="/assets/images/country-close.svg" alt="close" /></a>
-                                      </div>
-                                  </div>
-                                  <div className="block_countries__list">
-                                      <img src="/assets/images/nigeria.svg" alt="nigeria" />
-                                      <div className="block_countries__info">
-                                          <span>India</span>
-                                          <a href="javascript:void(0)" className="del-country"><img src="/assets/images/country-close.svg" alt="close" /></a>
-                                      </div>
-                                  </div>
-                              </div>
-                          </div>
-                          <div className="live_rightblk  text-center">
-                              <h5 className="mb-4">Select Tag</h5>
-                              <div className="tags">
-                                  <div className="live-tags">
-                                      <input type="checkbox" defaultValue id="tag-1" />
-                                      <label htmlFor="tag-1">Make friends</label>
-                                  </div>
-                                  <div className="live-tags">
-                                      <input type="checkbox" defaultValue id="tag-2" />
-                                      <label htmlFor="tag-2">Meet People</label>
-                                  </div>
-                                  <div className="live-tags">
-                                      <input type="checkbox" defaultValue id="tag-3" />
-                                      <label htmlFor="tag-3">Enjoy</label>
-                                  </div>
-                                  <div className="live-tags">
-                                      <input type="checkbox" defaultValue id="tag-4" />
-                                      <label htmlFor="tag-4">Naughty</label>
-                                  </div>
-                                  <div className="live-tags">
-                                      <input type="checkbox" defaultValue id="tag-5" />
-                                      <label htmlFor="tag-5">Lovense Lush On</label>
-                                  </div>
-                                  <div className="live-tags">
-                                      <input type="checkbox" defaultValue id="tag-6" />
-                                      <label htmlFor="tag-6">Wet Show</label>
-                                  </div>
-                                  <div className="live-tags">
-                                      <input type="checkbox" defaultValue id="tag-7" />
-                                      <label htmlFor="tag-7">Sing Show</label>
-                                  </div>
-                                  <div className="live-tags">
-                                      <input type="checkbox" defaultValue id="tag-8" />
-                                      <label htmlFor="tag-8">Modeling</label>
-                                  </div>
-                                  <div className="live-tags">
-                                      <input type="checkbox" defaultValue id="tag-9" />
-                                      <label htmlFor="tag-9">Talk About Cultures</label>
-                                  </div>
-                                  <div className="live-tags">
-                                      <input type="checkbox" defaultValue id="tag-10" />
-                                      <label htmlFor="tag-10">Spin Wheel</label>
-                                  </div>
-                              </div>
-                          </div>
-                          <div className="live-option w-100 text-center">
-                              <button className="btn bg-grd-clr" onClick={makeMeLive}>Go live</button>
-                              <div className="live-type mt-4">
-                                  <span className="active">Group Chat Live</span>
-                                  <span>Live</span>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-          </div>
+                    <h2>Upload Status</h2>
+                    <div className="upload-status d-flex">
+                      <a id="upload__media" className="upload__media bg-grd-clr"  href="javascript:void(0)">
+                      <i className="fas fa-camera"></i>
+                      <input type="file"  name="file" value="" id="upload_fle" className="d-none" onChange={handleFileChange}accept="image/*"  />
+                      <label htmlFor="upload_fle" id="PreviewPicture" style={{ backgroundImage: `url("${imgData}")` }}   />
+                      <input type="file"  name="file" value="" id="upload_fle" onChange={handleFileChange} className="d-none" accept="image/*"  />
+
+                      </a>
+                      <a className="upload__text bg-grd-clr" href="javascript:void(0)">
+                        <i className="fas fa-pencil-alt"></i>
+                        </a>
+                      
+                        </div>
+                        {/* <textarea/> */}
+
+                    </div>
+             </form>
+            
           {/* </div> */}
           {/* End Modal start here */}
           <a href="javascript:void(0)" className="modal-close" onClick={() => setShowLive(false)}><img src="/assets/images/btn_close.png" /></a>
