@@ -521,7 +521,7 @@ const handleVideo = (image) =>{
 
                                             { Likes.map((item, i) => {
                                                 return   <li className="nav-item">
-                                                    <a className="nav-link" href="#chat-field" data-toggle="tab" data-id={item.user_id} role="tab" onClick = {() =>AcceptUserRequest(item.user_id)}>
+                                                    <a className="nav-link" href="#chat-field" data-toggle="tab" data-id={item.like_id} role="tab" onClick = {() =>AcceptUserRequest(item.like_id)}>
                                                         <img alt={item.first_name} className="img-circle medium-image" src={item.profile_images} />
                                                         <div className="contacts_info">
                                                             <div className="user_detail">

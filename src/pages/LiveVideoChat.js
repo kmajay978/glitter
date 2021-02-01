@@ -256,6 +256,7 @@ const LiveVideoChat = () =>{
 
         }
         else { // audience
+            alert(12)
             SOCKET.emit("end_live_video_call_audience", {
                 host_id: Number(videoCallParams.user_id),
                 user_id: videoCallState.user_id,
