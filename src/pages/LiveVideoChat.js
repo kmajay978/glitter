@@ -7,6 +7,7 @@ import NavLinks from '../components/Nav';
 import { joinChannel, leaveEventAudience, leaveEventHost } from "../components/VideoComponent";
 import {useSelector, useDispatch} from "react-redux";
 import {userProfile, liveVideoCall, liveVideoCallUser} from "../features/userSlice";
+import {func} from "prop-types";
 
 let videoCallStatus = 0, videoCallParams, interval, userData;
 
@@ -37,6 +38,7 @@ const LiveVideoChat = () =>{
             videoCallStatus = 0;
         }
         localStorage.removeItem("videoCallLivePageRefresh");
+        localStorage.removeItem("liveVideoProps");
         clearChatState(dispatch);
         history.push("/search-home");
     }
@@ -76,6 +78,19 @@ const LiveVideoChat = () =>{
                 // videoCallProps: Number(videoCallParams.user_id) === userData.user_id ?
             });
 
+            SOCKET.on('end_live_video_call_audience', (data) => {
+                if (data.user_id === videoCallState.user_id) {
+                    if (Number(videoCallParams.user_id) === data.user_id) {
+                        alert("host")
+
+                    }
+                    else { // audience..
+                        alert("decline audience with id:"+ data.user_id);
+                        componentWillUnmount();
+                    }
+                }
+            })
+
             SOCKET.on('unauthorize_live_video_call', (data) => {
                 if (data.is_host) {
 
@@ -97,7 +112,7 @@ const LiveVideoChat = () =>{
 
             SOCKET.on('authorize_live_video_call', (data) => {
                 if (data.user_id === videoCallState.user_id) {
-                if (data.is_host) {
+                if (Number(videoCallParams.user_id) === data.user_id) {
                     // opnen host camera
                     const option = {
                         appID: "52cacdcd9b5e4b418ac2dca58f69670c",
@@ -235,6 +250,22 @@ const LiveVideoChat = () =>{
             // }
         }
     }, [])
+
+    const endCall = () => {
+        if (Number(videoCallParams.user_id) === videoCallState.user_id) { // host
+
+        }
+        else { // audience
+            SOCKET.emit("end_live_video_call_audience", {
+                host_id: Number(videoCallParams.user_id),
+                user_id: videoCallState.user_id,
+                channel_name: videoCallParams.channel_name,
+                type: 1,
+                is_host: false
+            })
+        }
+    }
+
     return(
         <section className="home-wrapper">
             <img className="bg-mask" src="/assets/images/mask-bg.png" alt="Mask" />
@@ -300,7 +331,7 @@ const LiveVideoChat = () =>{
                                     </ul>
                                 </div>
                                 <NavLinks />
-                                {/*<a href="javascript:void(0)" className="end-video bg-grd-clr" onClick={endCall}>End Video</a>*/}
+                                <a href="javascript:void(0)" className="end-video bg-grd-clr" onClick={endCall}>End Video</a>
                             </div>
                         </div>
                     </div>
@@ -355,8 +386,6 @@ const LiveVideoChat = () =>{
                 </div>
             </div>
         </section>
-
-
     )
 }
 export default LiveVideoChat;
