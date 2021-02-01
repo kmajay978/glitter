@@ -40,7 +40,6 @@ const SearchHome = () =>
 
 
     userData = useSelector(userProfile).user.profile; //using redux useSelector here
-    console.log(userData, "test")
     
     const options = {
       loop: false,
@@ -61,6 +60,20 @@ const SearchHome = () =>
      autoplay: true,
      autoplayTimeout: 3000,
    };
+
+   
+  const handleFileChange = e => {
+    if (e.target.files[0]) {
+     console.log("picture: ", e.target.files);
+      setPicture(e.target.files[0]);
+      const reader = new FileReader();
+      reader.addEventListener("load", () => {
+        setImgData(reader.result); 
+       
+      });
+      reader.readAsDataURL(e.target.files[0]);
+     }
+  };
 
   const handleFriendList = () => {
     const bodyParameters ={
@@ -108,20 +121,6 @@ const SearchHome = () =>
     setStatusData('');
 });
   }
-console.log(statusData);
- console.log(storyData);
-
- const handleFileChange = e => {
-  if (e.target.files[0]) 
-  {
-    setPicture(e.target.files[0]);
-    const reader = new FileReader();
-    reader.addeListener("load", () => {
-      setImgData(reader.result);
-     });
-    reader.readAsDataURL(e.target.files[0]);
-  }
-};
 
 //  const componentWillUnmount = () => {
 //      //alert("stop")
@@ -418,7 +417,8 @@ uploadImage();
       <Modal className ="theme-modal edit-payment-modal" id="live-modal" show={showLive} onHide={() => setShowLive(false)} backdrop="static" keyboard={false}>
           {/* Modal start here */}
           {/* <div className="theme-modal" id="live-modal" tabIndex={-1} role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"> */}
-          <form action="">
+         
+          <form action="" id="glitter_status" >
                   <div className="modal-body p-0">
                     <h2>Upload Status</h2>
                     <div className="upload-status d-flex">
@@ -426,15 +426,19 @@ uploadImage();
                       <i className="fas fa-camera"></i>
                       <input type="file"  name="file" value="" id="upload_fle" className="d-none" onChange={handleFileChange}accept="image/*"  />
                       <label htmlFor="upload_fle" id="PreviewPicture" style={{ backgroundImage: `url("${imgData}")` }}   />
+                      <input type="file"  name="file" value="" id="upload_fle" onChange={handleFileChange} className="d-none" accept="image/*"  />
+
                       </a>
                       <a className="upload__text bg-grd-clr" href="javascript:void(0)">
                         <i className="fas fa-pencil-alt"></i>
                         </a>
+                      
                         </div>
                         {/* <textarea/> */}
 
                     </div>
              </form>
+            
           {/* </div> */}
           {/* End Modal start here */}
           <a href="javascript:void(0)" className="modal-close" onClick={() => setShowLive(false)}><img src="/assets/images/btn_close.png" /></a>
