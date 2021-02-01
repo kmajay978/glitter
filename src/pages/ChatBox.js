@@ -48,7 +48,7 @@ const ChatBox = (props) =>{
     const[randomNumber, setRandomNumber] = useState('');
     const [isOn, toggleIsOn] = useToggle();
     const [GiftData , setGiftData] =useState([]);
-
+    
     let [loading, setLoading] = useState(false);
     const[recording, setRecording] = useState(false);
     const [dummyMediaRc, setDummyMediaRc] = useState(null)
@@ -134,6 +134,9 @@ const ChatBox = (props) =>{
             });
     }
 
+    const AcceptUserRequest = (LikedUserId) =>{
+        alert(LikedUserId)
+    }
     const createNotification = (type) => {
         return () => {
           switch (type) {
@@ -504,7 +507,7 @@ const handleVideo = (image) =>{
 
                                             { Likes.map((item, i) => {
                                                 return   <li className="nav-item">
-                                                    <a className="nav-link" href="#chat-field" data-toggle="tab" role="tab">
+                                                    <a className="nav-link" href="#chat-field" data-toggle="tab" data-id={item.user_id} role="tab" onClick = {() =>AcceptUserRequest(item.user_id)}>
                                                         <img alt={item.liked_user_name} className="img-circle medium-image" src={item.liked_user_pic} />
                                                         <div className="contacts_info">
                                                             <div className="user_detail">
@@ -579,6 +582,7 @@ const handleVideo = (image) =>{
                             </div>
                         </div>
                         {/* Chat box here */}
+                        {GetActivity === 2 ?
                         <div className="col-md-8 tab-content chat-block" role="tablist">
                             <div className="nothing-to-see text-center active">
                                 <figure>
@@ -726,6 +730,8 @@ const handleVideo = (image) =>{
                             </div>
 
                         </div>
+                        :"" }
+                               
                         {/* End chat box here */}
                         <div className={isOn ? 'all-gifts-wrapper active': 'all-gifts-wrapper '} >
     <div className="all-gift-inner">
