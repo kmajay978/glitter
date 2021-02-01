@@ -22,7 +22,9 @@ const SearchHome = () =>
  const [storyData , setStoryData] = useState([]);
  const[ friendId , setFriendId] = useState('');
  const [statusLength , setStatusLength] = useState("");
+ const [showImage , setShowImage] = useState(false); //state for edit profile image model
 
+ const handleImage =() => setShowImage(true);//upload status model
  const [showLive,setShowLive] = useState(false);
 
  const options = {

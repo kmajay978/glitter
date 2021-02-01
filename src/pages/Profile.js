@@ -288,6 +288,7 @@ const handleCheck = (e) => {
        });
     
    }
+   
    const handleFileChange = e => {
     if (e.target.files[0]) 
     {
