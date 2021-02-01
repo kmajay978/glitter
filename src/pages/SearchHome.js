@@ -217,11 +217,6 @@ const uploadImage = () => {
         startingPos = [];
         setStartPosition(startingPos)
     });
-    // $(".upload__media").on("click", function(){
-    //   alert(12)
-    //   $(this).find("input").trigger("click");
-    // });
-
     }, 1000);
     // return () => componentWillUnmount()
 
@@ -332,7 +327,7 @@ uploadImage();
                         <img src={item.profile_images} alt="Marlene" />
                       </figure>
                       <div className="sp-singular-content">
-                      {item.online == '0'? <div className="status offline">Offline</div>: <div className="status online">Online</div>}
+                      {item.online == ''? <div className="status offline">Offline</div>: <div className="status online">Online</div>}
 
                         <h4>{item.first_name + ' ' + item.last_name} <span className="age">{item.age}</span></h4>
                         <div className="info">{item.distance}, {item.occupation}</div>
@@ -429,15 +424,17 @@ uploadImage();
                     <div className="upload-status d-flex">
                       <a id="upload__media" className="upload__media bg-grd-clr"  href="javascript:void(0)">
                       <i className="fas fa-camera"></i>
+                      <input type="file"  name="file" value="" id="upload_fle" className="d-none" onChange={handleFileChange}accept="image/*"  />
+                      <label htmlFor="upload_fle" id="PreviewPicture" style={{ backgroundImage: `url("${imgData}")` }}   />
                       <input type="file"  name="file" value="" id="upload_fle" onChange={handleFileChange} className="d-none" accept="image/*"  />
 
                       </a>
                       <a className="upload__text bg-grd-clr" href="javascript:void(0)">
                         <i className="fas fa-pencil-alt"></i>
                         </a>
-                        <label htmlFor="profile-photo" id="PreviewPicture" style={{ backgroundImage: `url("${imgData}")` }}   />
+                      
                         </div>
-                        <textarea/>
+                        {/* <textarea/> */}
 
                     </div>
              </form>

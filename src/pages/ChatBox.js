@@ -3,7 +3,7 @@ import  $ from 'jquery';
 import {useSelector, useDispatch} from 'react-redux';
 import axios from "axios";
 import NavLinks from '../components/Nav';
-import { GIFT_LIST_API , GET_GIFT_API ,LIKED_LIST, VISITOR_LIST_API ,FRIENDLIST_API, GET_USERPROFILE_API ,VIDEOCALL_API, ACCEPT_REQUEST_API} from '../components/Api';
+import { GIFT_LIST_API , GIFT_PURCHASE_API ,LIKED_LIST, VISITOR_LIST_API ,FRIENDLIST_API, GET_USERPROFILE_API ,VIDEOCALL_API, ACCEPT_REQUEST_API} from '../components/Api';
 import {SOCKET} from '../components/Config';
 import { v4 as uuidv4 } from 'uuid';
 import { css } from "@emotion/core";
@@ -184,9 +184,10 @@ const ChatBox = (props) =>{
            const getGiftItem = async(Uid) => {
            const bodyParameters ={
            session_id :  localStorage.getItem('session_id') ,
-           gift_id : Uid
+           gift_id : Uid ,
+           given_to : FriendUserId
            }
-            const {data : {result}} = await axios.post(GET_GIFT_API , bodyParameters)
+            const {data : {result}} = await axios.post(GIFT_PURCHASE_API , bodyParameters)
            
              }
     /************************************* Working here socket *******************************************************/
