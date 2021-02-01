@@ -37,6 +37,7 @@ export const generateLiveVideoChatToken = (dispatch, bodyParameters, call_type, 
         .then((response) => {
             if (response.status === 200) {
                 let newState = {};
+                newState.host_id = user_id;
                 newState.user_id = user_id;
                 newState.call_type = call_type;
                 newState.channel_id = channel_id;

@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import $ from 'jquery';
 import {  useHistory } from 'react-router';
 import { v4 as uuidv4 } from 'uuid';
@@ -17,6 +17,7 @@ import {generateLiveVideoChatToken} from "../api/videoApi";
 let isMouseClick = false, startingPos = [], glitterUid, friendLists = [], userData= null;
 const SearchHome = () =>
 {
+
     const history = useHistory();
     const dispatch = useDispatch();
     const[randomNumber, setRandomNumber] = useState('');
@@ -30,6 +31,8 @@ const SearchHome = () =>
     const[ friendId , setFriendId] = useState('');
     const [statusLength , setStatusLength] = useState("");
     const [showImage , setShowImage] = useState(false); //state for edit profile image model
+    const [picture, setPicture] = useState(null);
+    const [imgData, setImgData] = useState(null);
 
     const handleImage =() => setShowImage(true);//upload status model
     const [showLive,setShowLive] = useState(false);
@@ -107,6 +110,18 @@ const SearchHome = () =>
   }
 console.log(statusData);
  console.log(storyData);
+
+ const handleFileChange = e => {
+  if (e.target.files[0]) 
+  {
+    setPicture(e.target.files[0]);
+    const reader = new FileReader();
+    reader.addeListener("load", () => {
+      setImgData(reader.result);
+     });
+    reader.readAsDataURL(e.target.files[0]);
+  }
+};
 
 //  const componentWillUnmount = () => {
 //      //alert("stop")
@@ -186,18 +201,11 @@ console.log(statusData);
         startingPos = [];
         setStartPosition(startingPos)
     });
-    // $(".upload__media").click(function(){
-    //   alert(12)
-    //   $(this).find("input").trigger("click");
-    // });
     // $(".upload__media").on("click", function(){
     //   alert(12)
     //   $(this).find("input").trigger("click");
     // });
 
-    $(document).on('click', '#upload__media', function(){ 
-      $("#upload_fle").click();
-    });
     }, 1000);
     // return () => componentWillUnmount()
 
@@ -205,7 +213,16 @@ console.log(statusData);
 
     },[])
     const uploadImage = () => {
-      
+      $(document).on('click', '.modal-content', function(){ 
+        alert("button is clicked");
+        console.log("test", "working");
+      });
+    }
+
+    const hiddenFileInput = useRef('');
+
+    const handleClick = () => {
+      hiddenFileInput.current.click();
     }
 
   useEffect (() => {
@@ -400,24 +417,23 @@ console.log(statusData);
           {/* Modal start here */}
           {/* <div className="theme-modal" id="live-modal" tabIndex={-1} role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"> */}
           <div className="modal-dialog" role="document">
+          <form action="">
                   <div className="modal-body p-0">
                     <h2>Upload Status</h2>
                     <div className="upload-status d-flex">
-                      <a id="upload__media" className="upload__media bg-grd-clr" href="javascript:void(0)">
+                      <a id="upload__media" className="upload__media bg-grd-clr" onClick={handleClick}  href="javascript:void(0)">
                       <i className="fas fa-camera"></i>
-                       <input type="file" name="file" value="" id="upload_fle" className="d-none" />
+                      <input type="file"  name="file" value="" id="upload_fle" className="d-none" onChange={handleFileChange} accept="image/*"  />
 
                       </a>
                       <a className="upload__text bg-grd-clr" href="javascript:void(0)">
                         <i className="fas fa-pencil-alt"></i>
                         </a>
                         </div>
-                        <textarea id="text-staus" className="form-control">
-
-                        </textarea>
+                        <textarea/>
 
                     </div>
-           
+             </form>
           </div>
           {/* </div> */}
           {/* End Modal start here */}
