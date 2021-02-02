@@ -81,6 +81,21 @@ exports.socketInitialize = function (httpServer) {
                 }
             })
         });
+        
+
+        socket.on('gift_send',function(data){
+            job.sendGiftToSql(data,function(err,getData){
+                if(err)
+                {
+                    console.log("error gift222222", err)
+                }
+                else
+                {
+                    socketIO.emit('gift_send',getData)
+                }
+            });
+        })
+        
         socket.on('radio', function (data) {
             job.sendVoiceToSql(data, function(err, getData) {
                 if (err) {

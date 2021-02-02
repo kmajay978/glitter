@@ -143,7 +143,7 @@ const ChatBox = (props) =>{
         .then((response) => {
             if(response.status==200)
             {
-                createNotification('sucess-like');
+                createNotification('sucess');
             }
         }, (error) => {
 
@@ -189,6 +189,10 @@ const ChatBox = (props) =>{
            }
             const {data : {giftStatus}} = await axios.post(GIFT_PURCHASE_API , bodyParameters)
                 // alert(giftStatus.get_gifts.image);
+
+                if(!!giftStatus)
+                {
+                toggleIsOn(false);
                 var msg = {};
                 msg.file = giftStatus.get_gifts.image;
                 msg.fileName = "abc_image";
@@ -198,6 +202,12 @@ const ChatBox = (props) =>{
                 console.log(msg, "message_send.......")
                 SOCKET.emit('gift_send', msg);
                 setLoading(true);
+                }
+                else
+                {
+                    toggleIsOn(false);
+                    createNotification('success');
+                }
              }
     /************************************* Working here socket *******************************************************/
 
@@ -327,7 +337,7 @@ const ChatBox = (props) =>{
 
         SOCKET.on('gift_send',(messages) =>{
             console.log(messages,"message_gift....");
-            let messageList = messageList;
+           let messagesList = messageList;
             if(!!messages)
             {
                 if ((messages.obj.user_from_id === userData.user_id && messages.obj.user_to_id === receiver_id)
@@ -335,10 +345,10 @@ const ChatBox = (props) =>{
                     (messages.obj.user_from_id === receiver_id && messages.obj.user_to_id === userData.user_id)
                 )
                 {
-                    messageList.push(messages.obj);
-                    messageList = messageList;
-                    console.log(messageList,"messageList_gift_send ........ ");
-                    setMessages(messageList);
+                    messagesList.push(messages.obj);
+                    messageList = messagesList;
+                    console.log(messagesList,"messageList_gift_send ........ ");
+                    setMessages(messagesList);
                     setLoading(false);
                     setRandomNumber(Math.random());
                     scrollToBottom();
@@ -728,7 +738,7 @@ const handleVideo = (image) =>{
                                                 </div>
                                             ))
                                         }
-
+                    <NotificationContainer/>
                                     </div>
                                     <form onSubmit={CheckTextInputIsEmptyOrNot}>
 
