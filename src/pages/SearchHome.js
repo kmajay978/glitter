@@ -72,6 +72,7 @@ const statusoptions = {
         setStatusLength(response.data.data.statuses);
       }
  }, (error) => {
+  friendLists = []
   setFriendlist('');
 });
   }
@@ -136,6 +137,7 @@ console.log(statusData);
         let frdList = friendLists;
         console.log(frdList, "mmmm")
         const totalLiveFrds = data;
+        console.log(totalLiveFrds, "totalLiveFrds...")
         for (let i in frdList) {
             for (let j in totalLiveFrds) {
                 if (totalLiveFrds[j].user_id === frdList[i].user_id) {
