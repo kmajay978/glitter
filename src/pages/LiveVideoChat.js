@@ -40,7 +40,7 @@ const LiveVideoChat = () =>{
         localStorage.removeItem("videoCallLivePageRefresh");
         localStorage.removeItem("liveVideoProps");
         clearChatState(dispatch);
-        history.push("/search-home");
+        window.location.href = "/search-home";
     }
     useEffect(() =>{
         if (!!userData) {
