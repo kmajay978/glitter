@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import axios from "axios";
 import NavLinks from '../components/Nav';
 import FilterSide from '../components/Filter';
-import { FRIENDLIST_API , GET_STATUS} from '../components/Api';
+import { ADD_STATUS , FRIENDLIST_API , GET_STATUS} from '../components/Api';
 import {Modal, ModalBody , Dropdown} from 'react-bootstrap';
 import OwlCarousel from 'react-owl-carousel2';
 import {SOCKET} from '../components/Config';
@@ -17,19 +17,27 @@ import {generateLiveVideoChatToken} from "../api/videoApi";
 let isMouseClick = false, startingPos = [], glitterUid, friendLists = [], userData= null;
 const SearchHome = () =>
 {
-  const history = useHistory();
+    const history = useHistory();
     const dispatch = useDispatch();
     const[randomNumber, setRandomNumber] = useState('');
-  const [fetchedProfile, setFilterUser] = useState('');
- const [ friendList  , setFriendlist] = useState([]);
+    const [fetchedProfile, setFilterUser] = useState('');
+    const [ friendList  , setFriendlist] = useState([]);
 
- const [Click, setClick] = useState(false);
- const [StartPosition, setStartPosition] = useState([])
- const [statusData , setStatusData] = useState({});
- const [storyData , setStoryData] = useState([]);
- const[ friendId , setFriendId] = useState('');
- const [statusLength , setStatusLength] = useState("");
-const [showLive,setShowLive] = useState(false);
+    const [Click, setClick] = useState(false);
+    const [StartPosition, setStartPosition] = useState([])
+    const [statusData , setStatusData] = useState({});
+    const [storyData , setStoryData] = useState([]);
+    const[ friendId , setFriendId] = useState('');
+    const [statusLength , setStatusLength] = useState("");
+    const [showLive,setShowLive] = useState(false);
+    const [showPencil , setShowPencil] = useState(false);
+    const[pencilData , setPencilData] = useState('')
+    const [picture, setPicture] = useState(null);
+    const [imgData, setImgData] = useState(null);
+    const[FileName , setFileName] = useState(null);
+    const [videoData, setVideoData] = useState(null);
+    const [video, setVideo] = useState(null);
+    const [showUploadStatus,setUploadStatus] = useState(false);
 
     userData = useSelector(userProfile).user.profile; //using redux useSelector here
     console.log(userData, "test")
@@ -54,6 +62,44 @@ const statusoptions = {
    
 
 };
+
+const handleFileChange = e => {
+  var data = e.target.files[0];
+  const filename =  e.target.files[0];
+  const fileName = data.name.split(".");
+  const imageFormat = fileName[fileName.length - 1];
+   if (e.target.files[0]) {
+
+     if (imageFormat === "png" || imageFormat === "jpg" || imageFormat === "jpeg" ||
+     imageFormat==="SVG"||imageFormat==="svg"||imageFormat === "PNG" || imageFormat === "JPG" || imageFormat === "JPEG") 
+     {
+       console.log("picture: ", e.target.files[0]);
+       setPicture(e.target.files[0]);
+       const reader = new FileReader();
+       reader.addEventListener("load", () => {
+         setImgData(reader.result); 
+         setVideoData('image');
+        console.log(fileName ,"fileName...");
+       });
+       reader.readAsDataURL(e.target.files[0]);
+     }
+     else if(imageFormat === "mp4" || imageFormat === "MP4")
+     {
+       console.log("video_file: ", e.target.files[0]);
+       setPicture(e.target.files[0]);
+       const reader = new FileReader();
+       reader.addEventListener("load", () => {
+         setImgData(reader.result); 
+         setVideoData('video');
+       });
+       reader.readAsDataURL(e.target.files[0]);
+     }
+     else
+     {
+       console.log("Invlid format");
+     }
+    }
+ };
 
   const handleFriendList = () => {
     const bodyParameters ={
@@ -104,6 +150,81 @@ const statusoptions = {
 console.log(statusData);
  console.log(storyData);
 
+ const handlePencil = () => {
+  setShowPencil(true);
+  setVideoData('text');
+  setPicture(null);
+ }
+ 
+ const modelClose= () => {
+   setUploadStatus(false);
+   setShowPencil(false);
+   setPicture(null);
+   setVideoData(null);
+   setPencilData('');
+ }
+
+const config = {
+ headers : {
+           Accept: "application/json",
+           "Content-Type": "multipart/form-data",
+       }
+ }
+
+const handleUploadStatus =() => 
+{
+  if (videoData=='image')
+  {
+  const bodyParameters =new FormData();
+  bodyParameters.append("session_id", "" + localStorage.getItem('session_id'));
+  bodyParameters.append("status", picture);
+  bodyParameters.append("status_type", "" + 1);
+  axios.post(ADD_STATUS , bodyParameters , config)
+  .then((response)=> {
+   setUploadStatus(false);
+   setPicture('');
+ } ,(error) => {
+ });
+  }
+  else if (videoData=='video'){
+   const bodyParameters =new FormData();
+   bodyParameters.append("session_id", "" + localStorage.getItem('session_id'));
+   bodyParameters.append("status", picture);
+   bodyParameters.append("status_type", "" + 2);
+   axios.post(ADD_STATUS , bodyParameters , config)
+   .then((response)=> {
+    setUploadStatus(false);
+  } ,(error) => {
+ });
+  }
+  else if (videoData=='text'){
+   const bodyParameters =new FormData();
+   bodyParameters.append("session_id", "" + localStorage.getItem('session_id'));
+   bodyParameters.append("status", pencilData);
+   bodyParameters.append("status_type", "" + 3);
+   axios.post(ADD_STATUS , bodyParameters , config)
+   .then((response)=> {
+    setUploadStatus(false);
+    setPencilData('');
+    setShowPencil(false);
+  } ,(error) => {
+ });
+  }
+ }
+console.log(picture);
+
+const uploadImage = () => {
+ // Click event for status uplaod screen
+ $(document).on("click", "#upload__media", function () {
+   $('#upload_fle').trigger("click");
+ });
+
+ $(document).on("click", "#upload_fle", function (e) {
+   e.stopPropagation();
+   //some code
+});
+
+}
  const componentWillUnmount = () => {
      // alert("stop")
      SOCKET.emit('stop_check_friend_list_live', () => {
@@ -188,7 +309,7 @@ console.log(statusData);
         setStartPosition(startingPos)
     });
     }, 1000);
-
+    uploadImage();
     return () => componentWillUnmount()
     },[])
 
@@ -258,7 +379,7 @@ console.log(statusData);
           </div>
           <div className="search-section-wrapper mt-4 px-4">
             <div className="users-listing">
-                <div className="add__status" onClick={() => setShowLive(true)}>+</div>
+                <div className="add__status" onClick={() =>setUploadStatus(true)}>+</div>
 
                 <div className="status__slider">
         <OwlCarousel  options={options}  >
@@ -379,6 +500,58 @@ console.log(statusData);
   </div>
 
 </div>
+<Modal className ="theme-modal" id="upload-media-modal" show={showUploadStatus} onHide={() => setUploadStatus(false)} backdrop="static" keyboard={false}>
+          {/* Modal start here */}
+          {/* <div className="theme-modal" id="live-modal" tabIndex={-1} role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"> */}
+         
+          <form action="" id="glitter_status" >
+                  <div className="modal-body p-0">
+                    <div className="upload__status__opt text-center">
+                    <h2>Upload Status</h2>
+                    <div className="upload-status d-flex justify-content-center mt-5">
+                      <a id="upload__media" className="upload__media bg-grd-clr"  href="javascript:void(0)">
+                      <i className="fas fa-camera"></i>
+                      <input type="file"  name="file" value="" id="upload_fle" className="d-none" onChange={handleFileChange} accept="image/* , video/*"  />
+                      
+                      </a>
+                      <a className="upload__text bg-grd-clr" href="javascript:void(0)" onClick={handlePencil}>
+                        <i className="fas fa-pencil-alt"></i>
+                        </a>
+                      
+                        </div>
+                        {!!picture && videoData=='image' ?
+                      
+                        <div className="preview">
+                        
+                        <img  id="PreviewPicture" src={imgData} />
+                        </div>
+                        : videoData == 'video' ?
+                        <div className="preview">
+                             
+                           <video id="video_preview" src={imgData} width="300" height="300" controls></video>
+                            
+                           </div>
+                           : videoData == 'text' ?
+                           <div className="text__status">
+                           {!!showPencil ?<textarea className="form-control" name="upload_text"  value={pencilData} onChange={e => setPencilData(e.target.value)} placeholder="write text" /> : ""} 
+                            </div>
+    
+                           :""
+                          }
+                         
+                       
+                        <a className="btn bg-grd-clr btn-small mt-4" onClick={handleUploadStatus}>Publish Status</a>
+
+                    </div>
+                    
+                        
+                    </div>
+             </form>
+            
+          {/* </div> */}
+          {/* End Modal start here */}
+          <a href="javascript:void(0)" className="modal-close" onClick={modelClose}><img src="/assets/images/btn_close.png" /></a>
+      </Modal>
 
 </section>
 
