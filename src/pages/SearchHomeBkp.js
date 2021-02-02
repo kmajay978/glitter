@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import axios from "axios";
 import NavLinks from '../components/Nav';
 import FilterSide from '../components/Filter';
-import { FRIENDLIST_API , GET_STATUS} from '../components/Api';
+import { FRIENDLIST_API , GET_STATUS , ADD_STATUS} from '../components/Api';
 import {Modal, ModalBody , Dropdown} from 'react-bootstrap';
 import OwlCarousel from 'react-owl-carousel2';
 import {SOCKET} from '../components/Config';
@@ -36,6 +36,8 @@ const SearchHomeBkp = () =>
 
     const handleImage =() => setShowImage(true);//upload status model
     const [showLive,setShowLive] = useState(false);
+    const [showUploadStatus,setUploadStatus] = useState(false);
+
 
 
 
@@ -128,7 +130,21 @@ const SearchHomeBkp = () =>
 //          console.log("stop checking friend list live...")
 //      });
 //  }
+ const handleUploadStatus =() => 
+ {
+   const bodyParameters ={
+     session_id : localStorage.getItem('session_id'),
+     status : picture ,
+     status_type : 1
+    }
+    axios.post(ADD_STATUS , bodyParameters)
+    .then((response)=> {
+// console.log(response);
+   } ,(error) => {
 
+  });
+  }
+console.log(picture);
 
 const uploadImage = () => {
   // Click event for status uplaod screen
@@ -180,7 +196,6 @@ const uploadImage = () => {
         }
         setFriendlist(frdList);
         setRandomNumber(Math.random());
-        console.log(frdList, "data test")
     });
       SOCKET.on('start_your_live_video_now', (data) => {
           console.log(data, userData, "start live video link...");
@@ -292,7 +307,7 @@ uploadImage();
           </div>
           <div className="search-section-wrapper mt-4 px-4">
             <div className="users-listing">
-                <div className="add__status" onClick={() => setShowLive(true)}>+</div>
+                <div className="add__status" onClick={() =>setUploadStatus(true)}>+</div>
 
                 <div className="status__slider">
         <OwlCarousel  options={options}  >
@@ -414,7 +429,7 @@ uploadImage();
 
 </div>
 
-      <Modal className ="theme-modal" id="upload-media-modal" show={showLive} onHide={() => setShowLive(false)} backdrop="static" keyboard={false}>
+      <Modal className ="theme-modal" id="upload-media-modal" show={showUploadStatus} onHide={() => setUploadStatus(false)} backdrop="static" keyboard={false}>
           {/* Modal start here */}
           {/* <div className="theme-modal" id="live-modal" tabIndex={-1} role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"> */}
          
@@ -442,7 +457,7 @@ uploadImage();
                         <textarea className="form-control" placeholder="write text" maxLength="100"></textarea>
                         </div>
 
-                        <button class="btn bg-grd-clr btn-small mt-4">Publish Status</button>
+                        <a className="btn bg-grd-clr btn-small mt-4" onClick={handleUploadStatus}>Publish Status</a>
 
                     </div>
                     
@@ -452,7 +467,7 @@ uploadImage();
             
           {/* </div> */}
           {/* End Modal start here */}
-          <a href="javascript:void(0)" className="modal-close" onClick={() => setShowLive(false)}><img src="/assets/images/btn_close.png" /></a>
+          <a href="javascript:void(0)" className="modal-close" onClick={() => setUploadStatus(false)}><img src="/assets/images/btn_close.png" /></a>
       </Modal>
 
 </section>
