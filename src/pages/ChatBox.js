@@ -54,6 +54,19 @@ const ChatBox = (props) =>{
     const [dummyMediaRc, setDummyMediaRc] = useState(null)
     const [chatTyping, setChatTyping] = useState("")
 
+    const createNotificationCustom = (type) => {
+  
+        switch (type) {
+          case 'success':
+            NotificationManager.success('Send successfull', 'Gift');
+            break;
+          case 'error':
+            NotificationManager.error('Please recharge and try again', 'Insufficient Balance!', 5000, () => {
+            });
+            break; 
+      };
+      };
+
 // console.log(UserMessage);
     const[GetActivity, setActivity] = useState(0);
 
@@ -150,24 +163,6 @@ const ChatBox = (props) =>{
             });
 
     }
-    const createNotification = (type) => {
-        return () => {
-            switch (type) {
-
-                case 'success':
-                    NotificationManager.success('Success message', 'Title here');
-                    break;
-                case 'error-secure':
-                    NotificationManager.error('err.message', 'Click me!', 5000, () => {
-                    });
-                case 'error-message':
-                    NotificationManager.error('err.message', 'Click me!', 5000, () => {
-
-                    });
-                    break;
-            }
-        };
-    };
 
 
     //all gift
@@ -175,32 +170,39 @@ const ChatBox = (props) =>{
         toggleIsOn(true);
         const bodyParameters = {
             session_id :  localStorage.getItem('session_id'),
-        }
-        const {data:{result}} = await axios.post(GIFT_LIST_API , bodyParameters)
-        setGiftData(result);
-    }
+            }
+            const {data:{result}} = await axios.post(GIFT_LIST_API , bodyParameters)
+            setGiftData(result);
+            }
+     
+        //get single  gift item
+           const getGiftItem = async(giftId) => {
+           const bodyParameters ={
+           session_id :  localStorage.getItem('session_id') ,
+           gift_id : giftId ,
+           given_to : FriendUserId
+           }
+            const {data : {giftStatus}} = await axios.post(GIFT_PURCHASE_API , bodyParameters)
+                // alert(giftStatus.get_gifts.image);
 
-    //get single  gift item
-    const getGiftItem = async(giftId) => {
-        const bodyParameters ={
-            session_id :  localStorage.getItem('session_id') ,
-            gift_id : giftId ,
-            given_to : FriendUserId
-        }
-        const {data : {giftStatus}} = await axios.post(GIFT_PURCHASE_API , bodyParameters)
-        // alert(giftStatus.get_gifts.image);
-        createNotification('sucess');
-        toggleIsOn(false);
-        var msg = {};
-        msg.file = giftStatus.get_gifts.image;
-        msg.fileName = "abc_image";
-        msg.sessionId = sessionId;
-        msg.reciever_id = receiver_id;
-
-        console.log(msg, "message_send.......")
-        SOCKET.emit('gift_send', msg);
-        setLoading(true);
-    }
+                if(!!giftStatus)
+                {
+                toggleIsOn(false);
+                var msg = {};
+                msg.file = giftStatus.get_gifts.image;
+                msg.fileName = "abc_image";
+                msg.sessionId = sessionId;
+                msg.reciever_id = receiver_id;
+                SOCKET.emit('gift_send', msg);
+                setLoading(true);
+                }
+                else
+                {
+                    toggleIsOn(false);
+                    createNotificationCustom('error');
+                    
+                }
+             }
     /************************************* Working here socket *******************************************************/
 
     function readThenSendFile(data){
@@ -329,7 +331,7 @@ const ChatBox = (props) =>{
 
         SOCKET.on('gift_send',(messages) =>{
             console.log(messages,"message_gift....");
-            let messagesList = messageList;
+           let messagesList = messageList;
             if(!!messages)
             {
                 if ((messages.obj.user_from_id === userData.user_id && messages.obj.user_to_id === receiver_id)
@@ -495,6 +497,26 @@ const ChatBox = (props) =>{
         );
         history.push("/searching-profile");
     }
+
+
+    const createNotification = (type) => {
+        return () => {
+            switch (type) {
+
+                case 'success':
+                    NotificationManager.success('Success message', 'Title here');
+                    break;
+                case 'error-secure':
+                    NotificationManager.error('err.message', 'Click me!', 5000, () => {
+                    });
+                case 'error-message':
+                    NotificationManager.error('err.message', 'Click me!', 5000, () => {
+
+                    });
+                    break;
+            }
+        };
+    };
     return(
 
         <section className="home-wrapper">

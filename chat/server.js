@@ -73,3 +73,7 @@ startServer = http.createServer(app).listen(port,function() {
     console.log("Express server listening on port "+ port);
     socketJs.socketInitialize(startServer);
 });
+
+app.get('/', (req, res) => {
+  res.send('Chat Server is running on port 3001');
+});

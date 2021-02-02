@@ -33,6 +33,323 @@ exports.getMessage=function(data,user2_id,callback) {
     });
 }
 
+exports.checkIfChannelExpired=function(channel, callback) {
+    async.waterfall([
+        function (cb) {
+            let startTime = null;
+            var sqlGetVideoCallCreateTime = "SELECT * FROM `video_call` where channel_name = ?";
+            const query = connection.query(sqlGetVideoCallCreateTime, [channel], function(error, callStartTime) {
+                if (error) {
+                    console.log("can't get start time of video call...", error)
+                }
+                else {
+                    startTime = callStartTime[0].created_at;
+                    console.log("call started at: " + callStartTime[0].created_at)
+                    if (startTime !== null) {
+                        var start = moment(startTime); //start call date
+                        var now = moment(new Date()); // now date
+                        var duration = moment.duration(now.diff(start));
+                        var hours = duration.asHours();
+                        console.log("hours diff in call: "+ hours)
+                        cb(null, hours > 24);
+                    }
+                    else {
+                        // start time is nll
+                        console.log(startTime, "wrong start time....");
+                        cb(null, true)
+                    }
+                }
+            })
+        }
+    ], function (error, result) {
+        //console.log(result);
+        return callback(error, result);
+    });
+}
+
+exports.changeVideoCallStatus=function(status, channel, callback) {
+    async.waterfall([
+        function (cb) {
+        console.log(status, channel, "lklklklklklklklklklklklklklklk")
+            var sqlVideoCallStatus = "UPDATE video_call SET call_status = ? WHERE channel_name = ?";
+            const query = connection.query(sqlVideoCallStatus, [status, channel], function(error, user) {
+                if (error) {
+                    console.log("can't change status", error);
+                }
+                else {
+                    console.log("channel status changed", status)
+                    cb(null, true)
+                }
+            })
+            console.log(query, "query..")
+        }
+    ], function (error, result) {
+        //console.log(result);
+        return callback(error, result);
+    });
+}
+
+exports.declineAudienceLiveVideoCall=function(user_id, channel, callback) {
+    async.waterfall([
+        function (cb) {
+            var sql = "UPDATE video_live SET call_status = 3,updated_at = ? WHERE channel_name = ? and user_id = ? and call_status = 2";
+            const query = connection.query(sql, [new Date().getTime(), channel, user_id], function(error, user) {
+                if (error) {
+                    console.log("can't change status.. of audience", error);
+                }
+                else {
+                    console.log("channel status changed... audience...")
+                    cb(null, true)
+                }
+            })
+        }
+    ], function (error, result) {
+        //console.log(result);
+        return callback(error, result);
+    });
+}
+
+exports.declineHostLiveVideoCall=function(channel, callback) {
+    async.waterfall([
+        function (cb) {
+            var sql = "UPDATE video_live SET call_status = 3 , updated_at = ? WHERE channel_name = ? and call_status IN (1 , 2)";
+            var query=connection.query(sql,[new Date().getTime(),channel], (error, user)=> {
+
+                if (error) {
+                    console.log(error);
+                    cb(null, false);
+
+                } else {
+                    cb(null, true);
+                }
+
+            });
+        }
+    ], function (error, result) {
+        //console.log(result);
+        return callback(error, result);
+    });
+}
+
+
+exports.makeMeLive=function(data, callback) {
+    async.waterfall([
+        function (cb) {
+            var sqlVideoCallStatus = "insert video_live values(null, ?,?,?,1,1,?,null)";
+            const query = connection.query(sqlVideoCallStatus, [data.user_id, data.channel_name, data.channel_token, new Date().getTime()], function(error, resp) {
+                if (error) {
+                    console.log(error);
+                    cb(null, false)
+                }
+                else {
+                    cb(null, data)
+                }
+            })
+            console.log(query, "query... baby")
+        }
+    ], function (error, result) {
+        //console.log(result);
+        return callback(error, result);
+    });
+}
+
+// Gift send image
+exports.sendGiftToSql = function (data, callback) { // file, filename,
+    console.log('data', data);
+    var reciever_id = data.reciever_id;
+    var session_id = data.sessionId;
+    var datetime = moment.utc().format('YYYY-MM-DD HH:mm:ss');
+    async.waterfall([
+        function (cb) {
+            console.log(session_id, "session_id..")
+            var sql = `SELECT * FROM app_login WHERE session_id = ?`;
+            connection.query(sql, [session_id], (error, user) => {
+                if (error) {
+                    cb({
+                        message: constants.responseMessages.ERROR_IN_EXECUTION,
+                        status: constants.responseFlags.ERROR_IN_EXECUTION,
+                        response_data: {}
+                    });
+                } else {
+                    cb(null, user);
+                }
+            });
+        },
+        function (user, cb) {
+            if (!user || (user && user.length === 0)) {
+                //console.log('yes');
+                return cb({
+                    message: constants.responseMessages.INVALID_ACCESS,
+                    status: constants.responseFlags.INVALID_ACCESS,
+                    driver_payment_response: {}
+                });
+            } else {
+                //console.log(user);
+                var sender_id = user[0]['user_id'];
+                var sql = 'INSERT INTO `messages` (`user_from_id`,`user_to_id`,`message`, `media`,`created_at`,`updated_at`, `message_is_read`) VALUES(?,?,?,?,?,?,?)'
+                var query = connection.query(sql, [sender_id, reciever_id, "", data.file, datetime, datetime, 1], (error, user) => {
+                    if (error) {
+                        console.log(error);
+                        cb({
+                            message: constants.responseMessages.ERROR_IN_EXECUTION,
+                            status: constants.responseFlags.ERROR_IN_EXECUTION,
+                            response_data: {}
+                        });
+                    } else {
+                        var message_id = user.insertId;
+                        var sql1 = `SELECT * FROM messages where user_from_id = ? AND user_to_id = ? ORDER BY id DESC`;
+                        //var sql1=`SELECT * FROM messages where msg_id = ?  ORDER BY id DESC`;
+                        connection.query(sql1, [sender_id, reciever_id], (error, message_data) => {
+                            if (error) {
+                                console.log(error);
+                                cb({
+                                    message: constants.responseMessages.ERROR_IN_EXECUTION,
+                                    status: constants.responseFlags.ERROR_IN_EXECUTION,
+                                    response_data: {}
+                                });
+                            } else {
+                                var obj = {};
+                                obj['status'] = 200;
+                                obj['message'] = message_data[0]['message'];
+                                obj['media'] = message_data[0]['media'];
+                                obj['user_from_id'] = message_data[0]['user_from_id'];
+                                obj['user_to_id'] = message_data[0]['user_to_id'];
+                                obj['message_id'] = message_data[0]['id'];
+                                obj['created_at'] = message_data[0]['created_at'];
+                                obj['updated_at'] = message_data[0]['updated_at'];
+                                cb(null, {obj});
+                            }
+                        })
+                    }})
+                // console.log(query, "query...")
+            }
+        }
+    ], function (error, result) {
+        return callback(error, result);
+    })
+}
+// End gift here
+
+exports.makeMeAudience=function(data, callback) {
+    async.waterfall([
+        function (cb) {
+            var sqlVideoCallStatus = "insert video_live values(null, ?,?,?,2,2,?,null)";
+            const query = connection.query(sqlVideoCallStatus, [data.user_id, data.channel_name, data.channel_token, new Date().getTime()], function(error, resp) {
+                if (error) {
+                    cb(null, false)
+                }
+                else {
+                    cb(null, data)
+                }
+            })
+        }
+    ], function (error, result) {
+        //console.log(result);
+        return callback(error, result);
+    });
+}
+
+exports.checkIfHostAndAudienceAreFrd=function(channel_name, user_id, callback) {
+    async.waterfall([
+        function (cb) {
+            var sql = "SELECT * FROM `video_live` where channel_name = ? and user_id = ? and call_status = 2";
+            const query = connection.query(sql, [channel_name, user_id], function(error, resp) {
+                if (error) {
+                    console.log(error);
+                    cb(null, false)
+                }
+                else {
+                    cb(null, resp)
+                }
+            })
+        }
+    ], function (error, result) {
+        //console.log(result);
+        return callback(error, result);
+    });
+}
+
+exports.checkIfHostIsLive=function(channel_name, user_id, callback) {
+    async.waterfall([
+        function (cb) {
+            var sql = "SELECT * FROM `video_live` where channel_name = ? and user_id = ? and call_status = 1";
+            const query = connection.query(sql, [channel_name, user_id], function(error, resp) {
+                if (error) {
+                    console.log(error);
+                    cb(null, false)
+                }
+                else {
+                    cb(null, resp)
+                }
+            })
+        }
+    ], function (error, result) {
+        //console.log(result);
+        return callback(error, result);
+    });
+}
+
+exports.getReceiverDetails = function(receiver_id, callback) {
+    async.waterfall([
+        function (cb) {
+            var sqlGetReceiverDetails = "SELECT firstName,lastName,profilePics, occupation, DATE_FORMAT(NOW(), '%Y') - DATE_FORMAT(dob, '%Y') - (DATE_FORMAT(NOW(), '00-%m-%d') < DATE_FORMAT(dob, '00-%m-%d')) AS age  from users where id = ?";
+            const query = connection.query(sqlGetReceiverDetails, [receiver_id], function(error, details) {
+                if (error) {
+                    console.log("can't get receiver id details....", error);
+                }
+                else {
+                    cb(null, {details: details[0]})
+                }
+            })
+        }
+    ], function (error, result) {
+        //console.log(result);
+        return callback(error, result);
+    });
+}
+
+exports.checkIfCallReceived = function(channel, callback) {
+    async.waterfall([
+        function (cb) {
+            var sqlVideoCallStatus = "SELECT * FROM `video_call` where channel_name = ?";
+            const query = connection.query(sqlVideoCallStatus, [channel], function(error, call) {
+                if (error) {
+                    console.log("can't change status", error);
+                }
+                else {
+                    console.log(query, "hahahahahhahahahahaahaha")
+                    cb(null, {status: call[0].call_status})
+                }
+            })
+        }
+    ], function (error, result) {
+        //console.log(result);
+        return callback(error, result);
+    });
+}
+
+exports.getVideoLiveList = function(callback) {
+    async.waterfall([
+        function (cb) {
+            var sqlVideoLiveList = "SELECT * FROM `video_live` where call_status=1";
+            const query = connection.query(sqlVideoLiveList, function(error, list) {
+                if (error) {
+                    console.log("failed fetching the video live list...", error);
+                    cb(null, [])
+                }
+                else {
+                    console.log("video live list fetched....", list)
+                    cb(null, list)
+                }
+            })
+        }
+    ], function (error, result) {
+        //console.log(result);
+        return callback(error, result);
+    });
+}
+
+
 exports.sendMessage=function(data,callback)
 {
     var reciever_id=data.reciever_id;
@@ -697,7 +1014,7 @@ function order(req, res) {
                                     });
                                 }
                                 else
-                                { 
+                                {
                                     var auto_assignment_response_data = 
                                                     {
                                                         ride_id:insert_data.insertId,

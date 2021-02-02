@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import $ from 'jquery';
 import {  useHistory } from 'react-router';
 import { v4 as uuidv4 } from 'uuid';
@@ -17,43 +17,63 @@ import {generateLiveVideoChatToken} from "../api/videoApi";
 let isMouseClick = false, startingPos = [], glitterUid, friendLists = [], userData= null;
 const SearchHome = () =>
 {
-  const history = useHistory();
+
+    const history = useHistory();
     const dispatch = useDispatch();
     const[randomNumber, setRandomNumber] = useState('');
-  const [fetchedProfile, setFilterUser] = useState('');
- const [ friendList  , setFriendlist] = useState([]);
+    const [fetchedProfile, setFilterUser] = useState('');
+    const [ friendList  , setFriendlist] = useState([]);
 
- const [Click, setClick] = useState(false);
- const [StartPosition, setStartPosition] = useState([])
- const [statusData , setStatusData] = useState({});
- const [storyData , setStoryData] = useState([]);
- const[ friendId , setFriendId] = useState('');
- const [statusLength , setStatusLength] = useState("");
-const [showLive,setShowLive] = useState(false);
+    const [Click, setClick] = useState(false);
+    const [StartPosition, setStartPosition] = useState([])
+    const [statusData , setStatusData] = useState({});
+    const [storyData , setStoryData] = useState([]);
+    const[ friendId , setFriendId] = useState('');
+    const [statusLength , setStatusLength] = useState("");
+    const [showImage , setShowImage] = useState(false); //state for edit profile image model
+    const [picture, setPicture] = useState(null);
+    const [imgData, setImgData] = useState(null);
+
+    const handleImage =() => setShowImage(true);//upload status model
+    const [showLive,setShowLive] = useState(false);
+
+
 
     userData = useSelector(userProfile).user.profile; //using redux useSelector here
-    console.log(userData, "test")
- const options = {
-  loop: false,
-  margin: 20,
-  items: 13,
-  nav: false,
-  autoplay: true
-};
+    
+    const options = {
+      loop: false,
+      margin: 20,
+      items: 13,
+      nav: false,
+      autoplay: true
+      };
 
-const statusoptions = {
-  loop: false,
-  slideSpeed: 3000,
-  dots:true,
-  margin: 0,
-  items: 1,
-  smartSpeed: 1000,
-  nav: false,
-  autoplay: true,
-  autoplayTimeout: 3000,
+   const statusoptions = {
+     loop: false,
+     slideSpeed: 3000,
+     dots:true,
+     margin: 0,
+     items: 1,
+     smartSpeed: 1000,
+     nav: false,
+     autoplay: true,
+     autoplayTimeout: 3000,
+   };
+
    
-
-};
+  const handleFileChange = e => {
+    if (e.target.files[0]) {
+     console.log("picture: ", e.target.files);
+      setPicture(e.target.files[0]);
+      const reader = new FileReader();
+      reader.addEventListener("load", () => {
+        setImgData(reader.result); 
+       
+      });
+      reader.readAsDataURL(e.target.files[0]);
+     }
+  };
 
   const handleFriendList = () => {
     const bodyParameters ={
@@ -72,7 +92,6 @@ const statusoptions = {
         setStatusLength(response.data.data.statuses);
       }
  }, (error) => {
-  friendLists = []
   setFriendlist('');
 });
   }
@@ -82,6 +101,7 @@ const statusoptions = {
   },[friendId])
 
   console.log(friendId);
+  
   const handleStatus = () =>
   {
     const bodyParameters = {
@@ -101,15 +121,26 @@ const statusoptions = {
     setStatusData('');
 });
   }
-console.log(statusData);
- console.log(storyData);
 
- const componentWillUnmount = () => {
-     // alert("stop")
-     SOCKET.emit('stop_check_friend_list_live', () => {
-         console.log("stop checking friend list live...")
-     });
- }
+//  const componentWillUnmount = () => {
+//      //alert("stop")
+//      SOCKET.emit('stop_check_friend_list_live', () => {
+//          console.log("stop checking friend list live...")
+//      });
+//  }
+
+
+const uploadImage = () => {
+  // Click event for status uplaod screen
+  $(document).on("click", "#upload__media", function () {
+    $('#upload_fle').trigger("click");
+  });
+
+  $(document).on("click", "#upload_fle", function (e) {
+    e.stopPropagation();
+    //some code
+});
+}
   useEffect (() => {
     SOCKET.connect();
       SOCKET.emit("authenticate_friend_list_live", {
@@ -120,8 +151,8 @@ console.log(statusData);
       SOCKET.on('sendAudienceToLiveVideo', (data) => {
         console.log(userData, data, "kkkkkk")
           if (userData.user_id === data.user_id) {
-              // $('#live-modal').hide();
-              // setShowLive(false)
+              $('#live-modal').hide();
+              setShowLive(false)
               var newState = {};
               newState.user_id = data.user_id;
               newState.call_type = 2;
@@ -137,7 +168,6 @@ console.log(statusData);
         let frdList = friendLists;
         console.log(frdList, "mmmm")
         const totalLiveFrds = data;
-        console.log(totalLiveFrds, "totalLiveFrds...")
         for (let i in frdList) {
             for (let j in totalLiveFrds) {
                 if (totalLiveFrds[j].user_id === frdList[i].user_id) {
@@ -155,8 +185,8 @@ console.log(statusData);
       SOCKET.on('start_your_live_video_now', (data) => {
           console.log(data, userData, "start live video link...");
           if ((data.user_id == userData.user_id) && data.channel_id && data.channel_name) {
-              // $('#live-modal').hide();
-              // setShowLive(false)
+              $('#live-modal').hide();
+              setShowLive(false)
               history.push(data.user_id+ '/' + data.channel_id +'/'+ data.channel_name + '/live-video-chat')
           }
       });
@@ -188,9 +218,13 @@ console.log(statusData);
         setStartPosition(startingPos)
     });
     }, 1000);
+    // return () => componentWillUnmount()
 
-    return () => componentWillUnmount()
+
+// Status upload screen
+uploadImage();
     },[])
+         
 
   useEffect (() => {
     if (Click) {
@@ -252,7 +286,7 @@ console.log(statusData);
         <div className="col-lg-9 main-bar p-3" style={{marginLeft: '25%'}}>
           <div className="tab-top d-flex flex-wrap-wrap">
             <div className="live-icon">
-              <img src="/assets/images/live.png" style={{cursor: "pointer"}} onClick={makeMeLive} alt="Live" />
+              <img src="/assets/images/live.png" alt="Live" />
             </div>
             <NavLinks />
           </div>
@@ -379,6 +413,36 @@ console.log(statusData);
   </div>
 
 </div>
+
+      <Modal className ="theme-modal edit-payment-modal" id="live-modal" show={showLive} onHide={() => setShowLive(false)} backdrop="static" keyboard={false}>
+          {/* Modal start here */}
+          {/* <div className="theme-modal" id="live-modal" tabIndex={-1} role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"> */}
+         
+          <form action="" id="glitter_status" >
+                  <div className="modal-body p-0">
+                    <h2>Upload Status</h2>
+                    <div className="upload-status d-flex">
+                      <a id="upload__media" className="upload__media bg-grd-clr"  href="javascript:void(0)">
+                      <i className="fas fa-camera"></i>
+                      <input type="file"  name="file" value="" id="upload_fle" className="d-none" onChange={handleFileChange}accept="image/*"  />
+                      <label htmlFor="upload_fle" id="PreviewPicture" style={{ backgroundImage: `url("${imgData}")` }}   />
+                      <input type="file"  name="file" value="" id="upload_fle" onChange={handleFileChange} className="d-none" accept="image/*"  />
+
+                      </a>
+                      <a className="upload__text bg-grd-clr" href="javascript:void(0)">
+                        <i className="fas fa-pencil-alt"></i>
+                        </a>
+                      
+                        </div>
+                        {/* <textarea/> */}
+
+                    </div>
+             </form>
+            
+          {/* </div> */}
+          {/* End Modal start here */}
+          <a href="javascript:void(0)" className="modal-close" onClick={() => setShowLive(false)}><img src="/assets/images/btn_close.png" /></a>
+      </Modal>
 
 </section>
 

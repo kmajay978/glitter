@@ -256,6 +256,10 @@ const LiveVideoChat = () =>{
             //     }
             // }
         }
+        const modal = document.getElementsByClassName("modal-backdrop")[0]
+        if (!!modal) {
+            modal.remove()
+        }
     }, [])
 
     const endCall = () => {
@@ -269,6 +273,7 @@ const LiveVideoChat = () =>{
             })
         }
         else { // audience
+            alert(12)
             SOCKET.emit("end_live_video_call_audience", {
                 host_id: Number(videoCallParams.user_id),
                 user_id: videoCallState.user_id,
@@ -355,6 +360,7 @@ const LiveVideoChat = () =>{
                     <div id="local_stream" className="local_stream" style={{ width: "400px", height: "400px" }}></div>
                     <div
                         id="remote_video_"
+                        className="video_live"
                         style={{ width: "400px", height: "400px" }}
                     />
                     <img src="/assets/images/video-chat-bg.jpg" alt="Video Calling"/>
