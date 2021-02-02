@@ -12,7 +12,6 @@ module.exports = function(app, db) {
   });
 
   function validateUser (req, res, next) {
-  console.log(req);
   next();
 }
 };

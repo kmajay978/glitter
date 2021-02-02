@@ -19,13 +19,13 @@ exports.auto_assign_task = function (data, callback) {
             callback(null, false);
         } else {
             getAgents(data, function (getAllNearestAvailableAgentsResult) {
-            	console.log(getAllNearestAvailableAgentsResult);
+
                 var fleets_length = getAllNearestAvailableAgentsResult.length;
                // console.log(fleets_length);
                 if (fleets_length > 0) {
                     var driver_ids = [];
                     getAllNearestAvailableAgentsResult.forEach(function (fl) {
-                    	console.log(fl.driver_id);
+
                         driver_ids.push(fl.driver_id);
                     });
                     console.log(driver_ids);

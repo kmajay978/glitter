@@ -105,7 +105,7 @@ console.log(statusData);
  console.log(storyData);
 
  const componentWillUnmount = () => {
-     alert("stop")
+     // alert("stop")
      SOCKET.emit('stop_check_friend_list_live', () => {
          console.log("stop checking friend list live...")
      });
@@ -120,8 +120,8 @@ console.log(statusData);
       SOCKET.on('sendAudienceToLiveVideo', (data) => {
         console.log(userData, data, "kkkkkk")
           if (userData.user_id === data.user_id) {
-              $('#live-modal').hide();
-              setShowLive(false)
+              // $('#live-modal').hide();
+              // setShowLive(false)
               var newState = {};
               newState.user_id = data.user_id;
               newState.call_type = 2;
@@ -155,8 +155,8 @@ console.log(statusData);
       SOCKET.on('start_your_live_video_now', (data) => {
           console.log(data, userData, "start live video link...");
           if ((data.user_id == userData.user_id) && data.channel_id && data.channel_name) {
-              $('#live-modal').hide();
-              setShowLive(false)
+              // $('#live-modal').hide();
+              // setShowLive(false)
               history.push(data.user_id+ '/' + data.channel_id +'/'+ data.channel_name + '/live-video-chat')
           }
       });
@@ -252,7 +252,7 @@ console.log(statusData);
         <div className="col-lg-9 main-bar p-3" style={{marginLeft: '25%'}}>
           <div className="tab-top d-flex flex-wrap-wrap">
             <div className="live-icon">
-              <img src="/assets/images/live.png" alt="Live" />
+              <img src="/assets/images/live.png" style={{cursor: "pointer"}} onClick={makeMeLive} alt="Live" />
             </div>
             <NavLinks />
           </div>
@@ -379,111 +379,6 @@ console.log(statusData);
   </div>
 
 </div>
-
-      <Modal className ="theme-modal edit-payment-modal" id="live-modal" show={showLive} onHide={() => setShowLive(false)} backdrop="static" keyboard={false}>
-          {/* Modal start here */}
-          {/* <div className="theme-modal" id="live-modal" tabIndex={-1} role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"> */}
-          <div className="modal-dialog" role="document">
-              <div className="modal-content">
-                  <div className="modal-body p-0">
-                      <div className="live-wrapper">
-                          <div className="live__leftblk">
-                              <div className="live_info d-flex">
-                                  <div className="live_img">
-                                      <img src="/assets/images/go-live.jpg" alt="live user" />
-                                      <span>change cover</span>
-                                  </div>
-                                  <div className="live_title">
-                                      <h5>Add a title to chat</h5>
-                                  </div>
-                              </div>
-                              <div className="live_share">
-                                  <span>Share to</span>
-                                  <ul>
-                                      <li><a href="javascript:void(0)"><i className="fab fa-facebook-f" /></a></li>
-                                      <li><a href><i className="fab fa-instagram" /></a></li>
-                                  </ul>
-                              </div>
-                              <div className="block_countries">
-                                  <div className="block_countries__list">
-                                      <img src="/assets/images/add-countries.svg" alt="add countries" />
-                                  </div>
-                                  <div className="block_countries__list">
-                                      <img src="/assets/images/india-flag.svg" alt="india" />
-                                      <div className="block_countries__info">
-                                          <span>India</span>
-                                          <a href="javascript:void(0)" className="del-country"><img src="/assets/images/country-close.svg" alt="close" /></a>
-                                      </div>
-                                  </div>
-                                  <div className="block_countries__list">
-                                      <img src="/assets/images/nigeria.svg" alt="nigeria" />
-                                      <div className="block_countries__info">
-                                          <span>India</span>
-                                          <a href="javascript:void(0)" className="del-country"><img src="/assets/images/country-close.svg" alt="close" /></a>
-                                      </div>
-                                  </div>
-                              </div>
-                          </div>
-                          <div className="live_rightblk  text-center">
-                              <h5 className="mb-4">Select Tag</h5>
-                              <div className="tags">
-                                  <div className="live-tags">
-                                      <input type="checkbox" defaultValue id="tag-1" />
-                                      <label htmlFor="tag-1">Make friends</label>
-                                  </div>
-                                  <div className="live-tags">
-                                      <input type="checkbox" defaultValue id="tag-2" />
-                                      <label htmlFor="tag-2">Meet People</label>
-                                  </div>
-                                  <div className="live-tags">
-                                      <input type="checkbox" defaultValue id="tag-3" />
-                                      <label htmlFor="tag-3">Enjoy</label>
-                                  </div>
-                                  <div className="live-tags">
-                                      <input type="checkbox" defaultValue id="tag-4" />
-                                      <label htmlFor="tag-4">Naughty</label>
-                                  </div>
-                                  <div className="live-tags">
-                                      <input type="checkbox" defaultValue id="tag-5" />
-                                      <label htmlFor="tag-5">Lovense Lush On</label>
-                                  </div>
-                                  <div className="live-tags">
-                                      <input type="checkbox" defaultValue id="tag-6" />
-                                      <label htmlFor="tag-6">Wet Show</label>
-                                  </div>
-                                  <div className="live-tags">
-                                      <input type="checkbox" defaultValue id="tag-7" />
-                                      <label htmlFor="tag-7">Sing Show</label>
-                                  </div>
-                                  <div className="live-tags">
-                                      <input type="checkbox" defaultValue id="tag-8" />
-                                      <label htmlFor="tag-8">Modeling</label>
-                                  </div>
-                                  <div className="live-tags">
-                                      <input type="checkbox" defaultValue id="tag-9" />
-                                      <label htmlFor="tag-9">Talk About Cultures</label>
-                                  </div>
-                                  <div className="live-tags">
-                                      <input type="checkbox" defaultValue id="tag-10" />
-                                      <label htmlFor="tag-10">Spin Wheel</label>
-                                  </div>
-                              </div>
-                          </div>
-                          <div className="live-option w-100 text-center">
-                              <button className="btn bg-grd-clr" onClick={makeMeLive}>Go live</button>
-                              <div className="live-type mt-4">
-                                  <span className="active">Group Chat Live</span>
-                                  <span>Live</span>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-          </div>
-          {/* </div> */}
-          {/* End Modal start here */}
-          <a href="javascript:void(0)" className="modal-close" onClick={() => setShowLive(false)}><img src="/assets/images/btn_close.png" /></a>
-      </Modal>
 
 </section>
 
