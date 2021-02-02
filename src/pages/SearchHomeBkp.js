@@ -17,7 +17,6 @@ import {generateLiveVideoChatToken} from "../api/videoApi";
 let isMouseClick = false, startingPos = [], glitterUid, friendLists = [], userData= null;
 const SearchHomeBkp = () =>
 {
-
     const history = useHistory();
     const dispatch = useDispatch();
     const[randomNumber, setRandomNumber] = useState('');
@@ -33,11 +32,13 @@ const SearchHomeBkp = () =>
     const [showImage , setShowImage] = useState(false); //state for edit profile image model
     const [picture, setPicture] = useState(null);
     const [imgData, setImgData] = useState(null);
+    const[FileName , setFileName] = useState(null);
+    const[video , setVideo] = useState(null);
+    const [videoData, setVideoData] = useState(null);
 
     const handleImage =() => setShowImage(true);//upload status model
     const [showLive,setShowLive] = useState(false);
     const [showUploadStatus,setUploadStatus] = useState(false);
-
 
 
 
@@ -65,17 +66,52 @@ const SearchHomeBkp = () =>
 
    
   const handleFileChange = e => {
+   var data= e.target.files[0];
+   const fileName = data.type
     if (e.target.files[0]) {
-     console.log("picture: ", e.target.files);
-      setPicture(e.target.files[0]);
-      const reader = new FileReader();
-      reader.addEventListener("load", () => {
-        setImgData(reader.result); 
+
+      if(fileName === 'image/jpeg')
+      {
+        console.log("picture: ", e.target.files[0]);
+        setPicture(e.target.files[0]);
+        setFileName(fileName);
+        const reader = new FileReader();
+        reader.addEventListener("load", () => {
+          setImgData(reader.result); 
+         
+        });
+        reader.readAsDataURL(e.target.files[0]);
+      }
+      else if(fileName === 'video/mp4')
+      {
+        console.log("video_file: ", e.target.files[0]);
+        setVideo(e.target.files[0]);
+        setFileName(fileName);
+        const reader = new FileReader();
+        // reader.onload = function (e) {
+        //   videoSource.setAttribute('src', e.target.result);
+        //   video.appendChild(videoSource);
+        //   video.load();
+        //   video.play();
+        // };
+        reader.readAsDataURL(e.target.files[0]);
+      }
+      else
+      {
+        console.log("Invlid format");
+      }
+    //  console.log("picture: ", e.target.files[0]);
+    //   setPicture(e.target.files[0]);
+    //   setFileName(fileName);
+    //   const reader = new FileReader();
+    //   reader.addEventListener("load", () => {
+    //     setImgData(reader.result); 
        
-      });
-      reader.readAsDataURL(e.target.files[0]);
+    //   });
+    //   reader.readAsDataURL(e.target.files[0]);
      }
   };
+console.log(FileName)
 
   const handleFriendList = () => {
     const bodyParameters ={
@@ -130,18 +166,23 @@ const SearchHomeBkp = () =>
 //          console.log("stop checking friend list live...")
 //      });
 //  }
+const config = {
+  headers : {
+            Accept: "application/json",
+            "Content-Type": "multipart/form-data",
+        }
+  }
+
  const handleUploadStatus =() => 
  {
-   const bodyParameters ={
-     session_id : localStorage.getItem('session_id'),
-     status : picture ,
-     status_type : 1
-    }
-    axios.post(ADD_STATUS , bodyParameters)
+   const bodyParameters =new FormData();
+   bodyParameters.append("session_id", "" + localStorage.getItem('session_id'));
+   bodyParameters.append("status", picture);
+   bodyParameters.append("status_type", "" + 1);
+    axios.post(ADD_STATUS , bodyParameters , config)
     .then((response)=> {
-// console.log(response);
+     setUploadStatus(false);
    } ,(error) => {
-
   });
   }
 console.log(picture);
@@ -234,7 +275,6 @@ const uploadImage = () => {
     });
     }, 1000);
     // return () => componentWillUnmount()
-
 
 // Status upload screen
 uploadImage();
@@ -440,7 +480,7 @@ uploadImage();
                     <div className="upload-status d-flex justify-content-center mt-5">
                       <a id="upload__media" className="upload__media bg-grd-clr"  href="javascript:void(0)">
                       <i className="fas fa-camera"></i>
-                      <input type="file"  name="file" value="" id="upload_fle" className="d-none" onChange={handleFileChange}accept="image/*"  />
+                      <input type="file"  name="file" value="" id="upload_fle" className="d-none" onChange={handleFileChange} accept="image/* , video/*"  />
                       
                       </a>
                       <a className="upload__text bg-grd-clr" href="javascript:void(0)">
@@ -448,11 +488,19 @@ uploadImage();
                         </a>
                       
                         </div>
-                       {!!picture ?
+                        {!!picture &&
+                      
                         <div className="preview">
                         <img  id="PreviewPicture" src={imgData} />
                         </div>
-                         : ""}
+                        
+                          }
+                          {!!video &&
+                           <div className="preview">
+                           <video id="video_preview" width="300" height="300" controls></video>
+                            
+                           </div>
+                          }
                         <div className="text__status">
                         <textarea className="form-control" placeholder="write text" maxLength="100"></textarea>
                         </div>

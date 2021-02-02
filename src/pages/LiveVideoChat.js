@@ -78,6 +78,16 @@ const LiveVideoChat = () =>{
                 // videoCallProps: Number(videoCallParams.user_id) === userData.user_id ?
             });
 
+            SOCKET.on('end_live_video_call_host', (data) => {
+                console.log(data, "data...");
+                if (data.user_id === videoCallState.user_id) {
+                    if (data.channel_name === videoCallParams.channel_name) {
+                        alert("channel is closing....")
+                        componentWillUnmount();
+                    }
+                }
+            })
+
             SOCKET.on('end_live_video_call_audience', (data) => {
                 if (data.user_id === videoCallState.user_id) {
                     if (Number(videoCallParams.user_id) === data.user_id) {
@@ -253,7 +263,13 @@ const LiveVideoChat = () =>{
 
     const endCall = () => {
         if (Number(videoCallParams.user_id) === videoCallState.user_id) { // host
-
+            SOCKET.emit("end_live_video_call_host", {
+                host_id: Number(videoCallParams.user_id),
+                user_id: videoCallState.user_id,
+                channel_name: videoCallParams.channel_name,
+                type: 1,
+                is_host: true
+            })
         }
         else { // audience
             SOCKET.emit("end_live_video_call_audience", {
