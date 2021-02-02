@@ -105,7 +105,7 @@ console.log(statusData);
  console.log(storyData);
 
  const componentWillUnmount = () => {
-     alert("stop")
+     // alert("stop")
      SOCKET.emit('stop_check_friend_list_live', () => {
          console.log("stop checking friend list live...")
      });

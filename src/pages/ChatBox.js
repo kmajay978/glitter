@@ -20,17 +20,17 @@ const override = css`
   border-radius: 50px !important;
   width: 95%;
 `;
- // app id: bd7c4ac2265f496dbaa84d9837960c78
- // app secret: 40082f25ff2a4b88ac1358f7e863cba6
- // channel: test
- // token: 006bd7c4ac2265f496dbaa84d9837960c78IAAq1GZbv3moec3u6pFg67UZMEm0pzTuHT21ki9gqV9EXQx+f9gAAAAAEAAH/YchlRMJYAEAAQCYEwlg
+// app id: bd7c4ac2265f496dbaa84d9837960c78
+// app secret: 40082f25ff2a4b88ac1358f7e863cba6
+// channel: test
+// token: 006bd7c4ac2265f496dbaa84d9837960c78IAAq1GZbv3moec3u6pFg67UZMEm0pzTuHT21ki9gqV9EXQx+f9gAAAAAEAAH/YchlRMJYAEAAQCYEwlg
 
 let messageList = [], receiver_id, userData;
 
 const scrollToBottom = () => {
     var div = document.getElementById('chat-body');
     if (!!div)
-    div.scroll({ top: div.scrollHeight, behavior: 'smooth' });
+        div.scroll({ top: div.scrollHeight, behavior: 'smooth' });
 }
 
 const ChatBox = (props) =>{
@@ -48,7 +48,7 @@ const ChatBox = (props) =>{
     const[randomNumber, setRandomNumber] = useState('');
     const [isOn, toggleIsOn] = useToggle();
     const [GiftData , setGiftData] =useState([]);
-    
+
     let [loading, setLoading] = useState(false);
     const[recording, setRecording] = useState(false);
     const [dummyMediaRc, setDummyMediaRc] = useState(null)
@@ -140,56 +140,67 @@ const ChatBox = (props) =>{
             id : LikedUserId
         }
         axios.post(ACCEPT_REQUEST_API , bodyParameters)
-        .then((response) => {
-            if(response.status==200)
-            {
-                createNotification('sucess-like');
-            }
-        }, (error) => {
+            .then((response) => {
+                if(response.status==200)
+                {
+                    createNotification('sucess');
+                }
+            }, (error) => {
 
-        });
+            });
 
     }
     const createNotification = (type) => {
         return () => {
-          switch (type) {
-         
-            case 'success':
-              NotificationManager.success('Success message', 'Title here');
-              break;
-              case 'error-secure':
-                NotificationManager.error('err.message', 'Click me!', 5000, () => {
-                });
-            case 'error-message':
-              NotificationManager.error('err.message', 'Click me!', 5000, () => {
-        
-              });
-              break;
-          }
+            switch (type) {
+
+                case 'success':
+                    NotificationManager.success('Success message', 'Title here');
+                    break;
+                case 'error-secure':
+                    NotificationManager.error('err.message', 'Click me!', 5000, () => {
+                    });
+                case 'error-message':
+                    NotificationManager.error('err.message', 'Click me!', 5000, () => {
+
+                    });
+                    break;
+            }
         };
-      };
+    };
 
 
-           //all gift
-           const handleGift = async() =>{
-            toggleIsOn(true);
-            const bodyParameters = {
+    //all gift
+    const handleGift = async() =>{
+        toggleIsOn(true);
+        const bodyParameters = {
             session_id :  localStorage.getItem('session_id'),
-            }
-            const {data:{result}} = await axios.post(GIFT_LIST_API , bodyParameters)
-            setGiftData(result);
-            }
-     
-        //get single  gift item
-           const getGiftItem = async(Uid) => {
-           const bodyParameters ={
-           session_id :  localStorage.getItem('session_id') ,
-           gift_id : Uid ,
-           given_to : FriendUserId
-           }
-            const {data : {result}} = await axios.post(GIFT_PURCHASE_API , bodyParameters)
-           
-             }
+        }
+        const {data:{result}} = await axios.post(GIFT_LIST_API , bodyParameters)
+        setGiftData(result);
+    }
+
+    //get single  gift item
+    const getGiftItem = async(giftId) => {
+        const bodyParameters ={
+            session_id :  localStorage.getItem('session_id') ,
+            gift_id : giftId ,
+            given_to : FriendUserId
+        }
+        const {data : {giftStatus}} = await axios.post(GIFT_PURCHASE_API , bodyParameters)
+        // alert(giftStatus.get_gifts.image);
+        createNotification('sucess');
+        toggleIsOn(false);
+        var msg = {};
+        msg.file = giftStatus.get_gifts.image;
+        msg.fileName = "abc_image";
+        msg.sessionId = sessionId;
+        msg.reciever_id = receiver_id;
+
+        console.log(msg, "message_send.......")
+        SOCKET.emit('gift_send', msg);
+        setLoading(true);
+    }
     /************************************* Working here socket *******************************************************/
 
     function readThenSendFile(data){
@@ -241,7 +252,7 @@ const ChatBox = (props) =>{
     }, [randomNumber])
 // console.log(FriendUserId);
     useEffect(()=>{
-                window.setTimeout(() => {
+        window.setTimeout(() => {
             $('#uploadfile').bind('change', function(e){
                 var data = e.originalEvent.target.files[0];
                 const fileName = data.name.split(".");
@@ -258,7 +269,7 @@ const ChatBox = (props) =>{
 
         getAllDetails();
 
-    // Checking the typing user
+        // Checking the typing user
         SOCKET.on('typing', (typing) => {
             if (!!typing) {
                 if ((typing.user_id === userData.user_id && typing.reciever_id === receiver_id)
@@ -266,16 +277,16 @@ const ChatBox = (props) =>{
                     (typing.user_id === receiver_id && typing.reciever_id === userData.user_id)
                 ) { // check one-to-one data sync
 
-                if (typing.user_id !== userData.user_id) {
-                    setChatTyping(typing.typing_user)
-                    window.setTimeout(() => {
-                        setChatTyping("")
-                    }, 2000)
-                    
-        }
-       }
-     }
-  })
+                    if (typing.user_id !== userData.user_id) {
+                        setChatTyping(typing.typing_user)
+                        window.setTimeout(() => {
+                            setChatTyping("")
+                        }, 2000)
+
+                    }
+                }
+            }
+        })
 
         SOCKET.on('message_data', (messages) => {
             // console.log(messages, "test..");
@@ -315,6 +326,28 @@ const ChatBox = (props) =>{
                 }
             }
         });
+
+        SOCKET.on('gift_send',(messages) =>{
+            console.log(messages,"message_gift....");
+            let messagesList = messageList;
+            if(!!messages)
+            {
+                if ((messages.obj.user_from_id === userData.user_id && messages.obj.user_to_id === receiver_id)
+                    ||
+                    (messages.obj.user_from_id === receiver_id && messages.obj.user_to_id === userData.user_id)
+                )
+                {
+                    messagesList.push(messages.obj);
+                    messageList = messagesList;
+                    console.log(messagesList,"messageList_gift_send ........ ");
+                    setMessages(messagesList);
+                    setLoading(false);
+                    setRandomNumber(Math.random());
+                    scrollToBottom();
+                }
+            }
+        });
+
         SOCKET.on('voice', function(arrayBuffer) {
             let messagesList = messageList;
             console.log(messageList, "CompleteMessageList")
@@ -339,7 +372,7 @@ const ChatBox = (props) =>{
 
     },[])
 
-     // On text typing value 
+    // On text typing value
     const changeInput = (e) => {
         setuserMessage(e.target.value)
         SOCKET.emit("typing", {
@@ -405,39 +438,39 @@ const ChatBox = (props) =>{
             var constraints = {audio: true};
             let recordAudio = false;
             if ( !!navigator.mediaDevices) {
-            navigator.mediaDevices.getUserMedia(constraints).then(function (mediaStream) {
-                recordAudio = true;
-                var mediaRecorder = new MediaRecorder(mediaStream);
+                navigator.mediaDevices.getUserMedia(constraints).then(function (mediaStream) {
+                    recordAudio = true;
+                    var mediaRecorder = new MediaRecorder(mediaStream);
 
-                mediaRecorder.onstart = function (e) {
-                    setDummyMediaRc(mediaRecorder);
-                    this.chunks = [];
-                };
-                mediaRecorder.ondataavailable = function (e) {
-                    this.chunks.push(e.data);
-                };
-                mediaRecorder.onstop = function (e) {
-                    var blob = new Blob(this.chunks,);
-                    console.log(blob, "blob.....")
-                    blobToBase64(blob, (output) => {
-                        SOCKET.emit('radio', {blob: 'data:audio/mp3;base64,' + output, sessionId, reciever_id: FriendUserId});
-                    })
-                };
+                    mediaRecorder.onstart = function (e) {
+                        setDummyMediaRc(mediaRecorder);
+                        this.chunks = [];
+                    };
+                    mediaRecorder.ondataavailable = function (e) {
+                        this.chunks.push(e.data);
+                    };
+                    mediaRecorder.onstop = function (e) {
+                        var blob = new Blob(this.chunks,);
+                        console.log(blob, "blob.....")
+                        blobToBase64(blob, (output) => {
+                            SOCKET.emit('radio', {blob: 'data:audio/mp3;base64,' + output, sessionId, reciever_id: FriendUserId});
+                        })
+                    };
 
-                // Start recording
-                mediaRecorder.start();
-            }).catch(function (err) {
-                createNotification('error-message')
-                alert(err.message)
-            })
-            } 
+                    // Start recording
+                    mediaRecorder.start();
+                }).catch(function (err) {
+                    createNotification('error-message')
+                    alert(err.message)
+                })
+            }
             else {
                 alert("You need a secure https connection in order to record voice")
             }
         }
         else {
             console.log(dummyMediaRc, "media rec...")
-                dummyMediaRc.stop();
+            dummyMediaRc.stop();
             setDummyMediaRc(null);
         }
     }
@@ -446,22 +479,22 @@ const ChatBox = (props) =>{
         scrollToBottom()
     }, [CompleteMessageList])
 
-/*=============================== Video Call ========================================================*/
+    /*=============================== Video Call ========================================================*/
 
-const handleVideo = (image) =>{
-    var secondUserDataId = FriendUserId;
-    dispatch(
-        videoCall({
-           user_from_id: userData.user_id,
-           user_to_id: secondUserDataId,
-            user_to_image: image,
-           channel_id: uuidv4(),
-           channel_name: null,
-           channel_token: null
-        })
-      );
-      history.push("/searching-profile");
-}
+    const handleVideo = (image) =>{
+        var secondUserDataId = FriendUserId;
+        dispatch(
+            videoCall({
+                user_from_id: userData.user_id,
+                user_to_id: secondUserDataId,
+                user_to_image: image,
+                channel_id: uuidv4(),
+                channel_name: null,
+                channel_token: null
+            })
+        );
+        history.push("/searching-profile");
+    }
     return(
 
         <section className="home-wrapper">
@@ -473,7 +506,7 @@ const handleVideo = (image) =>{
                             <div className="d-flex flex-wrap align-items-center">
                                 <div className="logo-tab d-flex justify-content-between align-items-start">
                                     <a href="javascript:void(0)">
-                                       <Logo/>
+                                        <Logo/>
                                     </a>
                                 </div>
                             </div>
@@ -521,7 +554,7 @@ const handleVideo = (image) =>{
 
                                             { Likes.map((item, i) => {
                                                 return   <li className="nav-item">
-                                                    <a className="nav-link" href="#chat-field" data-toggle="tab" data-id={item.user_id} role="tab" onClick = {() =>AcceptUserRequest(item.user_id)}>
+                                                    <a className="nav-link" href="#chat-field" data-toggle="tab" data-id={item.like_id} role="tab" onClick = {() =>AcceptUserRequest(item.like_id)}>
                                                         <img alt={item.first_name} className="img-circle medium-image" src={item.profile_images} />
                                                         <div className="contacts_info">
                                                             <div className="user_detail">
@@ -597,195 +630,195 @@ const handleVideo = (image) =>{
                         </div>
                         {/* Chat box here */}
                         {GetActivity === 2 ?
-                        <div className="col-md-8 tab-content chat-block" role="tablist">
-                            <div className="nothing-to-see text-center active">
+                            <div className="col-md-8 tab-content chat-block" role="tablist">
+                                <div className="nothing-to-see text-center active">
+                                    <figure>
+                                        <img src="/assets/images/message-circle.png" alt="Message" />
+                                        <figcaption>Nothing To See</figcaption>
+                                    </figure>
+                                </div>
+                                <div className="tab-pane tab-pane fade" id="chat-field">
+                                    <div className="message-top d-flex flex-wrap align-items-center justify-content-between">
+                                        <div className="chat-header-info d-flex align-items-center">
+                                            {!!AllData ? <img alt="Mia" className="img-circle medium-image" src={AllData.profile_images}/> : ""}
+                                            <div className="chat-user-info ml-2">
+                                                {!!AllData ? <h5 className="mb-0 name">{AllData.first_name}</h5> : <h5>  </h5> }
+                                                <div className="info">
+                                                    {!!AllData &&
+                                                    <>{AllData.occupation},  {AllData.age} </>
+                                                    }
+                                                    {<> , </>}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="chat-call-opt">
+                                            <a className="bg-grd-clr" onClick = {handleCall} href="javascript:void(0)">
+                                                <NotificationContainer/>
+                                                <i className="fas fa-phone-alt" />
+
+                                            </a>
+                                        </div>
+                                        {/* Video call */}
+                                        <div className="chat-call-opt">
+                                            <a className="bg-grd-clr" onClick = {() => handleVideo(AllData.profile_images[0])} href="javascript:void(0)">
+                                                <NotificationContainer/>
+                                                <i className="fas fa-video" />
+
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                    {/*<div className="chat-date text-center my-2">Today</div>*/}
+                                    <div className="message-chat">
+
+                                        <div className="chat-body" id={"chat-body"}>
+                                            {
+                                                CompleteMessageList.map((data, i) => (
+                                                    <div>
+                                                        {
+                                                            (data.user_from_id === FriendUserId) ?
+                                                                <div className="message info">
+                                                                    <div className="message-body">
+                                                                        {
+                                                                            !!data.media &&
+                                                                            <div className="media-socket">
+                                                                                <img src={data.media}/>
+                                                                            </div>
+                                                                        }
+
+                                                                        {
+                                                                            !!data.message &&
+                                                                            <div className="message-text">
+                                                                                <p>{data.message}</p>
+                                                                            </div>
+                                                                        }
+                                                                        {
+                                                                            !!data.audio &&
+                                                                            <div  className="audio-socket">
+                                                                                <audio controls src={data.audio} className="audio-left"/>
+                                                                            </div>
+                                                                        }
+
+                                                                    </div>
+                                                                </div>
+                                                                :
+                                                                <div className="message my-message ">
+                                                                    <div className="message-body">
+                                                                        {
+                                                                            !!data.media &&
+                                                                            <div className="media-socket">
+                                                                                <img src={data.media}/>
+                                                                            </div>
+                                                                        }
+
+                                                                        {
+                                                                            !!data.message &&
+                                                                            <div className="message-text">
+                                                                                <p>{data.message}</p>
+                                                                            </div>
+                                                                        }
+                                                                        {
+                                                                            !!data.audio &&
+                                                                            <div>
+                                                                                <audio controls src={data.audio} className="audio-right"/>
+                                                                            </div>
+                                                                        }
+
+                                                                    </div>
+                                                                </div>
+                                                        }
+                                                    </div>
+                                                ))
+                                            }
+                                            <NotificationContainer/>
+                                        </div>
+                                        <form onSubmit={CheckTextInputIsEmptyOrNot}>
+
+                                            <div className="chat-footer">
+                                                <div className="sweet-loading">
+                                                    <BarLoader color={"#fcd46f"} loading={loading} css={override} size={1000} />
+                                                </div>
+                                                <label className="upload-file">
+                                                    <div>
+                                                        <input id="uploadfile" type="file" accept=".png, .jpg, .jpeg, .PNG, .JPG, .JPEG" />
+                                                        <i className="far fa-image" />
+                                                    </div>
+                                                </label>
+                                                {/* <textarea className="send-message-text" placeholder="Message..." defaultValue={UserMessage} /> */}
+                                                <input className="send-message-text" name="Message" id="Message" type="text" placeholder="Message..." value={UserMessage} onChange={e => changeInput(e)} />
+                                                <label className="gift-message bg-grd-clr">
+                                                    <a href="javascript:void(0)" onClick={handleGift} >
+                                                        <i className="fas fa-gift" />
+                                                    </a>
+                                                </label>
+                                                <label className="record-message">
+                                                    <a  onClick={sendVoiceNote}>
+                                                        {
+                                                            dummyMediaRc &&
+                                                            <i className="fas fa-microphone-slash"/>
+                                                        }
+                                                        {
+                                                            !dummyMediaRc &&
+                                                            <i className="fas fa-microphone" />
+                                                        }
+
+                                                    </a>
+                                                    <NotificationContainer/>
+                                                </label>
+                                                <button type="submit" className="send-message-button bg-grd-clr"><i className="fas fa-paper-plane" /></button>
+                                                {
+                                                    !!chatTyping &&
+                                                    <div>{chatTyping} is typing...</div>
+                                                }
+                                            </div>
+                                        </form>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                            :<div className="nothing-to-see text-center active">
                                 <figure>
                                     <img src="/assets/images/message-circle.png" alt="Message" />
                                     <figcaption>Nothing To See</figcaption>
                                 </figure>
-                            </div>
-                            <div className="tab-pane tab-pane fade" id="chat-field">
-                                <div className="message-top d-flex flex-wrap align-items-center justify-content-between">
-                                    <div className="chat-header-info d-flex align-items-center">
-                                      {!!AllData ? <img alt="Mia" className="img-circle medium-image" src={AllData.profile_images}/> : ""}  
-                                        <div className="chat-user-info ml-2">
-                                         {!!AllData ? <h5 className="mb-0 name">{AllData.first_name}</h5> : <h5>  </h5> }   
-                                            <div className="info"> 
-                                            {!!AllData && 
-                                            <>{AllData.occupation},  {AllData.age} </>
-                                            }
-                                            {<> , </>}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="chat-call-opt">
-                                        <a className="bg-grd-clr" onClick = {handleCall} href="javascript:void(0)">
-                                        <NotificationContainer/>
-                                            <i className="fas fa-phone-alt" />
-                                           
-                                        </a>
-                                    </div>
-                                    {/* Video call */}
-                                    <div className="chat-call-opt">
-                                        <a className="bg-grd-clr" onClick = {() => handleVideo(AllData.profile_images[0])} href="javascript:void(0)">
-                                        <NotificationContainer/>
-                                            <i className="fas fa-video" />
-                                           
-                                        </a>
-                                    </div>
-                                </div>
+                            </div> }
 
-                                {/*<div className="chat-date text-center my-2">Today</div>*/}
-                                <div className="message-chat">
-
-                                    <div className="chat-body" id={"chat-body"}>
-                                        {
-                                            CompleteMessageList.map((data, i) => (
-                                                <div>
-                                                    {
-                                                        (data.user_from_id === FriendUserId) ?
-                                                            <div className="message info">
-                                                                <div className="message-body">
-                                                                    {
-                                                                        !!data.media &&
-                                                                        <div className="media-socket">
-                                                                            <img src={data.media}/>
-                                                                        </div>
-                                                                    }
-
-                                                                    {
-                                                                        !!data.message &&
-                                                                        <div className="message-text">
-                                                                            <p>{data.message}</p>
-                                                                        </div>
-                                                                    }
-                                                                    {
-                                                                        !!data.audio &&
-                                                                        <div  className="audio-socket">
-                                                                            <audio controls src={data.audio} className="audio-left"/>
-                                                                        </div>
-                                                                    }
-
-                                                                </div>
-                                                            </div>
-                                                            :
-                                                            <div className="message my-message ">
-                                                                <div className="message-body">
-                                                                    {
-                                                                        !!data.media &&
-                                                                        <div className="media-socket">
-                                                                            <img src={data.media}/>
-                                                                        </div>
-                                                                    }
-
-                                                                    {
-                                                                        !!data.message &&
-                                                                        <div className="message-text">
-                                                                            <p>{data.message}</p>
-                                                                        </div>
-                                                                    }
-                                                                    {
-                                                                        !!data.audio &&
-                                                                        <div>
-                                                                            <audio controls src={data.audio} className="audio-right"/>
-                                                                        </div>
-                                                                    }
-
-                                                                </div>
-                                                            </div>
-                                                    }
-                                                </div>
-                                            ))
-                                        }
-
-                                    </div>
-                                    <form onSubmit={CheckTextInputIsEmptyOrNot}>
-
-                                        <div className="chat-footer">
-                                            <div className="sweet-loading">
-                                                <BarLoader color={"#fcd46f"} loading={loading} css={override} size={1000} />
-                                            </div>
-                                            <label className="upload-file">
-                                                <div>
-                                                    <input id="uploadfile" type="file" accept=".png, .jpg, .jpeg, .PNG, .JPG, .JPEG" />
-                                                    <i className="far fa-image" />
-                                                </div>
-                                            </label>
-                                            {/* <textarea className="send-message-text" placeholder="Message..." defaultValue={UserMessage} /> */}
-                                            <input className="send-message-text" name="Message" id="Message" type="text" placeholder="Message..." value={UserMessage} onChange={e => changeInput(e)} />
-                                            <label className="gift-message bg-grd-clr">
-                                                <a href="javascript:void(0)" onClick={handleGift} >
-                                                    <i className="fas fa-gift" />
-                                                </a>
-                                            </label>
-                                            <label className="record-message">
-                                                <a  onClick={sendVoiceNote}>
-                                                    {
-                                                        dummyMediaRc &&
-                                                        <i className="fas fa-microphone-slash"/>
-                                                    }
-                                                    {
-                                                        !dummyMediaRc &&
-                                                        <i className="fas fa-microphone" />
-                                                    }
-
-                                                </a>
-                                                <NotificationContainer/>
-                                            </label>
-                                            <button type="submit" className="send-message-button bg-grd-clr"><i className="fas fa-paper-plane" /></button>
-                                            {
-                                                !!chatTyping &&
-                                                <div>{chatTyping} is typing...</div>
-                                            }
-                                        </div>
-                                    </form>
-                                </div>
-
-                            </div>
-
-                        </div>
-                        :<div className="nothing-to-see text-center active">
-                        <figure>
-                            <img src="/assets/images/message-circle.png" alt="Message" />
-                            <figcaption>Nothing To See</figcaption>
-                        </figure>
-                    </div> }
-                               
                         {/* End chat box here */}
                         <div className={isOn ? 'all-gifts-wrapper active': 'all-gifts-wrapper '} >
-    <div className="all-gift-inner">
-    <a href="javascript:void(0)" className="close-gift-btn modal-close" onClick={toggleIsOn}><img src="/assets/images/btn_close.png" /></a>
-      <div className="all-gift-header d-flex flex-wrap align-items-center mb-3">
-        <h5 className="mb-0 mr-4">Send Gift</h5>
-        <div className="remaining-coins">
-          <img src="/assets/images/diamond-coin.png" alt="Coins" />
-          <span>152</span>
-        </div>
-      </div>
-      <div className="all-gift-body">
-        
-        <ul className="d-flex flex-wrap text-center">
-      {GiftData.map((items , i) => {
-        return <li onClick={() => getGiftItem(items.id)}>
-            <a href="javascript:void(0)" >
-              <div>
-                <figure>
-                  <img src={items.image} alt={items.name} />
-                </figure>
-                <div className="gift-price">
-                  <img src="/assets/images/diamond-coin.png" alt="Coins" />
-                  <span>{items.coins}</span>
-                </div>
-              </div>
-            </a>
-          </li>
-        })}
-          <li>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </div>
+                            <div className="all-gift-inner">
+                                <a href="javascript:void(0)" className="close-gift-btn modal-close" onClick={toggleIsOn}><img src="/assets/images/btn_close.png" /></a>
+                                <div className="all-gift-header d-flex flex-wrap align-items-center mb-3">
+                                    <h5 className="mb-0 mr-4">Send Gift</h5>
+                                    <div className="remaining-coins">
+                                        <img src="/assets/images/diamond-coin.png" alt="Coins" />
+                                        <span>152</span>
+                                    </div>
+                                </div>
+                                <div className="all-gift-body">
+
+                                    <ul className="d-flex flex-wrap text-center">
+                                        {GiftData.map((items , i) => {
+                                            return <li onClick={() => getGiftItem(items.id)}>
+                                                <a href="javascript:void(0)" >
+                                                    <div>
+                                                        <figure>
+                                                            <img src={items.image} alt={items.name} />
+                                                        </figure>
+                                                        <div className="gift-price">
+                                                            <img src="/assets/images/diamond-coin.png" alt="Coins" />
+                                                            <span>{items.coins}</span>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </li>
+                                        })}
+                                        <li>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
