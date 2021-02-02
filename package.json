@@ -30,6 +30,7 @@
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.2",
     "express": "^4.17.1",
+    "firebase": "^8.2.5",
     "hammerjs": "^2.0.8",
     "hookrouter": "^1.2.5",
     "jquery": "^3.5.1",

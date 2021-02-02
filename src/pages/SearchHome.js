@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import $ from 'jquery';
 import {  useHistory } from 'react-router';
@@ -386,6 +385,3 @@ console.log(statusData);
     )
 }
 export default SearchHome;
-
-
-
