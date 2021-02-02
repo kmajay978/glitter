@@ -79,12 +79,9 @@ const LiveVideoChat = () =>{
             });
 
             SOCKET.on('end_live_video_call_host', (data) => {
-                console.log(data, "data...");
-                if (data.user_id === videoCallState.user_id) {
-                    if (data.channel_name === videoCallParams.channel_name) {
-                        alert("channel is closing....")
-                        componentWillUnmount();
-                    }
+                if (data.channel_name == videoCallParams.channel_name) {
+                    alert("channel is closing....")
+                    componentWillUnmount();
                 }
             })
 
