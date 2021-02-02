@@ -3985,6 +3985,17 @@ div#remote_video_ > div:last-child {
     border: 1px solid var(--theme-primary-color);
 }
 
+div#remote_video_.video_live > div:last-child {
+    position: absolute !important;
+    /* right: 15px; */
+    /* width: 200px !important; */
+    /* height: 200px !important; */
+    /* right: 15px; */
+    bottom: 0;
+    /* border: 1px solid var(--theme-primary-color); */
+    width: 100% !important;
+    height: 100% !important;
+}
 
 .vc-screen .vc-option-block{
     right:300px;

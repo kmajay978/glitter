@@ -79,13 +79,12 @@ const LiveVideoChat = () =>{
             });
 
             SOCKET.on('end_live_video_call_host', (data) => {
-                console.log(data, "data...");
-                if (data.user_id === videoCallState.user_id) {
-                    if (data.channel_name === videoCallParams.channel_name) {
+               
+                    if (data.channel_name == videoCallParams.channel_name) {
                         alert("channel is closing....")
                         componentWillUnmount();
                     }
-                }
+                
             })
 
             SOCKET.on('end_live_video_call_audience', (data) => {
@@ -259,6 +258,10 @@ const LiveVideoChat = () =>{
             //     }
             // }
         }
+        const modal = document.getElementsByClassName("modal-backdrop")[0]
+        if (!!modal) {
+            modal.remove()
+        }
     }, [])
 
     const endCall = () => {
@@ -359,6 +362,7 @@ const LiveVideoChat = () =>{
                     <div id="local_stream" className="local_stream" style={{ width: "400px", height: "400px" }}></div>
                     <div
                         id="remote_video_"
+                        className="video_live"
                         style={{ width: "400px", height: "400px" }}
                     />
                     <img src="/assets/images/video-chat-bg.jpg" alt="Video Calling"/>

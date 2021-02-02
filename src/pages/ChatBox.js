@@ -181,14 +181,23 @@ const ChatBox = (props) =>{
             }
      
         //get single  gift item
-           const getGiftItem = async(Uid) => {
+           const getGiftItem = async(giftId) => {
            const bodyParameters ={
            session_id :  localStorage.getItem('session_id') ,
-           gift_id : Uid ,
+           gift_id : giftId ,
            given_to : FriendUserId
            }
-            const {data : {result}} = await axios.post(GIFT_PURCHASE_API , bodyParameters)
-           
+            const {data : {giftStatus}} = await axios.post(GIFT_PURCHASE_API , bodyParameters)
+                // alert(giftStatus.get_gifts.image);
+                var msg = {};
+                msg.file = giftStatus.get_gifts.image;
+                msg.fileName = "abc_image";
+                msg.sessionId = sessionId;
+                msg.reciever_id = receiver_id;
+               
+                console.log(msg, "message_send.......")
+                SOCKET.emit('gift_send', msg);
+                setLoading(true);
              }
     /************************************* Working here socket *******************************************************/
 
@@ -315,6 +324,28 @@ const ChatBox = (props) =>{
                 }
             }
         });
+
+        SOCKET.on('gift_send',(messages) =>{
+            console.log(messages,"message_gift....");
+            let messageList = messageList;
+            if(!!messages)
+            {
+                if ((messages.obj.user_from_id === userData.user_id && messages.obj.user_to_id === receiver_id)
+                    ||
+                    (messages.obj.user_from_id === receiver_id && messages.obj.user_to_id === userData.user_id)
+                )
+                {
+                    messageList.push(messages.obj);
+                    messageList = messageList;
+                    console.log(messageList,"messageList_gift_send ........ ");
+                    setMessages(messageList);
+                    setLoading(false);
+                    setRandomNumber(Math.random());
+                    scrollToBottom();
+                }
+            }
+        });
+
         SOCKET.on('voice', function(arrayBuffer) {
             let messagesList = messageList;
             console.log(messageList, "CompleteMessageList")
