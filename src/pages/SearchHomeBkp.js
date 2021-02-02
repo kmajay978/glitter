@@ -30,11 +30,14 @@ const SearchHomeBkp = () =>
     const[ friendId , setFriendId] = useState('');
     const [statusLength , setStatusLength] = useState("");
     const [showImage , setShowImage] = useState(false); //state for edit profile image model
+    const [showPencil , setShowPencil] = useState(false);
+    const[pencilData , setPencilData] = useState('')
     const [picture, setPicture] = useState(null);
     const [imgData, setImgData] = useState(null);
     const[FileName , setFileName] = useState(null);
-    const[video , setVideo] = useState(null);
     const [videoData, setVideoData] = useState(null);
+    const [video, setVideo] = useState(null);
+  
 
     const handleImage =() => setShowImage(true);//upload status model
     const [showLive,setShowLive] = useState(false);
@@ -74,10 +77,10 @@ const SearchHomeBkp = () =>
       {
         console.log("picture: ", e.target.files[0]);
         setPicture(e.target.files[0]);
-        setFileName(fileName);
         const reader = new FileReader();
         reader.addEventListener("load", () => {
           setImgData(reader.result); 
+          setVideoData('image');
          
         });
         reader.readAsDataURL(e.target.files[0]);
@@ -85,33 +88,20 @@ const SearchHomeBkp = () =>
       else if(fileName === 'video/mp4')
       {
         console.log("video_file: ", e.target.files[0]);
-        setVideo(e.target.files[0]);
-        setFileName(fileName);
+        setPicture(e.target.files[0]);
         const reader = new FileReader();
-        // reader.onload = function (e) {
-        //   videoSource.setAttribute('src', e.target.result);
-        //   video.appendChild(videoSource);
-        //   video.load();
-        //   video.play();
-        // };
+        reader.addEventListener("load", () => {
+          setImgData(reader.result); 
+          setVideoData('video');
+        });
         reader.readAsDataURL(e.target.files[0]);
       }
       else
       {
         console.log("Invlid format");
       }
-    //  console.log("picture: ", e.target.files[0]);
-    //   setPicture(e.target.files[0]);
-    //   setFileName(fileName);
-    //   const reader = new FileReader();
-    //   reader.addEventListener("load", () => {
-    //     setImgData(reader.result); 
-       
-    //   });
-    //   reader.readAsDataURL(e.target.files[0]);
      }
   };
-console.log(FileName)
 
   const handleFriendList = () => {
     const bodyParameters ={
@@ -150,6 +140,7 @@ console.log(FileName)
       if (response.status === 200 && !response.status.error) {
         setStatusData(response.data);
         setStoryData(response.data.result);
+       
       }
       else {
         setStatusData('');
@@ -160,6 +151,19 @@ console.log(FileName)
 });
   }
 
+  const handlePencil = () => {
+   setShowPencil(true);
+   setVideoData('text');
+   setPicture(null);
+  }
+  
+  const modelClose= () => {
+    setUploadStatus(false);
+    setShowPencil(false);
+    setPicture(null);
+    setVideoData(null);
+    setPencilData('');
+  }
 //  const componentWillUnmount = () => {
 //      //alert("stop")
 //      SOCKET.emit('stop_check_friend_list_live', () => {
@@ -175,15 +179,42 @@ const config = {
 
  const handleUploadStatus =() => 
  {
+   if (videoData=='image')
+   {
    const bodyParameters =new FormData();
    bodyParameters.append("session_id", "" + localStorage.getItem('session_id'));
    bodyParameters.append("status", picture);
    bodyParameters.append("status_type", "" + 1);
+   axios.post(ADD_STATUS , bodyParameters , config)
+   .then((response)=> {
+    setUploadStatus(false);
+  } ,(error) => {
+  });
+   }
+   else if (videoData=='video'){
+    const bodyParameters =new FormData();
+    bodyParameters.append("session_id", "" + localStorage.getItem('session_id'));
+    bodyParameters.append("status", picture);
+    bodyParameters.append("status_type", "" + 2);
     axios.post(ADD_STATUS , bodyParameters , config)
     .then((response)=> {
      setUploadStatus(false);
    } ,(error) => {
   });
+   }
+   else if (videoData=='text'){
+    const bodyParameters =new FormData();
+    bodyParameters.append("session_id", "" + localStorage.getItem('session_id'));
+    bodyParameters.append("status", pencilData);
+    bodyParameters.append("status_type", "" + 3);
+    axios.post(ADD_STATUS , bodyParameters , config)
+    .then((response)=> {
+     setUploadStatus(false);
+     setPencilData('');
+     setShowPencil(false);
+   } ,(error) => {
+  });
+   }
   }
 console.log(picture);
 
@@ -197,6 +228,7 @@ const uploadImage = () => {
     e.stopPropagation();
     //some code
 });
+
 }
   useEffect (() => {
     SOCKET.connect();
@@ -483,28 +515,32 @@ uploadImage();
                       <input type="file"  name="file" value="" id="upload_fle" className="d-none" onChange={handleFileChange} accept="image/* , video/*"  />
                       
                       </a>
-                      <a className="upload__text bg-grd-clr" href="javascript:void(0)">
+                      <a className="upload__text bg-grd-clr" href="javascript:void(0)" onClick={handlePencil}>
                         <i className="fas fa-pencil-alt"></i>
                         </a>
                       
                         </div>
-                        {!!picture &&
+                        {!!picture && videoData=='image' ?
                       
                         <div className="preview">
+                        
                         <img  id="PreviewPicture" src={imgData} />
                         </div>
-                        
-                          }
-                          {!!video &&
-                           <div className="preview">
-                           <video id="video_preview" width="300" height="300" controls></video>
+                        : videoData == 'video' ?
+                        <div className="preview">
+                             
+                           <video id="video_preview" src={imgData} width="300" height="300" controls></video>
                             
                            </div>
+                           : videoData == 'text' ?
+                           <div className="text__status">
+                           {!!showPencil ?<textarea className="form-control" name="upload_text"  value={pencilData} onChange={e => setPencilData(e.target.value)} placeholder="write text" /> : ""} 
+                            </div>
+    
+                           :""
                           }
-                        <div className="text__status">
-                        <textarea className="form-control" placeholder="write text" maxLength="100"></textarea>
-                        </div>
-
+                         
+                       
                         <a className="btn bg-grd-clr btn-small mt-4" onClick={handleUploadStatus}>Publish Status</a>
 
                     </div>
@@ -515,7 +551,7 @@ uploadImage();
             
           {/* </div> */}
           {/* End Modal start here */}
-          <a href="javascript:void(0)" className="modal-close" onClick={() => setUploadStatus(false)}><img src="/assets/images/btn_close.png" /></a>
+          <a href="javascript:void(0)" className="modal-close" onClick={modelClose}><img src="/assets/images/btn_close.png" /></a>
       </Modal>
 
 </section>

@@ -40,7 +40,7 @@ console.log(userData, "userdata..")
     }
     localStorage.removeItem("videoCallPageRefresh");
     clearChatState(dispatch);
-    history.push("/chat");
+    window.location.href = "/chat";
   }
   useEffect(() =>{
     if (!!userData) {

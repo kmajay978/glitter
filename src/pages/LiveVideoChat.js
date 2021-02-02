@@ -40,7 +40,7 @@ const LiveVideoChat = () =>{
         localStorage.removeItem("videoCallLivePageRefresh");
         localStorage.removeItem("liveVideoProps");
         clearChatState(dispatch);
-        history.push("/search-home");
+        window.location.href = "/search-home";
     }
     useEffect(() =>{
         if (!!userData) {
@@ -79,23 +79,20 @@ const LiveVideoChat = () =>{
             });
 
             SOCKET.on('end_live_video_call_host', (data) => {
-                console.log(data, "data...");
-                if (data.user_id === videoCallState.user_id) {
-                    if (data.channel_name === videoCallParams.channel_name) {
-                        alert("channel is closing....")
-                        componentWillUnmount();
-                    }
+                if (data.channel_name == videoCallParams.channel_name) {
+                    // alert("channel is closing....")
+                    componentWillUnmount();
                 }
             })
 
             SOCKET.on('end_live_video_call_audience', (data) => {
                 if (data.user_id === videoCallState.user_id) {
                     if (Number(videoCallParams.user_id) === data.user_id) {
-                        alert("host")
+                        // alert("host")
 
                     }
                     else { // audience..
-                        alert("decline audience with id:"+ data.user_id);
+                        // alert("decline audience with id:"+ data.user_id);
                         componentWillUnmount();
                     }
                 }

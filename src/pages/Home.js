@@ -17,7 +17,7 @@ const Home = (props) =>{
     const [fetchedProfile, setFilterUser] = useState('');
    
     const handleChat = () => {
-       history.push("/chat");
+       history.push("/search-home");
     }
 
   return(
