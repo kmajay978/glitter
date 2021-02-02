@@ -71,6 +71,7 @@ const SearchHomeBkp = () =>
   const handleFileChange = e => {
    var data= e.target.files[0];
    const fileName = data.type
+   
     if (e.target.files[0]) {
 
       if(fileName === 'image/jpeg')
