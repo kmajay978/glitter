@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import $ from 'jquery';
 import {  useHistory } from 'react-router';
@@ -38,6 +37,7 @@ const SearchHome = () =>
     const [videoData, setVideoData] = useState(null);
     const [video, setVideo] = useState(null);
     const [showUploadStatus,setUploadStatus] = useState(false);
+    const[ carouselClick , setCarousalClick] = useState(false);
 
     userData = useSelector(userProfile).user.profile; //using redux useSelector here
     console.log(userData, "test")
@@ -125,7 +125,7 @@ const handleFileChange = e => {
    console.log(statusLength ,"...statuslength" );
   useEffect  (() => {
    handleStatus();
-  },[friendId])
+  },[friendId ])
 
   console.log(friendId);
   const handleStatus = () =>
@@ -323,10 +323,8 @@ const uploadImage = () => {
   },[Click])
 
     // useEffect(() => {
-    //     if (!!userData) {
-    //
-    //     }
-    // }, [userData])
+    //     handleStatus();
+    // }, [randomNumber])
 //  console.log(friendList);
 //   console.log(fetchedProfile);
 
@@ -341,6 +339,8 @@ const uploadImage = () => {
 
     }
     const makeMeAudience = (item) => {
+      setRandomNumber(Math.random());
+      setCarousalClick(true);
         setFriendId(item.user_id);
         if (item.is_live) {
             SOCKET.emit("addAudienceToLiveVideo", {
@@ -445,6 +445,7 @@ const uploadImage = () => {
       </div>
     </div>
   </div>
+ 
   <div className="modal fade" id="status-modal" tabIndex={-1} role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 
   <div className="modal-dialog" role="document">
@@ -452,7 +453,7 @@ const uploadImage = () => {
          <div className="modal-body p-0">
         <div className="status-info">
           <div className="status_image">
-            <img src="/assets/images/marlene_user.jpg" alt="user" />
+            <img src={statusData.profile_images} alt="user" />
           </div>
           <div className="status_heading">
             <h6>{statusData.first_name}• {statusData.age}</h6>
@@ -462,24 +463,22 @@ const uploadImage = () => {
 
            </div>
         </div>
+      {storyData.length && (
         <OwlCarousel  options={statusoptions} id="status-bar">
-     {!!storyData && <>
-     {storyData.map((items ,i) => {
-       return <div className="status-bar__items">
-         {items.statuses_type==1 ?  <img src={items.file} alt="status" /> : <video src={items.file} alt="status" />}
-
+        {!!storyData && <>
+        {storyData.map((items ,i) => {
+        return <div className="status-bar__items">
+        {items.statuses_type==1 ?  <img src={items.file} alt="status" /> : <video src={items.file} alt="status" />}
           </div>
         })}
         </>
-     }
+        }
         {
           <></>
         }
-
-
-        </OwlCarousel>
-
-
+       </OwlCarousel>
+    
+        )}
 
       </div>
 
@@ -500,6 +499,8 @@ const uploadImage = () => {
   </div>
 
 </div>
+
+
 <Modal className ="theme-modal" id="upload-media-modal" show={showUploadStatus} onHide={() => setUploadStatus(false)} backdrop="static" keyboard={false}>
           {/* Modal start here */}
           {/* <div className="theme-modal" id="live-modal" tabIndex={-1} role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"> */}
@@ -559,6 +560,3 @@ const uploadImage = () => {
     )
 }
 export default SearchHome;
-
-
-

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import {  useHistory } from 'react-router';
 import axios from "axios";
 import NavLinks from '../components/Nav';
-import {GET_ALL_COIN_PACKAGE , INTEREST_HOBBIES_LIST , GIFT_LIST_API , GET_GIFT_API , GET_LOGGEDPROFILE_API , EDITPROFILE_API , BLOCK_USERLIST_API , LOGOUT_API, GET_STRIPE_PACKAGE,ACTIVATE_STRIPE_PACKAGE } from '../components/Api';
+import {COIN_HISTORY , GET_ALL_COIN_PACKAGE , INTEREST_HOBBIES_LIST , GIFT_LIST_API , GET_GIFT_API , GET_LOGGEDPROFILE_API , EDITPROFILE_API , BLOCK_USERLIST_API , LOGOUT_API, GET_STRIPE_PACKAGE,ACTIVATE_STRIPE_PACKAGE } from '../components/Api';
 import useToggle from '../components/CommonFunction';
 import {removeStorage} from '../components/CommonFunction';
 import Login from '../pages/Login'
@@ -45,6 +45,7 @@ const Profile = (props) =>{
    const [hobbies , setHobbies] = useState([]);
   const [selectedCheck , setSlelected] = useState([]);
   const [coinPackage , setCoinPackage] = useState([]);
+  const [coinHistory , setCoinHistory] = useState([])
 
   const [showStripe , setShowStripe] = useState(false);
   const [showChecked , setMycheckbox] = useState(false);
@@ -55,7 +56,6 @@ const Profile = (props) =>{
   const [isProfile, toggleProfile] = useToggle();
   const handleShow = () => setShow(true); // show Edit model
   const handleSettingShow = () => setShowSetting(true); //show Setting Model
-  const handleCoinsShow = () => setShowCoin(true); //show coins model
   const handleGiftShow = () => setShowGift(true); 
   const handleImage =() => setShowImage(true);
   const handlePrivacy =() => {setShowSetting(false); setShowPrivacy(true);}
@@ -246,6 +246,7 @@ const handleCheck = (e) => {
    setBlockData(data);
    
    }
+   // coin package
    const handleBuyCoins = () => {
      setShowBuyCoins(true);
      axios.get(GET_ALL_COIN_PACKAGE)
@@ -258,6 +259,20 @@ const handleCheck = (e) => {
     }
  
     console.log(coinPackage , "packages...");
+
+    //coin history 
+    const handleCoinHistory = () => {
+      setShowCoin(true);
+      const bodyParameters ={
+        session_id :sessionId,
+      }
+      axios.post(COIN_HISTORY , bodyParameters)
+      .then((response) =>{
+       console.log(response, '...history');
+      }, (error)=> {
+
+      });
+    }
    //all gift
    const handleGift = async() =>{
     toggleIsOn(true);
@@ -582,7 +597,7 @@ const handleCheck = (e) => {
               <li><a href="javascript:void(0)" id="edit-profile" onClick={handleShow}><img src="/assets/images/edit-profile.png" alt="Edit Profile" />
                   <h6>Edit Profile</h6> <i className="fas fa-chevron-right" />
                 </a></li>
-              <li><a href="javascript:void(0)" id="coin-spend" onClick={handleCoinsShow}><img src="/assets/images/diamond-coin.png" alt="Coins" />
+              <li><a href="javascript:void(0)" id="coin-spend" onClick={handleCoinHistory}><img src="/assets/images/diamond-coin.png" alt="Coins" />
                   <h6>Coins</h6> <i className="fas fa-chevron-right" />
                 </a></li>
             </ul>
