@@ -9,7 +9,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { css } from "@emotion/core";
 import BarLoader from "react-spinners/BarLoader";
 import Logo from '../components/Logo';
-import {selectUser, userProfile, videoCall} from "../features/userSlice";
+import {selectUser, userProfile, videoCall, audioCall} from "../features/userSlice";
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import useToggle from '../components/CommonFunction';
 import { useHistory } from "react-router-dom";
@@ -128,24 +128,24 @@ const ChatBox = (props) =>{
     }
 
     // Adding call functionality here
-    const handleCall =() =>{
-        const bodyParameters = {
-            session_id: localStorage.getItem('session_id'),
-            user_id :FriendUserId,
-            type : 'audio',
-            room_id : '1'
-        }
-        axios.post(VIDEOCALL_API , bodyParameters)
-            .then((response) => {
-                if(response.status==200)
-                {
-                    createNotification('sucess');
-                    alert("call made successfully");
-                }
-            }, (error) => {
+    // const handleCall =() =>{
+    //     const bodyParameters = {
+    //         session_id: localStorage.getItem('session_id'),
+    //         user_id :FriendUserId,
+    //         type : 'audio',
+    //         room_id : '1'
+    //     }
+    //     axios.post(VIDEOCALL_API , bodyParameters)
+    //         .then((response) => {
+    //             if(response.status==200)
+    //             {
+    //                 createNotification('sucess');
+    //                 alert("call made successfully");
+    //             }
+    //         }, (error) => {
 
-            });
-    }
+    //         });
+    // }
 
     const AcceptUserRequest = (LikedUserId) =>{
         const bodyParameters = {
@@ -499,6 +499,21 @@ const ChatBox = (props) =>{
     }
 
 
+    const handleCall = (image) =>{
+        var secondUserDataId = FriendUserId;
+        dispatch(
+            audioCall({
+                user_from_id: userData.user_id,
+                user_to_id: secondUserDataId,
+                user_to_image: image,
+                channel_id: uuidv4(),
+                channel_name: null,
+                channel_token: null
+            })
+        );
+        history.push("/searching-profile-call");
+    }
+
     const createNotification = (type) => {
         return () => {
             switch (type) {
@@ -674,7 +689,7 @@ const ChatBox = (props) =>{
                                             </div>
                                         </div>
                                         <div className="chat-call-opt">
-                                            <a className="bg-grd-clr" onClick = {handleCall} href="javascript:void(0)">
+                                            <a className="bg-grd-clr" onClick = {() => handleCall(AllData.profile_images[0])} href="javascript:void(0)">
                                                 <NotificationContainer/>
                                                 <i className="fas fa-phone-alt" />
 
