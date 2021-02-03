@@ -17,7 +17,8 @@ const audioInitState = {
     user_to_image: null,
     channel_id: null,
     channel_name: null,
-    channel_token: null
+    channel_token: null,
+    type:null
 };
 
 const liveVideoInitState = {

@@ -32,7 +32,7 @@ export const generateVideoChatToken = (history, dispatch, bodyParameters, startV
 }
 
 export const generateAudioChatToken = (history, dispatch, bodyParameters, startVideoChatInitParams) => {
-    console.log("audioScreen....");
+    console.log("audioScreen")
     axios.post(TOKEN_AGORA_API,bodyParameters)
     .then((response) => { 
       if (response.status === 200) {
