@@ -83,7 +83,7 @@ console.log(userData, "userdata..")
         sender: {user_from_id: videoCallParams.user_from_id, session_id: localStorage.getItem("session_id")},
         reciever_id: videoCallParams.user_to_id,
         channel_name: videoCallParams.channel_name,
-        type: 0,
+        type: 1,
         videoCallState: params.receiver == "false" ? videoCallState : null
       });
     }
@@ -275,12 +275,12 @@ console.log(userData, "userdata..")
                   <a href="javascript:void(0)">Block</a>
                 </li>
                 <li>
-                  <a href="javascript:void(0)" onClick={endCall}>End Video</a>
+                  <a href="javascript:void(0)" onClick={endCall}>End Audio</a>
                 </li>
               </ul>
             </div>
            <NavLinks />
-            <a href="javascript:void(0)" className="end-video bg-grd-clr" onClick={endCall}>End Video</a>
+            <a href="javascript:void(0)" className="end-video bg-grd-clr" onClick={endCall}>End Audio</a>
           </div>
         </div>
       </div>

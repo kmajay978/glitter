@@ -508,8 +508,7 @@ const ChatBox = (props) =>{
                 user_to_image: image,
                 channel_id: uuidv4(),
                 channel_name: null,
-                channel_token: null,
-                type:"audio"
+                channel_token: null
             })
         );
         history.push("/searching-profile-call");
