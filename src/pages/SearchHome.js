@@ -122,7 +122,7 @@ const handleFileChange = e => {
   setFriendlist('');
 });
   }
-   console.log(statusLength);
+   console.log(statusLength ,"...statuslength" );
   useEffect  (() => {
    handleStatus();
   },[friendId])
