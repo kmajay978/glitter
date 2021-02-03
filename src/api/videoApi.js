@@ -48,6 +48,7 @@ export const generateAudioChatToken = (history, dispatch, bodyParameters, startV
           newState.user_to_image = startVideoChatInitParams.user_to_image;
           newState.channel_name = response.data.data.chanelName;
           newState.channel_token = response.data.data.token;
+          newState.type = "audio";
           newState.call_created_date = nowDate;
           dispatch(audioCall(newState))
           startAudioChatInit(history, dispatch, newState)
