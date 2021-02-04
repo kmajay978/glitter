@@ -126,6 +126,7 @@ const handleFileChange = e => {
    handleStatus();
   },[friendId])
 
+
   console.log(friendId);
   const handleStatus = () =>
   {
@@ -146,8 +147,8 @@ const handleFileChange = e => {
     setStatusData('');
 });
   }
-console.log(statusData);
- console.log(storyData);
+// console.log(statusData);
+//  console.log(storyData);
 
  const handlePencil = () => {
   setShowPencil(true);
@@ -169,6 +170,9 @@ const config = {
            "Content-Type": "multipart/form-data",
        }
  }
+ useEffect(() => {
+   console.log(storyData, "storyData...")
+ }, [storyData])
 
 const handleUploadStatus =() => 
 {
@@ -350,6 +354,19 @@ const uploadImage = () => {
             })
         }
     }
+
+    const convertToHtml = (data) => {
+       const convertedHtml =  {__html: data};
+      return <div dangerouslySetInnerHTML={convertedHtml} />
+    }
+    
+    const playVideo = (video) => {
+      window.setTimeout(() => {
+        console.log(document.getElementById(video), "kkkkk")
+          document.getElementById(video).play();
+      }, 1000)
+      return <video id= {video} src={video} alt="status" />
+    }
     return(
   <section className="home-wrapper">
   <img className="bg-mask" src="/assets/images/mask-bg.png" alt="Mask" />
@@ -383,7 +400,8 @@ const uploadImage = () => {
                 <div className="status__slider">
         <OwlCarousel  options={options}  >
         {friendList.map((item, i) =>(
-        // (statusLength.error=="") ?
+        (item.statuses.length > 0 ) ?
+       
          <div className="users-listing__slider__items" onClick={() =>  makeMeAudience(item)} id={item.user_id}  >
             <div className="users-listing__slider__items__image"  data-toggle="modal" data-target="#status-modal" >
            {!!friendList ? <img src={item.profile_images} alt="marlene" /> : ""}
@@ -394,7 +412,7 @@ const uploadImage = () => {
                  <span className="live">Live</span>
              }
           </div>
-          // : ""
+          : ""
          ))}
 
         </OwlCarousel>
@@ -462,23 +480,15 @@ const uploadImage = () => {
            </div>
         </div>
         <OwlCarousel  options={statusoptions} id="status-bar">
-     {!!storyData && <>
      {storyData.map((items ,i) => {
        return <div className="status-bar__items">
-         {items.statuses_type==1 ?  <img src={items.file} alt="status" /> : <video src={items.file} alt="status" />}
-
-          </div>
+            {items.statuses_type==1 ?
+             <img src={items.file} alt="status" /> :
+              (items.statuses_type == 2 ? playVideo(items.file) : 
+              convertToHtml(`<p>${items.file.replace("http://167.172.209.57/glitter-101/public/profile_images/", "")}</p>`))
+             } </div>
         })}
-        </>
-     }
-        {
-          <></>
-        }
-
-
         </OwlCarousel>
-
-
 
       </div>
 
