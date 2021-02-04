@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import {  useHistory } from 'react-router';
 import axios from "axios";
 import NavLinks from '../components/Nav';
-import {COIN_HISTORY , GET_ALL_COIN_PACKAGE , INTEREST_HOBBIES_LIST , GIFT_LIST_API , GET_GIFT_API , GET_LOGGEDPROFILE_API , EDITPROFILE_API , BLOCK_USERLIST_API , LOGOUT_API, GET_STRIPE_PACKAGE,ACTIVATE_STRIPE_PACKAGE } from '../components/Api';
+import {BLOCK_USER_API , COIN_HISTORY , GET_ALL_COIN_PACKAGE , INTEREST_HOBBIES_LIST , GIFT_LIST_API , GET_GIFT_API , GET_LOGGEDPROFILE_API , EDITPROFILE_API , BLOCK_USERLIST_API , LOGOUT_API, GET_STRIPE_PACKAGE,ACTIVATE_STRIPE_PACKAGE } from '../components/Api';
 import useToggle from '../components/CommonFunction';
 import {removeStorage} from '../components/CommonFunction';
 import Login from '../pages/Login'
@@ -16,6 +16,9 @@ import AboutGlitter from '../components/AboutGlitter';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import { EmailIcon, FacebookIcon,  TelegramIcon, TwitterIcon, WhatsappIcon,EmailShareButton,FacebookShareButton,TelegramShareButton,WhatsappShareButton, TwitterShareButton,} from "react-share";
 import StripeForm from '../components/StripeForm'
+import DatePicker from 'react-date-picker';
+import moment from 'moment'
+
 
 const Profile = (props) =>{
 
@@ -27,6 +30,7 @@ const Profile = (props) =>{
   const [packageList,setPackage] = useState([]);
   const [profileData, setProfile] = useState('');  
   const [blockData, setBlockData] = useState([]);
+  const [blockId , setBlockId] = useState('');
   const [picture, setPicture] = useState(null);
   const [imgData, setImgData] = useState(null);
   const [GiftData , setGiftData] =useState([]);
@@ -38,14 +42,16 @@ const Profile = (props) =>{
   const [showAbout , setShowAbout] = useState(false);
   const [showShare , setShowShare] = useState(false); // state for show share glitter model
   const [showCoins , setShowCoin] = useState(false);
-  const [ showBuyCoins , setShowBuyCoins] = useState(false);
+  const [showBuyCoins , setShowBuyCoins] = useState(false);
   const [showGift , setShowGift] = useState(false);
   const [showImage , setShowImage] = useState(false); //state for edit profile image model
   const [interestData , showInterestData] = useState([]);
-   const [hobbies , setHobbies] = useState([]);
+  const [hobbies , setHobbies] = useState([]);
   const [selectedCheck , setSlelected] = useState([]);
   const [coinPackage , setCoinPackage] = useState([]);
-  const [coinHistory , setCoinHistory] = useState([])
+  const [coinHistory , setCoinHistory] = useState([]);
+  const [coinSpend , setCoinSpend] = useState('');
+  const [Dob, setDob] = useState(''); 
 
   const [showStripe , setShowStripe] = useState(false);
   const [showChecked , setMycheckbox] = useState(false);
@@ -61,7 +67,9 @@ const Profile = (props) =>{
   const handlePrivacy =() => {setShowSetting(false); setShowPrivacy(true);}
   const handleAbout = () => {setShowSetting(false); setShowAbout(true);}
   const handleShare =() => {setShowSetting(false); setShowShare(true);} // show share glitter model
- 
+  
+  const dates = moment(Dob).format('YYYY/M/D');
+console.log(Dob , "...dob");
   // Getting form value here
   const [form , setForm] = useState({
     
@@ -116,12 +124,12 @@ const handleCheck = (e) => {
       session_id: sessionId,
       };
      const {data:{data}}= await axios.post(GET_LOGGEDPROFILE_API,bodyParameters)
-
+     console.log(moment(data.dob).format('ddd MMM DD YYYY   h:mm:ss') , "...hhhhhh");
       
     //  Setting data variable to state object 
       form.firstName = data.first_name
       form.lastName = data.last_name
-      form.dob = data.dob
+      form.dob = moment(data.dob).format('ddd MMM DD YYYY   h:mm:ss');
       form.aboutMe = data.about_me
       form.height = data.height
       form.weight = data.weight
@@ -131,7 +139,7 @@ const handleCheck = (e) => {
       form.interests_hobbie = data.interest_hobbies
 
       var obj = [...Object.values(Object.keys(form.interests_hobbie))]
-        setHobbies(obj);
+      setHobbies(obj);
 
        setProfile(data);
        dispatch(
@@ -164,7 +172,7 @@ const handleCheck = (e) => {
         bodyParameters.append("device_type", "" + 0);
         bodyParameters.append("first_name", "" + form.firstName);
         bodyParameters.append("last_name", "" + form.lastName);
-        bodyParameters.append("dob", "" + form.dob);
+        bodyParameters.append("dob", "" + dates);
         bodyParameters.append("gender", "" + form.gender);
         bodyParameters.append("aboutMe", "" + form.aboutMe);
         bodyParameters.append("height", "" + form.height);
@@ -237,7 +245,7 @@ const handleCheck = (e) => {
    }
 
    //block list
-   const handleBlock = async() => {
+   const handleBlockList = async() => {
      setShowBlock(true);
    const bodyParameters ={
     session_id: sessionId,
@@ -246,6 +254,28 @@ const handleCheck = (e) => {
    setBlockData(data);
    
    }
+   
+   const handleBlock = async() => {
+    const bodyParameters={
+      session_id : localStorage.getItem('session_id'),
+      blocked_user: blockId,
+    
+    }
+    axios.post(BLOCK_USER_API , bodyParameters)
+    .then((response)=>
+    {
+    if(response.status==200 && !response.error) {
+   
+     createNotification('success-block');
+    }
+    }, (error) =>{
+     
+    });
+  }
+console.log(blockId);
+  useEffect(() => {
+handleBlock();
+  }, [blockId])
    // coin package
    const handleBuyCoins = () => {
      setShowBuyCoins(true);
@@ -268,11 +298,13 @@ const handleCheck = (e) => {
       }
       axios.post(COIN_HISTORY , bodyParameters)
       .then((response) =>{
-       console.log(response, '...history');
+        setCoinHistory(response.data.result);
+        setCoinSpend(response.data.count_coins);
+       console.log(response.data, '...history');
       }, (error)=> {
-
       });
     }
+    
    //all gift
    const handleGift = async() =>{
     toggleIsOn(true);
@@ -380,6 +412,9 @@ const handleCheck = (e) => {
       case 'success':
         NotificationManager.success('update Successfully ', 'profile');
         break;
+        case 'success-block':
+          NotificationManager.success('block Successfully ', 'block');
+          break;
       case 'error':
         NotificationManager.error('Error message', 'Click me!', 5000, () => {
         });
@@ -393,17 +428,21 @@ const handleCheck = (e) => {
         return (
           
           <div className="edit-first-step">
+             <div className="d-flex align-items-center"> <h4 className="theme-txt text-center mb-4 ml-3">Your Information</h4>
+          </div>
               <div className="form-group">
-                  <label for="">First Name</label>
+                  <label className="d-block">First Name</label>
                 <input className="form-control bg-trsp" name="firstName" type="text" value={form.firstName}  onChange={handleChange}/>
               </div>
               <div className="form-group">
-              <label for="">Last name</label>
+              <label className="d-block">Last name</label>
                   <input className="form-control bg-trsp" name="lastName" type="text" value={form.lastName} onChange={handleChange}/>
               </div>
-              <div className="form-group">
-                  <label for="">DOB</label>
-                  <input className="form-control bg-trsp" name="dob" type="text" value={form.dob} onChange={handleChange}  />
+              <div className="form-group dob-field">
+                  <label className="d-block">DOB</label>
+                  <DatePicker  className="bg-trsp" name="dob"  value={Dob} selected={Dob}  onChange={date => setDob(date)} />
+                 
+                  {/* <input className="form-control bg-trsp" name="dob" type="text" value={form.dob} onChange={handleChange}  /> */}
               </div>
 
              <div className="choose-gender d-flex my-4">
@@ -435,7 +474,8 @@ const handleCheck = (e) => {
         return (
           
           <div className="edit-second-step">
-             
+              <div className="d-flex align-items-center"> <a href="javascript:void(0)" className="login-back-2 btn-back position-relative mb-4" onClick={() => setStep(step - 1)} ><i className="fas fa-chevron-left" /></a> <h4 className="theme-txt text-center mb-4 ml-3">Your Information</h4>
+          </div>
           <div className="form-group">
               <label for="">Height</label>
               <input className="form-control bg-trsp" name="height" type="text" value={form.height} onChange ={handleChange}/>
@@ -527,7 +567,7 @@ const handleCheck = (e) => {
                 </div>
                 <div className="remaining-coins ml-4">
                   <img src="/assets/images/diamond-coin.png" alt="Coins" />
-                  <span>{profileData.coins}</span>
+                  <span> {!!profileData.coins!=0 ?  profileData.coins :  "0" }</span>
                 </div>
               </div>
             </div>
@@ -577,13 +617,23 @@ const handleCheck = (e) => {
             <div className="user-profile__status">
               <ul className="d-flex flex-wrap justify-content-center">
                 <li><span className="user-profile__status__heading d-block text-uppercase">Liked</span>
-                  <span className="user-profile__status__counter d-block">{profileData.likes}</span>
+                  <span className="user-profile__status__counter d-block">  
+                   {!!profileData &&
+                    <>
+                    {profileData.likes!=0 ?  profileData.likes :  "0" }
+                    </>}</span>
                 </li>
                 <li><span className="user-profile__status__heading d-block text-uppercase">Story</span>
                   <span className="user-profile__status__counter d-block">0</span>
                 </li>
                 <li><span className="user-profile__status__heading d-block text-uppercase">Coins</span>
-                  <span className="user-profile__status__counter d-block">{profileData.coins}</span>
+                  <span className="user-profile__status__counter d-block">
+                    {!!profileData &&
+                    <>
+                    {profileData.coins!=0 ?  profileData.coins :  "0" }
+                    </>}
+                   
+                    </span>
                 </li>
               </ul>
             </div>
@@ -604,7 +654,7 @@ const handleCheck = (e) => {
           </div>
           <div className="user-profile__options becomevip-wrapper__innerblock">
             <ul>
-              <li><a href="javascript:void(0)" id="blacklist" onClick={handleBlock}>
+              <li><a href="javascript:void(0)" id="blacklist" onClick={handleBlockList}>
                   <h6><img src="/assets/images/blacklist-icon.png" alt="Blacklist" />Blacklist</h6> <i className="fas fa-chevron-right" />
                 </a></li>
               <li><a href="javascript:void(0)" id="setting" onClick={handleSettingShow}>
@@ -624,7 +674,7 @@ const handleCheck = (e) => {
           <div className="membership-plans">
             <h5 className="text-white text-uppercase"><img src="/assets/images/Crown-white.png" alt="crown" /> Become vip</h5>
 
-{packageList.map((item,i) =>(
+          {packageList.map((item,i) =>(
            (!!item && item.duration === "12") ?
      
             <div className="membership-plans__block active mt-5">
@@ -647,7 +697,7 @@ const handleCheck = (e) => {
           </a>
         </div>
             
-))}
+         ))}
 
           </div>
         </div>
@@ -711,8 +761,7 @@ const handleCheck = (e) => {
    <Modal className =" edit-profile-modal" show={show} onHide={() => setShow(false)} backdrop="static" keyboard={false}>
         <div className="edit-profile-modal__inner">
         
-          <div className="d-flex align-items-center"> <a href="javascript:void(0)" className="login-back-2 btn-back position-relative mb-4" onClick={() => setStep(step - 1)} ><i className="fas fa-chevron-left" /></a> <h4 className="theme-txt text-center mb-4 ml-3">Your Information</h4>
-          </div>
+         
       
         <form>
       
@@ -725,99 +774,52 @@ const handleCheck = (e) => {
   
     <Modal className ="coin-spend-modal" show={showCoins} onHide={() => setShowCoin(false)} backdrop="static" keyboard={false}>
     <div className="edit-profile-modal__inner">
-    <Modal.Header  >
-          <Modal.Title> <h4 className="theme-txt text-center mb-4 ">Coin Spend</h4>
-          <h4 className="total-coins-spend text-center mb-4">152,922</h4>
-          </Modal.Title>
-        </Modal.Header>
-      <div className="coin-spend">
-        <div className="coin-spend__hostimg">
-          <img src="/assets/images/host.png" alt="host" />
+          <h4 className="theme-txt text-center mb-4 ">Coin Spend</h4>
+          <h4 className="total-coins-spend text-center mb-4">{coinSpend}</h4>
+      {coinHistory.map((item , index)=> {
+     return  <div className="coin-spend">
+        <div className="coin-spend__host">
+          <img src={item.receiver_image} alt="host" />
         </div>
         <div className="coins-spend__hostname">
-          <span>Charlotte Marie</span> <span className="counter">20</span>
-          <div className="coin-spend__total"><img src="/assets/images/diamond-sm.png" /> 75</div>
+          <span>{item.receiver_name}</span> <span className="counter">{item.receiver_age}</span>
+          <div className="coin-spend__total"><img src="/assets/images/diamond-sm.png" />{item.coins}</div>
         </div>
         <div className="coin-spend__gift">
-          <img src="/assets/images/lips-red.png" alt="gift" />
+          <img src={item.gift_image} alt="gift" />
         </div>
       </div>
-      <div className="coin-spend">
-        <div className="coin-spend__hostimg">
-          <img src="/assets/images/host.png" alt="host" />
-        </div>
-        <div className="coins-spend__hostname">
-          <span>Charlotte Marie</span> <span className="counter">20</span>
-          <div className="coin-spend__total"><img src="/assets/images/diamond-sm.png" /> 75</div>
-        </div>
-        <div className="coin-spend__gift">
-          <img src="/assets/images/lips-red.png" alt="gift" />
-        </div>
-      </div>
-      <div className="coin-spend">
-        <div className="coin-spend__hostimg">
-          <img src="/assets/images/host.png" alt="host" />
-        </div>
-        <div className="coins-spend__hostname">
-          <span>Charlotte Marie</span> <span className="counter">20</span>
-          <div className="coin-spend__total"><img src="/assets/images/diamond-sm.png" /> 75</div>
-        </div>
-        <div className="coin-spend__gift">
-          <img src="/assets/images/lips-red.png" alt="gift" />
-        </div>
-      </div>
-      <div className="coin-spend">
-        <div className="coin-spend__hostimg">
-          <img src="/assets/images/host.png" alt="host" />
-        </div>
-        <div className="coins-spend__hostname">
-          <span>Charlotte Marie</span> <span className="counter">20</span>
-          <div className="coin-spend__total"><img src="/assets/images/diamond-sm.png" /> 75</div>
-        </div>
-        <div className="coin-spend__gift">
-          <img src="/assets/images/lips-red.png" alt="gift" />
-        </div>
-      </div>
-      <div className="coin-spend">
-        <div className="coin-spend__hostimg">
-          <img src="/assets/images/host.png" alt="host" />
-        </div>
-        <div className="coins-spend__hostname">
-          <span>Charlotte Marie</span> <span className="counter">20</span>
-          <div className="coin-spend__total"><img src="/assets/images/diamond-sm.png" /> 75</div>
-        </div>
-        <div className="coin-spend__gift">
-          <img src="/assets/images/lips-red.png" alt="gift" />
-        </div>
-      </div>
+     })} 
+
     </div>
     <a href="javascript:void(0)" className="modal-close" onClick={() => setShowCoin(false)}><img src="/assets/images/btn_close.png" /></a>
   </Modal>
  
   <Modal className ="blacklist-modal " show={showBlock} onHide={()=> setShowBlock(false)} backdrop="static" keyboard={false}>
     <div className="edit-profile-modal__inner">
-    <Modal.Header  >
-          <Modal.Title> <h4 className="theme-txt text-center mb-4 ">Blacklist</h4>
-          </Modal.Title>
-      </Modal.Header>
-     
-    
+    <h4 className="theme-txt text-center mb-4 ">Blacklist</h4>
+         
+    {!!blockData&&
+    <>
     {blockData.map((item, i) => {
   
-     return <div className="coin-spend">
-        <div className="coin-spend__host">
-          <img src={item.profile_images} alt="host" />
-        </div>
-        <div className="coins-spend__hostname">
-          <span>{item.first_name}</span> <span className="counter">{item.age}</span>
-          <div className="coin-spend__total" > 
-              <a className="theme-txt" href="javascript:void(0)">Unblock</a>
-            </div>
-        </div>
-     
-      </div>
-    })}
+  return <div className="coin-spend">
+     <div className="coin-spend__host">
+       <img src={item.profile_images} alt="host" />
+     </div>
+     <div className="coins-spend__hostname">
+       <span>{item.first_name}</span> <span className="counter">{item.age}</span>
+       <div className="coin-spend__total" > 
+           <a className="theme-txt" href="javascript:void(0)" onClick={() => setBlockId(item.user_id)}>Unblock</a>
+         </div>
+         
+     </div>
+  
+   </div>
+ })}</>} 
+  
     </div>
+    <NotificationContainer/>
     <a href="javascript:void(0)" className="modal-close" onClick={() => setShowBlock(false)}><img src="/assets/images/btn_close.png" /></a>
    
  </Modal>

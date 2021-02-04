@@ -12,6 +12,7 @@ import {SOCKET} from '../components/Config';
 import {useDispatch, useSelector} from "react-redux";
 import {userProfile} from "../features/userSlice";
 import {generateLiveVideoChatToken} from "../api/videoApi";
+import Logo from '../components/Logo';
 
 let isMouseClick = false, startingPos = [], glitterUid, friendLists = [], userData= null;
 const SearchHome = () =>
@@ -26,14 +27,14 @@ const SearchHome = () =>
     const [StartPosition, setStartPosition] = useState([])
     const [statusData , setStatusData] = useState({});
     const [storyData , setStoryData] = useState([]);
-    const[ friendId , setFriendId] = useState('');
+    const [friendId , setFriendId] = useState('');
     const [statusLength , setStatusLength] = useState("");
     const [showLive,setShowLive] = useState(false);
     const [showPencil , setShowPencil] = useState(false);
-    const[pencilData , setPencilData] = useState('')
+    const [pencilData , setPencilData] = useState('')
     const [picture, setPicture] = useState(null);
     const [imgData, setImgData] = useState(null);
-    const[FileName , setFileName] = useState(null);
+    const [FileName , setFileName] = useState(null);
     const [videoData, setVideoData] = useState(null);
     const [video, setVideo] = useState(null);
     const [showUploadStatus,setUploadStatus] = useState(false);
@@ -63,7 +64,7 @@ const statusoptions = {
 
 };
 
-const handleFileChange = e => {
+  const handleFileChange = e => {
   var data = e.target.files[0];
   const filename =  e.target.files[0];
   const fileName = data.name.split(".");
@@ -115,14 +116,17 @@ const handleFileChange = e => {
           }
           friendLists = friendList;
         setFriendlist(friendList);
-        setStatusLength(response.data.data.statuses);
+       if(response.data.data.statuses!== null) {setStatusLength(response.data.data);}
+        // setStatusLength(response.data.data.statuses);
       }
  }, (error) => {
   friendLists = []
   setFriendlist('');
 });
   }
-   console.log(statusLength ,"...statuslength" );
+ 
+    console.log(statusLength ,"...statuslength" );
+ 
   useEffect  (() => {
    handleStatus();
   },[friendId ])
@@ -360,7 +364,7 @@ const uploadImage = () => {
         <div className="col-lg-3 option-bar p-3 vh-100 position-fixed">
           <div className="logo-tab mb-5 d-flex justify-content-between align-items-start">
             <a href="javascript:void(0)">
-              <img src="/assets/images/glitters.png" alt="Glitters" />
+             <Logo/>
             </a>
             <span className="chat-point">
               <a href="javascript:void(0)">
@@ -382,23 +386,27 @@ const uploadImage = () => {
                 <div className="add__status" onClick={() =>setUploadStatus(true)}>+</div>
 
                 <div className="status__slider">
-        <OwlCarousel  options={options}  >
-        {friendList.map((item, i) =>(
-        // (statusLength.error=="") ?
-         <div className="users-listing__slider__items" onClick={() =>  makeMeAudience(item)} id={item.user_id}  >
+                
+        <OwlCarousel  options={options}>
+        {friendList.map((item, i) => (
+          <>
+         {item.statuses.length > 0 ?
+            <div className="users-listing__slider__items" onClick={() =>  makeMeAudience(item)} id={item.user_id}  >
             <div className="users-listing__slider__items__image"  data-toggle="modal" data-target="#status-modal" >
-           {!!friendList ? <img src={item.profile_images} alt="marlene" /> : ""}
+            <img src={item.profile_images} alt="marlene" /> 
               <span className="circle-shape" />
             </div>
-             {
-                 item.is_live === true &&
-                 <span className="live">Live</span>
-             }
-          </div>
-          // : ""
+            {
+                item.is_live === true &&
+                <span className="live">Live</span>
+            }
+            </div>
+         : " "}
+         </>
          ))}
 
         </OwlCarousel>
+      
                 </div>
 
 
@@ -453,7 +461,7 @@ const uploadImage = () => {
          <div className="modal-body p-0">
         <div className="status-info">
           <div className="status_image">
-            <img src={statusData.profile_images} alt="user" />
+            <img src={!!statusData ? statusData.profile_images : ""} alt="user" />
           </div>
           <div className="status_heading">
             <h6>{statusData.first_name}• {statusData.age}</h6>
@@ -463,7 +471,7 @@ const uploadImage = () => {
 
            </div>
         </div>
-      {storyData.length && (
+  
         <OwlCarousel  options={statusoptions} id="status-bar">
         {!!storyData && <>
         {storyData.map((items ,i) => {
@@ -478,7 +486,7 @@ const uploadImage = () => {
         }
        </OwlCarousel>
     
-        )}
+      
 
       </div>
 
