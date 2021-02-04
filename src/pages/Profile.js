@@ -265,17 +265,20 @@ const handleCheck = (e) => {
     .then((response)=>
     {
     if(response.status==200 && !response.error) {
-   
-     createNotification('success-block');
+      createNotification('success-block');
+  
     }
     }, (error) =>{
      
     });
+    
   }
 console.log(blockId);
   useEffect(() => {
-handleBlock();
+     handleBlock();
+     setShowBlock(false);
   }, [blockId])
+
    // coin package
    const handleBuyCoins = () => {
      setShowBuyCoins(true);

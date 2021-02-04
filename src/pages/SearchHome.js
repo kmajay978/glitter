@@ -52,7 +52,7 @@ const SearchHome = () =>
 
 const statusoptions = {
   loop: false,
-  slideSpeed: 3000,
+  slideSpeed: 2000,
   dots:true,
   margin: 0,
   items: 1,
@@ -388,6 +388,7 @@ const uploadImage = () => {
                 <div className="status__slider">
                 
         <OwlCarousel  options={options}>
+          
         {friendList.map((item, i) => (
           <>
          {item.statuses.length > 0 ?
@@ -472,17 +473,18 @@ const uploadImage = () => {
            </div>
         </div>
   
-        <OwlCarousel  options={statusoptions} id="status-bar">
+        <OwlCarousel  options={statusoptions} id="status-bar" >
         {!!storyData && <>
         {storyData.map((items ,i) => {
         return <div className="status-bar__items">
-        {items.statuses_type==1 ?  <img src={items.file} alt="status" /> : <video src={items.file} alt="status" />}
+          {items.statuses_type===1 ? <img src={items.file} alt="status" /> 
+          :items.statuses_type===2 ? <video  class="video-container "  src={items.file} autoplay="" loop=""  />
+          : items.statuses_type===3 ?items.file
+          :''}
+       
           </div>
         })}
         </>
-        }
-        {
-          <></>
         }
        </OwlCarousel>
     
