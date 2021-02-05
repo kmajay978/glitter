@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import $ from 'jquery';
+import Stories from 'react-insta-stories';
 import {  useHistory } from 'react-router';
 import { v4 as uuidv4 } from 'uuid';
 import axios from "axios";
@@ -61,6 +62,25 @@ const statusoptions = {
    
 
 };
+
+// const stories = [
+//   {
+//       url: 'http://167.172.209.57/glitter-101/public/profile_images/1611328573_Snapchat-1342745707.jpg',
+//       type:'image',
+//   },
+//   {
+//     url: 'http://167.172.209.57/glitter-101/public/profile_images/1611042638_sample-mp4-file.mp4',
+//     type: 'video',
+//   },
+// ];
+
+
+// let storyDataChanged = storyData.map(function(obj) { 
+//   obj['Myanmar'] = obj['Burma']; // Assign new key
+//   delete obj['Burma']; // Delete old key
+//   return obj; 
+// }); 
+// console.log(storyDataChanged); 
 
 const handleFileChange = e => {
   var data = e.target.files[0];

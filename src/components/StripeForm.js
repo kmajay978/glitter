@@ -64,14 +64,16 @@ const CheckoutForm = (props) => {
   
         switch (type) {
           case 'success':
-            NotificationManager.success(message, 'You have subscribed the Package');
+            NotificationManager.success(message, 'You have subscribed the Package', 3000, () => {
+            });
             break;
           case 'error':
-            NotificationManager.error(message, 'Please check your card details', 5000, () => {
+            NotificationManager.error(message, 'Please check your card details', 3000, () => {
             });
             break; 
             case 'sucess-coin':
-            NotificationManager.success(message, 'Your coin package activated');
+            NotificationManager.success(message, 'Your coin package activated', 3000, () => {
+            });
       };
       };
 
