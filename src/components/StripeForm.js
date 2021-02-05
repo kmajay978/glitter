@@ -79,14 +79,9 @@ const CheckoutForm = (props) => {
             NotificationManager.error(message, 'Please check your card details', 3000, () => {
             });
             break; 
-<<<<<<< HEAD
-            case 'coin':
-            NotificationManager.success(message, 'Your coin package activated');
-=======
             case 'sucess-coin':
             NotificationManager.success(message, 'Your coin package activated', 3000, () => {
             });
->>>>>>> ffa9f35fba849f11d25a5d227243f3bfeaf0b51d
       };
       };
 

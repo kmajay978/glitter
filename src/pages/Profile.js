@@ -16,13 +16,10 @@ import AboutGlitter from '../components/AboutGlitter';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import { EmailIcon, FacebookIcon,  TelegramIcon, TwitterIcon, WhatsappIcon,EmailShareButton,FacebookShareButton,TelegramShareButton,WhatsappShareButton, TwitterShareButton,} from "react-share";
 import StripeForm from '../components/StripeForm'
-<<<<<<< HEAD
 import DatePicker from 'react-date-picker';
 import moment from 'moment'
 
-=======
 import {addDefaultSrc, returnDefaultImage} from "../commonFunctions";
->>>>>>> ffa9f35fba849f11d25a5d227243f3bfeaf0b51d
 
 const Profile = (props) =>{
 

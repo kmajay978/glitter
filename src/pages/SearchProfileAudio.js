@@ -100,11 +100,7 @@ const SearchProfile = () =>{
                  
                  <GlitterCard className="swipe"   >
                    <div className="user__card position-relative">
-<<<<<<< HEAD
-                   <img src={!!user_to.image ? user_to.image : "/assets/images/profile-card.png"} alt="Emma" width="100%"  />
-=======
          <img onError={(e) => addDefaultSrc(e)} src={!!user_to.image ? user_to.image : returnDefaultImage()} alt="Emma" width="100%"  />
->>>>>>> ffa9f35fba849f11d25a5d227243f3bfeaf0b51d
                    </div>
                    
                  </GlitterCard>

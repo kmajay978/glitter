@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import $ from 'jquery';
-import Stories from 'react-insta-stories';
 import {  useHistory } from 'react-router';
 import { v4 as uuidv4 } from 'uuid';
 import axios from "axios";
@@ -13,11 +12,7 @@ import {SOCKET} from '../components/Config';
 import {useDispatch, useSelector} from "react-redux";
 import {userProfile} from "../features/userSlice";
 import {generateLiveVideoChatToken} from "../api/videoApi";
-<<<<<<< HEAD
-import Logo from '../components/Logo';
-=======
 import {addDefaultSrc, returnDefaultImage} from "../commonFunctions";
->>>>>>> ffa9f35fba849f11d25a5d227243f3bfeaf0b51d
 
 let isMouseClick = false, startingPos = [], glitterUid, friendLists = [], userData= null;
 const SearchHome = () =>
@@ -32,18 +27,17 @@ const SearchHome = () =>
     const [StartPosition, setStartPosition] = useState([])
     const [statusData , setStatusData] = useState({});
     const [storyData , setStoryData] = useState([]);
-    const [friendId , setFriendId] = useState('');
+    const[ friendId , setFriendId] = useState('');
     const [statusLength , setStatusLength] = useState("");
     const [showLive,setShowLive] = useState(false);
     const [showPencil , setShowPencil] = useState(false);
-    const [pencilData , setPencilData] = useState('')
+    const[pencilData , setPencilData] = useState('')
     const [picture, setPicture] = useState(null);
     const [imgData, setImgData] = useState(null);
-    const [FileName , setFileName] = useState(null);
+    const[FileName , setFileName] = useState(null);
     const [videoData, setVideoData] = useState(null);
     const [video, setVideo] = useState(null);
     const [showUploadStatus,setUploadStatus] = useState(false);
-    const[ carouselClick , setCarousalClick] = useState(false);
 
     userData = useSelector(userProfile).user.profile; //using redux useSelector here
     console.log(userData, "test")
@@ -57,7 +51,7 @@ const SearchHome = () =>
 
 const statusoptions = {
   loop: false,
-  slideSpeed: 2000,
+  slideSpeed: 3000,
   dots:true,
   margin: 0,
   items: 1,
@@ -69,9 +63,6 @@ const statusoptions = {
 
 };
 
-<<<<<<< HEAD
-  const handleFileChange = e => {
-=======
 // const stories = [
 //   {
 //       url: 'http://167.172.209.57/glitter-101/public/profile_images/1611328573_Snapchat-1342745707.jpg',
@@ -92,7 +83,6 @@ const statusoptions = {
 // console.log(storyDataChanged); 
 
 const handleFileChange = e => {
->>>>>>> ffa9f35fba849f11d25a5d227243f3bfeaf0b51d
   var data = e.target.files[0];
   const filename =  e.target.files[0];
   const fileName = data.name.split(".");
@@ -144,20 +134,18 @@ const handleFileChange = e => {
           }
           friendLists = friendList;
         setFriendlist(friendList);
-       if(response.data.data.statuses!== null) {setStatusLength(response.data.data);}
-        // setStatusLength(response.data.data.statuses);
+        setStatusLength(response.data.data.statuses);
       }
  }, (error) => {
   friendLists = []
   setFriendlist('');
 });
   }
- 
-    console.log(statusLength ,"...statuslength" );
- 
+   console.log(statusLength);
   useEffect  (() => {
    handleStatus();
-  },[friendId ])
+  },[friendId])
+
 
   console.log(friendId);
   const handleStatus = () =>
@@ -179,8 +167,8 @@ const handleFileChange = e => {
     setStatusData('');
 });
   }
-console.log(statusData);
- console.log(storyData ,"storyData");
+// console.log(statusData);
+//  console.log(storyData);
 
  const handlePencil = () => {
   setShowPencil(true);
@@ -202,6 +190,9 @@ const config = {
            "Content-Type": "multipart/form-data",
        }
  }
+ useEffect(() => {
+   console.log(storyData, "storyData...")
+ }, [storyData])
 
 const handleUploadStatus =() => 
 {
@@ -355,8 +346,10 @@ const uploadImage = () => {
   },[Click])
 
     // useEffect(() => {
-    //     handleStatus();
-    // }, [randomNumber])
+    //     if (!!userData) {
+    //
+    //     }
+    // }, [userData])
 //  console.log(friendList);
 //   console.log(fetchedProfile);
 
@@ -371,8 +364,6 @@ const uploadImage = () => {
 
     }
     const makeMeAudience = (item) => {
-      setRandomNumber(Math.random());
-      setCarousalClick(true);
         setFriendId(item.user_id);
         if (item.is_live) {
             SOCKET.emit("addAudienceToLiveVideo", {
@@ -383,6 +374,19 @@ const uploadImage = () => {
             })
         }
     }
+
+    const convertToHtml = (data) => {
+       const convertedHtml =  {__html: data};
+      return <div dangerouslySetInnerHTML={convertedHtml} />
+    }
+    
+    const playVideo = (video) => {
+      window.setTimeout(() => {
+        console.log(document.getElementById(video), "kkkkk")
+          document.getElementById(video).play();
+      }, 1000)
+      return <video id= {video} src={video} alt="status" />
+    }
     return(
   <section className="home-wrapper">
   <img className="bg-mask" src="/assets/images/mask-bg.png" alt="Mask" />
@@ -392,7 +396,7 @@ const uploadImage = () => {
         <div className="col-lg-3 option-bar p-3 vh-100 position-fixed">
           <div className="logo-tab mb-5 d-flex justify-content-between align-items-start">
             <a href="javascript:void(0)">
-             <Logo/>
+              <img src="/assets/images/glitters.png" alt="Glitters" />
             </a>
             <span className="chat-point">
               <a href="javascript:void(0)">
@@ -414,32 +418,24 @@ const uploadImage = () => {
                 <div className="add__status" onClick={() =>setUploadStatus(true)}>+</div>
 
                 <div className="status__slider">
-                
-        <OwlCarousel  options={options}>
-          
-        {friendList.map((item, i) => (
-          <>
-         {item.statuses.length > 0 ?
-            <div className="users-listing__slider__items" onClick={() =>  makeMeAudience(item)} id={item.user_id}  >
+        <OwlCarousel  options={options}  >
+        {friendList.map((item, i) =>(
+        (item.statuses.length > 0 ) ?
+       
+         <div className="users-listing__slider__items" onClick={() =>  makeMeAudience(item)} id={item.user_id}  >
             <div className="users-listing__slider__items__image"  data-toggle="modal" data-target="#status-modal" >
-<<<<<<< HEAD
-            <img src={item.profile_images} alt="marlene" /> 
-=======
            {!!friendList ? <img onError={(e) => addDefaultSrc(e)} src={!!item.profile_images ? item.profile_images : returnDefaultImage()} alt="marlene" /> : ""}
->>>>>>> ffa9f35fba849f11d25a5d227243f3bfeaf0b51d
               <span className="circle-shape" />
             </div>
-            {
-                item.is_live === true &&
-                <span className="live">Live</span>
-            }
-            </div>
-         : " "}
-         </>
+             {
+                 item.is_live === true &&
+                 <span className="live">Live</span>
+             }
+          </div>
+          : ""
          ))}
 
         </OwlCarousel>
-      
                 </div>
 
 
@@ -486,7 +482,6 @@ const uploadImage = () => {
       </div>
     </div>
   </div>
- 
   <div className="modal fade" id="status-modal" tabIndex={-1} role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 
   <div className="modal-dialog" role="document">
@@ -494,7 +489,7 @@ const uploadImage = () => {
          <div className="modal-body p-0">
         <div className="status-info">
           <div className="status_image">
-            <img src={!!statusData ? statusData.profile_images : ""} alt="user" />
+            <img src="/assets/images/marlene_user.jpg" alt="user" />
           </div>
           <div className="status_heading">
             <h6>{statusData.first_name}• {statusData.age}</h6>
@@ -504,19 +499,6 @@ const uploadImage = () => {
 
            </div>
         </div>
-<<<<<<< HEAD
-  
-        <OwlCarousel  options={statusoptions} id="status-bar" >
-        {!!storyData && <>
-        {storyData.map((items ,i) => {
-        return <div className="status-bar__items">
-          {items.statuses_type===1 ? <img src={items.file} alt="status" /> 
-          :items.statuses_type===2 ? <video  class="video-container "  src={items.file} autoplay="" loop=""  />
-          : items.statuses_type===3 ?items.file.replace("http://167.172.209.57/glitter-101/public/profile_images/", "")
-          :''}
-       
-          </div>
-=======
         <OwlCarousel  options={statusoptions} id="status-bar">
      {storyData.map((items ,i) => {
        return <div className="status-bar__items">
@@ -525,13 +507,8 @@ const uploadImage = () => {
               (items.statuses_type == 2 ? playVideo(items.file) : 
               convertToHtml(`<p>${items.file.replace("http://167.172.209.57/glitter-101/public/profile_images/", "")}</p>`))
              } </div>
->>>>>>> ffa9f35fba849f11d25a5d227243f3bfeaf0b51d
         })}
-        </>
-        }
-       </OwlCarousel>
-    
-      
+        </OwlCarousel>
 
       </div>
 
@@ -552,8 +529,6 @@ const uploadImage = () => {
   </div>
 
 </div>
-
-
 <Modal className ="theme-modal" id="upload-media-modal" show={showUploadStatus} onHide={() => setUploadStatus(false)} backdrop="static" keyboard={false}>
           {/* Modal start here */}
           {/* <div className="theme-modal" id="live-modal" tabIndex={-1} role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"> */}
