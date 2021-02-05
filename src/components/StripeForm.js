@@ -72,14 +72,21 @@ const CheckoutForm = (props) => {
   
         switch (type) {
           case 'success':
-            NotificationManager.success(message, 'You have subscribed the Package');
+            NotificationManager.success(message, 'You have subscribed the Package', 3000, () => {
+            });
             break;
           case 'error':
-            NotificationManager.error(message, 'Please check your card details', 5000, () => {
+            NotificationManager.error(message, 'Please check your card details', 3000, () => {
             });
             break; 
+<<<<<<< HEAD
             case 'coin':
             NotificationManager.success(message, 'Your coin package activated');
+=======
+            case 'sucess-coin':
+            NotificationManager.success(message, 'Your coin package activated', 3000, () => {
+            });
+>>>>>>> ffa9f35fba849f11d25a5d227243f3bfeaf0b51d
       };
       };
 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import $ from 'jquery';
+import Stories from 'react-insta-stories';
 import {  useHistory } from 'react-router';
 import { v4 as uuidv4 } from 'uuid';
 import axios from "axios";
@@ -12,7 +13,11 @@ import {SOCKET} from '../components/Config';
 import {useDispatch, useSelector} from "react-redux";
 import {userProfile} from "../features/userSlice";
 import {generateLiveVideoChatToken} from "../api/videoApi";
+<<<<<<< HEAD
 import Logo from '../components/Logo';
+=======
+import {addDefaultSrc, returnDefaultImage} from "../commonFunctions";
+>>>>>>> ffa9f35fba849f11d25a5d227243f3bfeaf0b51d
 
 let isMouseClick = false, startingPos = [], glitterUid, friendLists = [], userData= null;
 const SearchHome = () =>
@@ -64,7 +69,30 @@ const statusoptions = {
 
 };
 
+<<<<<<< HEAD
   const handleFileChange = e => {
+=======
+// const stories = [
+//   {
+//       url: 'http://167.172.209.57/glitter-101/public/profile_images/1611328573_Snapchat-1342745707.jpg',
+//       type:'image',
+//   },
+//   {
+//     url: 'http://167.172.209.57/glitter-101/public/profile_images/1611042638_sample-mp4-file.mp4',
+//     type: 'video',
+//   },
+// ];
+
+
+// let storyDataChanged = storyData.map(function(obj) { 
+//   obj['Myanmar'] = obj['Burma']; // Assign new key
+//   delete obj['Burma']; // Delete old key
+//   return obj; 
+// }); 
+// console.log(storyDataChanged); 
+
+const handleFileChange = e => {
+>>>>>>> ffa9f35fba849f11d25a5d227243f3bfeaf0b51d
   var data = e.target.files[0];
   const filename =  e.target.files[0];
   const fileName = data.name.split(".");
@@ -394,7 +422,11 @@ const uploadImage = () => {
          {item.statuses.length > 0 ?
             <div className="users-listing__slider__items" onClick={() =>  makeMeAudience(item)} id={item.user_id}  >
             <div className="users-listing__slider__items__image"  data-toggle="modal" data-target="#status-modal" >
+<<<<<<< HEAD
             <img src={item.profile_images} alt="marlene" /> 
+=======
+           {!!friendList ? <img onError={(e) => addDefaultSrc(e)} src={!!item.profile_images ? item.profile_images : returnDefaultImage()} alt="marlene" /> : ""}
+>>>>>>> ffa9f35fba849f11d25a5d227243f3bfeaf0b51d
               <span className="circle-shape" />
             </div>
             {
@@ -420,7 +452,7 @@ const uploadImage = () => {
                   <div className="sp-singular">
                     <a href="javascript:void(0)">
                       <figure>
-                        <img src={item.profile_images} alt="Marlene" />
+                        <img onError={(e) => addDefaultSrc(e)} src={!!item.profile_images ? item.profile_images : returnDefaultImage()} alt="Marlene" />
                       </figure>
                       <div className="sp-singular-content">
                       {item.online == ''? <div className="status offline">Offline</div>: <div className="status online">Online</div>}
@@ -472,6 +504,7 @@ const uploadImage = () => {
 
            </div>
         </div>
+<<<<<<< HEAD
   
         <OwlCarousel  options={statusoptions} id="status-bar" >
         {!!storyData && <>
@@ -483,6 +516,16 @@ const uploadImage = () => {
           :''}
        
           </div>
+=======
+        <OwlCarousel  options={statusoptions} id="status-bar">
+     {storyData.map((items ,i) => {
+       return <div className="status-bar__items">
+            {items.statuses_type==1 ?
+             <img onError={(e) => addDefaultSrc(e)} src={!!items.file ? items.file : returnDefaultImage()} alt="status" /> :
+              (items.statuses_type == 2 ? playVideo(items.file) : 
+              convertToHtml(`<p>${items.file.replace("http://167.172.209.57/glitter-101/public/profile_images/", "")}</p>`))
+             } </div>
+>>>>>>> ffa9f35fba849f11d25a5d227243f3bfeaf0b51d
         })}
         </>
         }
@@ -534,7 +577,8 @@ const uploadImage = () => {
                       
                         <div className="preview">
                         
-                        <img  id="PreviewPicture" src={imgData} />
+                        <img  onError={(e) => addDefaultSrc(e)} id="PreviewPicture" src={!!imgData ? imgData : returnDefaultImage()
+                        } />
                         </div>
                         : videoData == 'video' ?
                         <div className="preview">
