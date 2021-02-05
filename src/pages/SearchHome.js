@@ -152,7 +152,7 @@ const statusoptions = {
 });
   }
 console.log(statusData);
- console.log(storyData);
+ console.log(storyData ,"storyData");
 
  const handlePencil = () => {
   setShowPencil(true);
@@ -479,7 +479,7 @@ const uploadImage = () => {
         return <div className="status-bar__items">
           {items.statuses_type===1 ? <img src={items.file} alt="status" /> 
           :items.statuses_type===2 ? <video  class="video-container "  src={items.file} autoplay="" loop=""  />
-          : items.statuses_type===3 ?items.file
+          : items.statuses_type===3 ?items.file.replace("http://167.172.209.57/glitter-101/public/profile_images/", "")
           :''}
        
           </div>

@@ -9,7 +9,7 @@ import { joinChannelAudio, leaveEventAudience, leaveEventHost } from "../compone
 import {useSelector, useDispatch} from "react-redux";
 import {userProfile, audioCall, audioCallUser} from "../features/userSlice";
 
-let videoCallStatus = 0, videoCallParams, interval;
+let videoCallStatus = 0, videoCallParams, interval, callType = 1;
 
 const clearChatState = (dispatch) => {
   dispatch(audioCall(null))
@@ -34,7 +34,7 @@ console.log(userData, "userdata..")
         sender: {user_from_id: videoCallParams.user_from_id, session_id: localStorage.getItem("session_id")},
         reciever_id: videoCallParams.user_to_id,
         channel_name: videoCallParams.channel_name,
-        type: 0,
+        type: callType,
         status: 3
       });
       videoCallStatus = 0;
@@ -83,7 +83,7 @@ console.log(userData, "userdata..")
         sender: {user_from_id: videoCallParams.user_from_id, session_id: localStorage.getItem("session_id")},
         reciever_id: videoCallParams.user_to_id,
         channel_name: videoCallParams.channel_name,
-        type: 1,
+        type: callType,
         videoCallState: params.receiver == "false" ? videoCallState : null
       });
     }
@@ -145,7 +145,7 @@ console.log(userData, "userdata..")
             sender: {user_from_id: videoCallParams.user_from_id, session_id: localStorage.getItem("session_id")},
             reciever_id: videoCallParams.user_to_id,
             channel_name: videoCallParams.channel_name,
-            type: 0,
+            type: callType,
             status: 1
           });
           // initate video call for receiver...
@@ -175,7 +175,7 @@ console.log(userData, "userdata..")
             sender: {user_from_id: videoCallParams.user_from_id, session_id: localStorage.getItem("session_id")},
             reciever_id: videoCallParams.user_to_id,
             channel_name: videoCallParams.channel_name,
-            type: 0,
+            type: callType,
             status: 1
           });
         }
@@ -201,7 +201,7 @@ console.log(userData, "userdata..")
         sender: {user_from_id: videoCallParams.user_from_id},
         reciever_id: videoCallParams.user_to_id,
         channel_name: videoCallParams.channel_name,
-        type: 0,
+        type: callType,
         status: 2
       });
     }
@@ -210,7 +210,7 @@ console.log(userData, "userdata..")
         sender: {user_from_id: videoCallParams.user_from_id},
         reciever_id: videoCallParams.user_to_id,
         channel_name: videoCallParams.channel_name,
-        type: 0,
+        type: callType,
         status: 2
       });
     }
@@ -285,7 +285,7 @@ console.log(userData, "userdata..")
         </div>
       </div>
     </div>
-  </div>
+  </div> 
      <div className="vc-screen-wrapper">
        <div className="vc-screen">
          <div id="local_stream" className="local_stream" style={{ width: "400px", height: "400px" }}></div>
