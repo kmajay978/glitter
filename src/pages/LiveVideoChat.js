@@ -8,6 +8,7 @@ import { joinChannel, leaveEventAudience, leaveEventHost } from "../components/V
 import {useSelector, useDispatch} from "react-redux";
 import {userProfile, liveVideoCall, liveVideoCallUser} from "../features/userSlice";
 import {func} from "prop-types";
+import {addDefaultSrc, returnDefaultImage} from "../commonFunctions";
 
 let videoCallStatus = 0, videoCallParams, interval, userData;
 
@@ -300,14 +301,7 @@ const LiveVideoChat = () =>{
                                 <div className="vc-head-title d-flex flex-wrap align-items-center ml-5">
                                     <div className="vc-user-name d-flex flex-wrap align-items-center">
                                         <figure>
-                                            {
-                                                !user &&
-                                                <img src={"http://167.172.209.57/glitter-101/public/profile_images/1611574536_download.jpg"} alt="placeholder"/>
-                                            }
-                                            {
-                                                !!user &&
-                                                <img src={user.profile_images[0]} alt="Augusta Castro" />
-                                            }
+                                                <img onError={(e) => addDefaultSrc(e)} src={!!user ? user.profile_images[0] : returnDefaultImage()} alt="Augusta Castro" />
                                         </figure>
                                         {
                                             !!user &&
