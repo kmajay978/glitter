@@ -37,8 +37,12 @@ const CheckoutForm = (props) => {
             axios
                 .post(ACTIVATE_STRIPE_PACKAGE, bodyParameters)
                 .then((response) => {
-                 console.log(response);
+                    if(response.status==200)
+                    { 
+                        console.log(response);
                     createNotification('success',response.message);
+                  }
+             
                 }, (error) => {});
         }
 
@@ -52,9 +56,13 @@ const CheckoutForm = (props) => {
             }
             axios
                 .post(ACTIVATE_COIN_PACKAGE, bodyParameters)
-                .then((response) => {
-                 console.log(response);
-                    createNotification('sucess-coin',response.message);
+                .then((response) => {  
+                    if(response.status==200)
+                    { 
+                        console.log(response);
+                        createNotification('coin',response.message);
+                  }
+               
                 }, (error) => {});
         }
     }
@@ -70,7 +78,7 @@ const CheckoutForm = (props) => {
             NotificationManager.error(message, 'Please check your card details', 5000, () => {
             });
             break; 
-            case 'sucess-coin':
+            case 'coin':
             NotificationManager.success(message, 'Your coin package activated');
       };
       };

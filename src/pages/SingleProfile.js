@@ -8,6 +8,8 @@ import Carousel from 'react-bootstrap/Carousel';
 import Logo from '../components/Logo';
 import useToggle from '../components/CommonFunction';
 import moment from 'moment'
+// import NotificationContainer from "react-notifications/lib/NotificationContainer";
+import {NotificationContainer, NotificationManager} from 'react-notifications';
 
 const SingleProfile = (props) =>{
     const [userData, setUser] = useState(null);
@@ -100,7 +102,7 @@ const SingleProfile = (props) =>{
           {
           if(response.status==200 && !response.error) {
             setBlockData(response.data);
-          alert("block successfully")
+            MakeNotification('block');
           }
         
           }, (error) =>{
@@ -118,9 +120,15 @@ console.log(blockData);
          .then((response) => {
           if(response.status==200)
           { 
-           setSmShow(false) }
+           MakeNotification('report')
+           setTimeout(() => {
+            setSmShow(false)
+          }, 1500); }
          } ,(error) => {
-
+        MakeNotification('error')
+        setTimeout(() => {
+          setSmShow(false)
+        }, 1500);
          });
         };
 
@@ -147,6 +155,23 @@ console.log(blockData);
             (error) => {}
           );
         }
+
+        const MakeNotification = (type) => {
+              switch (type) {
+  
+                     case 'report':
+                      NotificationManager.success('report Successfully', 'report');
+                      break;
+                      case 'block':
+                        NotificationManager.success('block Successfully', 'block');
+                        break;
+                      case 'error':
+                        NotificationManager.error('This User was already reported', 'already reported', 5000, () => {
+                        });
+                        break; 
+              
+          };
+      };
    useEffect(() =>{
     getUser();
     handleStatus();
@@ -186,6 +211,7 @@ console.log(blockData);
           <div className="report-tab d-flex flex-wrap align-items-center justify-content-end ml-auto">
             <span className="block-cta">
               <a className="theme-txt" href="javascript:void(0)" onClick={handleblock}>{blockData.block_status==0 ?'unblock':'block'}</a>
+          <NotificationContainer/>
             </span>
             <span className="report-cta">
               <a className="theme-txt" href="javascript:void(0)" onClick={() => setSmShow(true)}>Report</a>
@@ -441,6 +467,7 @@ console.log(blockData);
                           </div>
                           </div>
                           <a className="btn bg-grd-clr d-block btn-countinue-3 "  id="edit-second-step" href="javascript:void(0)" onClick={handleReport}>Send</a>
+         <NotificationContainer/>
           </form>
            </div>
        

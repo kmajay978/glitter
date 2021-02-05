@@ -113,7 +113,7 @@ const handleCheck = (e) => {
 }
 
     const shareUrl = 'http://localhost:3000/';
-    const title = 'gilter-app';
+    const title = 'glitter-app';
 
 
   // Fetching profile Data
@@ -185,11 +185,11 @@ const handleCheck = (e) => {
    axios.post(EDITPROFILE_API , bodyParameters, config) 
    .then((response) => {
    if(response.status==200){
-   createNotification('success');
+   Notification('update');
  
    }
    }, (error) =>{
-   createNotification('error');
+   Notification('error');
    });
    }
 
@@ -219,8 +219,13 @@ const handleCheck = (e) => {
     axios.post(EDITPROFILE_API , bodyParameters , config) 
    .then((response) => {
    if(response.status==200){
-    createNotification('success');
+    // Notification('uploadImage');
+    // setTimeout(() => {
+    //   setShowImage(false);
+    // }, 1500);
+   
     setShowImage(false);
+    ProfileData();
    }
    }, (error) =>{
 
@@ -265,8 +270,10 @@ const handleCheck = (e) => {
     .then((response)=>
     {
     if(response.status==200 && !response.error) {
-      createNotification('success-block');
-  
+      createNotification('unblock');
+      setTimeout(() => {
+        setShowBlock(false);
+      }, 1500);
     }
     }, (error) =>{
      
@@ -276,7 +283,7 @@ const handleCheck = (e) => {
 console.log(blockId);
   useEffect(() => {
      handleBlock();
-     setShowBlock(false);
+     
   }, [blockId])
 
    // coin package
@@ -345,15 +352,37 @@ console.log(blockId);
    const handleFileChange = e => {
     if (e.target.files[0]) 
     {
+      console.log("picture: ", e.target.files[0]);
       setPicture(e.target.files[0]);
       const reader = new FileReader();
-      reader.addeListener("load", () => {
-        setImgData(reader.result);
-       });
+      reader.addEventListener("load", () => {
+        setImgData(reader.result); 
+     
+      });
       reader.readAsDataURL(e.target.files[0]);
     }
   };
 
+  const uploadImage = () => {
+    // Click event for status uplaod screen
+    $(document).on("click", ".image-uploader  a", function () {
+     // var image_name = $('#profile-photo').val().replace("C:\\fakepath\\", "");
+     // $(".custom-file-upload").html(image_name);
+      
+      $('#profile-photo').trigger("click");
+    });
+
+    $(document).on("change", "#profile-photo", function () {
+      var image_name1 = $(this).val().replace("C:\\fakepath\\", "");
+      $(".custom-file-upload").html(image_name1);
+    });
+   
+    $(document).on("click", "#profile-photo", function (e) {
+      e.stopPropagation();
+      //some code
+   });
+   
+   }
 
   // ------------------------------ Stipe payment module -----------------------------------------------//
 
@@ -404,19 +433,28 @@ console.log(blockId);
     GetStipePackage();
     ProfileData(dispatch)
     handleInterest();
-    
+    uploadImage();
   //handleBlock();
   },[])
 
+  const Notification = (type) => {
   
+    switch (type) {
+      case 'update':
+        NotificationManager.success('update Successfully ', 'profile');
+        break;
+      case 'error':
+        NotificationManager.error('Error message', 'Click me!', 5000, () => {
+        });
+        break; 
+  };
+  };
+
  const createNotification = (type) => {
   
     switch (type) {
-      case 'success':
-        NotificationManager.success('update Successfully ', 'profile');
-        break;
-        case 'success-block':
-          NotificationManager.success('block Successfully ', 'block');
+        case 'unblock':
+          NotificationManager.success('unblock Successfully ', 'unblock');
           break;
       case 'error':
         NotificationManager.error('Error message', 'Click me!', 5000, () => {
@@ -661,7 +699,7 @@ console.log(blockId);
                   <h6><img src="/assets/images/blacklist-icon.png" alt="Blacklist" />Blacklist</h6> <i className="fas fa-chevron-right" />
                 </a></li>
               <li><a href="javascript:void(0)" id="setting" onClick={handleSettingShow}>
-                  <h6><img src="/assets/images/setting-icon.png" alt="setting" />Setting</h6> <i className="fas fa-chevron-right" />
+                  <h6><img src="/assets/images/setting-icon.png" alt="setting" />Settings</h6> <i className="fas fa-chevron-right" />
                 </a></li>
                 <li><a href="javascript:void(0)" id="coin-spend" onClick={handleBuyCoins}><img src="/assets/images/diamond-coin.png" alt="Coins" />
                   <h6>Buy Coins</h6> <i className="fas fa-chevron-right" />
@@ -752,12 +790,17 @@ console.log(blockId);
 
 <Modal className="Image-model" show={showImage}  onHide= {() => setShowImage(false)}>
 <form>
-  <div className="profile-image-inner">
-<input type="file" id="profile-photo" name="profile-photo" onChange={handleFileChange} accept="image/*" />
-<a href="javascript:void(0)" onClick={updateImage} >Upload</a>
+<h6>Upload File</h6>
+  <div className="image-uploader position-relative">
+   <label className="custom-file-upload"></label>
+   <a href="javascript:void(0)"  className="btn bg-grd-clr">Select Photo</a>
+   
+  <input type="file" id="profile-photo" name="profile-photo" onChange={handleFileChange} className="d-none" accept="image/*" />
+
 <NotificationContainer/>
 {/* <button onClick={updateImage}>Upload</button> */}
 </div>
+<a href="javascript:void(0)" onClick={updateImage} className="btn bg-grd-clr">Publish Photo</a>
 </form>
 </Modal>
    {/* <div class="edit-profile-modal modal-wrapper"> */}
@@ -814,15 +857,16 @@ console.log(blockId);
        <span>{item.first_name}</span> <span className="counter">{item.age}</span>
        <div className="coin-spend__total" > 
            <a className="theme-txt" href="javascript:void(0)" onClick={() => setBlockId(item.user_id)}>Unblock</a>
+           <NotificationContainer/>
          </div>
          
      </div>
   
    </div>
  })}</>} 
-  
+
     </div>
-    <NotificationContainer/>
+   
     <a href="javascript:void(0)" className="modal-close" onClick={() => setShowBlock(false)}><img src="/assets/images/btn_close.png" /></a>
    
  </Modal>
@@ -830,7 +874,7 @@ console.log(blockId);
   <Modal className ="setting-modal" show={showSetting} onHide={() => setShowSetting(false)} backdrop="static" keyboard={false}>
     <div className="edit-profile-modal__inner">
     <Modal.Header>
-          <Modal.Title> <h4 className="theme-txt text-center mb-4 ">Setting</h4>
+          <Modal.Title> <h4 className="theme-txt text-center mb-4 ">Settings</h4>
           </Modal.Title>
       </Modal.Header>
       <div className="user-profile__options becomevip-wrapper__innerblock">
@@ -865,7 +909,7 @@ console.log(blockId);
             </a>
           </li>
           <li><a href="javascript:void(0)" onClick={handleShare}>
-              <h6>Share Gilitters</h6>
+              <h6>Share Glitters</h6>
               <i className="fas fa-chevron-right" />
             </a>
           </li>
