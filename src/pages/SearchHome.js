@@ -69,7 +69,7 @@ const statusoptions = {
   const filename =  e.target.files[0];
   const fileName = data.name.split(".");
   const imageFormat = fileName[fileName.length - 1];
-   if (e.target.files[0]) {
+   if (e.target.files[0]) { 
 
      if (imageFormat === "png" || imageFormat === "jpg" || imageFormat === "jpeg" ||
      imageFormat==="SVG"||imageFormat==="svg"||imageFormat === "PNG" || imageFormat === "JPG" || imageFormat === "JPEG") 

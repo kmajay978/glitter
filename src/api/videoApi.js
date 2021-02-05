@@ -20,6 +20,7 @@ export const generateVideoChatToken = (history, dispatch, bodyParameters, startV
             newState.channel_name = response.data.data.chanelName;
             newState.channel_token = response.data.data.token;
             newState.call_created_date = nowDate;
+            newState.call_type =  0;
             dispatch(videoCall(newState))
             startVideoChatInit(history, dispatch, newState)
         }
@@ -49,6 +50,7 @@ export const generateAudioChatToken = (history, dispatch, bodyParameters, startV
           newState.channel_name = response.data.data.chanelName;
           newState.channel_token = response.data.data.token;
           newState.call_created_date = nowDate;
+          newState.call_type =  1;
           dispatch(audioCall(newState))
           startAudioChatInit(history, dispatch, newState)
       }
