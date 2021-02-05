@@ -13,6 +13,7 @@ import {selectUser, userProfile, videoCall, audioCall} from "../features/userSli
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import useToggle from '../components/CommonFunction';
 import { useHistory } from "react-router-dom";
+import {addDefaultSrc, returnDefaultImage} from "../commonFunctions";
 
 const override = css`
   display: block;
@@ -719,7 +720,7 @@ const ChatBox = (props) =>{
                                                                         {
                                                                             !!data.media &&
                                                                             <div className="media-socket">
-                                                                                <img src={data.media}/>
+                                                                                <img onError={(e) => addDefaultSrc(e)} src={!!data.media ? data.media : returnDefaultImage()}/>
                                                                             </div>
                                                                         }
 
@@ -744,7 +745,7 @@ const ChatBox = (props) =>{
                                                                         {
                                                                             !!data.media &&
                                                                             <div className="media-socket">
-                                                                                <img src={data.media}/>
+                                                                                <img onError={(e) => addDefaultSrc(e)} src={!!data.media ? data.media : returnDefaultImage()}/>
                                                                             </div>
                                                                         }
 
@@ -840,7 +841,7 @@ const ChatBox = (props) =>{
                                                 <a href="javascript:void(0)" >
                                                     <div>
                                                         <figure>
-                                                            <img src={items.image} alt={items.name} />
+                                                            <img onError={(e) => addDefaultSrc(e)} src={!!items.image ? items.image : returnDefaultImage()} alt={items.name} />
                                                         </figure>
                                                         <div className="gift-price">
                                                             <img src="/assets/images/diamond-coin.png" alt="Coins" />

@@ -9,6 +9,7 @@ import { VIDEO_CALL_START } from "../components/Api";
 import { audioCall, audioCallUser} from "../features/userSlice";
 import { generateAudioChatToken } from "../api/videoApi";
 import GlitterCard from "react-tinder-card";
+import {addDefaultSrc, returnDefaultImage} from "../commonFunctions";
 
 const SearchProfile = () =>{
   const dispatch = useDispatch();
@@ -99,7 +100,7 @@ const SearchProfile = () =>{
                  
                  <GlitterCard className="swipe"   >
                    <div className="user__card position-relative">
-         <img src={!!user_to.image ? user_to.image : "/assets/images/profile-card.png"} alt="Emma" width="100%"  />
+         <img onError={(e) => addDefaultSrc(e)} src={!!user_to.image ? user_to.image : returnDefaultImage()} alt="Emma" width="100%"  />
                    </div>
                    
                  </GlitterCard>

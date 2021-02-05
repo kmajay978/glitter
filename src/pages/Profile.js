@@ -16,6 +16,7 @@ import AboutGlitter from '../components/AboutGlitter';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import { EmailIcon, FacebookIcon,  TelegramIcon, TwitterIcon, WhatsappIcon,EmailShareButton,FacebookShareButton,TelegramShareButton,WhatsappShareButton, TwitterShareButton,} from "react-share";
 import StripeForm from '../components/StripeForm'
+import {addDefaultSrc, returnDefaultImage} from "../commonFunctions";
 
 const Profile = (props) =>{
 
@@ -506,7 +507,7 @@ const handleCheck = (e) => {
               <div className="vc-head-title d-flex flex-wrap align-items-center ml-5">
                 <div className="vc-user-name d-flex flex-wrap align-items-center">
                   <figure>
-                    <img src={profileData.profile_images} alt="Augusta Castro"  />
+                    <img onError={(e) => addDefaultSrc(e)} src={!!profileData.profile_images ? profileData.profile_images : returnDefaultImage()} alt="Augusta Castro"  />
                   </figure>
                   <div className="name ml-2">{profileData.first_name +' '+ profileData.last_name }  <span className="age">{profileData.age}</span></div>
                 </div>
@@ -549,7 +550,7 @@ const handleCheck = (e) => {
         <div className="col-md-4 border-rt">
           <div className="user-profile becomevip-wrapper__innerblock p-0">
             <div className="user-profile__details text-center">
-            < img src={profileData.profile_images} alt="user" className="user-profile__image img-circle medium-image" onClick={handleImage}/> 
+            < img onError={(e) => addDefaultSrc(e)} src={!!profileData.profile_images ? profileData.profile_images : returnDefaultImage()} alt="user" className="user-profile__image img-circle medium-image" onClick={handleImage}/>
            
               <div className="user-profile__details__data">
                 <h5 className="user-profile__name">{profileData.first_name +' '+ profileData.last_name } </h5>
