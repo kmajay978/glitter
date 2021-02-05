@@ -288,14 +288,19 @@ console.log(userData, "userdata..")
   </div> 
      <div className="vc-screen-wrapper">
        <div className="vc-screen">
+       <div className="audio-calling" style={{ position: "fixed",left:"0px",right:"0px",top:"50%"}}>
+                <img style={{ width: "300px",
+    height: "300px",
+    objectFit: "cover",
+    borderRadius: "50%"}} src="/assets/images/mask-bg.png"/>
+           </div>
+
          <div id="local_stream" className="local_stream" style={{ width: "400px", height: "400px" }}></div>
          <div
              id="remote_video_"
              style={{ width: "400px", height: "400px" }}
          />
-         <div className="audio-calling">
-                <img src="/assets/images/mask-bg.png"/>
-           </div>
+        
 
          <img src="/assets/images/video-chat-bg.jpg" alt="Video Calling"/>
        </div>

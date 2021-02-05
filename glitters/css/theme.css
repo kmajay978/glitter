@@ -3202,3 +3202,11 @@ screen and (max-height: 768px) {
     object-fit: cover;
     border-radius: 50%;
 }
+
+/* position:fixed;
+top:50%;
+left:0;
+right:0;
+-moz-transform:translate(-50%);
+-webkit-transform:translate(-50%);
+transform:translate(-50%); */
