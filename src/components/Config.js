@@ -1,6 +1,6 @@
 import io from 'socket.io-client'
 
-export const SOCKET = io('http://192.168.0.196:3001', {
+export const SOCKET = io('http://localhost:3001', {
     // autoConnect: false,
     // reconnectionDelay: 1000,
     // reconnection: true,

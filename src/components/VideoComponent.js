@@ -33,6 +33,7 @@ export function joinChannel(role, option) {
                         video: true,
                         screen: false,
                     })
+                    rtc.localStream.setVideoProfile("4k_3")
                     // Initialize the local stream
                     rtc.localStream.init(function () {
                         console.log("init local stream success");
@@ -117,6 +118,7 @@ export function joinChannelAudio(role, option) {
                         video: false,
                         screen: false,
                     })
+                    rtc.localStream.setVideoProfile("4k_3")
                     // Initialize the local stream
                     rtc.localStream.init(function () {
                         console.log("init local stream success");
