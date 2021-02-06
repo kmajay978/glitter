@@ -1,5 +1,3 @@
-import React, {Component} from 'react';
-
 const countries = [
   { code: 'AD', label: 'Andorra', phone: '376' },
   { code: 'AE', label: 'United Arab Emirates', phone: '971' },
@@ -252,4 +250,16 @@ const countries = [
 ];
 
 
-export default countries
+function compare( a, b ) {
+  if ( a.label < b.label ){
+    return -1;
+  }
+  if ( a.label > b.label ){
+    return 1;
+  }
+  return 0;
+}
+
+export const getCountries = () => {
+  return countries.sort( compare );
+}

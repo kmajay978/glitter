@@ -12,7 +12,7 @@ import moment from 'moment'
 import PhoneInput from 'react-phone-input-2'
 import {addBodyClass} from '../components/CommonFunction'; 
 
-import countries_data from '../components/Countries';
+import {getCountries} from '../components/Countries';
 import LoginSidebar from '../components/LoginSidebar'; 
 
 import { SENDOTP_API, VERIFY_API, SIGNUP_API } from '../components/Api';
@@ -320,7 +320,7 @@ const registerHandle = (e) =>{
                            <div id="country" className="select" ><img src="https://flagcdn.com/16x12/af.png" />+93</div>
                             <div id="country-drop" className="dropdown">
                               <ul>
-                                 {countries_data.map((country, index) => (
+                                 {getCountries().map((country, index) => (
                                        <li onClick={e => setCntCode(e.target.getAttribute("data-cid"))} data-code={country.code.toLowerCase()} data-name={country.label} data-cid={country.phone}><img src= {"https://flagcdn.com/16x12/"+country.code.toLowerCase()+".png"} />+{country.phone}</li>
                                     ))}
                               </ul>

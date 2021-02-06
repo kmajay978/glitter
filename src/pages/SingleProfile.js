@@ -8,6 +8,7 @@ import Carousel from 'react-bootstrap/Carousel';
 import Logo from '../components/Logo';
 import useToggle from '../components/CommonFunction';
 import moment from 'moment'
+import {addDefaultSrc, returnDefaultImage} from "../commonFunctions";
 // import NotificationContainer from "react-notifications/lib/NotificationContainer";
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 
@@ -21,7 +22,7 @@ const SingleProfile = (props) =>{
     const [showGift , setShowGift] = useState(false);
     const[ form, setForm] =useState({ report :""})
     const [GiftData , setGiftData] =useState([]);
-    const [blockData , setBlockData] = useState('');
+    const [blockData , setBlockData] = useState(false);
     const [statusData , setStatusData] = useState([]);
     const [isOn, toggleIsOn] = useToggle();
     const [ showStatus , setShowStatus] =useState(false);
@@ -55,8 +56,7 @@ const SingleProfile = (props) =>{
         setStatusData(result);
     }
     console.log(statusData);
-     
-    const getUser=()=> {
+      const getUser=()=> {
         const bodyParameters = {
             user_id: checkUid,
             session_id: localStorage.getItem('session_id'),
@@ -95,21 +95,22 @@ const SingleProfile = (props) =>{
           const bodyParameters={
             session_id : localStorage.getItem('session_id'),
             blocked_user: checkUid,
-          
           }
           axios.post(BLOCK_USER_API , bodyParameters)
           .then((response)=>
           {
           if(response.status==200 && !response.error) {
-            setBlockData(response.data);
-            MakeNotification('block');
+            setBlockData(true);
+          alert("block successfully")
           }
-        
+          else {
+            setBlockData(false);
+          }
           }, (error) =>{
-            setBlockData('');
+            setBlockData(false);
           });
         }
-console.log(blockData);
+
       const handleReport =() =>{
          const bodyParameters ={
           session_id: localStorage.getItem('session_id') ,
@@ -120,15 +121,9 @@ console.log(blockData);
          .then((response) => {
           if(response.status==200)
           { 
-           MakeNotification('report')
-           setTimeout(() => {
-            setSmShow(false)
-          }, 1500); }
+           setSmShow(false) }
          } ,(error) => {
-        MakeNotification('error')
-        setTimeout(() => {
-          setSmShow(false)
-        }, 1500);
+
          });
         };
 
@@ -155,23 +150,6 @@ console.log(blockData);
             (error) => {}
           );
         }
-
-        const MakeNotification = (type) => {
-              switch (type) {
-  
-                     case 'report':
-                      NotificationManager.success('report Successfully', 'report');
-                      break;
-                      case 'block':
-                        NotificationManager.success('block Successfully', 'block');
-                        break;
-                      case 'error':
-                        NotificationManager.error('This User was already reported', 'already reported', 5000, () => {
-                        });
-                        break; 
-              
-          };
-      };
    useEffect(() =>{
     getUser();
     handleStatus();
@@ -210,8 +188,8 @@ console.log(blockData);
         <div className="col-md-7">
           <div className="report-tab d-flex flex-wrap align-items-center justify-content-end ml-auto">
             <span className="block-cta">
-              <a className="theme-txt" href="javascript:void(0)" onClick={handleblock}>{blockData.block_status==0 ?'unblock':'block'}</a>
-          <NotificationContainer/>
+              <a className="theme-txt" href="javascript:void(0)" onClick={handleblock}>{blockData ?'unblock':'block'}</a>
+          
             </span>
             <span className="report-cta">
               <a className="theme-txt" href="javascript:void(0)" onClick={() => setSmShow(true)}>Report</a>
@@ -239,14 +217,9 @@ console.log(blockData);
             <div className="items">
            
               <figure>
-                {
-                  !!userData &&
-                  <img src={userData.profile_images} alt="Marlene" />
-                }
-                {
-                  !userData &&
-                  <img src="" alt="Marlene" />
-                }
+
+                  <img onError={(e) => addDefaultSrc(e)} src={!!userData ? userData.profile_images : returnDefaultImage()} alt="Marlene" />
+
               
               </figure>
       
@@ -323,15 +296,7 @@ console.log(blockData);
                 </li>
                 <li>
                   <div className="theme-txt">Relationship status:</div>
-                  <div>
-                  {!!userData &&
-                 <>
-                {userData.relationship_status == '1' ? "Single" 
-                : userData.relationship_status == '2'  ? "Married" 
-                : "UnMarried"}
-                 </>}
-                 { <> </>}
-                  </div>
+                  <div>{!!userData ? userData.occupation : ""}</div>
                 </li>
                 <li>
                   <div className="theme-txt">join date:</div>
@@ -422,6 +387,8 @@ console.log(blockData);
               <div className="flex-wrapper d-flex align-items-center mb-3">
                 <h5 className="mb-0">Archived Stories</h5>
 
+
+
               </div>
             <div className="archived-stories d-flex flex-wrap">
             <div className="single-stories locked">
@@ -467,7 +434,6 @@ console.log(blockData);
                           </div>
                           </div>
                           <a className="btn bg-grd-clr d-block btn-countinue-3 "  id="edit-second-step" href="javascript:void(0)" onClick={handleReport}>Send</a>
-         <NotificationContainer/>
           </form>
            </div>
        

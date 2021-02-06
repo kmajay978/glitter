@@ -16,7 +16,7 @@ import {addDefaultSrc, returnDefaultImage} from "../commonFunctions";
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import Stories from 'react-insta-stories';
 
-let isMouseClick = false, startingPos = [], glitterUid, friendLists = [], userData= null;
+let isMouseClick = false, startingPos = [], glitterUid, friendLists = [], userData= null, checkOnlineFrdsInterval;
 const SearchHome = () =>
 {
     const history = useHistory();
@@ -65,21 +65,12 @@ const statusoptions = {
 
 };
 
-const stories = [
-  {
-      url: 'http://167.172.209.57/glitter-101/public/profile_images/1611328573_Snapchat-1342745707.jpg',
-      type:'image',
-  },
-  {
-    url: 'http://167.172.209.57/glitter-101/public/profile_images/1611042638_sample-mp4-file.mp4',
-    type: 'video',
-  },
-];
 
 
-// let stories = storyData.map(function(obj) { 
 
-// }); 
+let stories = storyData.map(function(obj) { 
+
+}); 
 console.log(stories); 
 
 const handleFileChange = e => {
@@ -129,6 +120,7 @@ const handleFileChange = e => {
       if (response.status === 200 ) {
           let friendList = response.data.data;
           console.log(friendList, "friendList...")
+
           for (let i in friendList) {
               friendList[i].is_live = false;
           }
@@ -273,16 +265,16 @@ const uploadImage = () => {
 
 }
  const componentWillUnmount = () => {
-     // alert("stop")
-     SOCKET.emit('stop_check_friend_list_live', () => {
-         console.log("stop checking friend list live...")
-     });
+    clearInterval(checkOnlineFrdsInterval)
  }
   useEffect (() => {
     SOCKET.connect();
-      SOCKET.emit("authenticate_friend_list_live", {
-          session_id: localStorage.getItem("session_id")
-      });
+      checkOnlineFrdsInterval = window.setInterval(() => {
+          console.log("interval started....")
+          SOCKET.emit("authenticate_friend_list_live", {
+              session_id: localStorage.getItem("session_id")
+          });
+      }, 5000)
     handleFriendList();
 
       SOCKET.on('sendAudienceToLiveVideo', (data) => {
@@ -307,8 +299,9 @@ const uploadImage = () => {
         const totalLiveFrds = data;
         console.log(totalLiveFrds, "totalLiveFrds...")
         for (let i in frdList) {
+            frdList[i].is_live = false;
             for (let j in totalLiveFrds) {
-                if (totalLiveFrds[j].user_id === frdList[i].user_id) {
+                if (totalLiveFrds[j].user_id == frdList[i].user_id) {
                     frdList[i].is_live = true;
                     frdList[i].channel_id = uuidv4();
                     frdList[i].channel_name = totalLiveFrds[j].channel_name;
@@ -444,7 +437,7 @@ const uploadImage = () => {
                 <div className="status__slider">
         <OwlCarousel  options={options}  >
         {friendList.map((item, i) =>(
-        (item.statuses.length > 0 ) ?
+        (item.statuses.length > 0 || item.is_live === true) ?
        
          <div className="users-listing__slider__items" onClick={() =>  makeMeAudience(item)} id={item.user_id}  >
             <div className="users-listing__slider__items__image"  data-toggle="modal" data-target="#status-modal" >

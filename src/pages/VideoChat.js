@@ -61,6 +61,11 @@ console.log(userData, "userdata..")
         channel_token: null,
         user_to_image: null
       }
+
+        document.getElementsByClassName("vc-screen")[0]
+        .setAttribute("id", (params.receiver == "false" ? "video-sender" : "video-receiver"))
+  
+    
       if (!getPageRefresh) {
         // SOCKET.connect();
         // if (params.receiver == "true") {
@@ -290,9 +295,8 @@ console.log(userData, "userdata..")
          <div id="local_stream" className="local_stream" style={{ width: "400px", height: "400px" }}></div>
          <div
              id="remote_video_"
-             style={{ width: "400px", height: "400px" }}
+             style={{ width: "100%", height: "100%" }}
          />
-         <img src="/assets/images/video-chat-bg.jpg" alt="Video Calling"/>
        </div>
        <div className="charges-reminder-txt">
          <p>After 25 Seconds, you will be charged 120 coins per minute</p>

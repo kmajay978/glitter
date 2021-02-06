@@ -1503,7 +1503,7 @@ position: absolute;
 
 .vc-screen-wrapper {
     position: relative;
-    height: calc(100vh - 100px);
+    height: calc(100vh - 105px);
 }
 
 .vc-screen img {
@@ -1562,7 +1562,7 @@ position: absolute;
 .vc-option-block {
     position: absolute;
     bottom: 15px;
-    right: 15px;
+    right: 250px;
 }
 
 .vc-options ul li {
@@ -4023,7 +4023,6 @@ div#upload-media-modal {
 
 /* Ajay css 29-01-2021 */
 
-
 .StripeElement {
     margin: 15px auto;
     padding: 10px 12px;
@@ -4055,19 +4054,43 @@ div#upload-media-modal {
   /* End here 29-01-2021 */
 /* one to one video */
 
-div#remote_video_ {
+div#video-sender div#remote_video_ > div:last-child{
     width: 100% !important;
-    height: 100vh !important;
+    height: -webkit-calc(100vh - 105px) !important;
+    height: -moz-calc(100vh - 105px) !important;
+    height: calc(100vh - 105px) !important;
 }
-
-div#remote_video_ > div:last-child {
+div#video-sender div#remote_video_ > div:first-child {
     position: absolute !important;
     right: 15px;
     width: 200px !important;
     height: 200px !important;
     right: 15px;
-    bottom: 0;
+    bottom: 20px;
     border: 1px solid var(--theme-primary-color);
+    z-index: 1;
+}
+div#video-receiver div#local_stream > div:first-child{
+    position: absolute !important;
+    right: 15px;
+    width: 200px !important;
+    height: 200px !important;
+    right: 15px;
+    bottom: 20px;
+    border: 1px solid var(--theme-primary-color);
+    z-index: 1;
+}
+div#video-receiver #local_stream {
+    width: auto !important;
+    height: auto !important;
+}
+div#video-receiver div#remote_video_ > div:first-child {
+    
+
+    width: 100% !important;
+    height: -webkit-calc(100vh - 105px) !important;
+    height: -moz-calc(100vh - 105px) !important;
+    height: calc(100vh - 105px) !important;
 }
 
 div#remote_video_.video_live > div:last-child {
@@ -4080,6 +4103,11 @@ div#remote_video_.video_live > div:last-child {
     /* border: 1px solid var(--theme-primary-color); */
     width: 100% !important;
     height: 100% !important;
+}
+
+.audio-one-to-one div#remote_video_ > div:first-child,
+.audio-one-to-one div#local_stream > div:first-child{
+    border: none !important;
 }
 
 .vc-screen .vc-option-block{
@@ -4105,7 +4133,7 @@ div#remote_video_.video_live > div:last-child {
 
 div#local_stream {
     width: 100% !important;
-    height: 100vh !important;
+    height: calc(100vh - 105px) !important;
 }
 
 /*div#local_stream > div:last-child {*/

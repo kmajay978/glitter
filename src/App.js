@@ -48,6 +48,7 @@ function App() {
       ProfileData(dispatch, sessionId)
     }
     SOCKET.on('pick_video_call', (data) => {
+      console.log(data.user_to_id , userData.user_id, "checkkkkkkkkkkkkkkkk")
       if (!!userData && (data.user_to_id == userData.user_id)) { // check one-to-one data sync
         localStorage.setItem("receiverDetails", JSON.stringify(data))
         history.push("/answer-calling")
@@ -96,7 +97,7 @@ function App() {
       }
     })
   }, [])
-  useEffect(() => {
+  useEffect(() => { 
     if (is_auth) {
       // logic to handle 10 min location time interval....
       //  window.setInterval(() => {

@@ -60,7 +60,6 @@ export function joinChannel(role, option) {
                         var id = remoteStream.getId();
                        console.log(id, rtc.params.uid, "uidddd")
                         if (id !== rtc.params.uid) {
-                            // alert("stream added")
                             // removeView(id)
                             rtc.client.subscribe(remoteStream, function (err) {
                                 console.log("stream subscribe failed", err);
@@ -96,8 +95,6 @@ export function joinChannel(role, option) {
 
 
 export function joinChannelAudio(role, option) {
-
-    alert("Channel Join audio")
     // Create a client
     rtc.client = AgoraRTC.createClient({ mode: "live", codec: "h264" });
     // Initialize the client
@@ -145,7 +142,6 @@ export function joinChannelAudio(role, option) {
                         var id = remoteStream.getId();
                        console.log(id, rtc.params.uid, "uidddd")
                         if (id !== rtc.params.uid) {
-                            // alert("stream added")
                             // removeView(id)
                             rtc.client.subscribe(remoteStream, function (err) {
                                 console.log("stream subscribe failed", err);
