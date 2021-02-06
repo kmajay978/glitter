@@ -157,10 +157,9 @@ const ChatBox = (props) =>{
             .then((response) => {
                 if(response.status==200)
                 {
-                    createNotification('sucess');
+                    createNotification('accept');
                 }
             }, (error) => {
-
             });
 
     }
@@ -518,7 +517,9 @@ const ChatBox = (props) =>{
     const createNotification = (type) => {
         return () => {
             switch (type) {
-
+                case 'accept':
+                    NotificationManager.success('Like sucessfully', 'Like');
+                    break;
                 case 'success':
                     NotificationManager.success('Success message', 'Title here');
                     break;
@@ -593,7 +594,8 @@ const ChatBox = (props) =>{
                                             { Likes.map((item, i) => {
                                                 return   <li className="nav-item">
                                                     <a className="nav-link" href="#chat-field" data-toggle="tab" data-id={item.like_id} role="tab" onClick = {() =>AcceptUserRequest(item.like_id)}>
-                                                        <img alt={item.first_name} className="img-circle medium-image" src={item.profile_images} />
+                                                    
+                                                   <img alt={item.first_name} className="img-circle medium-image" src={item.profile_images} />
                                                         <div className="contacts_info">
                                                             <div className="user_detail">
                                                                 <span className="message-time">{item.created_at}</span>
@@ -609,9 +611,10 @@ const ChatBox = (props) =>{
                                                 </li>
 
                                             })}
-
+                                          
                                         </ul>
                                         {/* } */}
+                                        <NotificationContainer/>
                                     </div>
                                 </div>
                                 <div id="visitors" className="contacts-outter-wrapper tab-pane fade" role="tabpanel" aria-labelledby="tab-visitors">
