@@ -420,7 +420,7 @@ const uploadImage = () => {
                 <div className="status__slider">
         <OwlCarousel  options={options}  >
         {friendList.map((item, i) =>(
-        (item.statuses.length > 0 ) ?
+        (item.statuses.length > 0 || item.is_live === true) ?
        
          <div className="users-listing__slider__items" onClick={() =>  makeMeAudience(item)} id={item.user_id}  >
             <div className="users-listing__slider__items__image"  data-toggle="modal" data-target="#status-modal" >
