@@ -14,7 +14,7 @@ import {userProfile} from "../features/userSlice";
 import {generateLiveVideoChatToken} from "../api/videoApi";
 import {addDefaultSrc, returnDefaultImage} from "../commonFunctions";
 
-let isMouseClick = false, startingPos = [], glitterUid, friendLists = [], userData= null;
+let isMouseClick = false, startingPos = [], glitterUid, friendLists = [], userData= null, checkOnlineFrdsInterval;
 const SearchHome = () =>
 {
     const history = useHistory();
@@ -249,16 +249,16 @@ const uploadImage = () => {
 
 }
  const componentWillUnmount = () => {
-     // alert("stop")
-     SOCKET.emit('stop_check_friend_list_live', () => {
-         console.log("stop checking friend list live...")
-     });
+    clearInterval(checkOnlineFrdsInterval)
  }
   useEffect (() => {
     SOCKET.connect();
-      SOCKET.emit("authenticate_friend_list_live", {
-          session_id: localStorage.getItem("session_id")
-      });
+      checkOnlineFrdsInterval = window.setInterval(() => {
+          console.log("interval started....")
+          SOCKET.emit("authenticate_friend_list_live", {
+              session_id: localStorage.getItem("session_id")
+          });
+      }, 5000)
     handleFriendList();
 
       SOCKET.on('sendAudienceToLiveVideo', (data) => {
