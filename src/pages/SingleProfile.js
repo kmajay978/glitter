@@ -9,6 +9,8 @@ import Logo from '../components/Logo';
 import useToggle from '../components/CommonFunction';
 import moment from 'moment'
 import {addDefaultSrc, returnDefaultImage} from "../commonFunctions";
+// import NotificationContainer from "react-notifications/lib/NotificationContainer";
+import {NotificationContainer, NotificationManager} from 'react-notifications';
 
 const SingleProfile = (props) =>{
     const [userData, setUser] = useState(null);
@@ -384,6 +386,8 @@ const SingleProfile = (props) =>{
   <div className="bio-stories">
               <div className="flex-wrapper d-flex align-items-center mb-3">
                 <h5 className="mb-0">Archived Stories</h5>
+
+
 
               </div>
             <div className="archived-stories d-flex flex-wrap">
