@@ -511,9 +511,8 @@ const uploadImage = () => {
   stories.length > 0 &&
   <Stories
       stories={stories}
-      defaultInterval={1500}
-      width={432}
-      height={768}
+      defaultInterval={3000}
+     
   />      
 }
       </div>
