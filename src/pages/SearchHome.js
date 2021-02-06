@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Stories from 'react-insta-stories';
 import $ from 'jquery';
 import {  useHistory } from 'react-router';
 import { v4 as uuidv4 } from 'uuid';
@@ -49,6 +50,25 @@ const SearchHome = () =>
   autoplay: true
 };
 
+const stories = [
+  {
+      url: 'http://167.172.209.57/glitter-101/public/profile_images/1611328573_Snapchat-1342745707.jpg',
+      type:'image',
+      duration: 5000,
+      header: {
+        heading: 'Mohit Karekar',
+        subheading: 'Posted 30m ago',
+        profileImage: 'https://picsum.photos/100/100',
+      },
+  },
+  {
+    url: 'http://167.172.209.57/glitter-101/public/profile_images/1611042638_sample-mp4-file.mp4',
+    type: 'video',
+  },
+];
+
+
+  
 const statusoptions = {
   loop: false,
   slideSpeed: 3000,
@@ -63,24 +83,6 @@ const statusoptions = {
 
 };
 
-// const stories = [
-//   {
-//       url: 'http://167.172.209.57/glitter-101/public/profile_images/1611328573_Snapchat-1342745707.jpg',
-//       type:'image',
-//   },
-//   {
-//     url: 'http://167.172.209.57/glitter-101/public/profile_images/1611042638_sample-mp4-file.mp4',
-//     type: 'video',
-//   },
-// ];
-
-
-// let storyDataChanged = storyData.map(function(obj) { 
-//   obj['Myanmar'] = obj['Burma']; // Assign new key
-//   delete obj['Burma']; // Delete old key
-//   return obj; 
-// }); 
-// console.log(storyDataChanged); 
 
 const handleFileChange = e => {
   var data = e.target.files[0];
@@ -501,7 +503,15 @@ const uploadImage = () => {
 
            </div>
         </div>
-        <OwlCarousel  options={statusoptions} id="status-bar">
+
+
+          <Stories
+      stories={stories}
+      defaultInterval={1500}
+      width={432}
+      height={768}
+  />      
+        {/* <OwlCarousel  options={statusoptions} id="status-bar">
      {storyData.map((items ,i) => {
        return <div className="status-bar__items">
             {items.statuses_type==1 ?
@@ -510,7 +520,7 @@ const uploadImage = () => {
               convertToHtml(`<p>${items.file.replace("http://167.172.209.57/glitter-101/public/profile_images/", "")}</p>`))
              } </div>
         })}
-        </OwlCarousel>
+        </OwlCarousel> */}
 
       </div>
 
