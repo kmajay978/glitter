@@ -4106,6 +4106,10 @@ div#remote_video_.video_live > div:last-child {
     height: 100% !important;
 }
 
+.audio-one-to-one div#remote_video_ > div:first-child {
+    border: none !important;
+}
+
 .vc-screen .vc-option-block{
     right:300px;
 }

@@ -61,8 +61,7 @@ console.log(userData, "userdata..")
         channel_token: null,
         user_to_image: null
       }
-      
-      console.log(document.getElementsByClassName("vc-screen")[0], "jkjk")
+
         document.getElementsByClassName("vc-screen")[0]
         .setAttribute("id", (params.receiver == "false" ? "video-sender" : "video-receiver"))
   

@@ -41,7 +41,6 @@ const SearchHome = () =>
     const [showUploadStatus,setUploadStatus] = useState(false);
 
     userData = useSelector(userProfile).user.profile; //using redux useSelector here
-    console.log(userData, "test")
  const options = {
   loop: false,
   margin: 20,
@@ -50,23 +49,10 @@ const SearchHome = () =>
   autoplay: true
 };
 
-const stories = [
-  {
-      url: 'http://167.172.209.57/glitter-101/public/profile_images/1611328573_Snapchat-1342745707.jpg',
-      type:'image',
-      duration: 5000,
-      header: {
-        heading: 'Mohit Karekar',
-        subheading: 'Posted 30m ago',
-        profileImage: 'https://picsum.photos/100/100',
-      },
-  },
-  {
-    url: 'http://167.172.209.57/glitter-101/public/profile_images/1611042638_sample-mp4-file.mp4',
-    type: 'video',
-  },
-];
 
+const stories = !!storyData ? storyData : [];
+
+console.log(stories, "stories....")
 
   
 const statusoptions = {
@@ -504,13 +490,17 @@ const uploadImage = () => {
            </div>
         </div>
 
-
-          <Stories
+{
+  stories.length > 0 &&
+  <Stories
       stories={stories}
       defaultInterval={1500}
       width={432}
       height={768}
   />      
+}
+
+    
         {/* <OwlCarousel  options={statusoptions} id="status-bar">
      {storyData.map((items ,i) => {
        return <div className="status-bar__items">
