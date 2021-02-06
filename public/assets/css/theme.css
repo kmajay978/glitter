@@ -4055,14 +4055,13 @@ div#upload-media-modal {
   /* End here 29-01-2021 */
 /* one to one video */
 
-div#remote_video_ > div:last-child{
+div#video-sender div#remote_video_ > div:last-child{
     width: 100% !important;
     height: -webkit-calc(100vh - 105px) !important;
     height: -moz-calc(100vh - 105px) !important;
     height: calc(100vh - 105px) !important;
 }
-
-div#remote_video_ > div:first-child, div#local_stream > div:first-child {
+div#video-sender div#remote_video_ > div:first-child {
     position: absolute !important;
     right: 15px;
     width: 200px !important;
@@ -4072,7 +4071,24 @@ div#remote_video_ > div:first-child, div#local_stream > div:first-child {
     border: 1px solid var(--theme-primary-color);
     z-index: 1;
 }
+div#video-receiver div#local_stream > div:first-child{
+    position: absolute !important;
+    right: 15px;
+    width: 200px !important;
+    height: 200px !important;
+    right: 15px;
+    bottom: 20px;
+    border: 1px solid var(--theme-primary-color);
+    z-index: 1;
+}
+div#video-receiver div#remote_video_ > div:first-child {
+    
 
+    width: 100% !important;
+    height: -webkit-calc(100vh - 105px) !important;
+    height: -moz-calc(100vh - 105px) !important;
+    height: calc(100vh - 105px) !important;
+}
 
 
 div#remote_video_.video_live > div:last-child {

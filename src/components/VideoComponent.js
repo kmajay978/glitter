@@ -60,7 +60,7 @@ export function joinChannel(role, option) {
                         var id = remoteStream.getId();
                        console.log(id, rtc.params.uid, "uidddd")
                         if (id !== rtc.params.uid) {
-                            // alert("stream added")
+                             alert("stream added")
                             // removeView(id)
                             rtc.client.subscribe(remoteStream, function (err) {
                                 console.log("stream subscribe failed", err);
@@ -143,7 +143,7 @@ export function joinChannelAudio(role, option) {
                         var id = remoteStream.getId();
                        console.log(id, rtc.params.uid, "uidddd")
                         if (id !== rtc.params.uid) {
-                            // alert("stream added")
+                             alert("stream added")
                             // removeView(id)
                             rtc.client.subscribe(remoteStream, function (err) {
                                 console.log("stream subscribe failed", err);
