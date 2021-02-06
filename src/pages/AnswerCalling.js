@@ -6,7 +6,7 @@ import {SOCKET} from "../components/Config";
 const AnswerCalling = () =>{
     const history = useHistory();
     const receiverDetails = !!localStorage.getItem("receiverDetails") ? JSON.parse(localStorage.getItem("receiverDetails")) : null
-    const senderDetails = !!localStorage.getItem("receiverDetails") ? JSON.parse(localStorage.getItem("receiverDetails")) : null
+    const senderDetails = !!localStorage.getItem("receiverDetails") ? JSON.parse(localStorage.getItem("receiverDetails")).sender_details : null
     useEffect(() => {
         return () => localStorage.removeItem("receiverDetails")
     }, [])
