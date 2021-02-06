@@ -4093,7 +4093,6 @@ div#video-receiver div#remote_video_ > div:first-child {
     height: calc(100vh - 105px) !important;
 }
 
-
 div#remote_video_.video_live > div:last-child {
     position: absolute !important;
     /* right: 15px; */
@@ -4106,7 +4105,8 @@ div#remote_video_.video_live > div:last-child {
     height: 100% !important;
 }
 
-.audio-one-to-one div#remote_video_ > div:first-child {
+.audio-one-to-one div#remote_video_ > div:first-child,
+.audio-one-to-one div#local_stream > div:first-child{
     border: none !important;
 }
 
