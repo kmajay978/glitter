@@ -57,7 +57,6 @@ function Dummy() {
 
     return ( 
 
-      
       <Stories
       stories={stories}
       defaultInterval={1500}
