@@ -13,6 +13,8 @@ import {useDispatch, useSelector} from "react-redux";
 import {userProfile} from "../features/userSlice";
 import {generateLiveVideoChatToken} from "../api/videoApi";
 import {addDefaultSrc, returnDefaultImage} from "../commonFunctions";
+import {NotificationContainer, NotificationManager} from 'react-notifications';
+import Stories from 'react-insta-stories';
 
 let isMouseClick = false, startingPos = [], glitterUid, friendLists = [], userData= null;
 const SearchHome = () =>
@@ -63,24 +65,22 @@ const statusoptions = {
 
 };
 
-// const stories = [
-//   {
-//       url: 'http://167.172.209.57/glitter-101/public/profile_images/1611328573_Snapchat-1342745707.jpg',
-//       type:'image',
-//   },
-//   {
-//     url: 'http://167.172.209.57/glitter-101/public/profile_images/1611042638_sample-mp4-file.mp4',
-//     type: 'video',
-//   },
-// ];
+const stories = [
+  {
+      url: 'http://167.172.209.57/glitter-101/public/profile_images/1611328573_Snapchat-1342745707.jpg',
+      type:'image',
+  },
+  {
+    url: 'http://167.172.209.57/glitter-101/public/profile_images/1611042638_sample-mp4-file.mp4',
+    type: 'video',
+  },
+];
 
 
-// let storyDataChanged = storyData.map(function(obj) { 
-//   obj['Myanmar'] = obj['Burma']; // Assign new key
-//   delete obj['Burma']; // Delete old key
-//   return obj; 
+// let stories = storyData.map(function(obj) { 
+
 // }); 
-// console.log(storyDataChanged); 
+console.log(stories); 
 
 const handleFileChange = e => {
   var data = e.target.files[0];
@@ -145,9 +145,8 @@ const handleFileChange = e => {
   useEffect  (() => {
    handleStatus();
   },[friendId])
-
-
   console.log(friendId);
+
   const handleStatus = () =>
   {
     const bodyParameters = {
@@ -204,7 +203,11 @@ const handleUploadStatus =() =>
   bodyParameters.append("status_type", "" + 1);
   axios.post(ADD_STATUS , bodyParameters , config)
   .then((response)=> {
-   setUploadStatus(false);
+  
+   createNotification('sucess');
+   setTimeout(() => {
+    setUploadStatus(false);
+  }, 1500);
    setPicture('');
  } ,(error) => {
  });
@@ -216,7 +219,11 @@ const handleUploadStatus =() =>
    bodyParameters.append("status_type", "" + 2);
    axios.post(ADD_STATUS , bodyParameters , config)
    .then((response)=> {
-    setUploadStatus(false);
+    createNotification('sucess');
+    setTimeout(() => {
+      setUploadStatus(false);
+    }, 1500);
+   
   } ,(error) => {
  });
   }
@@ -227,7 +234,11 @@ const handleUploadStatus =() =>
    bodyParameters.append("status_type", "" + 3);
    axios.post(ADD_STATUS , bodyParameters , config)
    .then((response)=> {
-    setUploadStatus(false);
+    createNotification('sucess');
+    setTimeout(() => {
+      setUploadStatus(false);
+    }, 1500);
+    
     setPencilData('');
     setShowPencil(false);
   } ,(error) => {
@@ -235,6 +246,19 @@ const handleUploadStatus =() =>
   }
  }
 console.log(picture);
+
+const createNotification = (type) => {
+  
+  switch (type) {
+      case 'sucess':
+        NotificationManager.success('status upload Successfully ', 'status');
+        break;
+    case 'error':
+      NotificationManager.error('Error message', 'Click me!', 5000, () => {
+      });
+      break; 
+};
+};
 
 const uploadImage = () => {
  // Click event for status uplaod screen
@@ -489,7 +513,7 @@ const uploadImage = () => {
          <div className="modal-body p-0">
         <div className="status-info">
           <div className="status_image">
-            <img src="/assets/images/marlene_user.jpg" alt="user" />
+            <img src={statusData.profile_images} alt="user" />
           </div>
           <div className="status_heading">
             <h6>{statusData.first_name}• {statusData.age}</h6>
@@ -499,7 +523,13 @@ const uploadImage = () => {
 
            </div>
         </div>
-        <OwlCarousel  options={statusoptions} id="status-bar">
+        <Stories
+      stories={stories}
+      defaultInterval={1500}
+      width={432}
+      height={768}
+  />
+        {/* <OwlCarousel  options={statusoptions} id="status-bar">
      {storyData.map((items ,i) => {
        return <div className="status-bar__items">
             {items.statuses_type==1 ?
@@ -508,7 +538,7 @@ const uploadImage = () => {
               convertToHtml(`<p>${items.file.replace("http://167.172.209.57/glitter-101/public/profile_images/", "")}</p>`))
              } </div>
         })}
-        </OwlCarousel>
+        </OwlCarousel> */}
 
       </div>
 
@@ -571,7 +601,7 @@ const uploadImage = () => {
                          
                        
                         <a className="btn bg-grd-clr btn-small mt-4" onClick={handleUploadStatus}>Publish Status</a>
-
+                        <NotificationContainer/>
                     </div>
                     
                         

@@ -130,6 +130,19 @@ const tokencheck = () =>{
     }
    }
 
+   //resend otp
+   const handleResend = () => {
+   const bodyParameters ={
+     phone : phoneNumber ,
+     country_code :  '+'+cntCode
+    };
+     axios.post(SENDOTP_API  , bodyParameters)
+     .then((response) => {
+
+     }, (error)=> {
+
+     });
+   }
    const handleNextClick = () =>
    {
     const Valid = registrationvalidation();
@@ -363,7 +376,7 @@ const registerHandle = (e) =>{
                               </div>
                               
                               <a className="btn bg-grd-clr d-block mb-2 btn-countinue-2" href="javascript:void(0)" onClick={verifyHandle}>Verify</a>
-                              <a className="btn btn-trsp d-block" href="javascript:void(0)">Resend</a>
+                              <a className="btn btn-trsp d-block" href="javascript:void(0)" onClick={handleResend}>Resend</a>
                         </div>
                      </div>
         );

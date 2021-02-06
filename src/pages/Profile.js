@@ -6,8 +6,8 @@ import {BLOCK_USER_API , COIN_HISTORY , GET_ALL_COIN_PACKAGE , INTEREST_HOBBIES_
 import useToggle from '../components/CommonFunction';
 import {removeStorage} from '../components/CommonFunction';
 import Login from '../pages/Login'
-import { useDispatch } from 'react-redux';
-import {logout, profile, ProfileData, stripePlanId ,stripeCoinPlanId} from '../features/userSlice';
+import { useDispatch , useSelector } from 'react-redux';
+import {logout, profile, ProfileData, stripePlanId ,stripeCoinPlanId , userProfile} from '../features/userSlice';
 import {Modal, ModalBody , Dropdown} from 'react-bootstrap';
 import $ from 'jquery';
 import Logo from '../components/Logo';
@@ -69,8 +69,9 @@ const Profile = (props) =>{
   const handleAbout = () => {setShowSetting(false); setShowAbout(true);}
   const handleShare =() => {setShowSetting(false); setShowShare(true);} // show share glitter model
   
+  const userData = useSelector(userProfile).user.profile; //using redux useSelector here
   const dates = moment(Dob).format('YYYY/M/D');
-console.log(Dob , "...dob");
+  console.log(Dob , "...dob");
   // Getting form value here
   const [form , setForm] = useState({
     
@@ -284,7 +285,6 @@ const handleCheck = (e) => {
 console.log(blockId);
   useEffect(() => {
      handleBlock();
-     
   }, [blockId])
 
    // coin package
@@ -428,7 +428,13 @@ console.log(blockId);
     setShowStripe(true);
     setShowBuyCoins(false);
   }
-
+ 
+  const closeStripeModel = () =>
+  {
+    setShowStripe(false);
+    dispatch(stripePlanId({stripePlanId: null}));
+    dispatch(stripeCoinPlanId({stripeCoinPlanId: null}));
+  }
 
     useEffect(() =>{
     GetStipePackage();
@@ -609,7 +615,7 @@ console.log(blockId);
                 </div>
                 <div className="remaining-coins ml-4">
                   <img src="/assets/images/diamond-coin.png" alt="Coins" />
-                  <span> {!!profileData.coins!=0 ?  profileData.coins :  "0" }</span>
+                  <span> {!!userData.coins!=0 ?  userData.coins :  "0" }</span>
                 </div>
               </div>
             </div>
@@ -670,9 +676,9 @@ console.log(blockId);
                 </li>
                 <li><span className="user-profile__status__heading d-block text-uppercase">Coins</span>
                   <span className="user-profile__status__counter d-block">
-                    {!!profileData &&
+                    {!!userData &&
                     <>
-                    {profileData.coins!=0 ?  profileData.coins :  "0" }
+                    {userData.coins!=0 ?  userData.coins :  "0" }
                     </>}
                    
                     </span>
@@ -786,7 +792,7 @@ console.log(blockId);
           <StripeForm />
 
            </div>
-           <a href="javascript:void(0)" className="modal-close" onClick={() => setShowStripe(false)}><img src="/assets/images/btn_close.png" /></a>
+           <a href="javascript:void(0)" className="modal-close" onClick={closeStripeModel}><img src="/assets/images/btn_close.png" /></a>
     </Modal>
 
 <Modal className="Image-model" show={showImage}  onHide= {() => setShowImage(false)}>
