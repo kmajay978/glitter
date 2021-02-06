@@ -4081,6 +4081,10 @@ div#video-receiver div#local_stream > div:first-child{
     border: 1px solid var(--theme-primary-color);
     z-index: 1;
 }
+div#video-receiver #local_stream {
+    width: auto !important;
+    height: auto !important;
+}
 div#video-receiver div#remote_video_ > div:first-child {
     
 
