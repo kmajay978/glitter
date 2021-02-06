@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import $ from 'jquery';
-import Stories from 'react-insta-stories';
 import {  useHistory } from 'react-router';
 import { v4 as uuidv4 } from 'uuid';
 import axios from "axios";

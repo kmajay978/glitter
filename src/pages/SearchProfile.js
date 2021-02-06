@@ -9,6 +9,7 @@ import { VIDEO_CALL_START } from "../components/Api";
 import { videoCall, videoCallUser } from "../features/userSlice";
 import { generateVideoChatToken } from "../api/videoApi";
 import GlitterCard from "react-tinder-card";
+import {userProfile} from "../features/userSlice";
 
 const SearchProfile = () =>{
   const dispatch = useDispatch();
@@ -16,6 +17,8 @@ const SearchProfile = () =>{
 
   const [user_to, setUserTo] = useState({image: ""});
   let videoCallState = useSelector(videoCallUser); //using redux useSelector here
+  const userData = useSelector(userProfile).user.profile; //using redux useSelector here
+
   useEffect(() => {
     document.getElementById("stacked-cards-block").classList.remove("init");
     // call api to post data...
@@ -62,7 +65,7 @@ const SearchProfile = () =>{
               </div>
               <div className="remaining-coins ml-5">
                 <img src="/assets/images/diamond-coin.png" alt="Coins" />
-                <span>152</span>
+                <span>{!!userData ?userData.coins : ""}</span>
               </div>
             </div>
           </div>
@@ -99,7 +102,7 @@ const SearchProfile = () =>{
                  
                  <GlitterCard className="swipe"   >
                    <div className="user__card position-relative">
-         <img src={!!user_to.image ? user_to.image : "/assets/images/profile-card.png"} alt="Emma" width="100%"  />
+                   <img src={!!user_to.image ? user_to.image : "/assets/images/profile-card.png"} alt="Emma" width="100%"  />
                    </div>
                    
                  </GlitterCard>

@@ -96,8 +96,6 @@ export function joinChannel(role, option) {
 
 
 export function joinChannelAudio(role, option) {
-
-    alert("Channel Join audio")
     // Create a client
     rtc.client = AgoraRTC.createClient({ mode: "live", codec: "h264" });
     // Initialize the client

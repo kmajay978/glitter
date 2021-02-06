@@ -16,7 +16,6 @@ const clearChatState = (dispatch) => {
 }
 
 const AudioChat = () =>{
-  alert("audio chat screen");
   const [user, setUserData] = useState(null);
   const params = useParams();
   const history = useHistory();

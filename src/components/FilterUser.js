@@ -215,7 +215,6 @@ console.log(allData);
                {disliked_clicked ?<div class="accept__user"><img src="https://image.ibb.co/heTxf7/20_status_close_3x.png" width="auto" height="auto"/></div> : ""} 
                   <img src={currentUser.profile_images}  alt={currentUser.first_name} width="100%"/>
                   <div className="card-titles">
-
                   <h3>
                     {currentUser.first_name}, {currentUser.age}
                   </h3>
@@ -238,7 +237,7 @@ console.log(allData);
               <GlitterCard ref={childRefs[index]} className="swipe" key={currentUser.user_id} onSwipe={(dir) => swiped(dir, currentUser.user_id)} >
                 <div className="user__card position-relative">
                 {liked_clicked ? <div className="accept__user"><img src="/assets/images/accept-icon.png" width="auto" height="auto" /></div>:""}
-               {disliked_clicked ?<div class="accept__user"><img src="https://image.ibb.co/heTxf7/20_status_close_3x.png" width="auto" height="auto"/></div> : ""} 
+               {disliked_clicked ? <div class="accept__user"><img src="https://image.ibb.co/heTxf7/20_status_close_3x.png" width="auto" height="auto"/></div> : ""} 
                   <img src={currentUser.profile_images}  alt={currentUser.first_name} width="100%"/>
                   <div className="card-titles">
 
@@ -249,7 +248,6 @@ console.log(allData);
                     {currentUser.distance},{currentUser.occupation}
                   </span>
                   </div>
-
                  
                 </div>
                 
@@ -257,30 +255,7 @@ console.log(allData);
 
                </div> 
             ))} </> }
-      {/* {userData.map((currentUser, index) => (
-              <div className="main_wrapper" id={currentUser.user_id}> 
-              <GlitterCard ref={childRefs[index]} className="swipe" key={currentUser.user_id} onSwipe={(dir) => swiped(dir, currentUser.user_id)} >
-                <div className="user__card position-relative">
-                {liked_clicked ? <div className="accept__user"><img src="/assets/images/accept-icon.png" width="auto" height="auto" /></div>:""}
-               {disliked_clicked ?<div class="accept__user"><img src="https://image.ibb.co/heTxf7/20_status_close_3x.png" width="auto" height="auto"/></div> : ""} 
-                  <img src={currentUser.profile_images}  alt={currentUser.first_name} width="100%"/>
-                  <div className="card-titles">
-
-                  <h3>
-                    {currentUser.first_name}, {currentUser.age}
-                  </h3>
-                  <span>
-                    {currentUser.distance},{currentUser.occupation}
-                  </span>
-                  </div>
-
-                 
-                </div>
-                
-              </GlitterCard>
-
-               </div> 
-            ))}   */}
+     
            </div>
    
     

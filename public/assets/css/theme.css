@@ -19,6 +19,7 @@ body {
     overflow: hidden;
     position: relative;
     background:#000;
+    overflow-y: auto;
 }
 
 .bg-grd-clr {
@@ -61,8 +62,9 @@ body {
 }
 
 input:focus,
-.btn:focus {
+.btn:focus ,select{
     box-shadow: none !important;
+    outline: none;
 }
 
 a,
@@ -496,9 +498,16 @@ input::placeholder {
     width: 100%;
     justify-content: space-evenly;
 }
+.otp-field > div {
+    width: 100%;
+}
+.otp-field > div > div {
+    width: 25%;
+    justify-content: center;
+}
 
-.form-group.otp-field .form-control {
-    width: 44px;
+.form-group.otp-field input {
+    width: 44px !important;
     height: 44px !important;
     border-radius: 100% !important;
     text-align: center;
@@ -1105,6 +1114,28 @@ span.live {
     border-radius: 60px;
 }
 
+
+label.custom-file-upload{
+    height: 44px !important;
+    border-radius: 50px !important;
+    border: 1px solid var(--theme-color) !important;
+    background-color: transparent;
+    color: var(--theme-primary-color);
+    width: 100%;
+    display: block;
+    padding: .375rem .75rem;
+}
+
+
+label.custom-file-upload + a{
+position: absolute;
+    top: 50%;
+    right: 4px;
+    height: 37px;
+    line-height: 40px;
+    transform: translateY(-50%);
+
+}
 /* .swipe__card_layout img{
     width: 300px;
     height: 452px;
@@ -2844,6 +2875,7 @@ textarea.send-message-text::placeholder {
     background-color: transparent !important;
 }
 
+
 .edit-profile-modal textarea {
     color: #F4C862;
     font-size: 14px;
@@ -2970,6 +3002,8 @@ textarea.send-message-text::placeholder {
     width: 64px;
     height: 64px;
     border-radius: 50%;
+    object-fit: cover;
+    object-position: top;
 }
 
 .coins-spend__hostname {
@@ -3947,12 +3981,12 @@ div#upload-media-modal {
   /* signup steps date */
 
 
-  .signup-inner .react-date-picker{
+  .signup-inner .react-date-picker, .dob-field .react-date-picker{
       width: 100%;
   }
 
 
-  .signup-inner .react-date-picker__wrapper {
+  .signup-inner .react-date-picker__wrapper,  .dob-field  .react-date-picker__wrapper  {
     border: 1px solid var(--theme-color) !important;
     width: 100%;
     border-radius: 50px;
@@ -3960,8 +3994,11 @@ div#upload-media-modal {
     padding-left: .75rem;
     padding-right: .75rem;
 }
+.dob-field  .react-date-picker__wrapper{
+    background-color: transparent !important;
+}
 
-  .signup-inner .react-date-picker__inputGroup input {
+  .signup-inner .react-date-picker__inputGroup input , .dob-field  .react-date-picker__inputGroup input {
     border: none !important;
     border-radius: 0px !important;
     background: transparent !important;

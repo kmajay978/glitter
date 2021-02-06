@@ -110,8 +110,6 @@ function joinChannel(role, option) {
 }
 
 function joinChannelAudio(role, option) {
-  alert("Channel Join audio"); // Create a client
-
   rtc.client = _agoraRtcSdk["default"].createClient({
     mode: "live",
     codec: "h264"

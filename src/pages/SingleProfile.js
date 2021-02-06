@@ -9,6 +9,8 @@ import Logo from '../components/Logo';
 import useToggle from '../components/CommonFunction';
 import moment from 'moment'
 import {addDefaultSrc, returnDefaultImage} from "../commonFunctions";
+// import NotificationContainer from "react-notifications/lib/NotificationContainer";
+import {NotificationContainer, NotificationManager} from 'react-notifications';
 
 const SingleProfile = (props) =>{
     const [userData, setUser] = useState(null);
@@ -20,7 +22,7 @@ const SingleProfile = (props) =>{
     const [showGift , setShowGift] = useState(false);
     const[ form, setForm] =useState({ report :""})
     const [GiftData , setGiftData] =useState([]);
-    const [blockData , setBlockData] = useState(false);
+    const [blockData , setBlockData] = useState('');
     const [statusData , setStatusData] = useState([]);
     const [isOn, toggleIsOn] = useToggle();
     const [ showStatus , setShowStatus] =useState(false);
@@ -54,7 +56,8 @@ const SingleProfile = (props) =>{
         setStatusData(result);
     }
     console.log(statusData);
-      const getUser=()=> {
+     
+    const getUser=()=> {
         const bodyParameters = {
             user_id: checkUid,
             session_id: localStorage.getItem('session_id'),
@@ -93,22 +96,21 @@ const SingleProfile = (props) =>{
           const bodyParameters={
             session_id : localStorage.getItem('session_id'),
             blocked_user: checkUid,
+          
           }
           axios.post(BLOCK_USER_API , bodyParameters)
           .then((response)=>
           {
           if(response.status==200 && !response.error) {
-            setBlockData(true);
-          alert("block successfully")
+            setBlockData(response.data);
+            MakeNotification('block');
           }
-          else {
-            setBlockData(false);
-          }
+        
           }, (error) =>{
-            setBlockData(false);
+            setBlockData('');
           });
         }
-
+console.log(blockData);
       const handleReport =() =>{
          const bodyParameters ={
           session_id: localStorage.getItem('session_id') ,
@@ -119,9 +121,15 @@ const SingleProfile = (props) =>{
          .then((response) => {
           if(response.status==200)
           { 
-           setSmShow(false) }
+           MakeNotification('report')
+           setTimeout(() => {
+            setSmShow(false)
+          }, 1500); }
          } ,(error) => {
-
+        MakeNotification('error')
+        setTimeout(() => {
+          setSmShow(false)
+        }, 1500);
          });
         };
 
@@ -148,6 +156,23 @@ const SingleProfile = (props) =>{
             (error) => {}
           );
         }
+
+        const MakeNotification = (type) => {
+              switch (type) {
+  
+                     case 'report':
+                      NotificationManager.success('report Successfully', 'report');
+                      break;
+                      case 'block':
+                        NotificationManager.success('block Successfully', 'block');
+                        break;
+                      case 'error':
+                        NotificationManager.error('This User was already reported', 'already reported', 5000, () => {
+                        });
+                        break; 
+              
+          };
+      };
    useEffect(() =>{
     getUser();
     handleStatus();
@@ -186,8 +211,8 @@ const SingleProfile = (props) =>{
         <div className="col-md-7">
           <div className="report-tab d-flex flex-wrap align-items-center justify-content-end ml-auto">
             <span className="block-cta">
-              <a className="theme-txt" href="javascript:void(0)" onClick={handleblock}>{blockData ?'unblock':'block'}</a>
-          
+              <a className="theme-txt" href="javascript:void(0)" onClick={handleblock}>{blockData.block_status==0 ?'unblock':'block'}</a>
+          <NotificationContainer/>
             </span>
             <span className="report-cta">
               <a className="theme-txt" href="javascript:void(0)" onClick={() => setSmShow(true)}>Report</a>
@@ -294,7 +319,15 @@ const SingleProfile = (props) =>{
                 </li>
                 <li>
                   <div className="theme-txt">Relationship status:</div>
-                  <div>{!!userData ? userData.occupation : ""}</div>
+                  <div>
+                  {!!userData &&
+                 <>
+                {userData.relationship_status == '1' ? "Single" 
+                : userData.relationship_status == '2'  ? "Married" 
+                : "UnMarried"}
+                 </>}
+                 { <> </>}
+                  </div>
                 </li>
                 <li>
                   <div className="theme-txt">join date:</div>
@@ -430,6 +463,7 @@ const SingleProfile = (props) =>{
                           </div>
                           </div>
                           <a className="btn bg-grd-clr d-block btn-countinue-3 "  id="edit-second-step" href="javascript:void(0)" onClick={handleReport}>Send</a>
+         <NotificationContainer/>
           </form>
            </div>
        
