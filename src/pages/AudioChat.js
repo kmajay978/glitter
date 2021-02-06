@@ -8,6 +8,7 @@ import NavLinks from '../components/Nav';
 import { joinChannelAudio, leaveEventAudience, leaveEventHost } from "../components/VideoComponent";
 import {useSelector, useDispatch} from "react-redux";
 import {userProfile, audioCall, audioCallUser} from "../features/userSlice";
+import {returnDefaultImage} from "../commonFunctions";
 
 let videoCallStatus = 0, videoCallParams, interval, callType = 1;
 
@@ -142,6 +143,7 @@ console.log(userData, "userdata..")
         // change backend status === 1 if loggedIn user is "user_to"
 
         if (!!userData && (data.user_to_id == userData.user_id)) {
+          document.getElementById("audioCallingPic").setAttribute("src", "http://167.172.209.57/glitter-101/public/profile_images/"+data.users_detail[1].profilePics)
           SOCKET.emit("acknowledged_video_call", {
             sender: {user_from_id: videoCallParams.user_from_id, session_id: localStorage.getItem("session_id")},
             reciever_id: videoCallParams.user_to_id,
@@ -181,6 +183,7 @@ console.log(userData, "userdata..")
           });
         }
         else {
+          document.getElementById("audioCallingPic").setAttribute("src", "http://167.172.209.57/glitter-101/public/profile_images/"+data.users_detail[0].profilePics)
           // initate video call for sender...
           const option = {
             appID: "52cacdcd9b5e4b418ac2dca58f69670c",
@@ -289,11 +292,10 @@ console.log(userData, "userdata..")
   </div> 
      <div className="vc-screen-wrapper">
        <div className="vc-screen audio-one-to-one">
-       <div className="audio-calling" style={{ position: "fixed",left:"0px",right:"0px",top:"50%"}}>
-                <img style={{ width: "300px",
-    height: "300px",
-    objectFit: "cover",
-    borderRadius: "50%"}} src="/assets/images/mask-bg.png"/>
+       <div className="audio-calling">
+         <div className="circle-ripple">
+                <img id="audioCallingPic" style={{borderRadius: "50%"}} src={returnDefaultImage()} />
+         </div>
            </div>
 
          <div id="local_stream" className="local_stream" style={{ width: "400px", height: "400px" }}></div>

@@ -615,7 +615,7 @@ console.log(blockId);
                 </div>
                 <div className="remaining-coins ml-4">
                   <img src="/assets/images/diamond-coin.png" alt="Coins" />
-                  <span> {!!userData.coins!=0 ?  userData.coins :  "0" }</span>
+                  <span> {!!userData&& userData.coins!=0 ?  userData.coins :  "0" }</span>
                 </div>
               </div>
             </div>
