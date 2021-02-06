@@ -35,6 +35,7 @@ export const GET_STRIPE_PACKAGE = getApiUrl("packages_list");
 export const ACTIVATE_STRIPE_PACKAGE = getApiUrl("activate_package");
 export const GET_ALL_COIN_PACKAGE = getApiUrl("all_coin_packages");
 export const ACTIVATE_COIN_PACKAGE = getApiUrl("purchaseCoins");
+export const COIN_HISTORY = getApiUrl("coinsCommonHistory");
 
  
 // Not done yet

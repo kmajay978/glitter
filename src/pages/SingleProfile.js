@@ -8,6 +8,7 @@ import Carousel from 'react-bootstrap/Carousel';
 import Logo from '../components/Logo';
 import useToggle from '../components/CommonFunction';
 import moment from 'moment'
+import {addDefaultSrc, returnDefaultImage} from "../commonFunctions";
 
 const SingleProfile = (props) =>{
     const [userData, setUser] = useState(null);
@@ -214,14 +215,9 @@ const SingleProfile = (props) =>{
             <div className="items">
            
               <figure>
-                {
-                  !!userData &&
-                  <img src={userData.profile_images} alt="Marlene" />
-                }
-                {
-                  !userData &&
-                  <img src="" alt="Marlene" />
-                }
+
+                  <img onError={(e) => addDefaultSrc(e)} src={!!userData ? userData.profile_images : returnDefaultImage()} alt="Marlene" />
+
               
               </figure>
       

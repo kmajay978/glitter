@@ -1,13 +1,13 @@
 import firebase from 'firebase'
 var firebaseConfig = {
-    apiKey: "AIzaSyAD2mE_w_CDDEIinVpplP4iK9ncllAgiW8",
-    authDomain: "pwa-app-ccb69.firebaseapp.com",
-    databaseURL: "https://pwa-app-ccb69.firebaseio.com",
-    projectId: "pwa-app-ccb69",
-    storageBucket: "pwa-app-ccb69.appspot.com",
-    messagingSenderId: "87598063745",
-    appId: "1:875918063745:web:366bb079c60e9d08cdb580"
-  };
+    apiKey: "AIzaSyC7aaaS2OAmJYw67TtZJYLXckTqv6gFeO8",
+    authDomain: "glitterweb-ec3ca.firebaseapp.com",
+    projectId: "glitterweb-ec3ca",
+    storageBucket: "glitterweb-ec3ca.appspot.com",
+    messagingSenderId: "951232689070",
+    appId: "1:951232689070:web:28bd31186c256f03918e3f",
+    measurementId: "G-8EZWZ180DS"
+};
   // Initialize Firebase
   firebase.initializeApp(firebaseConfig);
   

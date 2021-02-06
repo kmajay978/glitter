@@ -19,6 +19,7 @@ import { SENDOTP_API, VERIFY_API, SIGNUP_API } from '../components/Api';
 import $ from 'jquery';
 import { FacebookProvider, Like } from 'react-facebook';
 import { usePosition } from 'use-position';
+import OtpInput from 'react-otp-input';
 
 // Working on login functional component
 const Login = () => {
@@ -39,6 +40,7 @@ addBodyClass('login-body')('')
   const [cntCode, setCntCode] = useState('');   //For past users
 
 
+
 // Only numbers allowed
    const handlePhoneChange = (e) => {
     const value = e.target.value.replace(/\D/g, "");
@@ -53,7 +55,7 @@ addBodyClass('login-body')('')
   const [otp_4,setOtp4] = useState('');
 
   // All form fields
-  
+  const [otp , setOtp] = useState('');
   const [Dob, setDob] = useState(new Date()); 
   const [FirstName, setFirst] = useState(''); 
   const [LastName, setLast] = useState(''); 
@@ -64,6 +66,8 @@ addBodyClass('login-body')('')
   const [firstErr, setFirstErr] = useState({});
   const [lastErr, setLastErr] = useState({});
   const [dobErr, setDobErr] = useState({});
+  const [ termPolicyErr , setTermPolicyErr] =useState({});
+  const [ clickTerm , setClickTerm] = useState(true);
   const dates = moment(Dob).format('YYYY/M/D');
  
   {/* { divToggle ? "signup-inner" : "signup-inner active-tab-2"} */}
@@ -73,7 +77,7 @@ addBodyClass('login-body')('')
     }
  
   
-
+  
   const handleFileChange = e => {
     if (e.target.files[0]) {
       // console.log("picture: ", e.target.files);
@@ -169,6 +173,7 @@ const tokencheck = () =>{
 
    const formValidation = () =>{
      const phoneErr = {};
+     const termPolicyErr ={};
      let isValid = true;
 
      if(phoneNumber.length == "")
@@ -176,12 +181,18 @@ const tokencheck = () =>{
        phoneErr.phoneShort = "Phone number is Empty";
        isValid = false;
      }
-    
+    if(clickTerm==false)
+    {
+      termPolicyErr.termShort = "Please accept term and condition";
+      isValid=false;
+    }
+
      setPhoneErr(phoneErr);
+     setTermPolicyErr(termPolicyErr);
      return isValid;
    }
 
- var otp = otp_1+otp_2+otp_3+otp_4;
+//  var otp = otp_1+otp_2+otp_3+otp_4;
   // Verify OTP Function 
 const verifyHandle = () =>{
 
@@ -198,7 +209,7 @@ const verifyHandle = () =>{
    if(response.data.data != null)
 {
      localStorage.setItem('session_id', response.data.data.session_id);
-     history.push("/");
+     history.push("/"); 
      dispatch(
        login({
           logged: response.data.data,
@@ -279,6 +290,8 @@ const registerHandle = (e) =>{
   // End here 
 
   // Testing here
+
+  
   const tabScreen = () =>{
     
     switch(step) {
@@ -325,9 +338,12 @@ const registerHandle = (e) =>{
                           </li>
                         </ul>
                         <div className="accept-field d-flex justify-content-center align-items-center mt-4">
-                          <input type="checkbox" name="agree" id="accept-field" />
+                          <input type="checkbox" name="agree" id="accept-field" checked={clickTerm} onChange={(e) =>setClickTerm(e.target.checked)}/>
                           <label htmlFor="accept-field" />
                            <span> to our Terms and Data Policy.</span>
+                           { Object.keys(termPolicyErr).map((key) => {
+                          return <div style={{color : "red"}}>{termPolicyErr[key]}</div>
+                        }) }
                         </div>
                       </div>
         );
@@ -338,13 +354,12 @@ const registerHandle = (e) =>{
                               <div className="signup-header">
                                 <a href="javascript:void(0)" className="login-back-1 btn-back" onClick={() => setStep(step - 1)}><i className="fas fa-chevron-left" /></a>
                              <h4 className="theme-txt">Enter Code</h4>
-                               <p>Enter 4 digit verification code you<br /> received on +1 7462 462 321</p>
+                               <p>Enter 4 digit verification code you<br /> received on { '+'+cntCode+ ' ' +phoneNumber}</p>
                               </div>
                               <div className="form-group otp-field">
-                                <input className="form-control" name="otp_1" value={otp_1} onChange={e => setOtp1(e.target.value)} type="text"  />
-                                <input className="form-control" name="otp_2" value={otp_2}   onChange={e => setOtp2(e.target.value)} type="text"  />
-                                <input className="form-control" name="otp_3" value={otp_3}  onChange={e => setOtp3(e.target.value)} type="text"  />
-                                <input className="form-control" name="otp_4" value={otp_4}  onChange={e => setOtp4(e.target.value)} type="text"  />
+                                
+                              <OtpInput  value={otp}  onChange={(value) => changeOtp(value)} shouldAutoFocus  numInputs={4} isInputNum />
+                             
                               </div>
                               
                               <a className="btn bg-grd-clr d-block mb-2 btn-countinue-2" href="javascript:void(0)" onClick={verifyHandle}>Verify</a>
@@ -477,9 +492,12 @@ const registerHandle = (e) =>{
 }
 
 countryDropdown('#country');
-
   }, []);
-
+  
+const changeOtp = (value) => {
+  setOtp(value)
+  console.log(value, "check.....sss ")
+}
 
         return(
             <section className="signup-wrapper">
