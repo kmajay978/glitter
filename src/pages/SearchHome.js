@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Stories from 'react-insta-stories';
 import $ from 'jquery';
 import {  useHistory } from 'react-router';
 import { v4 as uuidv4 } from 'uuid';
@@ -13,14 +14,15 @@ import {useDispatch, useSelector} from "react-redux";
 import {userProfile} from "../features/userSlice";
 import {generateLiveVideoChatToken} from "../api/videoApi";
 import {addDefaultSrc, returnDefaultImage} from "../commonFunctions";
+import useToggle from '../components/CommonFunction';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
-import Stories from 'react-insta-stories';
 
 let isMouseClick = false, startingPos = [], glitterUid, friendLists = [], userData= null, checkOnlineFrdsInterval;
 const SearchHome = () =>
 {
     const history = useHistory();
     const dispatch = useDispatch();
+    const [isOn, toggleIsOn] = useToggle(false);
     const[randomNumber, setRandomNumber] = useState('');
     const [fetchedProfile, setFilterUser] = useState('');
     const [ friendList  , setFriendlist] = useState([]);
@@ -42,7 +44,6 @@ const SearchHome = () =>
     const [showUploadStatus,setUploadStatus] = useState(false);
 
     userData = useSelector(userProfile).user.profile; //using redux useSelector here
-    console.log(userData, "test")
  const options = {
   loop: false,
   margin: 20,
@@ -51,6 +52,12 @@ const SearchHome = () =>
   autoplay: true
 };
 
+
+const stories = !!storyData ? storyData : [];
+
+console.log(stories, "stories....")
+
+  
 const statusoptions = {
   loop: false,
   slideSpeed: 3000,
@@ -65,13 +72,6 @@ const statusoptions = {
 
 };
 
-
-
-
-let stories = storyData.map(function(obj) { 
-
-}); 
-console.log(stories); 
 
 const handleFileChange = e => {
   var data = e.target.files[0];
@@ -137,7 +137,6 @@ const handleFileChange = e => {
   useEffect  (() => {
    handleStatus();
   },[friendId])
-  console.log(friendId);
 
   const handleStatus = () =>
   {
@@ -149,6 +148,7 @@ const handleFileChange = e => {
       if (response.status === 200 && !response.status.error) {
         setStatusData(response.data);
         setStoryData(response.data.result);
+        toggleIsOn(true);
       }
       else {
         setStatusData('');
@@ -247,6 +247,7 @@ const createNotification = (type) => {
         break;
     case 'error':
       NotificationManager.error('Error message', 'Click me!', 5000, () => {
+        
       });
       break; 
 };
@@ -499,12 +500,33 @@ const uploadImage = () => {
       </div>
     </div>
   </div>
-  <div className="modal fade" id="status-modal" tabIndex={-1} role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+
+  
+  <div className={isOn ? 'all-gifts-wrapper active': 'all-gifts-wrapper '} >
+    <div className="all-gift-inner">
+    <a href="javascript:void(0)" className="close-gift-btn modal-close" onClick={toggleIsOn}><img src="/assets/images/btn_close.png" /></a>
+      <div className="all-gift-body">
+      {
+  stories.length > 0 &&
+  <Stories
+      stories={stories}
+      defaultInterval={1500}
+      width={432}
+      height={768}
+  />      
+}
+      </div>
+    </div>
+  </div>
+       
+
+{/* <div className="modal fade" id="status-modal" tabIndex={-1} role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 
   <div className="modal-dialog" role="document">
 
-         <div className="modal-body p-0">
-        <div className="status-info">
+<div className="modal-body p-0"> */}
+        {/* <div className="status-info">
           <div className="status_image">
             <img src={statusData.profile_images} alt="user" />
           </div>
@@ -515,13 +537,8 @@ const uploadImage = () => {
             <span className="status_view"><img src="/assets/images/eye-icon.svg" alt="eye" /></span>
 
            </div>
-        </div>
-        <Stories
-      stories={stories}
-      defaultInterval={1500}
-      width={432}
-      height={768}
-  />
+        </div> */}
+    
         {/* <OwlCarousel  options={statusoptions} id="status-bar">
      {storyData.map((items ,i) => {
        return <div className="status-bar__items">
@@ -533,9 +550,9 @@ const uploadImage = () => {
         })}
         </OwlCarousel> */}
 
-      </div>
+      {/* </div> */}
 
-    <div className="status_footer">
+    {/* <div className="status_footer">
       <div className="status_like">
         <span><img src="/assets/images/heart-icon.svg" alt="like status" /> 2,190</span>
       </div>
@@ -548,10 +565,10 @@ const uploadImage = () => {
           <li className="bg-grd-clr"><img src="/assets/images/dots-icon.svg" alt="gift" /></li>
         </ul>
       </div>
-    </div>
-  </div>
+    </div> */}
+  {/* </div> */}
 
-</div>
+{/* </div> */}
 <Modal className ="theme-modal" id="upload-media-modal" show={showUploadStatus} onHide={() => setUploadStatus(false)} backdrop="static" keyboard={false}>
           {/* Modal start here */}
           {/* <div className="theme-modal" id="live-modal" tabIndex={-1} role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"> */}
