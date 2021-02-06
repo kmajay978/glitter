@@ -129,6 +129,7 @@ const handleFileChange = e => {
       if (response.status === 200 ) {
           let friendList = response.data.data;
           console.log(friendList, "friendList...")
+
           for (let i in friendList) {
               friendList[i].is_live = false;
           }
@@ -283,8 +284,9 @@ const uploadImage = () => {
         const totalLiveFrds = data;
         console.log(totalLiveFrds, "totalLiveFrds...")
         for (let i in frdList) {
+            frdList[i].is_live = false;
             for (let j in totalLiveFrds) {
-                if (totalLiveFrds[j].user_id === frdList[i].user_id) {
+                if (totalLiveFrds[j].user_id == frdList[i].user_id) {
                     frdList[i].is_live = true;
                     frdList[i].channel_id = uuidv4();
                     frdList[i].channel_name = totalLiveFrds[j].channel_name;
