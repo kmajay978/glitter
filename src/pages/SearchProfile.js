@@ -65,7 +65,7 @@ const SearchProfile = () =>{
               </div>
               <div className="remaining-coins ml-5">
                 <img src="/assets/images/diamond-coin.png" alt="Coins" />
-                <span>{!!userData ?userData.coins : ""}</span>
+                <span>{!!userData ?userData.coins : "0"}</span>
               </div>
             </div>
           </div>

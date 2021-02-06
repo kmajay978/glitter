@@ -2,9 +2,9 @@ import React from "react";
 import {ElementsConsumer, CardElement} from "@stripe/react-stripe-js";
 
 import CardSection from "./CardSection";
-import {useSelector} from "react-redux";
-import {stripeDataPlanid , stripeCoinDataPlanid} from "../features/userSlice";
-import {ACTIVATE_STRIPE_PACKAGE , ACTIVATE_COIN_PACKAGE} from "./Api";
+import {useSelector, useDispatch} from "react-redux";
+import {stripeDataPlanid , stripeCoinDataPlanid ,stripeCoinPlanId , stripePlanId , profile} from "../features/userSlice";
+import {ACTIVATE_STRIPE_PACKAGE , ACTIVATE_COIN_PACKAGE , GET_LOGGEDPROFILE_API} from "./Api";
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import axios from "axios";
 
@@ -12,7 +12,25 @@ const CheckoutForm = (props) => {
 
     const Selected_Stripe_planid = useSelector(stripeDataPlanid);
     const Selected_Stripe_coinid = useSelector(stripeCoinDataPlanid);
+
+    const dispatch = useDispatch();
     var sessionId = localStorage.getItem("session_id")
+   const profileData =() =>{
+    const bodyParameters = {
+        session_id: sessionId,
+        };
+          axios.post(GET_LOGGEDPROFILE_API,bodyParameters)
+          .then((response) => {
+          dispatch (
+              profile ({
+                  profile : response.data.data
+              })
+          );
+          } ,(error)=> {
+
+          })
+   } 
+
     const handleSubmit = async event => {
         event.preventDefault();
         const {stripe, elements} = props;
@@ -22,6 +40,7 @@ const CheckoutForm = (props) => {
 
         const card = elements.getElement(CardElement);
         const result = await stripe.createToken(card);
+        
         if (result.error) {
             console.log(result.error.message);
             createNotification('error',result.error.message);
@@ -39,11 +58,13 @@ const CheckoutForm = (props) => {
                 .then((response) => {
                     if(response.status==200)
                     { 
-                        console.log(response);
+                    console.log(response);
                     createNotification('success',response.message);
+                    dispatch(stripePlanId({stripePlanId: null}));
                   }
-             
-                }, (error) => {});
+                }, (error) => {
+                    createNotification('error',error.message);
+                });
         }
 
         // Activating coin package here
@@ -60,10 +81,14 @@ const CheckoutForm = (props) => {
                     if(response.status==200)
                     { 
                         console.log(response);
-                        createNotification('coin',response.message);
+                        createNotification('sucess-coin',response.message);
+                        dispatch(stripeCoinPlanId({stripeCoinPlanId: null}));
+                        profileData();
                   }
                
-                }, (error) => {});
+                }, (error) => {
+                    createNotification('error',error.message);
+                });
         }
     }
     };

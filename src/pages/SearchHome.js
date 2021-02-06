@@ -15,6 +15,7 @@ import {userProfile} from "../features/userSlice";
 import {generateLiveVideoChatToken} from "../api/videoApi";
 import {addDefaultSrc, returnDefaultImage} from "../commonFunctions";
 import useToggle from '../components/CommonFunction';
+import {NotificationContainer, NotificationManager} from 'react-notifications';
 
 let isMouseClick = false, startingPos = [], glitterUid, friendLists = [], userData= null, checkOnlineFrdsInterval;
 const SearchHome = () =>
@@ -194,7 +195,11 @@ const handleUploadStatus =() =>
   bodyParameters.append("status_type", "" + 1);
   axios.post(ADD_STATUS , bodyParameters , config)
   .then((response)=> {
-   setUploadStatus(false);
+  
+   createNotification('sucess');
+   setTimeout(() => {
+    setUploadStatus(false);
+  }, 1500);
    setPicture('');
  } ,(error) => {
  });
@@ -206,7 +211,11 @@ const handleUploadStatus =() =>
    bodyParameters.append("status_type", "" + 2);
    axios.post(ADD_STATUS , bodyParameters , config)
    .then((response)=> {
-    setUploadStatus(false);
+    createNotification('sucess');
+    setTimeout(() => {
+      setUploadStatus(false);
+    }, 1500);
+   
   } ,(error) => {
  });
   }
@@ -217,7 +226,11 @@ const handleUploadStatus =() =>
    bodyParameters.append("status_type", "" + 3);
    axios.post(ADD_STATUS , bodyParameters , config)
    .then((response)=> {
-    setUploadStatus(false);
+    createNotification('sucess');
+    setTimeout(() => {
+      setUploadStatus(false);
+    }, 1500);
+    
     setPencilData('');
     setShowPencil(false);
   } ,(error) => {
@@ -225,6 +238,20 @@ const handleUploadStatus =() =>
   }
  }
 console.log(picture);
+
+const createNotification = (type) => {
+  
+  switch (type) {
+      case 'sucess':
+        NotificationManager.success('status upload Successfully ', 'status');
+        break;
+    case 'error':
+      NotificationManager.error('Error message', 'Click me!', 5000, () => {
+        
+      });
+      break; 
+};
+};
 
 const uploadImage = () => {
  // Click event for status uplaod screen
@@ -501,7 +528,7 @@ const uploadImage = () => {
 <div className="modal-body p-0"> */}
         {/* <div className="status-info">
           <div className="status_image">
-            <img src="/assets/images/marlene_user.jpg" alt="user" />
+            <img src={statusData.profile_images} alt="user" />
           </div>
           <div className="status_heading">
             <h6>{statusData.first_name}• {statusData.age}</h6>
@@ -584,7 +611,7 @@ const uploadImage = () => {
                          
                        
                         <a className="btn bg-grd-clr btn-small mt-4" onClick={handleUploadStatus}>Publish Status</a>
-
+                        <NotificationContainer/>
                     </div>
                     
                         
