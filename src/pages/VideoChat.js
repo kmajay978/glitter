@@ -290,9 +290,8 @@ console.log(userData, "userdata..")
          <div id="local_stream" className="local_stream" style={{ width: "400px", height: "400px" }}></div>
          <div
              id="remote_video_"
-             style={{ width: "400px", height: "400px" }}
+             style={{ width: "100%", height: "100%" }}
          />
-         <img src="/assets/images/video-chat-bg.jpg" alt="Video Calling"/>
        </div>
        <div className="charges-reminder-txt">
          <p>After 25 Seconds, you will be charged 120 coins per minute</p>
