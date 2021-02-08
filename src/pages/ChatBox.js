@@ -284,7 +284,6 @@ const ChatBox = (props) =>{
                         window.setTimeout(() => {
                             setChatTyping("")
                         }, 2000)
-
                     }
                 }
             }
