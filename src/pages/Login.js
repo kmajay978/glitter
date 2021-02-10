@@ -20,12 +20,15 @@ import $ from 'jquery';
 import { FacebookProvider, Like } from 'react-facebook';
 import { usePosition } from 'use-position';
 import OtpInput from 'react-otp-input';
+// import NotificationContainer from 'react-notifications/lib/NotificationContainer';
+import {NotificationContainer, NotificationManager} from 'react-notifications';
 
 // Working on login functional component
 const Login = () => {
 
   const {latitude,longitude,speed,timestamp,accuracy,error} = usePosition();
 
+console.log(latitude , "latitute");
   // Adding class to body with custom function
 addBodyClass('login-body')('')
   const [step, setStep] = useState(1);
@@ -298,8 +301,20 @@ const registerHandle = (e) =>{
         
         }, (error) => {
           localStorage.removeItem('session_id');
+          createNotification('error' , error.message);
         });
 }
+const createNotification = (type , message) => {
+  
+  switch (type) {
+      case 'sucess':
+        NotificationManager.success(' create Successfully ', 'status');
+        break;
+    case 'error':
+      NotificationManager.error(message ,'Error message')
+      break; 
+};
+};
   // End here 
 
   // Testing here
@@ -354,10 +369,11 @@ const registerHandle = (e) =>{
                           <input type="checkbox" name="agree" id="accept-field" checked={clickTerm} onChange={(e) =>setClickTerm(e.target.checked)}/>
                           <label htmlFor="accept-field" />
                            <span> to our Terms and Data Policy.</span>
-                           { Object.keys(termPolicyErr).map((key) => {
+                          
+                        </div>
+                        { Object.keys(termPolicyErr).map((key) => {
                           return <div style={{color : "red"}}>{termPolicyErr[key]}</div>
                         }) }
-                        </div>
                       </div>
         );
         case 2:
@@ -452,15 +468,15 @@ const registerHandle = (e) =>{
           <h4 class="theme-txt">Upload Profile Photo</h4>
           </div>
           <div className="form-group upload-field mb-5">
-            <label htmlFor="profile-photo" id="PreviewPicture" style={{ backgroundImage: `url("${imgData}")` }}   />
+            <img id="PreviewPicture" src={imgData} />
             <input type="file" id="profile-photo" name="profile-photo" onChange={handleFileChange} accept="image/*" />
-            <span className="camera-icon">
+            <span className="camera-icon" >
               <img src="/assets/images/Icon%20feather-camera.png" alt="Camera" />
             </span>
           </div>
           <a className="btn bg-grd-clr d-block mb-4 btn-countinue-5" href="javascript:void(0)" onClick={registerHandle} >Next</a>
+       <NotificationContainer/>
         </div>
-          
         );
       default:
         return 'foo';
@@ -468,10 +484,21 @@ const registerHandle = (e) =>{
 
   }
 
-
+  
 
   // end testing here
-
+  const uploadImage = () => {
+    // Click event for status uplaod screen
+    $(document).on("click", ".camera-icon", function () {
+      $('#profile-photo').trigger("click");
+    });
+   
+    $(document).on("click", "#profile-photo", function (e) {
+      e.stopPropagation();
+      //some code
+   });
+   
+   }
 
   useEffect(() => {
 
@@ -505,6 +532,7 @@ const registerHandle = (e) =>{
 }
 
 countryDropdown('#country');
+uploadImage();
   }, []);
   
 const changeOtp = (value) => {

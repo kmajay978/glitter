@@ -570,13 +570,14 @@ input::placeholder {
     border-radius: 100% !important;
 }
 
-.upload-field label {
+.upload-field img#PreviewPicture {
     width: 208px;
     height: 208px;
     border-radius: 100%;
     display: block;
     margin: 0 auto;
     border: 5px solid var(--theme-color);
+    object-fit: fill;
 }
 
 
@@ -2263,8 +2264,9 @@ body {
 
 
 .chat-block .message-top {
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: #282828;
     padding: 10px 10px;
+    border-radius: 10px;
 }
 
 .chat-user-info h5 {
