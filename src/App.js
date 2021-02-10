@@ -62,7 +62,9 @@ function App() {
       if (!!userData && (data.user_from_id == userData.user_id)) { // check one-to-one data sync
         alert("receiver declined your call...")
       }
-      history.push("/chat")
+      if (!!userData && ((data.user_from_id == userData.user_id) || (data.user_to_id == userData.user_id))) {
+        history.push("/chat")
+      }
     })
     SOCKET.on('sender_decline_video_call', (data) => {
       localStorage.removeItem("videoCallPageRefresh");
@@ -71,7 +73,9 @@ function App() {
       if (!!userData && (data.user_to_id == userData.user_id)) { // check one-to-one data sync
         alert("sender declined the call...")
       }
-      history.push("/chat")
+      if (!!userData && ((data.user_to_id == userData.user_id) || (data.user_from_id == userData.user_id))) {
+        history.push("/chat")
+      }
     })
     SOCKET.on('call_not_picked_receiver_hide_page_video_call', (data) => {
       localStorage.removeItem("videoCallPageRefresh");
