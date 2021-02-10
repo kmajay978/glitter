@@ -15,7 +15,7 @@ import PrivacyPolicy from '../components/PrivacyPolicy';
 import AboutGlitter from '../components/AboutGlitter';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import { EmailIcon, FacebookIcon,  TelegramIcon, TwitterIcon, WhatsappIcon,EmailShareButton,FacebookShareButton,TelegramShareButton,WhatsappShareButton, TwitterShareButton,} from "react-share";
-import StripeForm from '../components/StripeForm'
+import StripeForm from '../components/StripeForm';
 import DatePicker from 'react-date-picker';
 import moment from 'moment'
 
