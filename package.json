@@ -2,7 +2,6 @@
   "name": "glitter",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://rrmr.co.in/glitter-web",
   "dependencies": {
     "@coreui/chartjs": "^2.0.0",
     "@coreui/coreui": "^3.2.2",

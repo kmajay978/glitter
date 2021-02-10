@@ -15,6 +15,6 @@ export {default as Dummy} from './Dummy';
 export {default as LiveVideoChat} from './LiveVideoChat';
 export {default as SearchHomeBkp} from './SearchHomeBkp';
 export {default as SearchProfileAudio} from './SearchProfileAudio';
-
+export {default as StatusUser} from './StatusUser';
 
 
