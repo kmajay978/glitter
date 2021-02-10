@@ -691,15 +691,12 @@ const ChatBox = (props) =>{
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="chat-call-opt">
-                                            <a className="bg-grd-clr" onClick = {() => handleCall(AllData.profile_images[0])} href="javascript:void(0)">
-                                                <NotificationContainer/>
-                                                <i className="fas fa-phone-alt" />
-
-                                            </a>
-                                        </div>
+                                        
                                         {/* Video call */}
-                                        <div className="chat-call-opt">
+                                        <div className="chat-call-opt d-flex">
+                                        <a className="bg-grd-clr mr-3" onClick = {() => handleCall(AllData.profile_images[0])} href="javascript:void(0)">
+                                                <NotificationContainer/>
+                                                <i className="fas fa-phone-alt" /></a>
                                             <a className="bg-grd-clr" onClick = {() => handleVideo(AllData.profile_images[0])} href="javascript:void(0)">
                                                 <NotificationContainer/>
                                                 <i className="fas fa-video" />

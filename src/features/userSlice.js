@@ -45,7 +45,7 @@ export const userSlice = createSlice({
     }, 
     reducers: { 
         login: (state, action) =>{ 
-            console.log(state, "ggg")
+            console.log(state, "ggg");
             state.user = action.payload;
             state.is_authanticated = true;
         },
