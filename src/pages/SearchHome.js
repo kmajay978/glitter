@@ -253,6 +253,7 @@ const createNotification = (type) => {
 };
 };
 
+
 const uploadImage = () => {
  // Click event for status uplaod screen
  $(document).on("click", "#upload__media", function () {
@@ -511,12 +512,14 @@ const uploadImage = () => {
   stories.length > 0 &&
   <Stories
       stories={stories}
-      defaultInterval={1500}
-      width={432}
-      height={768}
+      defaultInterval={3000}
+      width={332}
+      height={468}
+     
   />      
 }
       </div>
+      
     </div>
   </div>
        

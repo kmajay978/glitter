@@ -100,8 +100,10 @@ const SingleProfile = (props) =>{
           .then((response)=>
           {
           if(response.status==200 && !response.error) {
-            setBlockData(true);
-          alert("block successfully")
+           createNotification('block');
+            setTimeout(() => {
+              setBlockData(true);
+            }, 1500);
           }
           else {
             setBlockData(false);
@@ -121,9 +123,13 @@ const SingleProfile = (props) =>{
          .then((response) => {
           if(response.status==200)
           { 
-           setSmShow(false) }
+            createNotification('report');
+            setTimeout(() => {
+              setSmShow(false);
+            }, 1500);
+            }
          } ,(error) => {
-
+          createNotification('error');
          });
         };
 
@@ -150,6 +156,21 @@ const SingleProfile = (props) =>{
             (error) => {}
           );
         }
+
+        const createNotification = (type ) => {
+  
+          switch (type) {
+              case 'report':
+                NotificationManager.success('report Successfully ', 'report');
+                break;
+                case 'block':
+                  NotificationManager.success('block Successfully ', 'block');
+                  break;
+            case 'error':
+              NotificationManager.error('This User was already reported.');
+              break; 
+        };
+        };
    useEffect(() =>{
     getUser();
     handleStatus();
@@ -189,7 +210,7 @@ const SingleProfile = (props) =>{
           <div className="report-tab d-flex flex-wrap align-items-center justify-content-end ml-auto">
             <span className="block-cta">
               <a className="theme-txt" href="javascript:void(0)" onClick={handleblock}>{blockData ?'unblock':'block'}</a>
-          
+          <NotificationContainer/>
             </span>
             <span className="report-cta">
               <a className="theme-txt" href="javascript:void(0)" onClick={() => setSmShow(true)}>Report</a>
@@ -434,6 +455,7 @@ const SingleProfile = (props) =>{
                           </div>
                           </div>
                           <a className="btn bg-grd-clr d-block btn-countinue-3 "  id="edit-second-step" href="javascript:void(0)" onClick={handleReport}>Send</a>
+     <NotificationContainer/>
           </form>
            </div>
        

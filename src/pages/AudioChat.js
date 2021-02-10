@@ -10,7 +10,7 @@ import {useSelector, useDispatch} from "react-redux";
 import {userProfile, audioCall, audioCallUser} from "../features/userSlice";
 import {returnDefaultImage} from "../commonFunctions";
 
-let videoCallStatus = 0, videoCallParams, interval, callType = 1;
+let videoCallStatus = 0, videoCallParams, interval;
 
 const clearChatState = (dispatch) => {
   dispatch(audioCall(null))
@@ -34,7 +34,7 @@ console.log(userData, "userdata..")
         sender: {user_from_id: videoCallParams.user_from_id, session_id: localStorage.getItem("session_id")},
         reciever_id: videoCallParams.user_to_id,
         channel_name: videoCallParams.channel_name,
-        type: callType,
+        type: 1,
         status: 3
       });
       videoCallStatus = 0;
@@ -85,7 +85,7 @@ console.log(userData, "userdata..")
         sender: {user_from_id: videoCallParams.user_from_id, session_id: localStorage.getItem("session_id")},
         reciever_id: videoCallParams.user_to_id,
         channel_name: videoCallParams.channel_name,
-        type: callType,
+        type: 1,
         videoCallState: params.receiver == "false" ? videoCallState : null
       });
     }
@@ -148,7 +148,7 @@ console.log(userData, "userdata..")
             sender: {user_from_id: videoCallParams.user_from_id, session_id: localStorage.getItem("session_id")},
             reciever_id: videoCallParams.user_to_id,
             channel_name: videoCallParams.channel_name,
-            type: callType,
+            type: 1,
             status: 1
           });
           // initate video call for receiver...
@@ -178,7 +178,7 @@ console.log(userData, "userdata..")
             sender: {user_from_id: videoCallParams.user_from_id, session_id: localStorage.getItem("session_id")},
             reciever_id: videoCallParams.user_to_id,
             channel_name: videoCallParams.channel_name,
-            type: callType,
+            type: 1,
             status: 1
           });
         }
@@ -205,7 +205,7 @@ console.log(userData, "userdata..")
         sender: {user_from_id: videoCallParams.user_from_id},
         reciever_id: videoCallParams.user_to_id,
         channel_name: videoCallParams.channel_name,
-        type: callType,
+        type: 1,
         status: 2
       });
     }
@@ -214,7 +214,7 @@ console.log(userData, "userdata..")
         sender: {user_from_id: videoCallParams.user_from_id},
         reciever_id: videoCallParams.user_to_id,
         channel_name: videoCallParams.channel_name,
-        type: callType,
+        type: 1,
         status: 2
       });
     }

@@ -3,11 +3,33 @@ import {  useHistory } from 'react-router';
 import axios from "axios";
 import NavLinks from '../components/Nav';
 import {SOCKET} from "../components/Config";
+import { useSelector } from "react-redux";
+import { userProfile } from "../features/userSlice";
+
+let pickVideoCallInterval, pickVideoCallCount = 0, userData;
+
 const AnswerCalling = () =>{
     const history = useHistory();
+    userData = useSelector(userProfile).user.profile; //using redux useSelector here
     const receiverDetails = !!localStorage.getItem("receiverDetails") ? JSON.parse(localStorage.getItem("receiverDetails")) : null
     const senderDetails = !!localStorage.getItem("receiverDetails") ? JSON.parse(localStorage.getItem("receiverDetails")).sender_details : null
     useEffect(() => {
+        pickVideoCallInterval = window.setInterval(() => {
+            SOCKET.emit("check_pick_video_call_status", {
+                type: receiverDetails.type,
+                channel_name: receiverDetails.channel_name,
+                pickVideoCallCount: pickVideoCallCount + 1
+            })
+        }, 1000)
+
+        SOCKET.on("stop_pick_video_call_status", (data) => {
+            if (!!userData && (data.user_to_id == userData.user_id)) { // check one-to-one data sync
+                alert("stop interval..") 
+                clearInterval(pickVideoCallInterval);
+                 pickVideoCallCount = 0;
+            }
+        })
+
         return () => localStorage.removeItem("receiverDetails")
     }, [])
     const videoChatNow = () => {
