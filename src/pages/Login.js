@@ -24,7 +24,7 @@ import OtpInput from 'react-otp-input';
 // Working on login functional component
 const Login = () => {
 
-  const {latitude,longitude,speed,timestamp,accuracy,error,} = usePosition();
+  const {latitude,longitude,speed,timestamp,accuracy,error} = usePosition();
 
   // Adding class to body with custom function
 addBodyClass('login-body')('')
