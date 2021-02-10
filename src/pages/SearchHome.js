@@ -205,7 +205,7 @@ const handleFileChange = e => {
    setPicture(null);
    setVideoData(null);
    setPencilData('');
-   dispatch(friendStatus({friendStatus: null}));
+   dispatch(friendStatus({friendStatus: []}));
    setStatusModel(false)
  }
 
