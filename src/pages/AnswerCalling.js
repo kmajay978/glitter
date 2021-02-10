@@ -15,14 +15,18 @@ const AnswerCalling = () =>{
     const senderDetails = !!localStorage.getItem("receiverDetails") ? JSON.parse(localStorage.getItem("receiverDetails")).sender_details : null
     useEffect(() => {
         pickVideoCallInterval = window.setInterval(() => {
+            pickVideoCallCount = pickVideoCallCount + 1;
             SOCKET.emit("check_pick_video_call_status", {
                 type: receiverDetails.type,
                 channel_name: receiverDetails.channel_name,
-                pickVideoCallCount: pickVideoCallCount + 1
+                user_from_id: receiverDetails.user_from_id,
+                user_to_id: receiverDetails.user_to_id,
+                pickVideoCallCount
             })
         }, 1000)
 
         SOCKET.on("stop_pick_video_call_status", (data) => {
+            console.log(userData, "userdata", data.user_to_id, userData.user_id, "check....")
             if (!!userData && (data.user_to_id == userData.user_id)) { // check one-to-one data sync
                 alert("stop interval..") 
                 clearInterval(pickVideoCallInterval);
@@ -43,7 +47,7 @@ const AnswerCalling = () =>{
                 sender: {user_from_id: receiverDetails.user_from_id},
                 reciever_id: receiverDetails.user_to_id,
                 channel_name: receiverDetails.channel_name,
-                type: 0,
+                type: Number(receiverDetails.type),
                 status: 2
             });
          }
