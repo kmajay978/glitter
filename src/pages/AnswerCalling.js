@@ -26,9 +26,8 @@ const AnswerCalling = () =>{
         }, 1000)
 
         SOCKET.on("stop_pick_video_call_status", (data) => {
-            console.log(userData, "userdata", data.user_to_id, userData.user_id, "check....")
+            console.log(userData, "userData", data.user_to_id, userData.user_id, "check.....")
             if (!!userData && (data.user_to_id == userData.user_id)) { // check one-to-one data sync
-                alert("stop interval..") 
                 clearInterval(pickVideoCallInterval);
                  pickVideoCallCount = 0;
             }

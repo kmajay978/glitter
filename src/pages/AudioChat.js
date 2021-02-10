@@ -141,9 +141,14 @@ console.log(userData, "userdata..")
       ) { // check one-to-one data sync
 
         // change backend status === 1 if loggedIn user is "user_to"
-
+        const userDetails = data.users_detail;
         if (!!userData && (data.user_to_id == userData.user_id)) {
-          document.getElementById("audioCallingPic").setAttribute("src", "http://167.172.209.57/glitter-101/public/profile_images/"+data.users_detail[0].profilePics)
+          for (let i in userDetails) {
+            if (userDetails[i].id != userData.user_id) {
+              document.getElementById("audioCallingPic").setAttribute("src", "http://167.172.209.57/glitter-101/public/profile_images/"+userDetails[i].profilePics)
+              break;
+            }
+          }
           SOCKET.emit("acknowledged_video_call", {
             sender: {user_from_id: videoCallParams.user_from_id, session_id: localStorage.getItem("session_id")},
             reciever_id: videoCallParams.user_to_id,
@@ -183,7 +188,13 @@ console.log(userData, "userdata..")
           });
         }
         else {
-          document.getElementById("audioCallingPic").setAttribute("src", "http://167.172.209.57/glitter-101/public/profile_images/"+data.users_detail[1].profilePics)
+          for (let i in userDetails) {
+            if (userDetails[i].id != userData.user_id) {
+              document.getElementById("audioCallingPic").setAttribute("src", "http://167.172.209.57/glitter-101/public/profile_images/"+userDetails[i].profilePics)
+              break;
+            }
+          }
+          
           // initate video call for sender...
           const option = {
             appID: "52cacdcd9b5e4b418ac2dca58f69670c",
