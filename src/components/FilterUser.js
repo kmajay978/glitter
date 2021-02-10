@@ -15,9 +15,25 @@ import GlitterCard from "react-tinder-card";
 import Swipe from "./Swipe";
 import TinderCardTest from "./TinderCard";
 import useToggle from '../components/CommonFunction';
+import SyncLoader from "react-spinners/SyncLoader";
+import { css } from "@emotion/core";
 const alreadyRemoved = [];
 let isMouseClick = false, startingPos = [], glitterUid;
 
+const override = css`
+    
+text-align: center;
+width: 95%;
+position: absolute;
+left: 0;
+right: 0;
+margin: 0 auto;
+top: 50%;
+-webkit-transform: translateY(-50%);
+-moz-transform: translateY(-50%);
+transform: translateY(-50%);
+
+`;
 
 const FilterUser = ({ fetchedProfile }) => {
   const history = useHistory();
@@ -32,15 +48,29 @@ const FilterUser = ({ fetchedProfile }) => {
   const [isOn, toggleIsOn] = useToggle(false);
   const [liked_clicked, setLiked] = useState(false);
   const [disliked_clicked , setDislike] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
   const filters = useSelector(filterDataUser); //using redux useSelector here
 
   
-  const handleUserData = async () => {
+  const handleUserData =  () => {
+    setIsLoaded(true);
     const bodyParameters = {
       session_id: localStorage.getItem("session_id"),
     };
-    const { data: { data }} = await axios.post(GETALLUSER_API, bodyParameters);
-    setUserData(data);
+     axios.post(GETALLUSER_API, bodyParameters)
+     
+     .then((response) => {
+        if (response.status == 200) {
+          setUserData(response.data.data);
+          setIsLoaded(false);
+          
+        }
+      },
+      (error) => {
+        setIsLoaded(true);
+     
+      }
+    );
   };
 
 
@@ -62,7 +92,8 @@ console.log(allData);
         session_id: localStorage.getItem("session_id"),
         user_id: userId,
       };
-      axios.post(DISLIKE_USER, bodyParameters).then(
+      axios.post(DISLIKE_USER, bodyParameters)
+      .then(
         (response) => {
          
             setDislike(false);
@@ -157,7 +188,9 @@ console.log(allData);
 //  }, [fetchedProfile])
 
   useEffect(() => {
+           
     if(!!fetchedProfile){
+      setIsLoaded(false);
       setAllData(fetchedProfile);
     }
     handleUserData();
@@ -187,7 +220,7 @@ console.log(allData);
         setStartPosition(startingPos)
     });
     }, 1000); 
-  }, [fetchedProfile]);
+  }, [ fetchedProfile ]);
 
   const handleComment =() => {
     history.push ({
@@ -255,7 +288,9 @@ console.log(allData);
 
                </div> 
             ))} </> }
-     
+      
+        <SyncLoader color={"#fcd46f"} loading={isLoaded} css={override} size={18} />
+        
            </div>
    
     

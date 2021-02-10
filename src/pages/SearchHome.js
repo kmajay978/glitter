@@ -15,9 +15,27 @@ import {userProfile} from "../features/userSlice";
 import {generateLiveVideoChatToken} from "../api/videoApi";
 import {addDefaultSrc, returnDefaultImage} from "../commonFunctions";
 import useToggle from '../components/CommonFunction';
+import SyncLoader from "react-spinners/SyncLoader";
+import { css } from "@emotion/core";
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 
 let isMouseClick = false, startingPos = [], glitterUid, friendLists = [], userData= null, checkOnlineFrdsInterval;
+
+const override = css`
+    
+text-align: center;
+width: 95%;
+position: absolute;
+left: 0;
+right: 0;
+margin: 0 auto;
+top: 50%;
+-webkit-transform: translateY(-50%);
+-moz-transform: translateY(-50%);
+transform: translateY(-50%);
+
+`;
+
 const SearchHome = () =>
 {
     const history = useHistory();
@@ -42,6 +60,7 @@ const SearchHome = () =>
     const [videoData, setVideoData] = useState(null);
     const [video, setVideo] = useState(null);
     const [showUploadStatus,setUploadStatus] = useState(false);
+    const [isLoaded, setIsLoaded] = useState(false);
 
     userData = useSelector(userProfile).user.profile; //using redux useSelector here
  const options = {
@@ -112,12 +131,14 @@ const handleFileChange = e => {
  };
 
   const handleFriendList = () => {
+    setIsLoaded(true);
     const bodyParameters ={
       session_id : localStorage.getItem('session_id')
     }
    axios.post(FRIENDLIST_API,bodyParameters)
     .then((response) => {
       if (response.status === 200 ) {
+        setIsLoaded(false);
           let friendList = response.data.data;
           console.log(friendList, "friendList...")
 
@@ -131,6 +152,8 @@ const handleFileChange = e => {
  }, (error) => {
   friendLists = []
   setFriendlist('');
+  setIsLoaded(true);
+
 });
   }
    console.log(statusLength);
@@ -479,26 +502,16 @@ const uploadImage = () => {
                   </div>
                 </div>
                 })}
-                <div className="col-md-3">
-                  <div className="sp-singular">
-                    <a href="javascript:void(0)">
-                      <figure>
-                        <img src="/assets/images/marlene.png" alt="Marlene" />
-                      </figure>
-                      <div className="sp-singular-content">
-                        <div className="status online">Online</div>
-                        <h4>Marlene, <span className="age">21</span></h4>
-                        <div className="info">55km, Art. Director</div>
-                      </div>
-                    </a>
-                  </div>
-                </div>
+           
 
               </div>
+              <SyncLoader color={"#fcd46f"} loading={isLoaded} css={override} size={20} />
             </div>
           </div>
         </div>
+
       </div>
+    
     </div>
   </div>
 

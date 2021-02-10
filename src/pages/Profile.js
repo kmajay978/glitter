@@ -15,11 +15,27 @@ import PrivacyPolicy from '../components/PrivacyPolicy';
 import AboutGlitter from '../components/AboutGlitter';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import { EmailIcon, FacebookIcon,  TelegramIcon, TwitterIcon, WhatsappIcon,EmailShareButton,FacebookShareButton,TelegramShareButton,WhatsappShareButton, TwitterShareButton,} from "react-share";
-import StripeForm from '../components/StripeForm'
+import StripeForm from '../components/StripeForm';
 import DatePicker from 'react-date-picker';
 import moment from 'moment'
-
+import SyncLoader from "react-spinners/SyncLoader";
+import { css } from "@emotion/core";
 import {addDefaultSrc, returnDefaultImage} from "../commonFunctions";
+
+const override = css`
+    
+text-align: center;
+width: 95%;
+position: absolute;
+left: 0;
+right: 0;
+margin: 0 auto;
+top: 50%;
+-webkit-transform: translateY(-50%);
+-moz-transform: translateY(-50%);
+transform: translateY(-50%);
+
+`;
 
 const Profile = (props) =>{
 
@@ -53,6 +69,7 @@ const Profile = (props) =>{
   const [coinHistory , setCoinHistory] = useState([]);
   const [coinSpend , setCoinSpend] = useState('');
   const [Dob, setDob] = useState(''); 
+  const [isLoaded, setIsLoaded] = useState(false);
 
   const [showStripe , setShowStripe] = useState(false);
   const [showChecked , setMycheckbox] = useState(false);
@@ -221,12 +238,12 @@ const handleCheck = (e) => {
     axios.post(EDITPROFILE_API , bodyParameters , config) 
    .then((response) => {
    if(response.status==200){
-    // Notification('uploadImage');
-    // setTimeout(() => {
-    //   setShowImage(false);
-    // }, 1500);
+    Notification('update');
+    setTimeout(() => {
+      setShowImage(false);
+    }, 1500);
    
-    setShowImage(false);
+    // setShowImage(false);
     ProfileData();
    }
    }, (error) =>{
@@ -259,6 +276,7 @@ const handleCheck = (e) => {
    };
    const{data : {data}} = await axios.post(BLOCK_USERLIST_API ,bodyParameters)
    setBlockData(data);
+  
    
    }
    
@@ -282,37 +300,42 @@ const handleCheck = (e) => {
     });
     
   }
-console.log(blockId);
+// console.log(blockId);
   useEffect(() => {
      handleBlock();
   }, [blockId])
 
    // coin package
    const handleBuyCoins = () => {
+     setIsLoaded(true);
      setShowBuyCoins(true);
      axios.get(GET_ALL_COIN_PACKAGE)
      .then((response) => { 
       setCoinPackage(response.data.coin_list);
-   
+      setIsLoaded(false);
        }, (error) =>{
-   
+        setIsLoaded(true);
        });
     }
  
-    console.log(coinPackage , "packages...");
+    // console.log(coinPackage , "packages...");
 
     //coin history 
     const handleCoinHistory = () => {
+      setIsLoaded(true);
       setShowCoin(true);
       const bodyParameters ={
         session_id :sessionId,
       }
       axios.post(COIN_HISTORY , bodyParameters)
       .then((response) =>{
+        setIsLoaded(false);
         setCoinHistory(response.data.result);
         setCoinSpend(response.data.count_coins);
-       console.log(response.data, '...history');
+
+      //  console.log(response.data, '...history');
       }, (error)=> {
+        setIsLoaded(true);
       });
     }
     
@@ -622,25 +645,7 @@ console.log(blockId);
           </div>
           <div className="col-lg-7 p-3">
             <div className="tab-top d-flex flex-wrap-wrap align-items-center">
-              <div className="vc-action-tab ml-auto mr-4 position-relative">
-              
-                <div className="vc-action-btn" onClick={toggleProfile}>
-                  <span/>
-                  <span/>
-                  <span/>
-                </div>
-                <ul className={isProfile ? 'action-menu active': 'action-menu'}>
-                  <li>
-                    <a href="javascript:void(0)">Report</a>
-                  </li>
-                  <li>
-                    <a href="javascript:void(0)">Block</a>
-                  </li>
-                  <li>
-                    <a href="javascript:void(0)">End Video</a>
-                  </li>
-                </ul>
-              </div>
+            
             <NavLinks />
             </div>
           </div>
@@ -804,10 +809,11 @@ console.log(blockId);
    
   <input type="file" id="profile-photo" name="profile-photo" onChange={handleFileChange} className="d-none" accept="image/*" />
 
-<NotificationContainer/>
+
 {/* <button onClick={updateImage}>Upload</button> */}
 </div>
 <a href="javascript:void(0)" onClick={updateImage} className="btn bg-grd-clr">Publish Photo</a>
+<NotificationContainer/>
 </form>
 </Modal>
    {/* <div class="edit-profile-modal modal-wrapper"> */}
@@ -843,7 +849,7 @@ console.log(blockId);
         </div>
       </div>
      })} 
-
+      <SyncLoader color={"#fcd46f"} loading={isLoaded} css={override} size={18} />
     </div>
     <a href="javascript:void(0)" className="modal-close" onClick={() => setShowCoin(false)}><img src="/assets/images/btn_close.png" /></a>
   </Modal>
@@ -982,9 +988,10 @@ console.log(blockId);
                </a>
           </div>
           ))} 
-       
+        <SyncLoader color={"#fcd46f"} loading={isLoaded} css={override} size={18} />
        </div>
        <a href="javascript:void(0)" className="modal-close" onClick={() => setShowBuyCoins(false)}><img src="/assets/images/btn_close.png" /></a>
+      
            </div>
           
 </Modal>
