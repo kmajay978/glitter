@@ -3,11 +3,36 @@ import {  useHistory } from 'react-router';
 import axios from "axios";
 import NavLinks from '../components/Nav';
 import {SOCKET} from "../components/Config";
+import { useSelector } from "react-redux";
+import { userProfile } from "../features/userSlice";
+
+let pickVideoCallInterval, pickVideoCallCount = 0, userData;
+
 const AnswerCalling = () =>{
     const history = useHistory();
+    userData = useSelector(userProfile).user.profile; //using redux useSelector here
     const receiverDetails = !!localStorage.getItem("receiverDetails") ? JSON.parse(localStorage.getItem("receiverDetails")) : null
     const senderDetails = !!localStorage.getItem("receiverDetails") ? JSON.parse(localStorage.getItem("receiverDetails")).sender_details : null
     useEffect(() => {
+        pickVideoCallInterval = window.setInterval(() => {
+            pickVideoCallCount = pickVideoCallCount + 1;
+            SOCKET.emit("check_pick_video_call_status", {
+                type: receiverDetails.type,
+                channel_name: receiverDetails.channel_name,
+                user_from_id: receiverDetails.user_from_id,
+                user_to_id: receiverDetails.user_to_id,
+                pickVideoCallCount
+            })
+        }, 1000)
+
+        SOCKET.on("stop_pick_video_call_status", (data) => {
+            console.log(userData, "userData", data.user_to_id, userData.user_id, "check.....")
+            if (!!userData && (data.user_to_id == userData.user_id)) { // check one-to-one data sync
+                clearInterval(pickVideoCallInterval);
+                 pickVideoCallCount = 0;
+            }
+        })
+
         return () => localStorage.removeItem("receiverDetails")
     }, [])
     const videoChatNow = () => {
@@ -21,7 +46,7 @@ const AnswerCalling = () =>{
                 sender: {user_from_id: receiverDetails.user_from_id},
                 reciever_id: receiverDetails.user_to_id,
                 channel_name: receiverDetails.channel_name,
-                type: 0,
+                type: Number(receiverDetails.type),
                 status: 2
             });
          }

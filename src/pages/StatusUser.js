@@ -20,11 +20,11 @@ return(
       
           <div className="status-info">
             <div className="status_image">
-                <img src="/assets/images/marlene_user.jpg" alt="user"/>
+                <img src={item.header.profileImage} alt="user"/>
             </div>
              <div className="status_heading">
-                 <h6>Augusta Castro • 20</h6>
-                 <span className="timer d-block">9 Seconds</span>
+                 <h6>{item.header.heading} • {item.header.age}</h6>
+                 <span className="timer d-block">{item.header.subheading}</span>
                  <span className="status_view"><img src="/assets/images/eye-icon.svg" alt="eye"/>2022</span>
              </div>
               

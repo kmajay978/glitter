@@ -26,7 +26,7 @@ import {NotificationContainer, NotificationManager} from 'react-notifications';
 // Working on login functional component
 const Login = () => {
 
-  const {latitude,longitude,speed,timestamp,accuracy,error,} = usePosition();
+  const {latitude,longitude,speed,timestamp,accuracy,error} = usePosition();
 
 console.log(latitude , "latitute");
   // Adding class to body with custom function
