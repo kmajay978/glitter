@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Stories from 'react-insta-stories';
+import {Translator, Translate} from 'react-auto-translate';
+// import translate from 'translate-google';
 
 function Dummy() {
  
@@ -55,14 +57,34 @@ function Dummy() {
     }
   ];
 
-    return ( 
+//   const tranObj = {
+//     a: 1,
+//     b: '1',
+//     c: "How are you?\nI'm nice.",
+//     d: [true, 'true', 'hi', { a: 'hello', b: ['world']}],
+//   }
+   
+//   translate(tranObj, {to: 'zh-cn', except:['a']}).then(res => {
+//       console.log(res)
+//   }).catch(err => {
+//       console.error(err)
+//   })
 
+    return ( 
+<div>
       <Stories
       stories={stories}
       defaultInterval={1500}
       width={300}
       height={768}
   />
+  <div>
+  <Translator  from='en' to='es' googleApiKey='API_KEY'>
+
+<h1><Translate>Welcome!</Translate></h1>
+</Translator>
+</div>
+</div>
   );
 }
 

@@ -19,6 +19,7 @@ import { css } from "@emotion/core";
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import {friendStatus} from '../features/userSlice'
 import StatusUser from "../pages/StatusUser";
+import useToggle from '../components/CommonFunction';
 
 let isMouseClick = false, startingPos = [], glitterUid, friendLists = [], userData= null, checkOnlineFrdsInterval;
 
@@ -63,6 +64,7 @@ const SearchHome = () =>
     const [video, setVideo] = useState(null);
     const [showUploadStatus,setUploadStatus] = useState(false);
     const [isLoaded, setIsLoaded] = useState(false);
+    const [isOn, toggleIsOn] = useToggle();
 
     userData = useSelector(userProfile).user.profile; //using redux useSelector here
  const options = {
@@ -164,6 +166,7 @@ const handleFileChange = e => {
   },[friendId])
 
   const handleStatus = () =>
+  setStatusModel(true);
   {
     const bodyParameters = {
       user_id: friendId,
@@ -173,7 +176,7 @@ const handleFileChange = e => {
       if (response.status === 200 && !response.status.error) {
         setStatusData(response.data);
         setStoryData(response.data.result);
-        setStatusModel(true);
+     
         dispatch(
           friendStatus({
             friendStatus: response.data.result
@@ -528,15 +531,20 @@ const uploadImage = () => {
   { stories.length > 0 &&
   <Modal className ="theme-modal" id="upload-media-modal" show={statusModel} onHide={() => setStatusModel(false)} backdrop="static" keyboard={false}>
  
-  <StatusUser/>
+  <Stories
+      stories={stories}
+      defaultInterval={3000}
+      width={332}
+      height={468}
+     
+  />   
   <a href="javascript:void(0)" className="modal-close" onClick={modelClose}><img src="/assets/images/btn_close.png" /></a>
     </Modal>
 }
-  {/* <div className={isOn ? 'all-gifts-wrapper active': 'all-gifts-wrapper '} >
+   {/* <div className={isOn ? 'all-gifts-wrapper active': 'all-gifts-wrapper '} >
     <div className="all-gift-inner">
     <a href="javascript:void(0)" className="close-gift-btn modal-close" onClick={toggleIsOn}><img src="/assets/images/btn_close.png" /></a>
       <div className="all-gift-body">
-        <StatusUser/>
       {
   stories.length > 0 &&
   
@@ -551,7 +559,7 @@ const uploadImage = () => {
       </div>
       
     </div>
-  </div> */}
+  </div>  */}
        
 
 {/* <div className="modal fade" id="status-modal" tabIndex={-1} role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
