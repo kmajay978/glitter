@@ -4,7 +4,7 @@ import {Translator, Translate} from 'react-auto-translate';
 // import translate from 'translate-google';
 
 function Dummy() {
- 
+
   
   const stories = [
     {
@@ -21,7 +21,10 @@ function Dummy() {
             "weight": "",
             "joining_date": "Jan 22, 2021",
             "relationship_status": "Single"
-        }
+        },
+        seeMore: ({ close }) => {
+			return <div onClick={close}>Hello, click to close this.</div>;
+		},
     },
     {
         "status_id": 49,
@@ -37,7 +40,10 @@ function Dummy() {
             "weight": "",
             "joining_date": "Jan 22, 2021",
             "relationship_status": "Single"
-        }
+        },
+        seeMore: ({ close }) => {
+			return <div onClick={close}>Hello, click to close this.</div>;
+		},
     },
     {
         "status_id": 48,
@@ -53,7 +59,10 @@ function Dummy() {
             "weight": "",
             "joining_date": "Jan 22, 2021",
             "relationship_status": "Single"
-        }
+        },
+        seeMore: ({ close }) => {
+			return <div onClick={alert("test")}>Hello, click to close this.</div>;
+		},
     }
   ];
 

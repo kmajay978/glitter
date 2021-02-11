@@ -14,12 +14,13 @@ import {useDispatch, useSelector} from "react-redux";
 import {userProfile} from "../features/userSlice";
 import {generateLiveVideoChatToken} from "../api/videoApi";
 import {addDefaultSrc, returnDefaultImage} from "../commonFunctions";
+import useToggle from '../components/CommonFunction';
 import SyncLoader from "react-spinners/SyncLoader";
 import { css } from "@emotion/core";
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import {friendStatus} from '../features/userSlice'
 import StatusUser from "../pages/StatusUser";
-import useToggle from '../components/CommonFunction';
+
 
 let isMouseClick = false, startingPos = [], glitterUid, friendLists = [], userData= null, checkOnlineFrdsInterval;
 
@@ -47,7 +48,7 @@ const SearchHome = () =>
     const [randomNumber, setRandomNumber] = useState('');
     const [fetchedProfile, setFilterUser] = useState('');
     const [ friendList  , setFriendlist] = useState([]);
-
+    const [isOn, toggleIsOn] = useToggle('');
     const [Click, setClick] = useState(false);
     const [StartPosition, setStartPosition] = useState([])
     const [statusData , setStatusData] = useState({});
@@ -64,7 +65,7 @@ const SearchHome = () =>
     const [video, setVideo] = useState(null);
     const [showUploadStatus,setUploadStatus] = useState(false);
     const [isLoaded, setIsLoaded] = useState(false);
-    const [isOn, toggleIsOn] = useToggle();
+    
 
     userData = useSelector(userProfile).user.profile; //using redux useSelector here
  const options = {
@@ -78,7 +79,9 @@ const SearchHome = () =>
 
 const stories = !!storyData ? storyData : [];
 
-console.log(stories, "stories....")
+
+
+//  console.log(stories, "stories....")
 
   
 const statusoptions = {
@@ -166,7 +169,6 @@ const handleFileChange = e => {
   },[friendId])
 
   const handleStatus = () =>
-  setStatusModel(true);
   {
     const bodyParameters = {
       user_id: friendId,
@@ -174,21 +176,24 @@ const handleFileChange = e => {
     axios.post(GET_STATUS,bodyParameters)
     .then((response) => {
       if (response.status === 200 && !response.status.error) {
-        setStatusData(response.data);
-        setStoryData(response.data.result);
-     
-        dispatch(
-          friendStatus({
-            friendStatus: response.data.result
-          })
-      );
+        if (!!response.data && !!response.data.result && response.data.result.length > 0 ) {
+          // $('#modal').show(); 
+          setStatusData(response.data);
+          setStoryData(response.data.result);
+          toggleIsOn(true)
+        }
+        else {
+          setStatusData({});
+        setStoryData([]);
+        toggleIsOn(false)
       }
+    }
       else {
-        setStatusData('');
+        setStatusData({});
       }
 
  }, (error) => {
-    setStatusData('');
+    setStatusData({});
 });
   }
 
@@ -209,7 +214,8 @@ const handleFileChange = e => {
    setVideoData(null);
    setPencilData('');
    dispatch(friendStatus({friendStatus: []}));
-   setStatusModel(false)
+   
+   
  }
 
 const config = {
@@ -218,9 +224,6 @@ const config = {
            "Content-Type": "multipart/form-data",
        }
  }
- useEffect(() => {
-   console.log(storyData, "storyData...")
- }, [storyData])
 
 const handleUploadStatus =() => 
 {
@@ -476,10 +479,9 @@ const uploadImage = () => {
                 <div className="status__slider">
         <OwlCarousel  options={options}  >
         {friendList.map((item, i) =>(
-        (item.statuses.length > 0 || item.is_live === true) ?
-       
+          (item.statuses.length > 0 ||  item.is_live === true ) ?
          <div className="users-listing__slider__items" onClick={() =>  makeMeAudience(item)} id={item.user_id}  >
-            <div className="users-listing__slider__items__image"  data-toggle="modal" data-target="#status-modal" >
+            <div className="users-listing__slider__items__image" id="modal" data-toggle="modal" >
            {!!friendList ? <img onError={(e) => addDefaultSrc(e)} src={!!item.profile_images ? item.profile_images : returnDefaultImage()} alt="marlene" /> : ""}
               <span className="circle-shape" />
             </div>
@@ -488,7 +490,7 @@ const uploadImage = () => {
                  <span className="live">Live</span>
              }
           </div>
-          : ""
+         :""
          ))}
 
         </OwlCarousel>
@@ -528,25 +530,14 @@ const uploadImage = () => {
     
     </div>
   </div>
-  { stories.length > 0 &&
-  <Modal className ="theme-modal" id="upload-media-modal" show={statusModel} onHide={() => setStatusModel(false)} backdrop="static" keyboard={false}>
- 
-  <Stories
-      stories={stories}
-      defaultInterval={3000}
-      width={332}
-      height={468}
-     
-  />   
-  <a href="javascript:void(0)" className="modal-close" onClick={modelClose}><img src="/assets/images/btn_close.png" /></a>
-    </Modal>
-}
-   {/* <div className={isOn ? 'all-gifts-wrapper active': 'all-gifts-wrapper '} >
-    <div className="all-gift-inner">
-    <a href="javascript:void(0)" className="close-gift-btn modal-close" onClick={toggleIsOn}><img src="/assets/images/btn_close.png" /></a>
-      <div className="all-gift-body">
-      {
+  {
   stories.length > 0 &&
+  <div className={isOn ? 'all-gifts-wrapper active': 'all-gifts-wrapper '} >
+    <div className="all-gift-inner">
+    <a href="javascript:void(0)" className="close-gift-btn modal-close" onClick={toggleIsOn(false)}><img src="/assets/images/btn_close.png" /></a>
+      <div className="all-gift-body">
+        
+     
   
   <Stories
       stories={stories}
@@ -555,12 +546,12 @@ const uploadImage = () => {
       height={468}
      
   />      
-}
+
       </div>
       
     </div>
-  </div>  */}
-       
+  </div>
+}  
 
 {/* <div className="modal fade" id="status-modal" tabIndex={-1} role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 
