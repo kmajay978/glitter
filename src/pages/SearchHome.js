@@ -47,7 +47,7 @@ const SearchHome = () =>
     const [randomNumber, setRandomNumber] = useState('');
     const [fetchedProfile, setFilterUser] = useState('');
     const [ friendList  , setFriendlist] = useState([]);
-    const [isOn, toggleIsOn] = useToggle(false);
+    const [isOn, toggleIsOn] = useToggle('');
     const [Click, setClick] = useState(false);
     const [StartPosition, setStartPosition] = useState([])
     const [statusData , setStatusData] = useState({});
@@ -79,7 +79,7 @@ const stories = !!storyData ? storyData : [];
 
 
 
-//  console.log(stories, "stories....")
+ // console.log(isOn, "ison....")
 
   
 const statusoptions = {
