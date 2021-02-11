@@ -41,7 +41,7 @@ export const userSlice = createSlice({
         audio: audioInitState,
         live_video: liveVideoInitState,
         stripePlanId:null ,
-        friendStatus : null ,
+        friendStatus : [],
         stripeCoinPlanId :null
     }, 
     reducers: { 

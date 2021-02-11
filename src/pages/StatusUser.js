@@ -1,6 +1,7 @@
 import React, { useEffect, useState} from "react";
 import { useSelector } from "react-redux";
 import {friendStatusData} from "../features/userSlice";
+let myInterval;
 
 const StatusUser = () => {
 
@@ -8,7 +9,51 @@ const StatusUser = () => {
   const [status , setStatus] = useState([]); 
   
   useEffect(() => {
-    setStatus(friendStatus);
+    //   if (friendStatus.length > 0) {
+    //       let friendStatusDetails = friendStatus;
+    //       console.log(friendStatusDetails, "friendStatusDetails...")
+    //       let timeCount = 0;
+        //   for (let elm of friendStatusDetails) {
+        //     if (elm.type === "text") {
+        //         elm.tim = 3000;
+        //         timeCount = timeCount + 3000;
+        //     }
+        //     if (elm.type === "video") {
+        //         elm.tim = 8000;
+        //         timeCount = timeCount + 8000;
+        //     }
+        //     if (elm.type === "image") {
+        //         elm.tim = 5000;
+        //         timeCount = timeCount + 5000;
+        //     }
+        //   }
+        //   let manageTime = 0;
+        //   let defaultArrayTotalIndex = 0;
+        //   let arrayTotalIndex = friendStatusDetails.length - 1;
+        // myInterval = window.setInterval(() => {
+        //     manageTime = manageTime + 1000;
+
+        //     if (manageTime <= friendStatusDetails[defaultArrayTotalIndex].tim) {
+        //         for (let j in friendStatusDetails) {
+        //             if (j == defaultArrayTotalIndex) {
+        //                 document.getElementById("status-"+j).style.display = "block"
+        //             }
+        //             if (j != defaultArrayTotalIndex) {
+        //                 document.getElementById("status-"+j).style.display = "none"
+        //             }
+        //         }
+        //     }
+
+        //     if (manageTime == friendStatusDetails[defaultArrayTotalIndex].tim) {
+        //         defaultArrayTotalIndex = ((defaultArrayTotalIndex + 1) <= arrayTotalIndex) ? defaultArrayTotalIndex + 1 : null;
+        //         if (defaultArrayTotalIndex !== null) {
+        //             friendStatusDetails[defaultArrayTotalIndex].tim = friendStatusDetails[defaultArrayTotalIndex].tim + manageTime;
+        //         }
+        //     } 
+        // }, timeCount)
+
+    //     setStatus(friendStatus);
+    //   }
  }, [friendStatus])
 
 return(
@@ -16,8 +61,8 @@ return(
 {!!status &&
 <>
 {status.map((item, index) => {
-  return  <div className="modal-content">
-      
+  return  <div className="modal-content" id={"status-"+index}>
+      <progress id={"progress-"+index} value="0" max="100"></progress>
           <div className="status-info">
             <div className="status_image">
                 <img src={item.header.profileImage} alt="user"/>
@@ -25,9 +70,8 @@ return(
              <div className="status_heading">
                  <h6>{item.header.heading} • {item.header.age}</h6>
                  <span className="timer d-block">{item.header.subheading}</span>
-                 <span className="status_view"><img src="/assets/images/eye-icon.svg" alt="eye"/>2022</span>
+                 <span className="status_view"><img src="/assets/images/eye-icon.svg" alt="eye"/>{Number(item.totalviews)}</span>
              </div>
-              
           </div>
       
          

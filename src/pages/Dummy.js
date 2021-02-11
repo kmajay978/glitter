@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Stories from 'react-insta-stories';
 
 function Dummy() {
- 
+
   
   const stories = [
     {
