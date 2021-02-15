@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import Stories from 'react-insta-stories';
-import { Translator, T, TF, LanguageList, Config } from 'react-translator-component'
 // import translate from 'translate-google';
 
 function Dummy() {
@@ -66,62 +65,22 @@ function Dummy() {
     }
   ];
 
-  Config.default = 'tr';
-Config.list = {
-  default: 'en',
-  list: {
-    en: {
-      text: 'English',
-     
-    },
-    tr: {
-      text: 'Türkçe',
-     
-    }
-  }
-}
 
-  function App() {
-    return (
-      <div>
-        <h1>
-          {T("There are no facts, only interpretations.")}
-        </h1>
-        <h6>
-          {TF("{0} {1}", "Friedrich", "Nietzsche")}
-        </h6>
-        <LanguageList />
-      </div>
-    )
-  }
-//   const tranObj = {
-//     a: 1,
-//     b: '1',
-//     c: "How are you?\nI'm nice.",
-//     d: [true, 'true', 'hi', { a: 'hello', b: ['world']}],
-//   }
-   
-//   translate(tranObj, {to: 'zh-cn', except:['a']}).then(res => {
-//       console.log(res)
-//   }).catch(err => {
-//       console.error(err)
-//   })
+
+ 
+  
 
     return ( 
-<div>
-      <Stories
-      stories={stories}
-      defaultInterval={1500}
-      width={300}
-      height={768}
-  />
-  <div>
-  <Translator>
-      <App />
-    </Translator>
-</div>
-</div>
-  );
-}
+      <div>
+            <Stories
+            stories={stories}
+            defaultInterval={1500}
+            width={300}
+            height={768}
+        />
 
+      </div>
+  );
+
+    }
 export default Dummy;
