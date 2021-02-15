@@ -142,11 +142,11 @@ const handleFileChange = e => {
     }
    axios.post(FRIENDLIST_API,bodyParameters)
     .then((response) => {
-      if(response.error=="bad_request")
-      {
-        localStorage.removeItem("session_id");
-        history.push('/login');
-      }
+      // if(response.error=="bad_request")
+      // {
+      //   localStorage.removeItem("session_id");
+      //   history.push('/login');
+      // }
       if (response.status === 200 ) {
         setIsLoaded(false);
           let friendList = response.data.data;
@@ -160,10 +160,10 @@ const handleFileChange = e => {
         setStatusLength(response.data.data.statuses);
       }
  }, (error) => {
-  if (error.toString().match("403")) {
-    localStorage.removeItem("session_id");
-    history.push('/login');
-  }
+  // if (error.toString().match("403")) {
+  //   localStorage.removeItem("session_id");
+  //   history.push('/login');
+  // }
   friendLists = []
   setFriendlist('');
   setIsLoaded(true);
@@ -242,11 +242,11 @@ const handleUploadStatus =() =>
   bodyParameters.append("status_type", "" + 1);
   axios.post(ADD_STATUS , bodyParameters , config)
   .then((response)=> {
-    if(response.error=="bad_request")
-    {
-      localStorage.removeItem("session_id");
-      history.push('/login');
-    }
+    // if(response.error=="bad_request")
+    // {
+    //   localStorage.removeItem("session_id");
+    //   history.push('/login');
+    // }
   if(response.status==200){
    createNotification('sucess');
    setTimeout(() => {
@@ -255,10 +255,10 @@ const handleUploadStatus =() =>
    setPicture('');
   }
  } ,(error) => {
-  if (error.toString().match("403")) {
-    localStorage.removeItem("session_id");
-    history.push('/login');
-  }
+  // if (error.toString().match("403")) {
+  //   localStorage.removeItem("session_id");
+  //   history.push('/login');
+  // }
  });
   }
   else if (videoData=='video'){
@@ -268,11 +268,11 @@ const handleUploadStatus =() =>
    bodyParameters.append("status_type", "" + 2);
    axios.post(ADD_STATUS , bodyParameters , config)
    .then((response)=> {
-    if(response.error=="bad_request")
-    {
-      localStorage.removeItem("session_id");
-      history.push('/login');
-    }
+    // if(response.error=="bad_request")
+    // {
+    //   localStorage.removeItem("session_id");
+    //   history.push('/login');
+    // }
      if(response.status==200){
     createNotification('sucess');
     setTimeout(() => {
@@ -280,10 +280,10 @@ const handleUploadStatus =() =>
     }, 1500);
   }
   } ,(error) => {
-    if (error.toString().match("403")) {
-      localStorage.removeItem("session_id");
-      history.push('/login');
-    }
+    // if (error.toString().match("403")) {
+    //   localStorage.removeItem("session_id");
+    //   history.push('/login');
+    // }
  });
   }
   else if (videoData=='text'){
@@ -293,11 +293,7 @@ const handleUploadStatus =() =>
    bodyParameters.append("status_type", "" + 3);
    axios.post(ADD_STATUS , bodyParameters , config)
    .then((response)=> {
-    if(response.error=="bad_request")
-    {
-      localStorage.removeItem("session_id");
-      history.push('/login');
-    }
+   
      if(response.status==200){
     createNotification('sucess');
     setTimeout(() => {
@@ -308,10 +304,10 @@ const handleUploadStatus =() =>
     setShowPencil(false);
   }
   } ,(error) => {
-    if (error.toString().match("403")) {
-      localStorage.removeItem("session_id");
-      history.push('/login');
-    }
+    // if (error.toString().match("403")) {
+    //   localStorage.removeItem("session_id");
+    //   history.push('/login');
+    // }
  });
   }
  }
