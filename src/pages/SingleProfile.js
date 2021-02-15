@@ -53,11 +53,7 @@ const SingleProfile = (props) =>{
         user_id: checkUid,
       };
      const {data :{result,status}} = await  axios.post(GET_SINGLE_STATUS,bodyParameters)
-     if(status==401)
-     {
-     localStorage.removeItem("session_id");
-     history.push('/login');
-     }
+    
      if(status==200){
         setStatusData(result);
     }
@@ -71,20 +67,20 @@ const SingleProfile = (props) =>{
           };
             axios.post(GET_USERPROFILE_API,bodyParameters)
             .then((response) => {
-              if(response.error=="bad_request")
-                {
-                     localStorage.removeItem("session_id");
-                     history.push('/login');
-                  }
+              // if(response.error=="bad_request")
+              //   {
+              //        localStorage.removeItem("session_id");
+              //        history.push('/login');
+              //     }
               if (response.status === 200 && !response.status.error) {
             setUser(response.data.data);
             console.log(response.data.data, "jjjj")
               }
          }, (error) => {
-          if (error.toString().match("403")) {
-            localStorage.removeItem("session_id");
-            history.push('/login');
-          }
+          // if (error.toString().match("403")) {
+          //   localStorage.removeItem("session_id");
+          //   history.push('/login');
+          // }
         });
         }
 
@@ -95,11 +91,11 @@ const SingleProfile = (props) =>{
        session_id :  localStorage.getItem('session_id'),
        }
        const {data:{result, status}} = await axios.post(GIFT_LIST_API , bodyParameters)
-       if(status==401)
-       {
-       localStorage.removeItem("session_id");
-       history.push('/login');
-        }
+      //  if(status==401)
+      //  {
+      //  localStorage.removeItem("session_id");
+      //  history.push('/login');
+      //   }
        if(status==200){
        setGiftData(result);
        }
@@ -122,11 +118,7 @@ const SingleProfile = (props) =>{
           }
           axios.post(BLOCK_USER_API , bodyParameters)
           .then((response)=> {
-            if(response.error=="bad_request")
-            {
-              localStorage.removeItem("session_id");
-              history.push('/login');
-            }
+           
           if(response.status==200 && !response.error) {
            createNotification('block');
             setTimeout(() => {
@@ -137,10 +129,10 @@ const SingleProfile = (props) =>{
             setBlockData(false);
           }
           }, (error) =>{
-            if (error.toString().match("403")) {
-              localStorage.removeItem("session_id");
-              history.push('/login');
-            }
+            // if (error.toString().match("403")) {
+            //   localStorage.removeItem("session_id");
+            //   history.push('/login');
+            // }
             setBlockData(false);
           });
         }
@@ -153,11 +145,11 @@ const SingleProfile = (props) =>{
          }
          axios.post(REPORT_USER_API , bodyParameters)
          .then((response) => {
-          if(response.error=="bad_request")
-          {
-            localStorage.removeItem("session_id");
-            history.push('/login');
-          }
+          // if(response.error=="bad_request")
+          // {
+          //   localStorage.removeItem("session_id");
+          //   history.push('/login');
+          // }
           if(response.status==200)
           { 
             createNotification('report');
@@ -166,10 +158,10 @@ const SingleProfile = (props) =>{
             }, 1500);
             }
          } ,(error) => {
-          if (error.toString().match("403")) {
-            localStorage.removeItem("session_id");
-            history.push('/login');
-          }
+          // if (error.toString().match("403")) {
+          //   localStorage.removeItem("session_id");
+          //   history.push('/login');
+          // }
           createNotification('error');
          });
         };
@@ -181,17 +173,18 @@ const SingleProfile = (props) =>{
             }
             axios.post(LIKE_USER, bodyParameters).then(
               (response) => {   
-                if(response.error=="bad_request")
-                {
-                  localStorage.removeItem("session_id");
-                  history.push('/login');
-                }
+                // if(response.error=="bad_request")
+                // {
+                //   localStorage.removeItem("session_id");
+                //   history.push('/login');
+                // }
               },
               (error) => {
-                if (error.toString().match("403")) {
-                localStorage.removeItem("session_id");
-                history.push('/login');
-              }}
+              //   if (error.toString().match("403")) {
+              //   localStorage.removeItem("session_id");
+              //   history.push('/login');
+              // }
+            }
             );
         }
 
@@ -202,17 +195,18 @@ const SingleProfile = (props) =>{
           }
           axios.post(DISLIKE_USER, bodyParameters).then(
             (response) => {
-              if(response.error=="bad_request")
-               {
-              localStorage.removeItem("session_id");
-              history.push('/login');
-             }
+            //   if(response.error=="bad_request")
+            //    {
+            //   localStorage.removeItem("session_id");
+            //   history.push('/login');
+            //  }
             },
             (error) => {
-              if (error.toString().match("403")) {
-              localStorage.removeItem("session_id");
-              history.push('/login');
-            }}
+            //   if (error.toString().match("403")) {
+            //   localStorage.removeItem("session_id");
+            //   history.push('/login');
+            // }
+          }
           );
         }
 

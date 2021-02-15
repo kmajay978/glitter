@@ -135,11 +135,11 @@ function valuetextweight(value) {
 
      axios.post(FILTER_LIST_API,bodyParameters)
   .then((response) => { 
-    if(response.error=="bad_request")
-    {
-      localStorage.removeItem("session_id");
-      history.push('/login');
-    }
+    // if(response.error=="bad_request")
+    // {
+    //   localStorage.removeItem("session_id");
+    //   history.push('/login');
+    // }
    if (response.status == 200) {
     setLoading(true);
     setFilterUser(response.data.data);
@@ -159,10 +159,10 @@ function valuetextweight(value) {
 }
  
  }, (error) => {
-  if (error.toString().match("403")) {
-    localStorage.removeItem("session_id");
-    history.push('/login');
-  }
+  // if (error.toString().match("403")) {
+  //   localStorage.removeItem("session_id");
+  //   history.push('/login');
+  // }
     localStorage.clear();
  });
 }

@@ -106,11 +106,6 @@ function App() {
     }
   }, [is_auth])
   
-  
-  useEffect(() => { 
-    window.history.back(-1)
-    window.history.forward(-1)
-  }, [])
 
   return (
       <Router>

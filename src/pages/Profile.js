@@ -203,20 +203,16 @@ const handleCheck = (e) => {
 
    axios.post(EDITPROFILE_API , bodyParameters, config) 
    .then((response) => {
-    if(response.error=="bad_request")
-    {
-      localStorage.removeItem("session_id");
-      history.push('/login');
-    }
+   
    if(response.status==200  && !response.status.error){
    Notification('update');
  
    }
    }, (error) =>{
-    if (error.toString().match("403")) {
-      localStorage.removeItem("session_id");
-      history.push('/login');
-    }
+    // if (error.toString().match("403")) {
+    //   localStorage.removeItem("session_id");
+    //   history.push('/login');
+    // }
    Notification('error');
    });
    }
@@ -246,11 +242,7 @@ const handleCheck = (e) => {
     
     axios.post(EDITPROFILE_API , bodyParameters , config) 
    .then((response) => {
-    if(response.error=="bad_request")
-    {
-      localStorage.removeItem("session_id");
-      history.push('/login');
-    }
+   
    if(response.status==200  && !response.status.error){
     Notification('update');
     setTimeout(() => {
@@ -290,20 +282,16 @@ const handleCheck = (e) => {
    };
    try {
     const{data : {data,status_code, error}} = await axios.post(BLOCK_USERLIST_API ,bodyParameters)
-    if(error=="bad_request")
-    {
-    localStorage.removeItem("session_id");
-    history.push('/login');
-    }
+  
     if(status_code==200){
       setBlockData(data);
       }
 }
 catch (err) {
-    if (err.toString().match("403")) {
-        localStorage.removeItem("session_id");
-        history.push('/login');
-      }
+    // if (err.toString().match("403")) {
+    //     localStorage.removeItem("session_id");
+    //     history.push('/login');
+    //   }
 }
    }
    
@@ -316,11 +304,11 @@ catch (err) {
     axios.post(BLOCK_USER_API , bodyParameters)
     .then((response)=>
     {
-      if(response.error=="bad_request")
-    {
-      localStorage.removeItem("session_id");
-      history.push('/login');
-    }
+    //   if(response.error=="bad_request")
+    // {
+    //   localStorage.removeItem("session_id");
+    //   history.push('/login');
+    // }
     if(response.status==200 && !response.error) {
       createNotification('unblock');
       setTimeout(() => {
@@ -328,10 +316,10 @@ catch (err) {
       }, 1500);
     }
     }, (error) =>{
-      if (error.toString().match("403")) {
-        localStorage.removeItem("session_id");
-        history.push('/login');
-      }
+      // if (error.toString().match("403")) {
+      //   localStorage.removeItem("session_id");
+      //   history.push('/login');
+      // }
     });
     
   }
@@ -346,20 +334,20 @@ catch (err) {
      setShowBuyCoins(true);
      axios.get(GET_ALL_COIN_PACKAGE)
      .then((response) => { 
-      if(response.error=="bad_request")
-    {
-      localStorage.removeItem("session_id");
-      history.push('/login');
-    }
+    //   if(response.error=="bad_request")
+    // {
+    //   localStorage.removeItem("session_id");
+    //   history.push('/login');
+    // }
        if(response.status==200){
       setCoinPackage(response.data.coin_list);
       setIsLoaded(false);
        }
        }, (error) =>{
-        if (error.toString().match("403")) {
-          localStorage.removeItem("session_id");
-          history.push('/login');
-        }
+        // if (error.toString().match("403")) {
+        //   localStorage.removeItem("session_id");
+        //   history.push('/login');
+        // }
         setIsLoaded(true);
        }); 
     }
@@ -376,11 +364,7 @@ catch (err) {
       axios.post(COIN_HISTORY , bodyParameters)
       .then((response) =>{
         console.log(response)
-        if(response.error=="bad_request")
-      {
-        localStorage.removeItem("session_id");
-      history.push('/login');
-    }
+       
         if(response.status==200){
         setIsLoaded(false);
         setCoinHistory(response.data.result);
@@ -389,10 +373,10 @@ catch (err) {
       //  console.log(response.data, '...history');
       }, (error)=> {
         setIsLoaded(true);
-        if (error.toString().match("403")) {
-          localStorage.removeItem("session_id");
-          history.push('/login');
-        }
+        // if (error.toString().match("403")) {
+        //   localStorage.removeItem("session_id");
+        //   history.push('/login');
+        // }
         
       });
     }
@@ -405,20 +389,16 @@ catch (err) {
      }
      try {
       const {data:{result, status, error}} = await axios.post(GIFT_LIST_API , bodyParameters)
-      if(error=="bad_request")
-      {
-      localStorage.removeItem("session_id");
-      history.push('/login');
-      }
+     
       if(status==200){
         setGiftData(result);
         }
   }
   catch (err) {
-      if (err.toString().match("403")) {
-          localStorage.removeItem("session_id");
-          history.push('/login');
-        }
+      // if (err.toString().match("403")) {
+      //     localStorage.removeItem("session_id");
+      //     history.push('/login');
+      //   }
   }
    }
 
@@ -437,21 +417,17 @@ catch (err) {
    {
      axios.get(INTEREST_HOBBIES_LIST)
      .then((response) => { 
-      if(response.error=="bad_request")
-    {
-      localStorage.removeItem("session_id");
-      history.push('/login');
-    }
+    
        if(response.status==200){
       showInterestData(response.data);
        }
     
    
        }, (error) =>{
-        if (error.toString().match("403")) {
-          localStorage.removeItem("session_id");
-          history.push('/login');
-        }
+        // if (error.toString().match("403")) {
+        //   localStorage.removeItem("session_id");
+        //   history.push('/login');
+        // }
        });
     
    }
@@ -496,20 +472,16 @@ catch (err) {
   const GetStipePackage = async() =>{
     try {
       const {data:{plan_list, status_code , error}} = await axios.get(GET_STRIPE_PACKAGE)
-      if(error=="bad_request")
-      {
-      localStorage.removeItem("session_id");
-      history.push('/login');
-      }
+     
       if(status_code==200){
         setPackage(plan_list);
         }
   }
   catch (err) {
-      if (err.toString().match("403")) {
-          localStorage.removeItem("session_id");
-          history.push('/login');
-        }
+      // if (err.toString().match("403")) {
+      //     localStorage.removeItem("session_id");
+      //     history.push('/login');
+      //   }
   }
 
   }

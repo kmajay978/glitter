@@ -57,11 +57,7 @@ const CheckoutForm = (props) => {
             axios
                 .post(ACTIVATE_STRIPE_PACKAGE, bodyParameters)
                 .then((response) => {
-                    if(response.error=="bad_request")
-                    {
-                      localStorage.removeItem("session_id");
-                      history.push('/login');
-                    }
+                  
                     if(response.status==200)
                     { 
                     console.log(response);
@@ -69,10 +65,10 @@ const CheckoutForm = (props) => {
                     dispatch(stripePlanId({stripePlanId: null}));
                   }
                 }, (error) => {
-                    if (error.toString().match("403")) {
-                        localStorage.removeItem("session_id");
-                        history.push('/login');
-                      }
+                    // if (error.toString().match("403")) {
+                    //     localStorage.removeItem("session_id");
+                    //     history.push('/login');
+                    //   }
                     createNotification('error',error.message);
                 });
         }
@@ -88,11 +84,11 @@ const CheckoutForm = (props) => {
             axios
                 .post(ACTIVATE_COIN_PACKAGE, bodyParameters)
                 .then((response) => { 
-                    if(response.error=="bad_request")
-                    {
-                      localStorage.removeItem("session_id");
-                      history.push('/login');
-                    }
+                    // if(response.error=="bad_request")
+                    // {
+                    //   localStorage.removeItem("session_id");
+                    //   history.push('/login');
+                    // }
                     if(response.status==200)
                     { 
                         console.log(response);
@@ -102,10 +98,10 @@ const CheckoutForm = (props) => {
                   }
                
                 }, (error) => {
-                    if (error.toString().match("403")) {
-                        localStorage.removeItem("session_id");
-                        history.push('/login');
-                      }
+                    // if (error.toString().match("403")) {
+                    //     localStorage.removeItem("session_id");
+                    //     history.push('/login');
+                    //   }
                     createNotification('error',error.message);
                 });
         }
