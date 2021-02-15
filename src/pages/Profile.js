@@ -203,11 +203,20 @@ const handleCheck = (e) => {
 
    axios.post(EDITPROFILE_API , bodyParameters, config) 
    .then((response) => {
-   if(response.status==200){
+    if(response.error=="bad_request")
+    {
+      localStorage.removeItem("session_id");
+      history.push('/login');
+    }
+   if(response.status==200  && !response.status.error){
    Notification('update');
  
    }
    }, (error) =>{
+    if (error.toString().match("403")) {
+      localStorage.removeItem("session_id");
+      history.push('/login');
+    }
    Notification('error');
    });
    }
@@ -237,7 +246,12 @@ const handleCheck = (e) => {
     
     axios.post(EDITPROFILE_API , bodyParameters , config) 
    .then((response) => {
-   if(response.status==200){
+    if(response.error=="bad_request")
+    {
+      localStorage.removeItem("session_id");
+      history.push('/login');
+    }
+   if(response.status==200  && !response.status.error){
     Notification('update');
     setTimeout(() => {
       setShowImage(false);
@@ -274,10 +288,23 @@ const handleCheck = (e) => {
    const bodyParameters ={
     session_id: sessionId,
    };
-   const{data : {data}} = await axios.post(BLOCK_USERLIST_API ,bodyParameters)
-   setBlockData(data);
-  
-   
+   try {
+    const{data : {data,status_code, error}} = await axios.post(BLOCK_USERLIST_API ,bodyParameters)
+    if(error=="bad_request")
+    {
+    localStorage.removeItem("session_id");
+    history.push('/login');
+    }
+    if(status_code==200){
+      setBlockData(data);
+      }
+}
+catch (err) {
+    if (err.toString().match("403")) {
+        localStorage.removeItem("session_id");
+        history.push('/login');
+      }
+}
    }
    
    const handleBlock = async() => {
@@ -289,6 +316,11 @@ const handleCheck = (e) => {
     axios.post(BLOCK_USER_API , bodyParameters)
     .then((response)=>
     {
+      if(response.error=="bad_request")
+    {
+      localStorage.removeItem("session_id");
+      history.push('/login');
+    }
     if(response.status==200 && !response.error) {
       createNotification('unblock');
       setTimeout(() => {
@@ -296,7 +328,10 @@ const handleCheck = (e) => {
       }, 1500);
     }
     }, (error) =>{
-     
+      if (error.toString().match("403")) {
+        localStorage.removeItem("session_id");
+        history.push('/login');
+      }
     });
     
   }
@@ -311,11 +346,22 @@ const handleCheck = (e) => {
      setShowBuyCoins(true);
      axios.get(GET_ALL_COIN_PACKAGE)
      .then((response) => { 
+      if(response.error=="bad_request")
+    {
+      localStorage.removeItem("session_id");
+      history.push('/login');
+    }
+       if(response.status==200){
       setCoinPackage(response.data.coin_list);
       setIsLoaded(false);
+       }
        }, (error) =>{
+        if (error.toString().match("403")) {
+          localStorage.removeItem("session_id");
+          history.push('/login');
+        }
         setIsLoaded(true);
-       });
+       }); 
     }
  
     // console.log(coinPackage , "packages...");
@@ -329,13 +375,25 @@ const handleCheck = (e) => {
       }
       axios.post(COIN_HISTORY , bodyParameters)
       .then((response) =>{
+        console.log(response)
+        if(response.error=="bad_request")
+      {
+        localStorage.removeItem("session_id");
+      history.push('/login');
+    }
+        if(response.status==200){
         setIsLoaded(false);
         setCoinHistory(response.data.result);
         setCoinSpend(response.data.count_coins);
-
+        }
       //  console.log(response.data, '...history');
       }, (error)=> {
         setIsLoaded(true);
+        if (error.toString().match("403")) {
+          localStorage.removeItem("session_id");
+          history.push('/login');
+        }
+        
       });
     }
     
@@ -345,8 +403,23 @@ const handleCheck = (e) => {
      const bodyParameters = {
        session_id : sessionId,
      }
-    const {data:{result}} = await axios.post(GIFT_LIST_API , bodyParameters)
-      setGiftData(result);
+     try {
+      const {data:{result, status, error}} = await axios.post(GIFT_LIST_API , bodyParameters)
+      if(error=="bad_request")
+      {
+      localStorage.removeItem("session_id");
+      history.push('/login');
+      }
+      if(status==200){
+        setGiftData(result);
+        }
+  }
+  catch (err) {
+      if (err.toString().match("403")) {
+          localStorage.removeItem("session_id");
+          history.push('/login');
+        }
+  }
    }
 
    //get single  gift item
@@ -364,11 +437,21 @@ const handleCheck = (e) => {
    {
      axios.get(INTEREST_HOBBIES_LIST)
      .then((response) => { 
+      if(response.error=="bad_request")
+    {
+      localStorage.removeItem("session_id");
+      history.push('/login');
+    }
+       if(response.status==200){
       showInterestData(response.data);
-      // console.log(response.data);
+       }
+    
    
        }, (error) =>{
-   
+        if (error.toString().match("403")) {
+          localStorage.removeItem("session_id");
+          history.push('/login');
+        }
        });
     
    }
@@ -411,8 +494,24 @@ const handleCheck = (e) => {
   // ------------------------------ Stipe payment module -----------------------------------------------//
 
   const GetStipePackage = async() =>{
-    const {data:{plan_list}} = await axios.get(GET_STRIPE_PACKAGE)
-      setPackage(plan_list);
+    try {
+      const {data:{plan_list, status_code , error}} = await axios.get(GET_STRIPE_PACKAGE)
+      if(error=="bad_request")
+      {
+      localStorage.removeItem("session_id");
+      history.push('/login');
+      }
+      if(status_code==200){
+        setPackage(plan_list);
+        }
+  }
+  catch (err) {
+      if (err.toString().match("403")) {
+          localStorage.removeItem("session_id");
+          history.push('/login');
+        }
+  }
+
   }
 
   const CheckedItem = (id) => {

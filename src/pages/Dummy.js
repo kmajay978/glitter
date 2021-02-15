@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Stories from 'react-insta-stories';
+// import translate from 'translate-google';
 
 function Dummy() {
 
@@ -64,15 +65,22 @@ function Dummy() {
     }
   ];
 
+
+
+ 
+  
+
     return ( 
+      <div>
+            <Stories
+            stories={stories}
+            defaultInterval={1500}
+            width={300}
+            height={768}
+        />
 
-      <Stories
-      stories={stories}
-      defaultInterval={1500}
-      width={300}
-      height={768}
-  />
+      </div>
   );
-}
 
+    }
 export default Dummy;

@@ -31,7 +31,7 @@ const SingleProfile = (props) =>{
     const history = useHistory()
    
     const handleBack = () => {
-      history.goBack();
+     history.goBack();
     }
 
     const handleChat = () => {
@@ -52,10 +52,18 @@ const SingleProfile = (props) =>{
       const bodyParameters = {
         user_id: checkUid,
       };
-    const {data :{result}} = await  axios.post(GET_SINGLE_STATUS,bodyParameters)
+     const {data :{result,status}} = await  axios.post(GET_SINGLE_STATUS,bodyParameters)
+     if(status==401)
+     {
+     localStorage.removeItem("session_id");
+     history.push('/login');
+     }
+     if(status==200){
         setStatusData(result);
     }
+    }
     console.log(statusData);
+
       const getUser=()=> {
         const bodyParameters = {
             user_id: checkUid,
@@ -63,11 +71,20 @@ const SingleProfile = (props) =>{
           };
             axios.post(GET_USERPROFILE_API,bodyParameters)
             .then((response) => {
+              if(response.error=="bad_request")
+                {
+                     localStorage.removeItem("session_id");
+                     history.push('/login');
+                  }
               if (response.status === 200 && !response.status.error) {
             setUser(response.data.data);
             console.log(response.data.data, "jjjj")
               }
          }, (error) => {
+          if (error.toString().match("403")) {
+            localStorage.removeItem("session_id");
+            history.push('/login');
+          }
         });
         }
 
@@ -77,8 +94,15 @@ const SingleProfile = (props) =>{
        const bodyParameters = {
        session_id :  localStorage.getItem('session_id'),
        }
-       const {data:{result}} = await axios.post(GIFT_LIST_API , bodyParameters)
+       const {data:{result, status}} = await axios.post(GIFT_LIST_API , bodyParameters)
+       if(status==401)
+       {
+       localStorage.removeItem("session_id");
+       history.push('/login');
+        }
+       if(status==200){
        setGiftData(result);
+       }
        }
 
    //get single  gift item
@@ -88,7 +112,7 @@ const SingleProfile = (props) =>{
       gift_id : Uid
       }
        const {data : {result}} = await axios.post(GET_GIFT_API , bodyParameters)
-      
+       
         }
  
         const handleblock = async() => {
@@ -97,8 +121,12 @@ const SingleProfile = (props) =>{
             blocked_user: checkUid,
           }
           axios.post(BLOCK_USER_API , bodyParameters)
-          .then((response)=>
-          {
+          .then((response)=> {
+            if(response.error=="bad_request")
+            {
+              localStorage.removeItem("session_id");
+              history.push('/login');
+            }
           if(response.status==200 && !response.error) {
            createNotification('block');
             setTimeout(() => {
@@ -109,6 +137,10 @@ const SingleProfile = (props) =>{
             setBlockData(false);
           }
           }, (error) =>{
+            if (error.toString().match("403")) {
+              localStorage.removeItem("session_id");
+              history.push('/login');
+            }
             setBlockData(false);
           });
         }
@@ -121,6 +153,11 @@ const SingleProfile = (props) =>{
          }
          axios.post(REPORT_USER_API , bodyParameters)
          .then((response) => {
+          if(response.error=="bad_request")
+          {
+            localStorage.removeItem("session_id");
+            history.push('/login');
+          }
           if(response.status==200)
           { 
             createNotification('report');
@@ -129,6 +166,10 @@ const SingleProfile = (props) =>{
             }, 1500);
             }
          } ,(error) => {
+          if (error.toString().match("403")) {
+            localStorage.removeItem("session_id");
+            history.push('/login');
+          }
           createNotification('error');
          });
         };
@@ -140,8 +181,17 @@ const SingleProfile = (props) =>{
             }
             axios.post(LIKE_USER, bodyParameters).then(
               (response) => {   
+                if(response.error=="bad_request")
+                {
+                  localStorage.removeItem("session_id");
+                  history.push('/login');
+                }
               },
-              (error) => {}
+              (error) => {
+                if (error.toString().match("403")) {
+                localStorage.removeItem("session_id");
+                history.push('/login');
+              }}
             );
         }
 
@@ -152,8 +202,17 @@ const SingleProfile = (props) =>{
           }
           axios.post(DISLIKE_USER, bodyParameters).then(
             (response) => {
+              if(response.error=="bad_request")
+               {
+              localStorage.removeItem("session_id");
+              history.push('/login');
+             }
             },
-            (error) => {}
+            (error) => {
+              if (error.toString().match("403")) {
+              localStorage.removeItem("session_id");
+              history.push('/login');
+            }}
           );
         }
 

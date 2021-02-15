@@ -1,4 +1,5 @@
 import './App.css';
+import $ from 'jquery';
 import './components/jqueryfile.js';
 import React, { useState , useEffect } from 'react';
 import {Elements} from '@stripe/react-stripe-js';
@@ -104,6 +105,13 @@ function App() {
       //  }, 600000);
     }
   }, [is_auth])
+  
+  
+  useEffect(() => { 
+    window.history.back(-1)
+    window.history.forward(-1)
+  }, [])
+
   return (
       <Router>
         <Switch>

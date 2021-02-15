@@ -100,21 +100,68 @@ const ChatBox = (props) =>{
 
     const getLikes = async () => {  //Likes here
         setActivity(0);
-        const { data: {data} } = await axios.post(LIKED_LIST,bodyParameters)
-        setLikes(data);
+        try {
+            const { data: {data , status_code,error } } = await axios.post(LIKED_LIST,bodyParameters)
+            if(error=="bad_request")
+            {
+            localStorage.removeItem("session_id");
+            history.push('/login');
+            }
+            if(status_code==200){
+                setLikes(data);
+            }
+        }
+        catch (err) {
+            if (err.toString().match("403")) {
+                localStorage.removeItem("session_id");
+                history.push('/login');
+              }
+        }
+       
+        
+        
     }
 
     const getVisitors = async () => {  // Visitors here
         setActivity(1);
-        const { data: {result} } = await axios.post(VISITOR_LIST_API,bodyParameters)
-        setVisitors(result);
-
+        try {
+            const { data: {result, error , status_code} } = await axios.post(VISITOR_LIST_API,bodyParameters)
+            if(error=="bad_request")
+            {
+            localStorage.removeItem("session_id");
+            history.push('/login');
+            }
+            if(status_code==200){
+            setVisitors(result);
+            }
+        }
+        catch (err) {
+            if (err.toString().match("403")) {
+                localStorage.removeItem("session_id");
+                history.push('/login');
+              }
+        }
     }
 
     const getFriend = async() => { //Friends here
         setActivity(2);
-        const {data:{data}}= await axios.post(FRIENDLIST_API,bodyParameters)
-        setFriendlist(!!data ? data : []);
+        try {
+            const {data:{data ,status_code, error}}= await axios.post(FRIENDLIST_API,bodyParameters)
+            if(error=="bad_request")
+            {
+            localStorage.removeItem("session_id");
+            history.push('/login');
+            }
+            if(status_code==200){
+                setFriendlist(!!data ? data : []);
+                }
+        }
+        catch (err) {
+            if (err.toString().match("403")) {
+                localStorage.removeItem("session_id");
+                history.push('/login');
+              }
+        }
     }
 
     // fetching friends according to userID
@@ -155,11 +202,20 @@ const ChatBox = (props) =>{
         }
         axios.post(ACCEPT_REQUEST_API , bodyParameters)
             .then((response) => {
+                if(response.error=="bad_request")
+                 {
+                  localStorage.removeItem("session_id");
+                  history.push('/login');
+                 }
                 if(response.status==200)
                 {
                     createNotification('accept');
                 }
             }, (error) => {
+                if (error.toString().match("403")) {
+                    localStorage.removeItem("session_id");
+                    history.push('/login');
+                  }
             });
 
     }
@@ -171,9 +227,16 @@ const ChatBox = (props) =>{
         const bodyParameters = {
             session_id :  localStorage.getItem('session_id'),
             }
-            const {data:{result}} = await axios.post(GIFT_LIST_API , bodyParameters)
-            setGiftData(result);
-            }
+            const {data:{result , status}} = await axios.post(GIFT_LIST_API , bodyParameters)
+            if(status==401)
+             {
+             localStorage.removeItem("session_id");
+              history.push('/login');
+              }
+             if(status==200){
+             setGiftData(result);
+             }
+             }
      
         //get single  gift item
            const getGiftItem = async(giftId) => {

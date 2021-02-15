@@ -7,7 +7,7 @@ import { makeStyles , withStyles } from '@material-ui/core/styles';
 import { FILTER_LIST_API } from './Api';
 import Loader from '../components/Loader';
 import {Typography} from '@material-ui/core';
-import {filterData} from '../features/userSlice';
+import {filterData, profile, logout} from '../features/userSlice';
 import { useDispatch } from 'react-redux';
 
 const useStyles = makeStyles({
@@ -135,6 +135,11 @@ function valuetextweight(value) {
 
      axios.post(FILTER_LIST_API,bodyParameters)
   .then((response) => { 
+    if(response.error=="bad_request")
+    {
+      localStorage.removeItem("session_id");
+      history.push('/login');
+    }
    if (response.status == 200) {
     setLoading(true);
     setFilterUser(response.data.data);
@@ -154,7 +159,10 @@ function valuetextweight(value) {
 }
  
  }, (error) => {
-   
+  if (error.toString().match("403")) {
+    localStorage.removeItem("session_id");
+    history.push('/login');
+  }
     localStorage.clear();
  });
 }

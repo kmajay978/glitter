@@ -33,16 +33,16 @@ const StatusUser = () => {
         // myInterval = window.setInterval(() => {
         //     manageTime = manageTime + 1000;
 
-        //     if (manageTime <= friendStatusDetails[defaultArrayTotalIndex].tim) {
-        //         for (let j in friendStatusDetails) {
-        //             if (j == defaultArrayTotalIndex) {
-        //                 document.getElementById("status-"+j).style.display = "block"
-        //             }
-        //             if (j != defaultArrayTotalIndex) {
-        //                 document.getElementById("status-"+j).style.display = "none"
-        //             }
-        //         }
-        //     }
+//         //     if (manageTime <= friendStatusDetails[defaultArrayTotalIndex].tim) {
+//         //         for (let j in friendStatusDetails) {
+//         //             if (j == defaultArrayTotalIndex) {
+//         //                 document.getElementById("status-"+j).style.display = "block"
+//         //             }
+//         //             if (j != defaultArrayTotalIndex) {
+//         //                 document.getElementById("status-"+j).style.display = "none"
+//         //             }
+//         //         }
+//         //     }
 
         //     if (manageTime == friendStatusDetails[defaultArrayTotalIndex].tim) {
         //         defaultArrayTotalIndex = ((defaultArrayTotalIndex + 1) <= arrayTotalIndex) ? defaultArrayTotalIndex + 1 : null;
@@ -80,7 +80,7 @@ return(
       : item.type=="image"?  <img src={item.url} alt="status"/>
       : item.type=="video"? <video src={item.url} width="300" height="400" type="video/mp4"  />
       : ""}
-                 {/* <img src={item.url} alt="status"/> */}
+              
              </div>
             
       
