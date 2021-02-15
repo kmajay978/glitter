@@ -159,10 +159,10 @@ function valuetextweight(value) {
 }
  
  }, (error) => {
-  // if (error.toString().match("403")) {
-  //   localStorage.removeItem("session_id");
-  //   history.push('/login');
-  // }
+  if (error.toString().match("403")) {
+    localStorage.removeItem("session_id");
+    history.push('/login');
+  }
     localStorage.clear();
  });
 }

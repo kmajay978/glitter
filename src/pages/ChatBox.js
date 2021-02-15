@@ -107,10 +107,10 @@ const ChatBox = (props) =>{
             }
         }
         catch (err) {
-            // if (err.toString().match("403")) {
-            //     localStorage.removeItem("session_id");
-            //     history.push('/login');
-            //   }
+            if (err.toString().match("403")) {
+                localStorage.removeItem("session_id");
+                history.push('/login');
+              }
         }
        
         
@@ -127,10 +127,10 @@ const ChatBox = (props) =>{
             }
         }
         catch (err) {
-            // if (err.toString().match("403")) {
-            //     localStorage.removeItem("session_id");
-            //     history.push('/login');
-            //   }
+            if (err.toString().match("403")) {
+                localStorage.removeItem("session_id");
+                history.push('/login');
+              }
         }
     }
 
@@ -144,10 +144,10 @@ const ChatBox = (props) =>{
                 }
         }
         catch (err) {
-            // if (err.toString().match("403")) {
-            //     localStorage.removeItem("session_id");
-            //     history.push('/login');
-            //   }
+            if (err.toString().match("403")) {
+                localStorage.removeItem("session_id");
+                history.push('/login');
+              }
         }
     }
 
@@ -199,10 +199,10 @@ const ChatBox = (props) =>{
                     createNotification('accept');
                 }
             }, (error) => {
-                // if (error.toString().match("403")) {
-                //     localStorage.removeItem("session_id");
-                //     history.push('/login');
-                //   }
+                if (error.toString().match("403")) {
+                    localStorage.removeItem("session_id");
+                    history.push('/login');
+                  }
             });
 
     }

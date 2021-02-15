@@ -165,10 +165,10 @@ const handleFileChange = e => {
         setStatusLength(response.data.data.statuses);
       }
  }, (error) => {
-  // if (error.toString().match("403")) {
-  //   localStorage.removeItem("session_id");
-  //   history.push('/login');
-  // }
+  if (error.toString().match("403")) {
+    localStorage.removeItem("session_id");
+    history.push('/login');
+  }
   friendLists = []
   setFriendlist('');
   setIsLoaded(true);
@@ -275,10 +275,10 @@ const handleUploadStatus =() =>
    setPicture('');
   }
  } ,(error) => {
-  // if (error.toString().match("403")) {
-  //   localStorage.removeItem("session_id");
-  //   history.push('/login');
-  // }
+  if (error.toString().match("403")) {
+    localStorage.removeItem("session_id");
+    history.push('/login');
+  }
  });
   }
   else if (videoData=='video'){
@@ -300,10 +300,10 @@ const handleUploadStatus =() =>
     }, 1500);
   }
   } ,(error) => {
-    // if (error.toString().match("403")) {
-    //   localStorage.removeItem("session_id");
-    //   history.push('/login');
-    // }
+    if (error.toString().match("403")) {
+      localStorage.removeItem("session_id");
+      history.push('/login');
+    }
  });
   }
   else if (videoData=='text'){
@@ -324,10 +324,10 @@ const handleUploadStatus =() =>
     setShowPencil(false);
   }
   } ,(error) => {
-    // if (error.toString().match("403")) {
-    //   localStorage.removeItem("session_id");
-    //   history.push('/login');
-    // }
+    if (error.toString().match("403")) {
+      localStorage.removeItem("session_id");
+      history.push('/login');
+    }
  });
   }
  }

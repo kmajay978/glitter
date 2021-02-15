@@ -129,10 +129,7 @@ const SingleProfile = (props) =>{
             setBlockData(false);
           }
           }, (error) =>{
-            // if (error.toString().match("403")) {
-            //   localStorage.removeItem("session_id");
-            //   history.push('/login');
-            // }
+           
             setBlockData(false);
           });
         }
@@ -158,10 +155,7 @@ const SingleProfile = (props) =>{
             }, 1500);
             }
          } ,(error) => {
-          // if (error.toString().match("403")) {
-          //   localStorage.removeItem("session_id");
-          //   history.push('/login');
-          // }
+       
           createNotification('error');
          });
         };
@@ -180,10 +174,10 @@ const SingleProfile = (props) =>{
                 // }
               },
               (error) => {
-              //   if (error.toString().match("403")) {
-              //   localStorage.removeItem("session_id");
-              //   history.push('/login');
-              // }
+                if (error.toString().match("403")) {
+                localStorage.removeItem("session_id");
+                history.push('/login');
+              }
             }
             );
         }
@@ -202,10 +196,10 @@ const SingleProfile = (props) =>{
             //  }
             },
             (error) => {
-            //   if (error.toString().match("403")) {
-            //   localStorage.removeItem("session_id");
-            //   history.push('/login');
-            // }
+              if (error.toString().match("403")) {
+              localStorage.removeItem("session_id");
+              history.push('/login');
+            }
           }
           );
         }

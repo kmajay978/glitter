@@ -209,10 +209,10 @@ const handleCheck = (e) => {
  
    }
    }, (error) =>{
-    // if (error.toString().match("403")) {
-    //   localStorage.removeItem("session_id");
-    //   history.push('/login');
-    // }
+    if (error.toString().match("403")) {
+      localStorage.removeItem("session_id");
+      history.push('/login');
+    }
    Notification('error');
    });
    }
@@ -288,10 +288,10 @@ const handleCheck = (e) => {
       }
 }
 catch (err) {
-    // if (err.toString().match("403")) {
-    //     localStorage.removeItem("session_id");
-    //     history.push('/login');
-    //   }
+    if (err.toString().match("403")) {
+        localStorage.removeItem("session_id");
+        history.push('/login');
+      }
 }
    }
    
@@ -316,10 +316,10 @@ catch (err) {
       }, 1500);
     }
     }, (error) =>{
-      // if (error.toString().match("403")) {
-      //   localStorage.removeItem("session_id");
-      //   history.push('/login');
-      // }
+      if (error.toString().match("403")) {
+        localStorage.removeItem("session_id");
+        history.push('/login');
+      }
     });
     
   }
@@ -344,10 +344,10 @@ catch (err) {
       setIsLoaded(false);
        }
        }, (error) =>{
-        // if (error.toString().match("403")) {
-        //   localStorage.removeItem("session_id");
-        //   history.push('/login');
-        // }
+        if (error.toString().match("403")) {
+          localStorage.removeItem("session_id");
+          history.push('/login');
+        }
         setIsLoaded(true);
        }); 
     }
@@ -373,10 +373,10 @@ catch (err) {
       //  console.log(response.data, '...history');
       }, (error)=> {
         setIsLoaded(true);
-        // if (error.toString().match("403")) {
-        //   localStorage.removeItem("session_id");
-        //   history.push('/login');
-        // }
+        if (error.toString().match("403")) {
+          localStorage.removeItem("session_id");
+          history.push('/login');
+        }
         
       });
     }
@@ -395,10 +395,10 @@ catch (err) {
         }
   }
   catch (err) {
-      // if (err.toString().match("403")) {
-      //     localStorage.removeItem("session_id");
-      //     history.push('/login');
-      //   }
+      if (err.toString().match("403")) {
+          localStorage.removeItem("session_id");
+          history.push('/login');
+        }
   }
    }
 
@@ -424,10 +424,10 @@ catch (err) {
     
    
        }, (error) =>{
-        // if (error.toString().match("403")) {
-        //   localStorage.removeItem("session_id");
-        //   history.push('/login');
-        // }
+        if (error.toString().match("403")) {
+          localStorage.removeItem("session_id");
+          history.push('/login');
+        }
        });
     
    }
@@ -478,10 +478,10 @@ catch (err) {
         }
   }
   catch (err) {
-      // if (err.toString().match("403")) {
-      //     localStorage.removeItem("session_id");
-      //     history.push('/login');
-      //   }
+      if (err.toString().match("403")) {
+          localStorage.removeItem("session_id");
+          history.push('/login');
+        }
   }
 
   }

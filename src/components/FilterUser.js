@@ -72,10 +72,10 @@ const FilterUser = ({ fetchedProfile }) => {
         }
       },
       (error) => {
-        // if (error.toString().match("403")) {
-        //   localStorage.removeItem("session_id");
-        //   history.push('/login');
-        // }
+        if (error.toString().match("403")) {
+          localStorage.removeItem("session_id");
+          history.push('/login');
+        }
         setIsLoaded(true);
      
       }
