@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Stories from 'react-insta-stories';
-import {Translator, Translate} from 'react-auto-translate';
+import { Translator, T, TF, LanguageList, Config } from 'react-translator-component'
 // import translate from 'translate-google';
 
 function Dummy() {
@@ -66,6 +66,34 @@ function Dummy() {
     }
   ];
 
+  Config.default = 'tr';
+Config.list = {
+  default: 'en',
+  list: {
+    en: {
+      text: 'English',
+     
+    },
+    tr: {
+      text: 'Türkçe',
+     
+    }
+  }
+}
+
+  function App() {
+    return (
+      <div>
+        <h1>
+          {T("There are no facts, only interpretations.")}
+        </h1>
+        <h6>
+          {TF("{0} {1}", "Friedrich", "Nietzsche")}
+        </h6>
+        <LanguageList />
+      </div>
+    )
+  }
 //   const tranObj = {
 //     a: 1,
 //     b: '1',
@@ -88,10 +116,9 @@ function Dummy() {
       height={768}
   />
   <div>
-  <Translator  from='en' to='es' googleApiKey='API_KEY'>
-
-<h1><Translate>Welcome!</Translate></h1>
-</Translator>
+  <Translator>
+      <App />
+    </Translator>
 </div>
 </div>
   );

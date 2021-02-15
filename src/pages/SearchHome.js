@@ -21,7 +21,6 @@ import {NotificationContainer, NotificationManager} from 'react-notifications';
 import {friendStatus} from '../features/userSlice'
 import StatusUser from "../pages/StatusUser";
 
-
 let isMouseClick = false, startingPos = [], glitterUid, friendLists = [], userData= null, checkOnlineFrdsInterval;
 
 const override = css`
@@ -65,7 +64,6 @@ const SearchHome = () =>
     const [video, setVideo] = useState(null);
     const [showUploadStatus,setUploadStatus] = useState(false);
     const [isLoaded, setIsLoaded] = useState(false);
-    
 
     userData = useSelector(userProfile).user.profile; //using redux useSelector here
  const options = {
@@ -81,7 +79,7 @@ const stories = !!storyData ? storyData : [];
 
 
 
-//  console.log(stories, "stories....")
+ // console.log(isOn, "ison....")
 
   
 const statusoptions = {
@@ -144,6 +142,11 @@ const handleFileChange = e => {
     }
    axios.post(FRIENDLIST_API,bodyParameters)
     .then((response) => {
+      if(response.error=="bad_request")
+      {
+        localStorage.removeItem("session_id");
+        history.push('/login');
+      }
       if (response.status === 200 ) {
         setIsLoaded(false);
           let friendList = response.data.data;
@@ -157,6 +160,10 @@ const handleFileChange = e => {
         setStatusLength(response.data.data.statuses);
       }
  }, (error) => {
+  if (error.toString().match("403")) {
+    localStorage.removeItem("session_id");
+    history.push('/login');
+  }
   friendLists = []
   setFriendlist('');
   setIsLoaded(true);
@@ -214,8 +221,8 @@ const handleFileChange = e => {
    setVideoData(null);
    setPencilData('');
    dispatch(friendStatus({friendStatus: []}));
-   
-   
+   setStatusModel(false);
+   setFriendId('');
  }
 
 const config = {
@@ -235,13 +242,23 @@ const handleUploadStatus =() =>
   bodyParameters.append("status_type", "" + 1);
   axios.post(ADD_STATUS , bodyParameters , config)
   .then((response)=> {
-  
+    if(response.error=="bad_request")
+    {
+      localStorage.removeItem("session_id");
+      history.push('/login');
+    }
+  if(response.status==200){
    createNotification('sucess');
    setTimeout(() => {
     setUploadStatus(false);
   }, 1500);
    setPicture('');
+  }
  } ,(error) => {
+  if (error.toString().match("403")) {
+    localStorage.removeItem("session_id");
+    history.push('/login');
+  }
  });
   }
   else if (videoData=='video'){
@@ -251,12 +268,22 @@ const handleUploadStatus =() =>
    bodyParameters.append("status_type", "" + 2);
    axios.post(ADD_STATUS , bodyParameters , config)
    .then((response)=> {
+    if(response.error=="bad_request")
+    {
+      localStorage.removeItem("session_id");
+      history.push('/login');
+    }
+     if(response.status==200){
     createNotification('sucess');
     setTimeout(() => {
       setUploadStatus(false);
     }, 1500);
-   
+  }
   } ,(error) => {
+    if (error.toString().match("403")) {
+      localStorage.removeItem("session_id");
+      history.push('/login');
+    }
  });
   }
   else if (videoData=='text'){
@@ -266,6 +293,12 @@ const handleUploadStatus =() =>
    bodyParameters.append("status_type", "" + 3);
    axios.post(ADD_STATUS , bodyParameters , config)
    .then((response)=> {
+    if(response.error=="bad_request")
+    {
+      localStorage.removeItem("session_id");
+      history.push('/login');
+    }
+     if(response.status==200){
     createNotification('sucess');
     setTimeout(() => {
       setUploadStatus(false);
@@ -273,7 +306,12 @@ const handleUploadStatus =() =>
     
     setPencilData('');
     setShowPencil(false);
+  }
   } ,(error) => {
+    if (error.toString().match("403")) {
+      localStorage.removeItem("session_id");
+      history.push('/login');
+    }
  });
   }
  }
@@ -310,6 +348,35 @@ const uploadImage = () => {
     clearInterval(checkOnlineFrdsInterval)
  }
   useEffect (() => {
+    handleFriendList();
+    window.setTimeout(() => {
+      $(".main-status")
+   .mousedown(function (evt) {
+     isMouseClick = true;
+     glitterUid =  $(".main-status")
+
+       startingPos = [evt.pageX, evt.pageY]
+       glitterUid = evt.currentTarget.id
+       // setStartPosition(startingPos);
+
+   })
+   .mousemove(function (evt) {
+       if (!(evt.pageX === startingPos[0] && evt.pageY === startingPos[1])) {
+           isMouseClick = false;
+       }
+   })
+   .mouseup(function () {
+       if (!isMouseClick) {
+          setClick(isMouseClick);
+       } else {
+         isMouseClick = true;
+          setClick(isMouseClick);
+       }
+       startingPos = [];
+       setStartPosition(startingPos)
+   });
+   }, 1000);
+
     SOCKET.connect();
       checkOnlineFrdsInterval = window.setInterval(() => {
           console.log("interval started....")
@@ -317,8 +384,7 @@ const uploadImage = () => {
               session_id: localStorage.getItem("session_id")
           });
       }, 5000)
-    handleFriendList();
-
+ 
       SOCKET.on('sendAudienceToLiveVideo', (data) => {
         console.log(userData, data, "kkkkkk")
           if (userData.user_id === data.user_id) {
@@ -364,33 +430,6 @@ const uploadImage = () => {
           }
       });
 
-    window.setTimeout(() => {
-       $(".main")
-    .mousedown(function (evt) {
-      isMouseClick = true;
-      glitterUid =  $(".main")
-
-        startingPos = [evt.pageX, evt.pageY]
-        glitterUid = evt.currentTarget.id
-        // setStartPosition(startingPos);
-
-    })
-    .mousemove(function (evt) {
-        if (!(evt.pageX === startingPos[0] && evt.pageY === startingPos[1])) {
-            isMouseClick = false;
-        }
-    })
-    .mouseup(function () {
-        if (!isMouseClick) {
-           setClick(isMouseClick)
-        } else {
-          isMouseClick = true
-           setClick(isMouseClick)
-        }
-        startingPos = [];
-        setStartPosition(startingPos)
-    });
-    }, 1000);
     uploadImage();
     return () => componentWillUnmount()
     },[])
@@ -477,6 +516,7 @@ const uploadImage = () => {
                 <div className="add__status" onClick={() =>setUploadStatus(true)}>+</div>
 
                 <div className="status__slider">
+                
         <OwlCarousel  options={options}  >
         {friendList.map((item, i) =>(
           (item.statuses.length > 0 ||  item.is_live === true ) ?
@@ -501,8 +541,10 @@ const uploadImage = () => {
       </div>
             <div className="search-people-row">
               <div className="row">
+                {!!friendList&&
+                <> 
                 {friendList.map((item,i) => {
-               return <div className=" main col-md-3" id={item.user_id}  >
+               return <div className=" main-status col-md-3" id={item.user_id}  >
                   <div className="sp-singular">
                     <a href="javascript:void(0)">
                       <figure>
@@ -518,7 +560,8 @@ const uploadImage = () => {
                   </div>
                 </div>
                 })}
-           
+                </>
+                }
 
               </div>
               <SyncLoader color={"#fcd46f"} loading={isLoaded} css={override} size={20} />
@@ -530,14 +573,13 @@ const uploadImage = () => {
     
     </div>
   </div>
-  {
-  stories.length > 0 &&
   <div className={isOn ? 'all-gifts-wrapper active': 'all-gifts-wrapper '} >
     <div className="all-gift-inner">
-    <a href="javascript:void(0)" className="close-gift-btn modal-close" onClick={toggleIsOn(false)}><img src="/assets/images/btn_close.png" /></a>
+    <a href="javascript:void(0)" className="close-gift-btn modal-close" onClick={toggleIsOn}><img src="/assets/images/btn_close.png" /></a>
       <div className="all-gift-body">
         
-     
+      {
+  stories.length > 0 &&
   
   <Stories
       stories={stories}
@@ -546,12 +588,12 @@ const uploadImage = () => {
       height={468}
      
   />      
-
+}
       </div>
       
     </div>
   </div>
-}  
+       
 
 {/* <div className="modal fade" id="status-modal" tabIndex={-1} role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 
