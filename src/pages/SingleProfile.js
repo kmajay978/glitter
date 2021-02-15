@@ -31,7 +31,7 @@ const SingleProfile = (props) =>{
     const history = useHistory()
    
     const handleBack = () => {
-      history.push("/");
+      history.goBack();
     }
 
     const handleChat = () => {

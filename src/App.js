@@ -105,7 +105,7 @@ function App() {
     }
   }, [is_auth])
   return (
-      <Router>
+      <Router basename={'/glitter-web'}>
         <Switch>
         <Elements stripe={stripePromise}>
           <Route exact path="/login" component={Login} />

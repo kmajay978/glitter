@@ -47,7 +47,7 @@ const SearchHome = () =>
     const [randomNumber, setRandomNumber] = useState('');
     const [fetchedProfile, setFilterUser] = useState('');
     const [ friendList  , setFriendlist] = useState([]);
-    const [isOn, toggleIsOn] = useToggle('');
+    const [isOn, toggleIsOn] = useToggle(false);
     const [Click, setClick] = useState(false);
     const [StartPosition, setStartPosition] = useState([])
     const [statusData , setStatusData] = useState({});
@@ -77,10 +77,7 @@ const SearchHome = () =>
 
 const stories = !!storyData ? storyData : [];
 
-
-
- // console.log(isOn, "ison....")
-
+// console.log(storyData, "yuyuyuyu")
   
 const statusoptions = {
   loop: false,
@@ -96,6 +93,14 @@ const statusoptions = {
 
 };
 
+
+const SingleProfileView = (id) =>{
+  console.log(id,"idssss...");
+  history.push({
+    pathname: '/single-profile',
+    userId: id 
+  })
+}
 
 const handleFileChange = e => {
   var data = e.target.files[0];
@@ -161,19 +166,18 @@ const handleFileChange = e => {
 
 });
   }
-   console.log(statusLength);
-  useEffect  (() => {
-   handleStatus();
-  },[friendId])
-
+  
   const handleStatus = () =>
   {
+    setIsLoaded(true);
     const bodyParameters = {
       user_id: friendId,
     };
     axios.post(GET_STATUS,bodyParameters)
     .then((response) => {
+      setIsLoaded(false);
       if (response.status === 200 && !response.status.error) {
+      
         if (!!response.data && !!response.data.result && response.data.result.length > 0 ) {
           // $('#modal').show(); 
           setStatusData(response.data);
@@ -184,18 +188,27 @@ const handleFileChange = e => {
           setStatusData({});
         setStoryData([]);
         toggleIsOn(false)
+        setFriendId('');
       }
     }
       else {
         setStatusData({});
+        setIsLoaded(false);
+        setFriendId('');
       }
 
  }, (error) => {
     setStatusData({});
+    setIsLoaded(false);
+    setFriendId('');
 });
   }
 
-  
+  useEffect  (() => {
+    handleStatus();
+    console.log(friendId,"hhhhhfriendId....")
+   },[friendId])
+ 
 // console.log(statusData);
 //  console.log(storyData);
 
@@ -204,6 +217,8 @@ const handleFileChange = e => {
   setVideoData('text');
   setPicture(null);
  }
+ 
+ 
  
  const modelClose= () => {
    setUploadStatus(false);
@@ -222,6 +237,11 @@ const config = {
        }
  }
 
+ const closeDialog = () => {
+  toggleIsOn(false);
+  setIsLoaded(false);
+  setFriendId("")
+ }
 const handleUploadStatus =() => 
 {
   if (videoData=='image')
@@ -401,11 +421,7 @@ const uploadImage = () => {
   }
   },[Click])
 
-    // useEffect(() => {
-    //     if (!!userData) {
-    //
-    //     }
-    // }, [userData])
+
 //  console.log(friendList);
 //   console.log(fetchedProfile);
 
@@ -476,7 +492,8 @@ const uploadImage = () => {
                 <div className="status__slider">
         <OwlCarousel  options={options}  >
         {friendList.map((item, i) =>(
-          (item.statuses.length > 0 ||  item.is_live === true ) ?
+           (item.statuses.length > 0 ||  item.is_live === true ) ?
+          
          <div className="users-listing__slider__items" onClick={() =>  makeMeAudience(item)} id={item.user_id}  >
             <div className="users-listing__slider__items__image" id="modal" data-toggle="modal" >
            {!!friendList ? <img onError={(e) => addDefaultSrc(e)} src={!!item.profile_images ? item.profile_images : returnDefaultImage()} alt="marlene" /> : ""}
@@ -484,10 +501,10 @@ const uploadImage = () => {
             </div>
              {
                  item.is_live === true &&
-                 <span className="live">Live</span>
+                 <span class Name="live">Live</span>
              }
           </div>
-         :""
+          :""
          ))}
 
         </OwlCarousel>
@@ -499,7 +516,7 @@ const uploadImage = () => {
             <div className="search-people-row">
               <div className="row">
                 {friendList.map((item,i) => {
-               return <div className=" main col-md-3" id={item.user_id}  >
+               return <div className=" main col-md-3" id={item.user_id} onClick = {() =>SingleProfileView(item.user_id)}>
                   <div className="sp-singular">
                     <a href="javascript:void(0)">
                       <figure>
@@ -529,9 +546,9 @@ const uploadImage = () => {
   </div>
   <div className={isOn ? 'all-gifts-wrapper active': 'all-gifts-wrapper '} >
     <div className="all-gift-inner">
-    <a href="javascript:void(0)" className="close-gift-btn modal-close" onClick={toggleIsOn}><img src="/assets/images/btn_close.png" /></a>
+    <a href="javascript:void(0)" className="close-gift-btn modal-close" onClick={closeDialog}><img src="/assets/images/btn_close.png" /></a>
       <div className="all-gift-body">
-        
+      
       {
   stories.length > 0 &&
   

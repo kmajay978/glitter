@@ -9,5 +9,5 @@ var _socket = _interopRequireDefault(require("socket.io-client"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-var SOCKET = (0, _socket["default"])('http://192.168.0.154:3001', {});
+var SOCKET = (0, _socket["default"])('https://mobileappdevelopmentcompanies.org', {});
 exports.SOCKET = SOCKET;
