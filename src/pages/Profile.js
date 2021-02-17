@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import {  useHistory } from 'react-router';
 import axios from "axios";
 import NavLinks from '../components/Nav';
-import {BLOCK_USER_API , COIN_HISTORY , GET_ALL_COIN_PACKAGE , INTEREST_HOBBIES_LIST , GIFT_LIST_API , GET_GIFT_API , GET_LOGGEDPROFILE_API , EDITPROFILE_API , BLOCK_USERLIST_API , LOGOUT_API, GET_STRIPE_PACKAGE,ACTIVATE_STRIPE_PACKAGE } from '../components/Api';
+import {BLOCK_USER_API , COIN_HISTORY , GET_ALL_COIN_PACKAGE , INTEREST_HOBBIES_LIST ,RECEIVED_GIFT_LIST , GET_GIFT_API , GET_LOGGEDPROFILE_API , EDITPROFILE_API , BLOCK_USERLIST_API , LOGOUT_API, GET_STRIPE_PACKAGE,ACTIVATE_STRIPE_PACKAGE } from '../components/Api';
 import useToggle from '../components/CommonFunction';
 import {removeStorage} from '../components/CommonFunction';
 import Login from '../pages/Login'
@@ -80,7 +80,7 @@ const Profile = (props) =>{
   const [isProfile, toggleProfile] = useToggle();
   const handleShow = () => setShow(true); // show Edit model
   const handleSettingShow = () => setShowSetting(true); //show Setting Model
-  const handleGiftShow = () => setShowGift(true); 
+  
   const handleImage =() => setShowImage(true);
   const handlePrivacy =() => {setShowSetting(false); setShowPrivacy(true);}
   const handleAbout = () => {setShowSetting(false); setShowAbout(true);}
@@ -388,7 +388,7 @@ catch (err) {
        session_id : sessionId,
      }
      try {
-      const {data:{result, status, error}} = await axios.post(GIFT_LIST_API , bodyParameters)
+      const {data:{result, status, error}} = await axios.post(RECEIVED_GIFT_LIST , bodyParameters)
      
       if(status==200){
         setGiftData(result);
@@ -582,7 +582,7 @@ catch (err) {
               </div>
               <div className="form-group dob-field">
                   <label className="d-block">DOB</label>
-                  <DatePicker  className="bg-trsp" name="dob"  value={Dob} selected={Dob}  onChange={date => setDob(date)} />
+                  <DatePicker  className="bg-trsp" name="dob"  value={Dob} selected={Dob} required={true} onChange={date => setDob(date)} />
                  
                   {/* <input className="form-control bg-trsp" name="dob" type="text" value={form.dob} onChange={handleChange}  /> */}
               </div>
@@ -672,7 +672,6 @@ catch (err) {
           ))}
          </div>
 
-         
        
           <a className="btn bg-grd-clr d-block btn-countinue-3" id="edit-second-step" href="javascript:void(0)" onClick={updateProfile}>Update</a>
           <NotificationContainer/>
@@ -685,7 +684,7 @@ catch (err) {
     }
 
   }
-
+console.log(profileData);
   return(
    <div>
   <section className="home-wrapper">
@@ -733,8 +732,15 @@ catch (err) {
               <div className="user-profile__details__data">
                 <h5 className="user-profile__name">{profileData.first_name +' '+ profileData.last_name } </h5>
                 <div className="user-profile__level d-inline-block">
-                  <span className="d-block"><img src="/assets/images/level-img.png" alt="profile level" />Premium, vip</span>
-                  <span className="d-block"><img src="/assets/images/diamond-sm.png" alt="balance" />Balance: 152</span>
+                {!!userData&&
+                            <>
+                             {userData.packages.length>0 ? 
+                              <span className="d-block"><img src="/assets/images/level-img.png" alt="profile level" />Premium, vip</span>
+                            : ""}
+                            </>
+                            }
+                 
+                  <span className="d-block"><img src="/assets/images/diamond-sm.png" alt="balance" />Balance: {!!userData&& userData.coins!=0 ?  userData.coins :  "0" }</span>
                 </div>
               </div>
             </div>
@@ -744,8 +750,8 @@ catch (err) {
                   <span className="user-profile__status__counter d-block">  
                    {!!profileData &&
                     <>
-                    {profileData.likes!=0 ?  profileData.likes :  "0" }
-                    </>}</span>
+                    {profileData.likes!=0 ?  profileData.likes :  "" }
+                    </>}{<>0</>}</span>
                 </li>
                 <li><span className="user-profile__status__heading d-block text-uppercase">Story</span>
                   <span className="user-profile__status__counter d-block">0</span>
@@ -796,7 +802,14 @@ catch (err) {
         </div>
         <div className="col-md-4">
           <div className="membership-plans">
-            <h5 className="text-white text-uppercase"><img src="/assets/images/Crown-white.png" alt="crown" /> Become vip</h5>
+          {!!userData&&
+                            <>
+                             {userData.packages.length>0 ? 
+                             ""
+                            : <h5 className="text-white text-uppercase"><img src="/assets/images/Crown-white.png" alt="crown" /> Become vip</h5>}
+                            </>
+                            }
+          
 
           {packageList.map((item,i) =>(
            (!!item && item.duration === "12") ?
@@ -933,7 +946,7 @@ catch (err) {
     <>
     {blockData.map((item, i) => {
   
-  return <div className="coin-spend">
+    return <div className="coin-spend">
      <div className="coin-spend__host">
        <img src={item.profile_images} alt="host" />
      </div>
@@ -1146,11 +1159,11 @@ catch (err) {
             <a href="javascript:void(0)" >
               <div>
                 <figure>
-                  <img src={items.image} alt={items.name} />
+                  <img src={items.gift_image} alt={items.gift_name} />
                 </figure>
                 <div className="gift-price">
                   <img src="/assets/images/diamond-coin.png" alt="Coins" />
-                  <span>{items.coins}</span>
+                  <span>{items.gift_coins}</span>
                 </div>
               </div>
             </a>

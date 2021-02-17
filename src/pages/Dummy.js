@@ -72,6 +72,7 @@ function Dummy() {
 
     return ( 
       <div>
+        
             <Stories
             stories={stories}
             defaultInterval={1500}
