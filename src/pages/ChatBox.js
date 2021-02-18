@@ -52,7 +52,9 @@ const ChatBox = (props) =>{
     const [GiftData , setGiftData] =useState([]);
     const [picture, setPicture] = useState(null);
     const [imgData, setImgData] = useState(null);
-    const [videoData, setVideoData] = useState(null);
+    const [files, setFiles] = useState([]);
+    const [previews, setPreviews] = useState([]);
+   
 
     let [loading, setLoading] = useState(false);
     const[recording, setRecording] = useState(false);
@@ -78,8 +80,8 @@ const ChatBox = (props) =>{
 
     userData = useSelector(userProfile).user.profile; //using redux useSelector here
 
-    console.log(userData);
-    console.log(CompleteMessageList, "nowwww")
+    // console.log(userData);
+    // console.log(CompleteMessageList, "nowwww")
     const sessionId = localStorage.getItem('session_id');
 
     const bodyParameters = {
@@ -250,54 +252,65 @@ const ChatBox = (props) =>{
                 else
                 {
                     toggleIsOn(false);
-                    createNotificationCustom('error');
-                    
+                    createNotificationCustom('error');       
                 }
              }
-
+            const fileObj = [];
+           const fileArray = [];
              const handleFileChange = e => {
-                var data = e.target.files[0];
-                const filename =  e.target.files[0];
-                const fileName = data.name.split(".");
-                const imageFormat = fileName[fileName.length - 1];
-                 if (e.target.files[0]) { 
-              
-                   if (imageFormat === "png" || imageFormat === "jpg" || imageFormat === "jpeg" ||
-                   imageFormat==="SVG"||imageFormat==="svg"||imageFormat === "PNG" || imageFormat === "JPG" || imageFormat === "JPEG") 
-                   {
-                  
-                     console.log("picture: ", e.target.files[0]);
-                     setPicture(e.target.files[0]);
-                     const reader = new FileReader();
-                     reader.addEventListener("load", () => {
-                       setImgData(reader.result); 
-                       setVideoData('image');
-                      console.log(fileName ,"fileName...");
-                     });
-                     reader.readAsDataURL(e.target.files[0]);
+                // var data = e.target.files[0];
+                // const filename =  e.target.files[0];
+                // const fileName = data.name.split(".");
+                // const imageFormat = fileName[fileName.length - 1];
+                // const fileList = Array.from(e.target.files);
+                //  if (e.target.files[0]) { 
+                //    if (imageFormat === "png" || imageFormat === "jpg" || imageFormat === "jpeg" ||
+                //    imageFormat==="SVG"||imageFormat==="svg"||imageFormat === "PNG" || imageFormat === "JPG" || imageFormat === "JPEG") 
+                //    {
+                    fileObj.push(e.target.files)
+                    for (let i = 0; i < fileObj[0].length; i++) {
+                        fileArray.push(URL.createObjectURL(fileObj[0][i]))
+                    }
+                    setFiles({ file: fileArray })
+            //         setFiles(fileList); 
+
+            //         const mappedFiles = fileList.map((file) => ({
+            //        ...file,
+            //        preview: URL.createObjectURL(file),
+            //       }));
+  
+            //    setPreviews(mappedFiles);
+                    //  setPicture(e.target.files[0]);
+                    //  const reader = new FileReader();
+                    //  reader.addEventListener("load", () => {
+                    //    setImgData(reader.result);     
+                    //  });
+                    //  reader.readAsDataURL(e.target.files[0]);
                 
-                   }
-                   else if(imageFormat === "mp4" || imageFormat === "MP4")
-                   {
-                     console.log("video_file: ", e.target.files[0]);
-                     setPicture(e.target.files[0]);
-                     const reader = new FileReader();
-                     reader.addEventListener("load", () => {
-                       setImgData(reader.result); 
-                       setVideoData('video');
-                     });
-                     reader.readAsDataURL(e.target.files[0]);
-                   }
-                   else
-                   {
-                     console.log("Invlid format");
-                   }
-                  }
+                //    }
+                //    else if(imageFormat === "mp4" || imageFormat === "MP4")
+                //    {
+                //      console.log("video_file: ", e.target.files[0]);
+                //      setPicture(e.target.files[0]);
+                //      const reader = new FileReader();
+                //      reader.addEventListener("load", () => {
+                //        setImgData(reader.result); 
+                      
+                //      });
+                //      reader.readAsDataURL(e.target.files[0]);
+                //    }
+                //    else
+                //    {
+                //      console.log("Invlid format");
+                //    }
+                //   }
                };
-              
+               console.log(files ,"fileName...");
+
+               
                const handleSendFile =() => {
                 setUploadImage(false);
-                setImgData('');
+                setPreviews('');
                }
     /************************************* Working here socket *******************************************************/
 
@@ -908,15 +921,23 @@ const ChatBox = (props) =>{
                                                 <div className="media-box add-media">
                                                 <a id="upload__media"   href="javascript:void(0)">
                                                 <img src="/assets/images/add-media.svg" alt="add media" />
-                                                 <input id="uploadfile" type="file" className="d-none" onChange={handleFileChange} multiple accept="image/* , video/*"/>
+                                                 <input id="uploadfile" type="file" className="d-none" onChange={handleFileChange} multiple="true" accept="image/* , video/*"/>
                                                     </a>
                                                 </div>
-                                                
+                                                {/* {(fileArray || []).map(url => (
+                                                  <img src={url} alt="..." />
+                                                   ))} */}
+                                                    {  files.length > 0 ?
+                                                    <>
+                                                        {files.map((file) =>   <div className="media-box">
                       
-                                                 <div className="media-box">
-                      
-                                                <img src={imgData} alt="media"/>
-                                              </div>
+                                                    <img src={file.url} alt="media"/>
+                                                     </div>)}
+                                                       </>
+                                                        :""
+
+                                                           }
+                                               
 
                                                {/* <div className="media-box">
                            
@@ -941,7 +962,7 @@ const ChatBox = (props) =>{
                                             <h6>Put Price</h6>
                                             <div className="image-coins d-flex">
                                             <div className="coin-price">
-                                                <input type="radio" id="coin-value1" name="coin" checked/>
+                                                <input type="radio" id="coin-value1" name="coin" />
                                                 <label for="coin-value1">0 coins</label>
                                                 
                                             </div>
