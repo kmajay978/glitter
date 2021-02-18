@@ -16,13 +16,13 @@ function Dummy() {
   });
   })
   
-  let fileObj = [];
+
    const fileArray = [];
   const handleFileChange = (e) => {
-    var x=document.createElement('img'),
+    var x=document.createElement('img', 'output'),
     y=document.body.appendChild(x);
     y.src = URL.createObjectURL(e.target.files[0]);
-    y.width = '100'
+    y.width = '100';
    // console.log(y , "Testfiles...");
 
     var fileArray = files;
@@ -30,11 +30,7 @@ function Dummy() {
   
     setFiles(fileArray);
     console.log(files, "Testfiles...");
-     // fileObj.push(e.target.files)
-    //                 for (let i = 0; i < fileObj[0].length; i++) {
-    //                     fileArray.push(URL.createObjectURL(fileObj[0][i]))
-    //                 }
-    //                 setFiles({ file: fileArray })
+   
   }
  
   // const stories = [
@@ -120,14 +116,15 @@ function Dummy() {
                                                         {files.map((file , index) =>  {
                                                          return <div className="media-box" id="media_box">
                                                            {file}
-                                                           
-                                             </div>})}
+                                                          </div>})}
                                                        </>
                                                         :""
 
                                                            }
+                                                           {/* {files.map((file , index)=> ( <div>
+                                                         <img id="output" src={file}/>
+                                                          </div>))} */}
                                                          
-                                         
                                           {/* <div className="media-box">
                                               <img src="images/send-media.jpg" alt="media"/>
                                           </div>
