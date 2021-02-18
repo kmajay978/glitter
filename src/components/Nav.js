@@ -25,6 +25,7 @@ console.log(props, "props..")
             localStorage.removeItem("videoCallPageRefresh");
             dispatch(videoCall(null))
         }
+       
     }, [window.location.pathname]);
 
     return(

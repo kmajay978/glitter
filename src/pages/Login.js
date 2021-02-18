@@ -17,11 +17,13 @@ import LoginSidebar from '../components/LoginSidebar';
 
 import { SENDOTP_API, VERIFY_API, SIGNUP_API } from '../components/Api';
 import $ from 'jquery';
-import { FacebookProvider, Like } from 'react-facebook';
+import { FacebookProvider, Like , LoginButton} from 'react-facebook';
 import { usePosition } from 'use-position';
 import OtpInput from 'react-otp-input';
 // import NotificationContainer from 'react-notifications/lib/NotificationContainer';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
+import { GoogleLogin } from 'react-google-login';
+import TwitterLogin from 'react-twitter-auth';
 
 // Working on login functional component
 const Login = () => {
@@ -318,8 +320,33 @@ const createNotification = (type , message) => {
   // End here 
 
   // Testing here
-
+  //login with google here
+ const responseGoogle = (response) => {
+    console.log(response, ".....response");
   
+  }
+//End here
+ 
+//login with twitter code
+ const onSuccess = (response)=> {
+   console.log(response);
+    // response.json().then(body => {
+    //   console.log(JSON.stringify(body));
+    // });
+  }
+
+ const onFailed = (error) => {
+    alert(error);
+  }
+// End here
+
+const handleResponse = (data) => {
+  console.log(data);
+}
+
+const handleError = (error) => {
+  console.log({ error });
+}
   const tabScreen = () =>{
     
     switch(step) {
@@ -351,19 +378,36 @@ const createNotification = (type , message) => {
                        <p>Continue with</p>
                         <ul className="social-login">
                           <li>
-                            <a className="bg-grd-clr" href="javascript:void(0)">
-                            <FacebookProvider appId="123456789">
-                            <i className="fab fa-facebook-f" />
-                            <Like href="http://www.facebook.com" colorScheme="dark" showFaces share />
+                            <FacebookProvider appId="123456789"  fields="name,email,picture">  
+                             <LoginButton   scope="email" onCompleted={handleResponse} onError={handleError}>
+                             <a className="bg-grd-clr" href="javascript:void(0)">  <i className="fab fa-facebook-f" /></a>
+                             </LoginButton>
                             </FacebookProvider>  
-                          </a>
+                          
                           </li>
                           <li>
-                            <a className="bg-grd-clr" href="javascript:void(0)"><i className="fab fa-google" /></a>
+                        
+                          <GoogleLogin
+                           clientId="265643113121-uh1cur9885cc2e35qjroijdbor8camgp.apps.googleusercontent.com"
+                           render={renderProps => (
+                          <a className="bg-grd-clr" href="javascript:void(0)" onClick={renderProps.onClick} disabled={renderProps.disabled}><i className="fab fa-google" /></a>
+                          )}
+                           onSuccess={responseGoogle}                   
+                           onFailure={responseGoogle}
+                           cookiePolicy={'single_host_origin'}  isSignedIn={true}/>
                           </li>
+
                           <li>
-                            <a className="bg-grd-clr" href="javascript:void(0)"><i className="fab fa-twitter" /></a>
+                          <TwitterLogin loginUrl="http://localhost:4000/api/v1/auth/twitter"    
+                          onFailure={onFailed}
+                          onSuccess={onSuccess}
+                          requestTokenUrl="http://localhost:4000/api/v1/auth/twitter/reverse"
+                          showIcon={true}   
+                         >
+                          <a className="bg-grd-clr" href="javascript:void(0)"><i className="fab fa-twitter" /></a>
+                         </TwitterLogin>
                           </li>
+
                         </ul>
                         <div className="accept-field d-flex justify-content-center align-items-center mt-4">
                           <input type="checkbox" name="agree" id="accept-field" checked={clickTerm} onChange={(e) =>setClickTerm(e.target.checked)}/>
@@ -405,7 +449,7 @@ const createNotification = (type , message) => {
                 <h4 className="theme-txt">Your Information</h4>
                 </div>
                 <div className="form-group">
-                <DatePicker  className="bg-trsp" name="date-birth"   value={Dob} selected={Dob}  onChange={date => setDob(date)} placeholder="Your Date of birth"/>
+                <DatePicker  className="bg-trsp" name="date-birth"   value={Dob} selected={Dob} required onChange={date => setDob(date)} placeholder="Your Date of birth"/>
                 { Object.keys(dobErr).map((key) => {
                           return <div style={{color : "red"}}>{dobErr[key]}</div>
                         }) }

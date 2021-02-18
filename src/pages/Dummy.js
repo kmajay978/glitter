@@ -94,6 +94,7 @@ console.log(another,"another.....")
 
     return ( 
       <div>
+        
             <Stories
             stories={stories}
             defaultInterval={1500}

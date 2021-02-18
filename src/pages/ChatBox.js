@@ -48,12 +48,17 @@ const ChatBox = (props) =>{
     const[UserMessage, setuserMessage] = useState('');
     const[randomNumber, setRandomNumber] = useState('');
     const [isOn, toggleIsOn] = useToggle();
+    const [uploadImage , setUploadImage] = useState('');
     const [GiftData , setGiftData] =useState([]);
+    const [picture, setPicture] = useState(null);
+    const [imgData, setImgData] = useState(null);
+    const [videoData, setVideoData] = useState(null);
 
     let [loading, setLoading] = useState(false);
     const[recording, setRecording] = useState(false);
     const [dummyMediaRc, setDummyMediaRc] = useState(null)
-    const [chatTyping, setChatTyping] = useState("")
+    const [chatTyping, setChatTyping] = useState("");
+    const [threeMessageWarning, setWarningMessage] = useState("");
 
     const createNotificationCustom = (type) => {
   
@@ -68,12 +73,12 @@ const ChatBox = (props) =>{
       };
       };
 
-// console.log(UserMessage);
+ console.log(threeMessageWarning,"threeMessageWarning....");
     const[GetActivity, setActivity] = useState(0);
 
     userData = useSelector(userProfile).user.profile; //using redux useSelector here
 
-
+    console.log(userData);
     console.log(CompleteMessageList, "nowwww")
     const sessionId = localStorage.getItem('session_id');
 
@@ -249,6 +254,51 @@ const ChatBox = (props) =>{
                     
                 }
              }
+
+             const handleFileChange = e => {
+                var data = e.target.files[0];
+                const filename =  e.target.files[0];
+                const fileName = data.name.split(".");
+                const imageFormat = fileName[fileName.length - 1];
+                 if (e.target.files[0]) { 
+              
+                   if (imageFormat === "png" || imageFormat === "jpg" || imageFormat === "jpeg" ||
+                   imageFormat==="SVG"||imageFormat==="svg"||imageFormat === "PNG" || imageFormat === "JPG" || imageFormat === "JPEG") 
+                   {
+                  
+                     console.log("picture: ", e.target.files[0]);
+                     setPicture(e.target.files[0]);
+                     const reader = new FileReader();
+                     reader.addEventListener("load", () => {
+                       setImgData(reader.result); 
+                       setVideoData('image');
+                      console.log(fileName ,"fileName...");
+                     });
+                     reader.readAsDataURL(e.target.files[0]);
+                
+                   }
+                   else if(imageFormat === "mp4" || imageFormat === "MP4")
+                   {
+                     console.log("video_file: ", e.target.files[0]);
+                     setPicture(e.target.files[0]);
+                     const reader = new FileReader();
+                     reader.addEventListener("load", () => {
+                       setImgData(reader.result); 
+                       setVideoData('video');
+                     });
+                     reader.readAsDataURL(e.target.files[0]);
+                   }
+                   else
+                   {
+                     console.log("Invlid format");
+                   }
+                  }
+               };
+              
+               const handleSendFile =() => {
+                setUploadImage(false);
+                setImgData('');
+               }
     /************************************* Working here socket *******************************************************/
 
     function readThenSendFile(data){
@@ -291,7 +341,7 @@ const ChatBox = (props) =>{
     }
     // Get all messages here
     const GetAllMessages = (messages) => {
-        console.log(messages.message_list,"messages.message_list....")
+        console.log(messages.message_list,"messages.message_list....");
 
     }
 
@@ -346,12 +396,21 @@ const ChatBox = (props) =>{
                     ||
                     (messages.obj.user_from_id === receiver_id && messages.obj.user_to_id === userData.user_id)
                 ) { // check one-to-one data sync
+
+                    if (!!messages.obj.warningMessage) {
+                    
+                        setWarningMessage(messages.obj.warningMessage);
+                        //alert(messages.obj.warningMessage)
+                    }
+                    else {
+                        setWarningMessage('');
                     messagesList.push(messages.obj);
                     messageList = messagesList;
                     console.log(messagesList, "messageList...")
                     setMessages(messagesList);
                     setRandomNumber(Math.random());
                     scrollToBottom()
+                    }
                 }
             }
         });
@@ -451,8 +510,10 @@ const ChatBox = (props) =>{
                 setLoading(false);
                 console.log(messages, "messages..")
                 console.log(messages, "hahahaha")
-                setMessages(messages.message_list);
-                messageList = messages.message_list;
+              
+                    setMessages(messages.message_list);
+                    messageList = messages.message_list;
+                
             });
         }
         if (!!FriendUserId) {
@@ -603,12 +664,19 @@ const ChatBox = (props) =>{
                         </div>
                         <div className="col-lg-5 p-3">
                             <div className="tab-top d-flex flex-wrap-wrap align-items-center">
-                                <div className="vc-action-tab ml-auto mr-4">
-              <span>
-                <i className="fas fa-crown" />
-              </span>
-                                    <span className="member-type">VIP</span>
-                                </div>
+                            {!!userData&&
+                            <>
+                             {userData.packages.length>0 ? 
+                             <div className="vc-action-tab ml-auto mr-4">
+                             <span>
+                                 <i className="fas fa-crown" />
+                             </span>
+                                <span className="member-type">VIP</span>
+                            </div>
+                            : ""}
+                            </>
+                            }
+                        
                                 <NavLinks />
                             </div>
                         </div>
@@ -756,6 +824,7 @@ const ChatBox = (props) =>{
                                     <div className="message-chat">
 
                                         <div className="chat-body" id={"chat-body"}>
+                                       
                                             {
                                                 CompleteMessageList.map((data, i) => (
                                                     <div>
@@ -776,7 +845,8 @@ const ChatBox = (props) =>{
                                                                                 <p>{data.message}</p>
                                                                             </div>
                                                                         }
-                                                                      
+
+                                                                       
                                                                         {
                                                                             !!data.audio &&
                                                                             <div  className="audio-socket">
@@ -813,20 +883,100 @@ const ChatBox = (props) =>{
                                                                 </div>
                                                         }
                                                     </div>
+                                                    
                                                 ))
+                                                
                                             }
                                             <NotificationContainer/>
+                                            {
+                                                    !!threeMessageWarning &&
+                                                    <div className="message-text warning-msg" >
+                                                    <p>{threeMessageWarning}</p>
+                                                </div>
+                                                }
                                         </div>
                                         <form onSubmit={CheckTextInputIsEmptyOrNot}>
 
-                                            <div className="chat-footer">
+                                        <div className="chat-footer">
+                                        {uploadImage ?                                 
+                                        <div className="send-photos-modal">
+                                            <a href="javascript:void(0)" className="theme-txt done-media">Done</a>
+                                            <a href="javascript:void(0)" className="close-image-btn modal-close" onClick={handleSendFile}><img src="/assets/images/btn_close.png" /></a>
+                                            <h6 className="text-center">Send Photos</h6>
+                                            
+                                            <div className="send-photos-listing d-flex my-4">
+                                                <div className="media-box add-media">
+                                                <a id="upload__media"   href="javascript:void(0)">
+                                                <img src="/assets/images/add-media.svg" alt="add media" />
+                                                 <input id="uploadfile" type="file" className="d-none" onChange={handleFileChange} multiple accept="image/* , video/*"/>
+                                                    </a>
+                                                </div>
+                                                
+                      
+                                                 <div className="media-box">
+                      
+                                                <img src={imgData} alt="media"/>
+                                              </div>
+
+                                               {/* <div className="media-box">
+                           
+                                               <video id="video_preview" src={imgData} controls></video>
+                          
+                                                </div> */}
+                                              
+                                              
+                                                {/* <div className="media-box">
+                                                    <img src="images/send-media.jpg" alt="media"/>
+                                                </div>
+                                                <div className="media-box">
+                                                    <img src="images/send-media.jpg" alt="media"/>
+                                                </div>
+                                                <div className="media-box">
+                                                    <span>0:45</span>
+                                                    <img src="images/send-media.jpg" alt="media"/>
+                                                </div> */}
+                                                
+                                            </div>
+                                            
+                                            <h6>Put Price</h6>
+                                            <div className="image-coins d-flex">
+                                            <div className="coin-price">
+                                                <input type="radio" id="coin-value1" name="coin" checked/>
+                                                <label for="coin-value1">0 coins</label>
+                                                
+                                            </div>
+                                            
+                                            <div className="coin-price">
+                                                <input type="radio" id="coin-value2" name="coin"/>
+                                                <label for="coin-value2">50 coins</label>
+                                                
+                                            </div>
+                                            
+                                            <div className="coin-price">
+                                                <input type="radio" id="coin-value3" name="coin"/>
+                                                <label for="coin-value3">100 coins</label>
+                                                
+                                            </div>
+                                            
+                                            <div className="coin-price">
+                                                <input type="radio" id="coin-value4" name="coin"/>
+                                                <label for="coin-value4">250 coins</label>
+                                                
+                                            </div>
+                                            </div>
+                                        </div>
+                                        
+                                        : ""}
+
                                                 <div className="sweet-loading">
                                                     <BarLoader color={"#fcd46f"} loading={loading} css={override} size={1000} />
                                                 </div>
                                                 <label className="upload-file">
                                                     <div>
-                                                        <input id="uploadfile" type="file" accept=".png, .jpg, .jpeg, .PNG, .JPG, .JPEG" />
+                                                    <a href="javascript:void(0)" onClick={()=> setUploadImage(true)} >
+                                                        {/* <input id="uploadfile" type="file" accept=".png, .jpg, .jpeg, .PNG, .JPG, .JPEG" /> */}
                                                         <i className="far fa-image" />
+                                                        </a>
                                                     </div>
                                                 </label>
                                                 {/* <textarea className="send-message-text" placeholder="Message..." defaultValue={UserMessage} /> */}
@@ -870,6 +1020,11 @@ const ChatBox = (props) =>{
                             </div> }
 
                         {/* End chat box here */}
+
+   
+             
+              
+                            
                         <div className={isOn ? 'all-gifts-wrapper active': 'all-gifts-wrapper '} >
                             <div className="all-gift-inner">
                                 <a href="javascript:void(0)" className="close-gift-btn modal-close" onClick={toggleIsOn}><img src="/assets/images/btn_close.png" /></a>
@@ -898,6 +1053,8 @@ const ChatBox = (props) =>{
                                                 </a>
                                             </li>
                                         })}
+                                        <li>
+                                        </li>
                                         <li>
                                         </li>
                                     </ul>

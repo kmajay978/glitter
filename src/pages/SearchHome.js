@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import axios from "axios";
 import NavLinks from '../components/Nav';
 import FilterSide from '../components/Filter';
-import { ADD_STATUS , FRIENDLIST_API , GET_STATUS} from '../components/Api';
+import { ADD_STATUS , FRIENDLIST_API , GET_STATUS , VIEW_LIKE_STATUS} from '../components/Api';
 import {Modal, ModalBody , Dropdown} from 'react-bootstrap';
 import OwlCarousel from 'react-owl-carousel2';
 import {SOCKET} from '../components/Config';
@@ -53,6 +53,7 @@ const SearchHome = () =>
     const [statusData , setStatusData] = useState({});
     const [storyData , setStoryData] = useState([]);
     const [ friendId , setFriendId] = useState('');
+    const [statusId , setStatusId] = useState([]);
     const [statusLength , setStatusLength] = useState("");
     const [showLive,setShowLive] = useState(false);
     const [showPencil , setShowPencil] = useState(false);
@@ -175,7 +176,11 @@ const handleFileChange = e => {
 
 });
   }
-  
+  //Like view status api
+  const ViewStatus =() =>{
+
+  }
+
   const handleStatus = () =>
   {
     setIsLoaded(true);
@@ -473,8 +478,13 @@ const uploadImage = () => {
         generateLiveVideoChatToken(dispatch, bodyParameters, call_type, user_id, uuidv4(), SOCKET);
 
     }
-    const makeMeAudience = (item) => {
+    const makeMeAudience = (item ) => {
         setFriendId(item.user_id);
+        if(!!item.result.status_id){
+         item.result.map((item , index)=>{
+          setStatusId(item.status_id);
+         })
+        }
         if (item.is_live) {
             SOCKET.emit("addAudienceToLiveVideo", {
                 user_id: userData.user_id,
@@ -484,7 +494,7 @@ const uploadImage = () => {
             })
         }
     }
-
+console.log(statusId);
     const convertToHtml = (data) => {
        const convertedHtml =  {__html: data};
       return <div dangerouslySetInnerHTML={convertedHtml} />
@@ -533,7 +543,8 @@ const uploadImage = () => {
         {friendList.map((item, i) =>(
            (item.statuses.length > 0 ||  item.is_live === true ) ?
           
-         <div className="users-listing__slider__items" onClick={() =>  makeMeAudience(item)} id={item.user_id}  >
+         <div className="users-listing__slider__items" onClick={() =>  makeMeAudience(item )} id={item.user_id}  >
+         
             <div className="users-listing__slider__items__image" id="modal" data-toggle="modal" >
            {!!friendList ? <img onError={(e) => addDefaultSrc(e)} src={!!item.profile_images ? item.profile_images : returnDefaultImage()} alt="marlene" /> : ""}
               <span className="circle-shape" />
@@ -570,6 +581,7 @@ const uploadImage = () => {
                         <div className="info">{item.distance}, {item.occupation}</div>
                       </div>
                     </a>
+                    {item.packages.length>0?  <span className="vip-user bg-grd-clr"><img src="/assets/images/level-img.png" alt="profile level"/></span> :""}       
                   </div>
                 </div>
                 })}

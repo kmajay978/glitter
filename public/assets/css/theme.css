@@ -971,6 +971,20 @@ span.live {
     transform: scale(1.1);
 }
 
+span.vip-user.bg-grd-clr {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 30px;
+}
+span.vip-user img{
+    width: auto;
+    height: auto;
+}
 .sp-singular-content {
     position: absolute;
     bottom: 0;
@@ -4499,6 +4513,72 @@ span.gift__discount {
 }
 
 
+/* send photos modal */
+
+.send-photos-modal{
+	margin-bottom: 100px;
+ background-color: #282828;
+border-radius: 10px;
+	border-radius: 30px;
+	padding: 40px;
+    position: absolute;
+    top: -300px;
+    width: 100%;
+}
+
+.done-media {
+	position: absolute;
+	right: 30px;
+	top: 30px;
+}
+
+
+    .send-photos-listing > div, .coin-price {
+        margin-right: 15px;
+}
+
+.add-media {
+	background-color: #242424;
+	border-radius: 50% !important;
+	text-align: center;
+	line-height: 50px;
+    border: none !important;
+}
+.media-box{
+    width: 54px;
+	height: 54px;
+    display: block;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+	border: 2px solid #F3C661;
+    position: relative;
+}
+
+
+.media-box span {
+	position: absolute;
+	right: 5px;
+	bottom: 5px;
+	font-size: 12px;
+}
+ 
+.coin-price > label {
+	padding: 8px 20px;
+	border-radius: 100px;
+    background-color: rgba(255,255,255,0.2);
+    cursor: pointer;
+}
+
+.coin-price input{
+    display: none;
+}
+.coin-price input:checked + label{
+    background: rgba(189, 125, 13, 1);
+    background: -moz-linear-gradient(left, rgba(189, 125, 13, 1) 0%, rgba(252, 212, 111, 1) 100%);
+    background: -webkit-linear-gradient(left, rgba(189, 125, 13, 1) 0%, rgba(252, 212, 111, 1) 100%);
+    background: linear-gradient(to right, rgba(189, 125, 13, 1) 0%, rgba(252, 212, 111, 1) 100%);
+}
 /* group chat */
 
 .groupchat > div{
