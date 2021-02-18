@@ -951,7 +951,6 @@ const ChatBox = (props) =>{
                                                     </a>
                                                 </div>
                                                
-                                              
                                               <div className="media-box">
                                                     <img src="/assets/images/send-media.jpg" alt="media"/>
                                                 </div>

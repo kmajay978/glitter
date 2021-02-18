@@ -16,7 +16,7 @@ function Dummy() {
   });
   })
   
-  let fileObj = [];
+
    const fileArray = [];
   const handleFileChange = (e) => {
         function createElementWithClass(elementName, className)
@@ -31,7 +31,7 @@ function Dummy() {
     var x=document.createElement('img'),
     y=document.body.appendChild(x);
     y.src = URL.createObjectURL(e.target.files[0]);
-    y.width = '100'
+    y.width = '100';
    // console.log(y , "Testfiles...");
 
    let imageAppned =  y ;
@@ -42,11 +42,7 @@ function Dummy() {
   
     setFiles(fileArray);
     console.log(files, "Testfiles...");
-     // fileObj.push(e.target.files)
-    //                 for (let i = 0; i < fileObj[0].length; i++) {
-    //                     fileArray.push(URL.createObjectURL(fileObj[0][i]))
-    //                 }
-    //                 setFiles({ file: fileArray })
+   
   }
  
   // const stories = [
@@ -156,7 +152,6 @@ console.log(another,"another.....")
                                                 
                                       
                                                          
-                                         
                                           {/* <div className="media-box">
                                               <img src="images/send-media.jpg" alt="media"/>
                                           </div>

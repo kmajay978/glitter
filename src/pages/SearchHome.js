@@ -598,7 +598,27 @@ console.log(statusId);
     
     </div>
   </div>
-  <div className={isOn ? 'all-gifts-wrapper active': 'all-gifts-wrapper '} >
+  <div className={isOn ? 'all-gifts-wrapper active': 'all-gifts-wrapper'} >
+    <div className="status-modal">
+    <a href="javascript:void(0)" className="close-gift-btn modal-close" onClick={closeDialog}><img src="/assets/images/btn_close.png" /></a>
+      <div className="all-gift-body">
+      
+      {
+  stories.length > 0 &&
+  
+  <Stories
+      stories={stories}
+      defaultInterval={3000}
+      width={377}
+      height={468}
+     
+  />      
+}
+      </div>
+      
+    </div>
+  </div>
+  {/* <div className={isOn ? 'all-gifts-wrapper active': 'all-gifts-wrapper '} >
     <div className="all-gift-inner">
     <a href="javascript:void(0)" className="close-gift-btn modal-close" onClick={closeDialog}><img src="/assets/images/btn_close.png" /></a>
       <div className="all-gift-body">
@@ -617,7 +637,7 @@ console.log(statusId);
       </div>
       
     </div>
-  </div>
+  </div> */}
        
 
 {/* <div className="modal fade" id="status-modal" tabIndex={-1} role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
