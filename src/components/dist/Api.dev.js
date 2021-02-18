@@ -5,7 +5,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.ADD_STATUS_API = exports.VISITOR_API = exports.GET_LIVE_USER_TOKEN_API = exports.ENDLIVE_API = exports.TOKEN_AGORA_FORLIVE_API = exports.TOKEN_AGORA_API = exports.ACCEPT_REQUEST_API = exports.CHECK_CALLSTATUS_API = exports.CALL_ACTION_API = exports.COIN_HISTORY = exports.ACTIVATE_COIN_PACKAGE = exports.GET_ALL_COIN_PACKAGE = exports.ACTIVATE_STRIPE_PACKAGE = exports.GET_STRIPE_PACKAGE = exports.VIDEO_CALL_START = exports.INTEREST_HOBBIES_LIST = exports.GET_STATUS = exports.ADD_STATUS = exports.GET_SINGLE_STATUS = exports.GET_ALL_CALL = exports.GIFT_PURCHASE_API = exports.GET_GIFT_API = exports.GIFT_LIST_API = exports.REPORT_USER_API = exports.BLOCK_USER_API = exports.VIDEOCALL_API = exports.DISLIKE_USER = exports.GET_LOGGEDPROFILE_API = exports.FILTER_LIST_API = exports.VISITOR_LIST_API = exports.BLOCK_USERLIST_API = exports.FRIENDLIST_API = exports.LIKED_LIST = exports.LIKE_USER = exports.EDITPROFILE_API = exports.GET_USERPROFILE_API = exports.GETALLUSER_API = exports.LOGOUT_API = exports.VERIFY_API = exports.SENDOTP_API = exports.SIGNUP_API = exports.LOGIN_API = exports.getApiUrl = exports.API_BASE_URL = void 0;
+exports.ADD_STATUS_API = exports.VISITOR_API = exports.GET_LIVE_USER_TOKEN_API = exports.ENDLIVE_API = exports.TOKEN_AGORA_FORLIVE_API = exports.TOKEN_AGORA_API = exports.ACCEPT_REQUEST_API = exports.CHECK_CALLSTATUS_API = exports.CALL_ACTION_API = exports.VIEW_LIKE_STATUS = exports.RECEIVED_GIFT_LIST = exports.COIN_HISTORY = exports.ACTIVATE_COIN_PACKAGE = exports.GET_ALL_COIN_PACKAGE = exports.ACTIVATE_STRIPE_PACKAGE = exports.GET_STRIPE_PACKAGE = exports.VIDEO_CALL_START = exports.INTEREST_HOBBIES_LIST = exports.GET_STATUS = exports.ADD_STATUS = exports.GET_SINGLE_STATUS = exports.GET_ALL_CALL = exports.GIFT_PURCHASE_API = exports.GET_GIFT_API = exports.GIFT_LIST_API = exports.REPORT_USER_API = exports.BLOCK_USER_API = exports.VIDEOCALL_API = exports.DISLIKE_USER = exports.GET_LOGGEDPROFILE_API = exports.FILTER_LIST_API = exports.VISITOR_LIST_API = exports.BLOCK_USERLIST_API = exports.FRIENDLIST_API = exports.LIKED_LIST = exports.LIKE_USER = exports.EDITPROFILE_API = exports.GET_USERPROFILE_API = exports.GETALLUSER_API = exports.LOGOUT_API = exports.VERIFY_API = exports.SENDOTP_API = exports.SIGNUP_API = exports.LOGIN_API = exports.getApiUrl = exports.API_BASE_URL = void 0;
 
 var _react = _interopRequireWildcard(require("react"));
 
@@ -85,9 +85,13 @@ var GET_ALL_COIN_PACKAGE = getApiUrl("all_coin_packages");
 exports.GET_ALL_COIN_PACKAGE = GET_ALL_COIN_PACKAGE;
 var ACTIVATE_COIN_PACKAGE = getApiUrl("purchaseCoins");
 exports.ACTIVATE_COIN_PACKAGE = ACTIVATE_COIN_PACKAGE;
-var COIN_HISTORY = getApiUrl("coinsCommonHistory"); // Not done yet
-
+var COIN_HISTORY = getApiUrl("coinsCommonHistory");
 exports.COIN_HISTORY = COIN_HISTORY;
+var RECEIVED_GIFT_LIST = getApiUrl("received-gifts");
+exports.RECEIVED_GIFT_LIST = RECEIVED_GIFT_LIST;
+var VIEW_LIKE_STATUS = getApiUrl("view_like_statuses"); // Not done yet
+
+exports.VIEW_LIKE_STATUS = VIEW_LIKE_STATUS;
 var CALL_ACTION_API = getApiUrl("call_action");
 exports.CALL_ACTION_API = CALL_ACTION_API;
 var CHECK_CALLSTATUS_API = getApiUrl("fetch_action");

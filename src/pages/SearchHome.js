@@ -478,13 +478,13 @@ const uploadImage = () => {
         generateLiveVideoChatToken(dispatch, bodyParameters, call_type, user_id, uuidv4(), SOCKET);
 
     }
-    const makeMeAudience = (item ) => {
+    const makeMeAudience = ( item ) => {
         setFriendId(item.user_id);
-        if(!!item.result.status_id){
-         item.result.map((item , index)=>{
-          setStatusId(item.status_id);
-         })
-        }
+        // if(!!item.result.status_id){
+        //  item.result.map((item , index)=>{
+        //   setStatusId(item.status_id);
+        //  })
+        // }
         if (item.is_live) {
             SOCKET.emit("addAudienceToLiveVideo", {
                 user_id: userData.user_id,
