@@ -65,10 +65,10 @@ const CheckoutForm = (props) => {
                     dispatch(stripePlanId({stripePlanId: null}));
                   }
                 }, (error) => {
-                    // if (error.toString().match("403")) {
-                    //     localStorage.removeItem("session_id");
-                    //     history.push('/login');
-                    //   }
+                    if (error.toString().match("403")) {
+                        localStorage.removeItem("session_id");
+                        history.push('/login');
+                      }
                     createNotification('error',error.message);
                 });
         }
@@ -98,10 +98,10 @@ const CheckoutForm = (props) => {
                   }
                
                 }, (error) => {
-                    // if (error.toString().match("403")) {
-                    //     localStorage.removeItem("session_id");
-                    //     history.push('/login');
-                    //   }
+                    if (error.toString().match("403")) {
+                        localStorage.removeItem("session_id");
+                        history.push('/login');
+                      }
                     createNotification('error',error.message);
                 });
         }

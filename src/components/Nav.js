@@ -15,12 +15,6 @@ console.log(props, "props..")
     useEffect(() => {
     
       // alert(window.location.href)
-    
-      window.history.pushState(null, "", window.location.href);        
-      window.onpopstate = function() {
-          window.history.pushState(null, "", window.location.href);
-      };
-
 
         pathname = window.location.pathname;
         // if (pathname !==)/chat   /searching-profile  /video-chat  /answer-calling

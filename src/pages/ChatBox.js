@@ -107,10 +107,10 @@ const ChatBox = (props) =>{
             }
         }
         catch (err) {
-            // if (err.toString().match("403")) {
-            //     localStorage.removeItem("session_id");
-            //     history.push('/login');
-            //   }
+            if (err.toString().match("403")) {
+                localStorage.removeItem("session_id");
+                history.push('/login');
+              }
         }
        
         
@@ -127,10 +127,10 @@ const ChatBox = (props) =>{
             }
         }
         catch (err) {
-            // if (err.toString().match("403")) {
-            //     localStorage.removeItem("session_id");
-            //     history.push('/login');
-            //   }
+            if (err.toString().match("403")) {
+                localStorage.removeItem("session_id");
+                history.push('/login');
+              }
         }
     }
 
@@ -144,10 +144,10 @@ const ChatBox = (props) =>{
                 }
         }
         catch (err) {
-            // if (err.toString().match("403")) {
-            //     localStorage.removeItem("session_id");
-            //     history.push('/login');
-            //   }
+            if (err.toString().match("403")) {
+                localStorage.removeItem("session_id");
+                history.push('/login');
+              }
         }
     }
 
@@ -199,10 +199,10 @@ const ChatBox = (props) =>{
                     createNotification('accept');
                 }
             }, (error) => {
-                // if (error.toString().match("403")) {
-                //     localStorage.removeItem("session_id");
-                //     history.push('/login');
-                //   }
+                if (error.toString().match("403")) {
+                    localStorage.removeItem("session_id");
+                    history.push('/login');
+                  }
             });
 
     }
@@ -301,12 +301,13 @@ const ChatBox = (props) =>{
 // console.log(FriendUserId);
     useEffect(()=>{
         window.setTimeout(() => {
-            $('#uploadfile').bind('change', function(e){
+            $('#uploadfile').on('change', function(e){
+               
                 var data = e.originalEvent.target.files[0];
                 const fileName = data.name.split(".");
                 const imageFormat = fileName[fileName.length - 1];
                 if (imageFormat === "png" || imageFormat === "jpg" || imageFormat === "jpeg" ||
-                    imageFormat === "PNG" || imageFormat === "JPG" || imageFormat === "JPEG") {
+                    imageFormat === "PNG" || imageFormat === "JPG" || imageFormat === "JPEG") {  
                     readThenSendFile(data);
                 }
                 else {
@@ -775,6 +776,7 @@ const ChatBox = (props) =>{
                                                                                 <p>{data.message}</p>
                                                                             </div>
                                                                         }
+                                                                      
                                                                         {
                                                                             !!data.audio &&
                                                                             <div  className="audio-socket">

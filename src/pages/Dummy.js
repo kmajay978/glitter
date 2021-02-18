@@ -66,8 +66,30 @@ function Dummy() {
   ];
 
 
+  const super_strength =   [
+    {
+        "item1": "Phoenix"
+    },
+    {
+        "item1": "Wonder Woman"
+    },
+    {
+        "item1": "Rouge"
+    },
+    {
+        "item1": "Other"
+    }
+];
 
+
+const another = [];
+
+super_strength.map((item,index) =>{
+ // console.log(item.item1,"you....");
+  another.push({label:item.item1})
+})
  
+console.log(another,"another.....")
   
 
     return ( 
