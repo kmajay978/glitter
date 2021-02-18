@@ -46,7 +46,7 @@ const SingleProfile = (props) =>{
         ...form,
         [e.target.name]: e.target.value,
       }) 
-  }
+     }
   
     const handleStatus = async() =>{
       const bodyParameters = {
@@ -67,20 +67,12 @@ const SingleProfile = (props) =>{
           };
             axios.post(GET_USERPROFILE_API,bodyParameters)
             .then((response) => {
-              // if(response.error=="bad_request")
-              //   {
-              //        localStorage.removeItem("session_id");
-              //        history.push('/login');
-              //     }
               if (response.status === 200 && !response.status.error) {
             setUser(response.data.data);
             console.log(response.data.data, "jjjj")
               }
          }, (error) => {
-          // if (error.toString().match("403")) {
-          //   localStorage.removeItem("session_id");
-          //   history.push('/login');
-          // }
+        
         });
         }
 

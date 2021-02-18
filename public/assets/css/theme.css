@@ -22,7 +22,7 @@ body {
     overflow-y: auto;
 }
 
-.bg-grd-clr {
+.bg-grd-clr, .chat__user__img::before {
     background: rgba(189, 125, 13, 1);
     background: -moz-linear-gradient(left, rgba(189, 125, 13, 1) 0%, rgba(252, 212, 111, 1) 100%);
     background: -webkit-linear-gradient(left, rgba(189, 125, 13, 1) 0%, rgba(252, 212, 111, 1) 100%);
@@ -2136,6 +2136,36 @@ body {
     border: 3px solid #D9B372;
 }
 
+.chat__user__img {
+    position: relative;
+    width: 70px;
+    height: 70px;
+    overflow: hidden;
+    border-radius: 50%;
+}
+
+.chat__user__img i {
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    top: 50%;
+    text-align: center;
+    -webkit-transform: translateY(-50%);
+    -moz-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+
+.chat__user__img::before{
+    width:100%;
+    height: 100%;
+    position:absolute;
+    top: 0;
+    content:"";
+    opacity: 0.5;
+    left: 0;
+} 
+
 .medium-image {
     width: 70px;
     height: 70px;
@@ -3586,6 +3616,29 @@ screen and (max-height: 768px) {
 /*end here*/
 
 /* status screen */
+
+.status-modal{
+    position: relative;
+max-width: 377px;
+margin: 0 auto;
+top: 50%;
+-webkit-transform: translateY(-50%);
+-moz-transform: translateY(-50%);
+transform: translateY(-50%);
+}
+
+.status-modal .modal-close{
+    right: 30px;
+    top: 30px;
+    z-index: 9999;
+
+}
+
+.status-modal .modal-close img{
+    width: 25px;
+    cursor: pointer;
+}
+
 
 #status-modal .modal-dialog{
     max-width: 377px;

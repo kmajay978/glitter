@@ -14,6 +14,7 @@ import {NotificationContainer, NotificationManager} from 'react-notifications';
 import useToggle from '../components/CommonFunction';
 import { useHistory } from "react-router-dom";
 import {addDefaultSrc, returnDefaultImage} from "../commonFunctions";
+// import stringLimit from '../components/CommonFunction';
 
 const override = css`
   display: block;
@@ -257,60 +258,71 @@ const ChatBox = (props) =>{
             const fileObj = [];
            const fileArray = [];
              const handleFileChange = e => {
-                // var data = e.target.files[0];
-                // const filename =  e.target.files[0];
-                // const fileName = data.name.split(".");
-                // const imageFormat = fileName[fileName.length - 1];
-                // const fileList = Array.from(e.target.files);
-                //  if (e.target.files[0]) { 
-                //    if (imageFormat === "png" || imageFormat === "jpg" || imageFormat === "jpeg" ||
-                //    imageFormat==="SVG"||imageFormat==="svg"||imageFormat === "PNG" || imageFormat === "JPG" || imageFormat === "JPEG") 
-                //    {
-                    fileObj.push(e.target.files)
-                    for (let i = 0; i < fileObj[0].length; i++) {
-                        fileArray.push(URL.createObjectURL(fileObj[0][i]))
-                    }
-                    setFiles({ file: fileArray })
-            //         setFiles(fileList); 
-
-            //         const mappedFiles = fileList.map((file) => ({
-            //        ...file,
-            //        preview: URL.createObjectURL(file),
-            //       }));
-  
-            //    setPreviews(mappedFiles);
-                    //  setPicture(e.target.files[0]);
-                    //  const reader = new FileReader();
-                    //  reader.addEventListener("load", () => {
-                    //    setImgData(reader.result);     
-                    //  });
-                    //  reader.readAsDataURL(e.target.files[0]);
+                var data = e.target.files[0];
+                const filename =  e.target.files[0];
+                const fileName = data.name.split(".");
+                const imageFormat = fileName[fileName.length - 1];
+                const fileList = Array.from(e.target.files);
+                 if (e.target.files[0]) { 
+                   if (imageFormat === "png" || imageFormat === "jpg" || imageFormat === "jpeg" ||
+                   imageFormat==="SVG"||imageFormat==="svg"||imageFormat === "PNG" || imageFormat === "JPG" || imageFormat === "JPEG") 
+                   {
+                    function createElementWithClass(elementName, className)
+                    {
+                        var el = document.createElement(elementName);
                 
-                //    }
-                //    else if(imageFormat === "mp4" || imageFormat === "MP4")
-                //    {
-                //      console.log("video_file: ", e.target.files[0]);
-                //      setPicture(e.target.files[0]);
-                //      const reader = new FileReader();
-                //      reader.addEventListener("load", () => {
-                //        setImgData(reader.result); 
+                        el.className = className;
+                
+                        return el;
+                    }
+                    var outerDiv = createElementWithClass('div', 'media-box')
+                    var x=document.createElement('img'),
+                    y=document.body.appendChild(x);
+                    y.src = URL.createObjectURL(e.target.files[0]);
+                    y.width = '100';
+                   // console.log(y , "Testfiles...");
+                
+                   let imageAppned =  y ;
+                   outerDiv.appendChild(imageAppned)
+                    document.getElementById("myImages").appendChild(outerDiv); 
+                    var fileArray = files;
+                    fileArray.push(imageAppned);
+                  
+                    setFiles(fileArray);
+                    console.log(files, "Testfiles...");
+                
+                   }
+                   else if(imageFormat === "mp4" || imageFormat === "MP4")
+                   {
+                     console.log("video_file: ", e.target.files[0]);
+                     setPicture(e.target.files[0]);
+                     const reader = new FileReader();
+                     reader.addEventListener("load", () => {
+                       setImgData(reader.result); 
                       
-                //      });
-                //      reader.readAsDataURL(e.target.files[0]);
-                //    }
-                //    else
-                //    {
-                //      console.log("Invlid format");
-                //    }
-                //   }
+                     });
+                     reader.readAsDataURL(e.target.files[0]);
+                   }
+                   else
+                   {
+                     console.log("Invlid format");
+                   }
+                  }
                };
                console.log(files ,"fileName...");
-
+         
                
                const handleSendFile =() => {
                 setUploadImage(false);
                 setPreviews('');
                }
+
+            const  stringLimit = (string , counts)=>{
+                var text = string;
+                var count = counts;
+                var result = text.slice(0, count) + (text.length > count ? "*********" : "");
+                return result;
+            }
     /************************************* Working here socket *******************************************************/
 
     function readThenSendFile(data){
@@ -712,10 +724,11 @@ const ChatBox = (props) =>{
                                         {/* { isLoaded && */}
                                         <ul className="nav contacts" role="tablist">
 
-                                            { Likes.map((item, i) => {
-                                                return   <li className="nav-item">
+                                            { Likes.map((item, i) => (
+                                                (!!userData && userData.packages.length>0 ?
+                                                    <li className="nav-item">
                                                     <a className="nav-link" href="#chat-field" data-toggle="tab" data-id={item.like_id} role="tab" onClick = {() =>AcceptUserRequest(item.like_id)}>
-                                                    
+                                                  
                                                    <img alt={item.first_name} className="img-circle medium-image" src={item.profile_images} />
                                                         <div className="contacts_info">
                                                             <div className="user_detail">
@@ -730,8 +743,28 @@ const ChatBox = (props) =>{
                                                     </a>
 
                                                 </li>
+                                                    : 
+                                                    <li className="nav-item w-100">
+                                                    <a className="nav-link" href="#chat-field" data-toggle="tab" data-id={item.like_id} role="tab">
+                                                   <div className="chat__user__img">
+                                                   <i className="fas fa-lock"></i>
+                                                   <img alt={item.first_name} className="img-circle medium-image" src={item.profile_images} /></div> 
+                                                        <div className="contacts_info">
+                                                            <div className="user_detail">
+                                                                <span className="message-time">{item.created_at}</span>
+                                                                <h5 className="mb-0 name">{stringLimit(item.first_name , 3)  +" "}</h5>
+                                                                {/* <div className="message-count">2</div> */}
+                                                            </div>
+                                                            <div className="vcentered info-combo">
+                                                                <p>{item.liked_at}</p>
+                                                            </div>
+                                                        </div>
+                                                    </a>
 
-                                            })}
+                                                </li>)
+                                                 
+
+                                            ))}
                                           
                                         </ul>
                                         {/* } */}
@@ -745,7 +778,10 @@ const ChatBox = (props) =>{
                                             { Visitors.map((item, i) => {
                                                 return <li className="nav-item">
                                                     <a className="nav-link" href="#chat-field" data-toggle="tab" role="tab" >
+                                                    <div className="chat__user__img">
+                                                   <i className="fas fa-lock"></i>
                                                         <img alt={item.full_name} className="img-circle medium-image" src={item.profile_images}/>
+                                                        </div>
                                                         <div className="contacts_info">
                                                             <div className="user_detail">
                                                                 <span className="message-time">{item.created_at}</span>
@@ -896,7 +932,7 @@ const ChatBox = (props) =>{
                                         <div className="chat-footer">
                                         {uploadImage ?                                 
                                         <div className="send-photos-modal">
-                                            <a href="javascript:void(0)" className="theme-txt done-media">Done</a>
+                                            <a href="javascript:void(0)" className="theme-txt done-media" onClick={readThenSendFile}>Done</a>
                                             <a href="javascript:void(0)" className="close-image-btn modal-close" onClick={handleSendFile}><img src="/assets/images/btn_close.png" /></a>
                                             <h6 className="text-center">Send Photos</h6>
                                             
@@ -904,23 +940,12 @@ const ChatBox = (props) =>{
                                                 <div className="media-box add-media">
                                                 <a id="upload__media"   href="javascript:void(0)">
                                                 <img src="/assets/images/add-media.svg" alt="add media" />
-                                                 <input id="uploadfile" type="file" className="d-none" onChange={handleFileChange} multiple="true" accept="image/* , video/*"/>
+                                                 <input id="uploadfile" type="file" className="d-none" onChange={handleFileChange} multiple accept="image/* , video/*"/>
                                                     </a>
                                                 </div>
-                                                {/* {(fileArray || []).map(url => (
-                                                  <img src={url} alt="..." />
-                                                   ))} */}
-                                                    {  files.length > 0 ?
-                                                    <>
-                                                        {files.map((file) =>   <div className="media-box">
-                      
-                                                    <img src={file.url} alt="media"/>
-                                                     </div>)}
-                                                       </>
-                                                        :""
-
-                                                           }
-                                               
+                                                <div id="myImages">
+                                                  
+                                                   </div>
 
                                                {/* <div className="media-box">
                            

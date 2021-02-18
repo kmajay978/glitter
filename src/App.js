@@ -106,8 +106,6 @@ function App() {
     }
   }, [is_auth])
   
-  
-  
 
   return (
       <Router>

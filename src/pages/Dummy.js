@@ -19,14 +19,26 @@ function Dummy() {
 
    const fileArray = [];
   const handleFileChange = (e) => {
-    var x=document.createElement('img', 'output'),
+        function createElementWithClass(elementName, className)
+    {
+        var el = document.createElement(elementName);
+
+        el.className = className;
+
+        return el;
+    }
+    var outerDiv = createElementWithClass('div', 'media-box')
+    var x=document.createElement('img'),
     y=document.body.appendChild(x);
     y.src = URL.createObjectURL(e.target.files[0]);
     y.width = '100';
    // console.log(y , "Testfiles...");
 
+   let imageAppned =  y ;
+   outerDiv.appendChild(imageAppned)
+    document.getElementById("myImages").appendChild(outerDiv); 
     var fileArray = files;
-    fileArray.push(y.src);
+    fileArray.push(imageAppned);
   
     setFiles(fileArray);
     console.log(files, "Testfiles...");
@@ -94,8 +106,30 @@ function Dummy() {
   // ];
 
 
+  const super_strength =   [
+    {
+        "item1": "Phoenix"
+    },
+    {
+        "item1": "Wonder Woman"
+    },
+    {
+        "item1": "Rouge"
+    },
+    {
+        "item1": "Other"
+    }
+];
 
+
+const another = [];
+
+super_strength.map((item,index) =>{
+ // console.log(item.item1,"you....");
+  another.push({label:item.item1})
+})
  
+console.log(another,"another.....")
   
 
     return ( 
@@ -111,19 +145,12 @@ function Dummy() {
                                                  <input id="uploadfile" type="file" className="d-none" onChange={(e) =>handleFileChange(e)} multiple accept="image/* , video/*"/>
                                                     </a>
                                                 </div> 
-                                                {  files.length > 0 ?
-                                                    <>
-                                                        {files.map((file , index) =>  {
-                                                         return <div className="media-box" id="media_box">
-                                                           {file}
-                                                          </div>})}
-                                                       </>
-                                                        :""
-
-                                                           }
-                                                           {/* {files.map((file , index)=> ( <div>
-                                                         <img id="output" src={file}/>
-                                                          </div>))} */}
+                                              
+                                                   <div id="myImages">
+                                                  
+                                                   </div>
+                                                
+                                      
                                                          
                                           {/* <div className="media-box">
                                               <img src="images/send-media.jpg" alt="media"/>
