@@ -484,7 +484,7 @@ const uploadImage = () => {
         generateLiveVideoChatToken(dispatch, bodyParameters, call_type, user_id, uuidv4(), SOCKET);
 
     }
-    const makeMeAudience = (item ) => {
+    const makeMeAudience = ( item ) => {
         setFriendId(item.user_id);
         // if(!!item.result.status_id){
         //  item.result.map((item , index)=>{
@@ -557,7 +557,7 @@ console.log(statusId);
             </div>
              {
                  item.is_live === true &&
-                 <span class Name="live">Live</span>
+                 <span className="live">Live</span>
              }
           </div>
           :""
