@@ -40,7 +40,7 @@ function App() {
   console.log(new_history, "new_history...")
   const dispatch = useDispatch();
   const is_auth = useSelector(userAuth); //using redux useSelector here
-  // console.log(is_auth, "is_auth....")
+  // console.log(is_auth, "is_auth....")0000000000
   userData = useSelector(userProfile).user.profile; //using redux useSelector here
   useEffect(() => {
     SOCKET.connect();
@@ -87,6 +87,12 @@ function App() {
         }
       }
     })
+
+
+
+
+
+    
     SOCKET.on('call_malfunctioned_in_between_receiver_call_video_call', (data) => {
       localStorage.removeItem("videoCallPageRefresh");
       // SOCKET.disconnect();

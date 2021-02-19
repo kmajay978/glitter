@@ -48,12 +48,19 @@ const ChatBox = (props) =>{
     const[UserMessage, setuserMessage] = useState('');
     const[randomNumber, setRandomNumber] = useState('');
     const [isOn, toggleIsOn] = useToggle();
+    const [uploadImage , setUploadImage] = useState('');
     const [GiftData , setGiftData] =useState([]);
+    const [picture, setPicture] = useState(null);
+    const [imgData, setImgData] = useState(null);
+    const [files, setFiles] = useState([]);
+    const [previews, setPreviews] = useState([]);
+   
 
     let [loading, setLoading] = useState(false);
     const[recording, setRecording] = useState(false);
     const [dummyMediaRc, setDummyMediaRc] = useState(null)
-    const [chatTyping, setChatTyping] = useState("")
+    const [chatTyping, setChatTyping] = useState("");
+    const [threeMessageWarning, setWarningMessage] = useState("");
 
     const createNotificationCustom = (type) => {
   
@@ -68,13 +75,13 @@ const ChatBox = (props) =>{
       };
       };
 
-// console.log(UserMessage);
+ console.log(threeMessageWarning,"threeMessageWarning....");
     const[GetActivity, setActivity] = useState(0);
 
     userData = useSelector(userProfile).user.profile; //using redux useSelector here
 
-
-    console.log(CompleteMessageList, "nowwww")
+    // console.log(userData);
+    // console.log(CompleteMessageList, "nowwww")
     const sessionId = localStorage.getItem('session_id');
 
     const bodyParameters = {
@@ -100,21 +107,55 @@ const ChatBox = (props) =>{
 
     const getLikes = async () => {  //Likes here
         setActivity(0);
-        const { data: {data} } = await axios.post(LIKED_LIST,bodyParameters)
-        setLikes(data);
+        try {
+            const { data: {data , status_code,error } } = await axios.post(LIKED_LIST,bodyParameters)
+            if(status_code==200){
+                setLikes(data);
+            }
+        }
+        catch (err) {
+            if (err.toString().match("403")) {
+                localStorage.removeItem("session_id");
+                history.push('/login');
+              }
+        }
+       
+        
+        
     }
 
     const getVisitors = async () => {  // Visitors here
         setActivity(1);
-        const { data: {result} } = await axios.post(VISITOR_LIST_API,bodyParameters)
-        setVisitors(result);
-
+        try {
+            const { data: {result, error , status_code} } = await axios.post(VISITOR_LIST_API,bodyParameters)
+           
+            if(status_code==200){
+            setVisitors(result);
+            }
+        }
+        catch (err) {
+            if (err.toString().match("403")) {
+                localStorage.removeItem("session_id");
+                history.push('/login');
+              }
+        }
     }
 
     const getFriend = async() => { //Friends here
         setActivity(2);
-        const {data:{data}}= await axios.post(FRIENDLIST_API,bodyParameters)
-        setFriendlist(!!data ? data : []);
+        try {
+            const {data:{data ,status_code, error}}= await axios.post(FRIENDLIST_API,bodyParameters)
+           
+            if(status_code==200){
+                setFriendlist(!!data ? data : []);
+                }
+        }
+        catch (err) {
+            if (err.toString().match("403")) {
+                localStorage.removeItem("session_id");
+                history.push('/login');
+              }
+        }
     }
 
     // fetching friends according to userID
@@ -155,11 +196,20 @@ const ChatBox = (props) =>{
         }
         axios.post(ACCEPT_REQUEST_API , bodyParameters)
             .then((response) => {
+                // if(response.error=="bad_request")
+                //  {
+                //   localStorage.removeItem("session_id");
+                //   history.push('/login');
+                //  }
                 if(response.status==200)
                 {
                     createNotification('accept');
                 }
             }, (error) => {
+                if (error.toString().match("403")) {
+                    localStorage.removeItem("session_id");
+                    history.push('/login');
+                  }
             });
 
     }
@@ -171,9 +221,12 @@ const ChatBox = (props) =>{
         const bodyParameters = {
             session_id :  localStorage.getItem('session_id'),
             }
-            const {data:{result}} = await axios.post(GIFT_LIST_API , bodyParameters)
-            setGiftData(result);
-            }
+            const {data:{result , status}} = await axios.post(GIFT_LIST_API , bodyParameters)
+            
+             if(status==200){
+             setGiftData(result);
+             }
+             }
      
         //get single  gift item
            const getGiftItem = async(giftId) => {
@@ -199,11 +252,80 @@ const ChatBox = (props) =>{
                 else
                 {
                     toggleIsOn(false);
-                    createNotificationCustom('error');
-                    
+                    createNotificationCustom('error');       
                 }
              }
+            const fileObj = [];
+           const fileArray = [];
+             const handleFileChange = e => {
+                // var data = e.target.files[0];
+                // const filename =  e.target.files[0];
+                // const fileName = data.name.split(".");
+                // const imageFormat = fileName[fileName.length - 1];
+                // const fileList = Array.from(e.target.files);
+                //  if (e.target.files[0]) { 
+                //    if (imageFormat === "png" || imageFormat === "jpg" || imageFormat === "jpeg" ||
+                //    imageFormat==="SVG"||imageFormat==="svg"||imageFormat === "PNG" || imageFormat === "JPG" || imageFormat === "JPEG") 
+                //    {
+                    fileObj.push(e.target.files)
+                    for (let i = 0; i < fileObj[0].length; i++) {
+                        fileArray.push(URL.createObjectURL(fileObj[0][i]))
+                    }
+                    setFiles({ file: fileArray })
+            //         setFiles(fileList); 
+
+            //         const mappedFiles = fileList.map((file) => ({
+            //        ...file,
+            //        preview: URL.createObjectURL(file),
+            //       }));
+  
+            //    setPreviews(mappedFiles);
+                    //  setPicture(e.target.files[0]);
+                    //  const reader = new FileReader();
+                    //  reader.addEventListener("load", () => {
+                    //    setImgData(reader.result);     
+                    //  });
+                    //  reader.readAsDataURL(e.target.files[0]);
+                
+                //    }
+                //    else if(imageFormat === "mp4" || imageFormat === "MP4")
+                //    {
+                //      console.log("video_file: ", e.target.files[0]);
+                //      setPicture(e.target.files[0]);
+                //      const reader = new FileReader();
+                //      reader.addEventListener("load", () => {
+                //        setImgData(reader.result); 
+                      
+                //      });
+                //      reader.readAsDataURL(e.target.files[0]);
+                //    }
+                //    else
+                //    {
+                //      console.log("Invlid format");
+                //    }
+                //   }
+               };
+               console.log(files ,"fileName...");
+
+               
+               const handleSendFile =() => {
+                setUploadImage(false);
+                setPreviews('');
+               }
+
+            const  stringLimit = (string , counts)=>{
+                var text = string;
+                var count = counts;
+                var result = text.slice(0, count) 
+                // + (text.length > count ? "*********" : "");
+                for(var i=0 ; i<=text.length ; i++){
+                    // text.replace(text.substr(1,text.length-3));
+                    var result = text.slice(0, count)+ (text.length > count ? "*********" : "");
+                } 
+                return result;
+            }
     /************************************* Working here socket *******************************************************/
+
 
     function readThenSendFile(data){
         var reader = new FileReader();
@@ -245,7 +367,7 @@ const ChatBox = (props) =>{
     }
     // Get all messages here
     const GetAllMessages = (messages) => {
-        console.log(messages.message_list,"messages.message_list....")
+        console.log(messages.message_list,"messages.message_list....");
 
     }
 
@@ -256,11 +378,12 @@ const ChatBox = (props) =>{
     useEffect(()=>{
         window.setTimeout(() => {
             $(document).on('change', '#uploadfile', function(e) {
-                var data = e.originalEvent.target.files[0];
+               
+                var data = e.originalEvent.target.files[0]; 
                 const fileName = data.name.split(".");
                 const imageFormat = fileName[fileName.length - 1];
                 if (imageFormat === "png" || imageFormat === "jpg" || imageFormat === "jpeg" ||
-                    imageFormat === "PNG" || imageFormat === "JPG" || imageFormat === "JPEG") {
+                    imageFormat === "PNG" || imageFormat === "JPG" || imageFormat === "JPEG") {  
                     readThenSendFile(data);
                 }
                 else {
@@ -299,12 +422,21 @@ const ChatBox = (props) =>{
                     ||
                     (messages.obj.user_from_id === receiver_id && messages.obj.user_to_id === userData.user_id)
                 ) { // check one-to-one data sync
+
+                    if (!!messages.obj.warningMessage) {
+                    
+                        setWarningMessage(messages.obj.warningMessage);
+                        //alert(messages.obj.warningMessage)
+                    }
+                    else {
+                        setWarningMessage('');
                     messagesList.push(messages.obj);
                     messageList = messagesList;
                     console.log(messagesList, "messageList...")
                     setMessages(messagesList);
                     setRandomNumber(Math.random());
                     scrollToBottom()
+                    }
                 }
             }
         });
@@ -316,6 +448,14 @@ const ChatBox = (props) =>{
                     ||
                     (messages.obj.user_from_id === receiver_id && messages.obj.user_to_id === userData.user_id)
                 ) {
+                    if (!!messages.obj.warningMessage) {
+                    
+                        setWarningMessage(messages.obj.warningMessage);
+                        //alert(messages.obj.warningMessage)
+                        setLoading(false);
+                    }
+                    else {
+                        setWarningMessage('');
                     messagesList.push(messages.obj);
                     messageList = messagesList;
                     console.log(messagesList, "messageList... pic")
@@ -324,6 +464,7 @@ const ChatBox = (props) =>{
                     setLoading(false);
                     setRandomNumber(Math.random());
                     scrollToBottom()
+                    }
                 }
             }
         });
@@ -338,6 +479,14 @@ const ChatBox = (props) =>{
                     (messages.obj.user_from_id === receiver_id && messages.obj.user_to_id === userData.user_id)
                 )
                 {
+                    if (!!messages.obj.warningMessage) {
+                    
+                        setWarningMessage(messages.obj.warningMessage);
+                        //alert(messages.obj.warningMessage)
+                        setLoading(false);
+                    }
+                    else {
+                        setWarningMessage('');
                     messagesList.push(messages.obj);
                     messageList = messagesList;
                     console.log(messagesList,"messageList_gift_send ........ ");
@@ -345,6 +494,7 @@ const ChatBox = (props) =>{
                     setLoading(false);
                     setRandomNumber(Math.random());
                     scrollToBottom();
+                    }
                 }
             }
         });
@@ -357,6 +507,13 @@ const ChatBox = (props) =>{
                     ||
                     (arrayBuffer.obj.user_from_id === receiver_id && arrayBuffer.obj.user_to_id === userData.user_id)
                 ) {
+                    if (!!arrayBuffer.obj.warningMessage) {
+                    
+                        setWarningMessage(arrayBuffer.obj.warningMessage);
+                        //alert(messages.obj.warningMessage)
+                    }
+                    else {
+                        setWarningMessage('');
                     messagesList.push(arrayBuffer.obj);
                     messageList = messagesList;
                     console.log(messagesList, "messageList... pic")
@@ -364,6 +521,7 @@ const ChatBox = (props) =>{
                     setuserMessage(''); //Empty user input here
                     setRandomNumber(Math.random());
                     scrollToBottom()
+                    }
                 }
             }
             // src= window.URL.createObjectURL(blob);
@@ -404,8 +562,10 @@ const ChatBox = (props) =>{
                 setLoading(false);
                 console.log(messages, "messages..")
                 console.log(messages, "hahahaha")
-                setMessages(messages.message_list);
-                messageList = messages.message_list;
+              
+                    setMessages(messages.message_list);
+                    messageList = messages.message_list;
+                
             });
         }
         if (!!FriendUserId) {
@@ -556,12 +716,19 @@ const ChatBox = (props) =>{
                         </div>
                         <div className="col-lg-5 p-3">
                             <div className="tab-top d-flex flex-wrap-wrap align-items-center">
-                                <div className="vc-action-tab ml-auto mr-4">
-              <span>
-                <i className="fas fa-crown" />
-              </span>
-                                    <span className="member-type">VIP</span>
-                                </div>
+                            {!!userData&&
+                            <>
+                             {userData.packages.length>0 ? 
+                             <div className="vc-action-tab ml-auto mr-4">
+                             <span>
+                                 <i className="fas fa-crown" />
+                             </span>
+                                <span className="member-type">VIP</span>
+                            </div>
+                            : ""}
+                            </>
+                            }
+                        
                                 <NavLinks />
                             </div>
                         </div>
@@ -709,6 +876,7 @@ const ChatBox = (props) =>{
                                     <div className="message-chat">
 
                                         <div className="chat-body" id={"chat-body"}>
+                                       
                                             {
                                                 CompleteMessageList.map((data, i) => (
                                                     <div>
@@ -729,6 +897,8 @@ const ChatBox = (props) =>{
                                                                                 <p>{data.message}</p>
                                                                             </div>
                                                                         }
+
+                                                                       
                                                                         {
                                                                             !!data.audio &&
                                                                             <div  className="audio-socket">
@@ -765,9 +935,17 @@ const ChatBox = (props) =>{
                                                                 </div>
                                                         }
                                                     </div>
+                                                    
                                                 ))
+                                                
                                             }
                                             <NotificationContainer/>
+                                            {
+                                                    !!threeMessageWarning &&
+                                                    <div className="message-text warning-msg" >
+                                                    <p>{threeMessageWarning}</p>
+                                                </div>
+                                                }
                                         </div>
                                         <form onSubmit={CheckTextInputIsEmptyOrNot}>
 
@@ -809,6 +987,7 @@ const ChatBox = (props) =>{
                                                 }
                                             </div>
                                         </form>
+
                                     </div>
 
                                 </div>
@@ -822,6 +1001,11 @@ const ChatBox = (props) =>{
                             </div> }
 
                         {/* End chat box here */}
+
+   
+             
+              
+                            
                         <div className={isOn ? 'all-gifts-wrapper active': 'all-gifts-wrapper '} >
                             <div className="all-gift-inner">
                                 <a href="javascript:void(0)" className="close-gift-btn modal-close" onClick={toggleIsOn}><img src="/assets/images/btn_close.png" /></a>
@@ -850,6 +1034,8 @@ const ChatBox = (props) =>{
                                                 </a>
                                             </li>
                                         })}
+                                        <li>
+                                        </li>
                                         <li>
                                         </li>
                                     </ul>

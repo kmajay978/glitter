@@ -8,7 +8,7 @@ import NavLinks from '../components/Nav';
 import { joinChannelAudio, leaveEventAudience, leaveEventHost } from "../components/VideoComponent";
 import {useSelector, useDispatch} from "react-redux";
 import {userProfile, audioCall, audioCallUser} from "../features/userSlice";
-import {returnDefaultImage} from "../commonFunctions";
+import {checkLiveDomain, returnDefaultImage} from "../commonFunctions";
 
 let videoCallStatus = 0, videoCallParams, interval;
 
@@ -41,7 +41,7 @@ console.log(userData, "userdata..")
     }
     // localStorage.removeItem("videoCallPageRefresh");
     clearChatState(dispatch);
-    window.location.href = "/chat";
+    window.location.href = checkLiveDomain() ? "/glitter-web/chat" : "/chat";
   }
   useEffect(() =>{
     if (!!userData) {

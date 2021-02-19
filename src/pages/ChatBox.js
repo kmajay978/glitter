@@ -949,73 +949,14 @@ const ChatBox = (props) =>{
                                         </div>
                                         <form onSubmit={CheckTextInputIsEmptyOrNot}>
 
-                                        <div className="chat-footer">
-                                        {uploadImage ?                                 
-                                        <div className="send-photos-modal">
-                                            <a href="javascript:void(0)" className="theme-txt done-media">Done</a>
-                                            <a href="javascript:void(0)" className="close-image-btn modal-close" onClick={handleSendFile}><img src="/assets/images/btn_close.png" /></a>
-                                            <h6 className="text-center">Send Photos</h6>
-                                            
-                                            <div className="send-photos-listing d-flex my-4">
-                                                <div className="media-box add-media">
-                                                <a id="upload__media"   href="javascript:void(0)">
-                                                <img src="/assets/images/add-media.svg" alt="add media" />
-                                                 <input id="uploadfile" type="file" className="d-none" onChange={handleFileChange} multiple="true" accept="image/* , video/*"/>
-                                                    </a>
-                                                </div>
-                                               
-                                              <div className="media-box">
-                                                    <img src="/assets/images/send-media.jpg" alt="media"/>
-                                                </div>
-                                                <div className="media-box">
-                                                    <img src="/assets/images/send-media.jpg" alt="media"/>
-                                                </div>
-                                                <div className="media-box">
-                                                    <span>0:45</span>
-                                                    <img src="/assets/images/send-media.jpg" alt="media"/>
-                                                </div>
-                                                
-                                            </div>
-                                            
-                                            <h6>Put Price</h6>
-                                            <div className="image-coins d-flex">
-                                            <div className="coin-price">
-                                                <input type="radio" id="coin-value1" name="coin" />
-                                                <label for="coin-value1">0 coins</label>
-                                                
-                                            </div>
-                                            
-                                            <div className="coin-price">
-                                                <input type="radio" id="coin-value2" name="coin"/>
-                                                <label for="coin-value2">50 coins</label>
-                                                
-                                            </div>
-                                            
-                                            <div className="coin-price">
-                                                <input type="radio" id="coin-value3" name="coin"/>
-                                                <label for="coin-value3">100 coins</label>
-                                                
-                                            </div>
-                                            
-                                            <div className="coin-price">
-                                                <input type="radio" id="coin-value4" name="coin"/>
-                                                <label for="coin-value4">250 coins</label>
-                                                
-                                            </div>
-                                            </div>
-                                        </div>
-                                        
-                                        : ""}
-
+                                            <div className="chat-footer">
                                                 <div className="sweet-loading">
                                                     <BarLoader color={"#fcd46f"} loading={loading} css={override} size={1000} />
                                                 </div>
                                                 <label className="upload-file">
                                                     <div>
-                                                    <a href="javascript:void(0)" onClick={()=> setUploadImage(true)} >
-                                                        {/* <input id="uploadfile" type="file" accept=".png, .jpg, .jpeg, .PNG, .JPG, .JPEG" /> */}
+                                                        <input id="uploadfile" type="file" accept=".png, .jpg, .jpeg, .PNG, .JPG, .JPEG" />
                                                         <i className="far fa-image" />
-                                                        </a>
                                                     </div>
                                                 </label>
                                                 {/* <textarea className="send-message-text" placeholder="Message..." defaultValue={UserMessage} /> */}
@@ -1046,6 +987,7 @@ const ChatBox = (props) =>{
                                                 }
                                             </div>
                                         </form>
+
                                     </div>
 
                                 </div>
