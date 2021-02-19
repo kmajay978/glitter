@@ -62,6 +62,14 @@
  <!-- SWIPE JS -->
 <!--script src="/assets/js/swipe.js"></script-->
 <script src="/assests/js/cardSwipe.js"></script>
+<script>
+$(document).on("click", ".gift__items li a", function(){
+  $(".gift__items li a").removeClass("active-gift");
+  $(this).addClass("active-gift");
+  });
+
+
+</script>
 
 
     <title>Glitter - Dating app</title>

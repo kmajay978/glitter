@@ -751,7 +751,7 @@ console.log(profileData);
                    {!!profileData &&
                     <>
                     {profileData.likes!=0 ?  profileData.likes :  "" }
-                    </>}{<>0</>}</span>
+                    </>}{<p>0</p>}</span>
                 </li>
                 <li><span className="user-profile__status__heading d-block text-uppercase">Story</span>
                   <span className="user-profile__status__counter d-block">0</span>
@@ -760,9 +760,9 @@ console.log(profileData);
                   <span className="user-profile__status__counter d-block">
                     {!!userData &&
                     <>
-                    {userData.coins!=0 ?  userData.coins :  "0" }
+                    {userData.coins!=0 ?  userData.coins :  "" }
                     </>}
-                   
+             
                     </span>
                 </li>
               </ul>
@@ -1153,9 +1153,9 @@ console.log(profileData);
       </div>
       <div className="all-gift-body">
         
-        <ul className="d-flex flex-wrap text-center">
-      {GiftData.map((items , i) => {
-        return <li onClick={() => getGiftItem(items.id)}>
+        <ul className="d-flex flex-wrap text-center ">
+      {GiftData.map((items , i) => (
+        <li onClick={() => getGiftItem(items.id)}>
             <a href="javascript:void(0)" >
               <div>
                 <figure>
@@ -1168,7 +1168,7 @@ console.log(profileData);
               </div>
             </a>
           </li>
-        })}
+      ))}
           <li>
           </li>
           <li>                                                    

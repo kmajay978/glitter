@@ -415,6 +415,10 @@ input::placeholder {
     justify-content: center;
     margin-bottom: 38px;
 }
+ul.social-login button {
+    border: none;
+    background-color: transparent;
+}
 
 .social-login > li:not(:last-child) {
     margin-right: 18px;
@@ -815,6 +819,7 @@ input[type="range"] {
 
 .tab-top {
     height: 68px;
+    align-items: center;
 }
 
 .feature-menu {
@@ -1216,7 +1221,6 @@ position: absolute;
     color: var(--theme-primary-color);
     font-size: 18px;
 }
-
 .like-profile.tray-btn-s a {
     background-image: -webkit-linear-gradient(to bottom, #fdd470, #eebf59, #dfaa43, #d0952c, #c18012);
     background-image: linear-gradient(to bottom, #fdd470, #eebf59, #dfaa43, #d0952c, #c18012);
@@ -1432,7 +1436,7 @@ position: absolute;
     align-items: center;
 }
 
-.all-gift-body ul li a:hover {
+.all-gift-body ul li a:hover, .gift__items a.active-gift{
     background-color: rgba(243, 198, 97, 0.26);
 }
 
@@ -3631,7 +3635,6 @@ transform: translateY(-50%);
     right: 30px;
     top: 30px;
     z-index: 9999;
-
 }
 
 .status-modal .modal-close img{
@@ -3639,6 +3642,17 @@ transform: translateY(-50%);
     cursor: pointer;
 }
 
+/* .status-modal .all-gift-body img{
+width: 100% !important;
+height: 468px;
+object-fit: cover;
+}
+*/
+
+
+.status-modal .all-gift-body div {
+    width: 100%;
+}
 
 #status-modal .modal-dialog{
     max-width: 377px;

@@ -512,7 +512,7 @@ const SingleProfile = (props) =>{
       </div>
       <div className="all-gift-body">
         
-        <ul className="d-flex flex-wrap text-center">
+        <ul className="d-flex flex-wrap text-center gift__items">
       {GiftData.map((items , i) => {
         return <li onClick={() => getGiftItem(items.id)}>
             <a href="javascript:void(0)" >

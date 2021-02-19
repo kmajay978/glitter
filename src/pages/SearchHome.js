@@ -75,6 +75,12 @@ const SearchHome = () =>
   autoplay: true
 };
 
+const storyContent = {
+  width: '100%',
+  maxWidth: '100%',
+  maxHeight: '468px',
+  margin: 'auto'
+}
 
 const stories = !!storyData ? storyData : [];
 
@@ -609,8 +615,10 @@ console.log(statusId);
   <Stories
       stories={stories}
       defaultInterval={3000}
+      storyStyles={storyContent}
       width={377}
       height={468}
+     
      
   />      
 }

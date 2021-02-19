@@ -399,6 +399,7 @@ const handleError = (error) => {
 
                           <li>
                           <TwitterLogin loginUrl="http://localhost:4000/api/v1/auth/twitter"    
+                          
                           onFailure={onFailed}
                           onSuccess={onSuccess}
                           requestTokenUrl="http://localhost:4000/api/v1/auth/twitter/reverse"

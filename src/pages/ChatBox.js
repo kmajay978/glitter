@@ -118,10 +118,7 @@ const ChatBox = (props) =>{
                 localStorage.removeItem("session_id");
                 history.push('/login');
               }
-        }
-       
-        
-        
+        }  
     }
 
     const getVisitors = async () => {  // Visitors here
@@ -320,16 +317,14 @@ const ChatBox = (props) =>{
             const  stringLimit = (string , counts)=>{
                 var text = string;
                 var count = counts;
-                var result = text.slice(0, count) 
-                // + (text.length > count ? "*********" : "");
+                // var result = text.slice(0, count)  + (text.length > count ? "*********" : "");
                 for(var i=0 ; i<=text.length ; i++){
-                    // text.replace(text.substr(1,text.length-3));
-                    var result = text.slice(0, count)+ (text.length > count ? "*********" : "");
+                    // text.replace(text.substr(/./g,text.length-3));
+                    var result =  text.replace(text.substring(count,text.length[i]),"*");
                 } 
                 return result;
             }
     /************************************* Working here socket *******************************************************/
-
 
     function readThenSendFile(data){
         var reader = new FileReader();
@@ -758,7 +753,7 @@ const ChatBox = (props) =>{
                                                         <div className="contacts_info">
                                                             <div className="user_detail">
                                                                 <span className="message-time">{item.created_at}</span>
-                                                                <h5 className="mb-0 name">{stringLimit(item.first_name , 3)  +" "}</h5>
+                                                                <h5 className="mb-0 name">{stringLimit(item.first_name , 3)  +" "}.{" " + item.age}</h5>
                                                                 {/* <div className="message-count">2</div> */}
                                                             </div>
                                                             <div className="vcentered info-combo">
@@ -781,13 +776,11 @@ const ChatBox = (props) =>{
                                     <div className="contacts-outter">
                                         <ul className="nav contacts" role="tablist">
 
-                                            { Visitors.map((item, i) => {
-                                                return <li className="nav-item">
+                                            { Visitors.map((item, i) => (
+                                                 (!!userData && userData.packages.length>0 ? 
+                                            <li className="nav-item">
                                                     <a className="nav-link" href="#chat-field" data-toggle="tab" role="tab" >
-                                                    <div className="chat__user__img">
-                                                   <i className="fas fa-lock"></i>
                                                         <img alt={item.full_name} className="img-circle medium-image" src={item.profile_images}/>
-                                                        </div>
                                                         <div className="contacts_info">
                                                             <div className="user_detail">
                                                                 <span className="message-time">{item.created_at}</span>
@@ -800,7 +793,26 @@ const ChatBox = (props) =>{
                                                         </div>
                                                     </a>
                                                 </li>
-                                            })}
+                                                : 
+                                                <li className="nav-item">
+                                                <a className="nav-link" href="#chat-field" data-toggle="tab" role="tab" >
+                                                <div className="chat__user__img">
+                                               <i className="fas fa-lock"></i>
+                                                    <img alt={item.full_name} className="img-circle medium-image" src={item.profile_images}/>
+                                                    </div>
+                                                    <div className="contacts_info">
+                                                        <div className="user_detail">
+                                                            <span className="message-time">{item.created_at}</span>
+                                                            <h5 className="mb-0 name">{item.full_name}</h5>
+                                                            {/* {/* <div className="message-count">2</div> */}
+                                                        </div>
+                                                        <div className="vcentered info-combo">
+                                                            <p>Yep, I'm new in town and I wanted</p>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </li> )
+                                            ))}
 
                                         </ul>
                                     </div>
@@ -1072,7 +1084,7 @@ const ChatBox = (props) =>{
                                 </div>
                                 <div className="all-gift-body">
 
-                                    <ul className="d-flex flex-wrap text-center">
+                                    <ul className="d-flex flex-wrap text-center gift__items">
                                         {GiftData.map((items , i) => {
                                             return <li onClick={() => getGiftItem(items.id)}>
                                                 <a href="javascript:void(0)" >
