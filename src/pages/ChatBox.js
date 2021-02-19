@@ -415,7 +415,7 @@ const ChatBox = (props) =>{
 
         SOCKET.on('message_data', (messages) => {
             // console.log(messages, "test..");
-            console.log(messageList, "CompleteMessageList")
+            // console.log(messageList, "CompleteMessageList")
             let messagesList = messageList;
             if (!!messages) {
 
@@ -721,11 +721,12 @@ const ChatBox = (props) =>{
                             {!!userData&&
                             <>
                              {userData.packages.length>0 ? 
-                             <div className="vc-action-tab ml-auto mr-4">
+                             <div className="vc-action-tab ml-auto vip-icon-top">
                              <span>
-                                 <i className="fas fa-crown" />
+                                 <img src="/assets/images/013-crown.png"/>
+                                 {/* <i className="fas fa-crown" /> */}
                              </span>
-                                <span className="member-type">VIP</span>
+                                <span className="member-type ml-2">VIP</span>
                             </div>
                             : ""}
                             </>
@@ -897,7 +898,7 @@ const ChatBox = (props) =>{
                                                     {!!AllData &&
                                                     <>{AllData.occupation},  {AllData.age} </>
                                                     }
-                                                    {<> , </>}
+                                                    {<>  </>}
                                                 </div>
                                             </div>
                                         </div>

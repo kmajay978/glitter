@@ -30,6 +30,7 @@ position: absolute;
 left: 0;
 right: 0;
 margin: 0 auto;
+padding-top:60px;
 top: 50%;
 -webkit-transform: translateY(-50%);
 -moz-transform: translateY(-50%);
@@ -104,7 +105,7 @@ const Profile = (props) =>{
     interests_hobbie :""
   });
 
-  console.log(form, "form...");
+  // console.log(form, "form...");
   
   const handleChange = e => { 
     setForm({
@@ -171,7 +172,7 @@ const handleCheck = (e) => {
        }
     
 
-    console.log(hobbies);
+    // console.log(hobbies);
       
   // console.log(hobbies,"hobbies......")
      //update profile data
@@ -684,7 +685,7 @@ catch (err) {
     }
 
   }
-console.log(profileData);
+// console.log(profileData);
   return(
    <div>
   <section className="home-wrapper">
@@ -699,7 +700,7 @@ console.log(profileData);
                  <Logo/>
                 </a>
               </div>
-              <div className="vc-head-title d-flex flex-wrap align-items-center ml-5">
+              {/* <div className="vc-head-title d-flex flex-wrap align-items-center ml-5">
                 <div className="vc-user-name d-flex flex-wrap align-items-center">
                   <figure>
                     <img onError={(e) => addDefaultSrc(e)} src={!!profileData.profile_images ? profileData.profile_images : returnDefaultImage()} alt="Augusta Castro"  />
@@ -710,7 +711,7 @@ console.log(profileData);
                   <img src="/assets/images/diamond-coin.png" alt="Coins" />
                   <span> {!!userData&& userData.coins!=0 ?  userData.coins :  "0" }</span>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
           <div className="col-lg-7 p-3">
@@ -1154,8 +1155,8 @@ console.log(profileData);
       <div className="all-gift-body">
         
         <ul className="d-flex flex-wrap text-center ">
-      {GiftData.map((items , i) => (
-        <li onClick={() => getGiftItem(items.id)}>
+        {GiftData.map((items , i) => {
+        return<li onClick={() => getGiftItem(items.id)}>
             <a href="javascript:void(0)" >
               <div>
                 <figure>
@@ -1168,7 +1169,7 @@ console.log(profileData);
               </div>
             </a>
           </li>
-      ))}
+           })}
           <li>
           </li>
           <li>                                                    
