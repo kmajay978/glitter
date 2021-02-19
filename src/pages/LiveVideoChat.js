@@ -8,7 +8,7 @@ import { joinChannel, leaveEventAudience, leaveEventHost } from "../components/V
 import {useSelector, useDispatch} from "react-redux";
 import {userProfile, liveVideoCall, liveVideoCallUser} from "../features/userSlice";
 import {func} from "prop-types";
-import {addDefaultSrc, returnDefaultImage} from "../commonFunctions";
+import {addDefaultSrc, checkLiveDomain, returnDefaultImage} from "../commonFunctions";
 
 let videoCallStatus = 0, videoCallParams, interval, userData;
 
@@ -41,7 +41,7 @@ const LiveVideoChat = () =>{
         localStorage.removeItem("videoCallLivePageRefresh");
         localStorage.removeItem("liveVideoProps");
         clearChatState(dispatch);
-        window.location.href = "/search-home";
+        window.location.href = checkLiveDomain() ? "/glitter-web/search-home" : "/search-home";
     }
     useEffect(() =>{
         if (!!userData) {

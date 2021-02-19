@@ -5,3 +5,10 @@ export const addDefaultSrc = (ev) => {
 export const returnDefaultImage = (ev) => {
     return '/assets/images/image-placeholder.jpg'
 }
+
+export const checkLiveDomain = () => {
+    if (window.location.hostname === "rrmr.co.in") {
+        return true
+    }
+    return false
+}
