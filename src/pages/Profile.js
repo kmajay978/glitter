@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import {  useHistory } from 'react-router';
 import axios from "axios";
 import NavLinks from '../components/Nav';
-import {BLOCK_USER_API , COIN_HISTORY , GET_ALL_COIN_PACKAGE , INTEREST_HOBBIES_LIST , GIFT_LIST_API , GET_GIFT_API , GET_LOGGEDPROFILE_API , EDITPROFILE_API , BLOCK_USERLIST_API , LOGOUT_API, GET_STRIPE_PACKAGE,ACTIVATE_STRIPE_PACKAGE } from '../components/Api';
+import {BLOCK_USER_API , COIN_HISTORY , GET_ALL_COIN_PACKAGE , INTEREST_HOBBIES_LIST ,RECEIVED_GIFT_LIST , GET_GIFT_API , GET_LOGGEDPROFILE_API , EDITPROFILE_API , BLOCK_USERLIST_API , LOGOUT_API, GET_STRIPE_PACKAGE,ACTIVATE_STRIPE_PACKAGE } from '../components/Api';
 import useToggle from '../components/CommonFunction';
 import {removeStorage} from '../components/CommonFunction';
 import Login from '../pages/Login'
@@ -80,7 +80,7 @@ const Profile = (props) =>{
   const [isProfile, toggleProfile] = useToggle();
   const handleShow = () => setShow(true); // show Edit model
   const handleSettingShow = () => setShowSetting(true); //show Setting Model
-  const handleGiftShow = () => setShowGift(true); 
+  
   const handleImage =() => setShowImage(true);
   const handlePrivacy =() => {setShowSetting(false); setShowPrivacy(true);}
   const handleAbout = () => {setShowSetting(false); setShowAbout(true);}
@@ -203,11 +203,16 @@ const handleCheck = (e) => {
 
    axios.post(EDITPROFILE_API , bodyParameters, config) 
    .then((response) => {
-   if(response.status==200){
+   
+   if(response.status==200  && !response.status.error){
    Notification('update');
  
    }
    }, (error) =>{
+    if (error.toString().match("403")) {
+      localStorage.removeItem("session_id");
+      history.push('/login');
+    }
    Notification('error');
    });
    }
@@ -237,7 +242,8 @@ const handleCheck = (e) => {
     
     axios.post(EDITPROFILE_API , bodyParameters , config) 
    .then((response) => {
-   if(response.status==200){
+   
+   if(response.status==200  && !response.status.error){
     Notification('update');
     setTimeout(() => {
       setShowImage(false);
@@ -274,10 +280,19 @@ const handleCheck = (e) => {
    const bodyParameters ={
     session_id: sessionId,
    };
-   const{data : {data}} = await axios.post(BLOCK_USERLIST_API ,bodyParameters)
-   setBlockData(data);
+   try {
+    const{data : {data,status_code, error}} = await axios.post(BLOCK_USERLIST_API ,bodyParameters)
   
-   
+    if(status_code==200){
+      setBlockData(data);
+      }
+}
+catch (err) {
+    if (err.toString().match("403")) {
+        localStorage.removeItem("session_id");
+        history.push('/login');
+      }
+}
    }
    
    const handleBlock = async() => {
@@ -289,6 +304,11 @@ const handleCheck = (e) => {
     axios.post(BLOCK_USER_API , bodyParameters)
     .then((response)=>
     {
+    //   if(response.error=="bad_request")
+    // {
+    //   localStorage.removeItem("session_id");
+    //   history.push('/login');
+    // }
     if(response.status==200 && !response.error) {
       createNotification('unblock');
       setTimeout(() => {
@@ -296,7 +316,10 @@ const handleCheck = (e) => {
       }, 1500);
     }
     }, (error) =>{
-     
+      if (error.toString().match("403")) {
+        localStorage.removeItem("session_id");
+        history.push('/login');
+      }
     });
     
   }
@@ -311,11 +334,22 @@ const handleCheck = (e) => {
      setShowBuyCoins(true);
      axios.get(GET_ALL_COIN_PACKAGE)
      .then((response) => { 
+    //   if(response.error=="bad_request")
+    // {
+    //   localStorage.removeItem("session_id");
+    //   history.push('/login');
+    // }
+       if(response.status==200){
       setCoinPackage(response.data.coin_list);
       setIsLoaded(false);
+       }
        }, (error) =>{
+        if (error.toString().match("403")) {
+          localStorage.removeItem("session_id");
+          history.push('/login');
+        }
         setIsLoaded(true);
-       });
+       }); 
     }
  
     // console.log(coinPackage , "packages...");
@@ -329,13 +363,21 @@ const handleCheck = (e) => {
       }
       axios.post(COIN_HISTORY , bodyParameters)
       .then((response) =>{
+        console.log(response)
+       
+        if(response.status==200){
         setIsLoaded(false);
         setCoinHistory(response.data.result);
         setCoinSpend(response.data.count_coins);
-
+        }
       //  console.log(response.data, '...history');
       }, (error)=> {
         setIsLoaded(true);
+        if (error.toString().match("403")) {
+          localStorage.removeItem("session_id");
+          history.push('/login');
+        }
+        
       });
     }
     
@@ -345,8 +387,19 @@ const handleCheck = (e) => {
      const bodyParameters = {
        session_id : sessionId,
      }
-    const {data:{result}} = await axios.post(GIFT_LIST_API , bodyParameters)
-      setGiftData(result);
+     try {
+      const {data:{result, status, error}} = await axios.post(RECEIVED_GIFT_LIST , bodyParameters)
+     
+      if(status==200){
+        setGiftData(result);
+        }
+  }
+  catch (err) {
+      if (err.toString().match("403")) {
+          localStorage.removeItem("session_id");
+          history.push('/login');
+        }
+  }
    }
 
    //get single  gift item
@@ -364,11 +417,17 @@ const handleCheck = (e) => {
    {
      axios.get(INTEREST_HOBBIES_LIST)
      .then((response) => { 
+    
+       if(response.status==200){
       showInterestData(response.data);
-      // console.log(response.data);
+       }
+    
    
        }, (error) =>{
-   
+        if (error.toString().match("403")) {
+          localStorage.removeItem("session_id");
+          history.push('/login');
+        }
        });
     
    }
@@ -411,8 +470,20 @@ const handleCheck = (e) => {
   // ------------------------------ Stipe payment module -----------------------------------------------//
 
   const GetStipePackage = async() =>{
-    const {data:{plan_list}} = await axios.get(GET_STRIPE_PACKAGE)
-      setPackage(plan_list);
+    try {
+      const {data:{plan_list, status_code , error}} = await axios.get(GET_STRIPE_PACKAGE)
+     
+      if(status_code==200){
+        setPackage(plan_list);
+        }
+  }
+  catch (err) {
+      if (err.toString().match("403")) {
+          localStorage.removeItem("session_id");
+          history.push('/login');
+        }
+  }
+
   }
 
   const CheckedItem = (id) => {
@@ -511,7 +582,7 @@ const handleCheck = (e) => {
               </div>
               <div className="form-group dob-field">
                   <label className="d-block">DOB</label>
-                  <DatePicker  className="bg-trsp" name="dob"  value={Dob} selected={Dob}  onChange={date => setDob(date)} />
+                  <DatePicker  className="bg-trsp" name="dob"  value={Dob} selected={Dob} required={true} onChange={date => setDob(date)} />
                  
                   {/* <input className="form-control bg-trsp" name="dob" type="text" value={form.dob} onChange={handleChange}  /> */}
               </div>
@@ -601,7 +672,6 @@ const handleCheck = (e) => {
           ))}
          </div>
 
-         
        
           <a className="btn bg-grd-clr d-block btn-countinue-3" id="edit-second-step" href="javascript:void(0)" onClick={updateProfile}>Update</a>
           <NotificationContainer/>
@@ -614,7 +684,7 @@ const handleCheck = (e) => {
     }
 
   }
-
+console.log(profileData);
   return(
    <div>
   <section className="home-wrapper">
@@ -662,8 +732,15 @@ const handleCheck = (e) => {
               <div className="user-profile__details__data">
                 <h5 className="user-profile__name">{profileData.first_name +' '+ profileData.last_name } </h5>
                 <div className="user-profile__level d-inline-block">
-                  <span className="d-block"><img src="/assets/images/level-img.png" alt="profile level" />Premium, vip</span>
-                  <span className="d-block"><img src="/assets/images/diamond-sm.png" alt="balance" />Balance: 152</span>
+                {!!userData&&
+                            <>
+                             {userData.packages.length>0 ? 
+                              <span className="d-block"><img src="/assets/images/level-img.png" alt="profile level" />Premium, vip</span>
+                            : ""}
+                            </>
+                            }
+                 
+                  <span className="d-block"><img src="/assets/images/diamond-sm.png" alt="balance" />Balance: {!!userData&& userData.coins!=0 ?  userData.coins :  "0" }</span>
                 </div>
               </div>
             </div>
@@ -673,8 +750,8 @@ const handleCheck = (e) => {
                   <span className="user-profile__status__counter d-block">  
                    {!!profileData &&
                     <>
-                    {profileData.likes!=0 ?  profileData.likes :  "0" }
-                    </>}</span>
+                    {profileData.likes!=0 ?  profileData.likes :  "" }
+                    </>}{<>0</>}</span>
                 </li>
                 <li><span className="user-profile__status__heading d-block text-uppercase">Story</span>
                   <span className="user-profile__status__counter d-block">0</span>
@@ -725,7 +802,14 @@ const handleCheck = (e) => {
         </div>
         <div className="col-md-4">
           <div className="membership-plans">
-            <h5 className="text-white text-uppercase"><img src="/assets/images/Crown-white.png" alt="crown" /> Become vip</h5>
+          {!!userData&&
+                            <>
+                             {userData.packages.length>0 ? 
+                             ""
+                            : <h5 className="text-white text-uppercase"><img src="/assets/images/Crown-white.png" alt="crown" /> Become vip</h5>}
+                            </>
+                            }
+          
 
           {packageList.map((item,i) =>(
            (!!item && item.duration === "12") ?
@@ -862,7 +946,7 @@ const handleCheck = (e) => {
     <>
     {blockData.map((item, i) => {
   
-  return <div className="coin-spend">
+    return <div className="coin-spend">
      <div className="coin-spend__host">
        <img src={item.profile_images} alt="host" />
      </div>
@@ -1075,11 +1159,11 @@ const handleCheck = (e) => {
             <a href="javascript:void(0)" >
               <div>
                 <figure>
-                  <img src={items.image} alt={items.name} />
+                  <img src={items.gift_image} alt={items.gift_name} />
                 </figure>
                 <div className="gift-price">
                   <img src="/assets/images/diamond-coin.png" alt="Coins" />
-                  <span>{items.coins}</span>
+                  <span>{items.gift_coins}</span>
                 </div>
               </div>
             </a>

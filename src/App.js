@@ -1,11 +1,12 @@
 import './App.css';
+import $ from 'jquery';
 import './components/jqueryfile.js';
 import React, { useState , useEffect } from 'react';
 import {Elements} from '@stripe/react-stripe-js';
 import {loadStripe} from '@stripe/stripe-js';
 import {BrowserRouter as Router, Switch, Route, withRouter, useParams, useHistory } from 'react-router-dom';
 // Importing all pages from index.js 
-import {Home,Login,ChatBox,SearchHome,AnswerCalling,StatusUser,SignupCompleted,Profile,SingleProfile,RecentCall,VideoChat, LiveVideoChat, SearchProfile,Dummy, SearchHomeBkp, SearchProfileAudio, AudioChat} from './pages'
+import {Home,Login,ChatBox,SearchHome,AnswerCalling,SignupCompleted,Profile,SingleProfile,RecentCall,VideoChat, LiveVideoChat, SearchProfile,Dummy, SearchHomeBkp, SearchProfileAudio, AudioChat} from './pages'
 import  ProtectedRoute  from "./protected.route";
 import axios from "axios";
 import createBrowserHistory from 'history/createBrowserHistory';
@@ -14,7 +15,6 @@ import {login, userProfile, videoCall} from "./features/userSlice";
 import {useDispatch, useSelector} from "react-redux";
 import {profile, userAuth} from './features/userSlice';
 import {SOCKET} from "./components/Config";
-
 
 
 let is_auth = false, userData;
@@ -62,9 +62,7 @@ function App() {
       if (!!userData && (data.user_from_id == userData.user_id)) { // check one-to-one data sync
         alert("receiver declined your call...")
       }
-      if (!!userData && ((data.user_from_id == userData.user_id) || (data.user_to_id == userData.user_id))) {
-        history.push("/chat")
-      }
+      history.push("/chat")
     })
     SOCKET.on('sender_decline_video_call', (data) => {
       localStorage.removeItem("videoCallPageRefresh");
@@ -73,9 +71,7 @@ function App() {
       if (!!userData && (data.user_to_id == userData.user_id)) { // check one-to-one data sync
         alert("sender declined the call...")
       }
-      if (!!userData && ((data.user_to_id == userData.user_id) || (data.user_from_id == userData.user_id))) {
-        history.push("/chat")
-      }
+      history.push("/chat")
     })
     SOCKET.on('call_not_picked_receiver_hide_page_video_call', (data) => {
       localStorage.removeItem("videoCallPageRefresh");
@@ -115,6 +111,8 @@ function App() {
       //  }, 600000);
     }
   }, [is_auth])
+  
+
   return (
       <Router>
         <Switch>
@@ -133,7 +131,6 @@ function App() {
           <ProtectedRoute exact path='/recent-call' component={RecentCall} />
           <ProtectedRoute exact path='/dummy' component={Dummy} />
           <ProtectedRoute exact path='/status' component={SearchHomeBkp} />
-          <ProtectedRoute exact path='/statusUser' component={StatusUser} />
           <ProtectedRoute exact path='/:receiver/:user_from_id/:user_to_id/:channel_id/:channel_name/video-chat' component={VideoChat} />
           <ProtectedRoute exact path='/:receiver/:user_from_id/:user_to_id/:channel_id/:channel_name/audio-chat' component={AudioChat} />
           <ProtectedRoute exact path='/:user_id/:channel_id/:channel_name/live-video-chat' component={LiveVideoChat} />

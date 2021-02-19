@@ -60,6 +60,11 @@ const FilterUser = ({ fetchedProfile }) => {
      axios.post(GETALLUSER_API, bodyParameters)
      
      .then((response) => {
+    //   if(response.error=="bad_request")
+    // {
+    //   localStorage.removeItem("session_id");
+    //   history.push('/login');
+    // }
         if (response.status == 200) {
           setUserData(response.data.data);
           setIsLoaded(false);
@@ -67,6 +72,10 @@ const FilterUser = ({ fetchedProfile }) => {
         }
       },
       (error) => {
+        if (error.toString().match("403")) {
+          localStorage.removeItem("session_id");
+          history.push('/login');
+        }
         setIsLoaded(true);
      
       }
@@ -97,7 +106,11 @@ console.log(allData);
         (response) => {
          
             setDislike(false);
-     
+            if(response.error=="bad_request")
+            {
+              localStorage.removeItem("session_id");
+              history.push('/login');
+            }
           if (response.status == 200) {
           
             console.log(direction);
@@ -108,7 +121,7 @@ console.log(allData);
           }
         },
         (error) => {
-         
+          
             setDislike(false);
         
         }
@@ -122,15 +135,23 @@ console.log(allData);
       axios.post(LIKE_USER, bodyParameters).then(
         (response) => {
             setLiked(false)
+            if(response.error=="bad_request")
+            {
+              localStorage.removeItem("session_id");
+              history.push('/login');
+            }
+            if(response.status==200) {
             console.log(direction);
             console.log("removing: " + userId);
             alreadyRemoved.push(userId);
             setTimeout(() => {
               setLiked(false)
             }, 2);
-    
+          }
         },
-        (error) => {setLiked(false)}
+        (error) => {
+          
+          setLiked(false)}
       );
     }
   };
@@ -185,6 +206,7 @@ console.log(allData);
  }, [cardClick])
 
 //  useEffect (() => {
+
 //  }, [fetchedProfile])
 
   useEffect(() => {

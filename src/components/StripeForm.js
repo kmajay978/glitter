@@ -7,9 +7,10 @@ import {stripeDataPlanid , stripeCoinDataPlanid ,stripeCoinPlanId , stripePlanId
 import {ACTIVATE_STRIPE_PACKAGE , ACTIVATE_COIN_PACKAGE , GET_LOGGEDPROFILE_API} from "./Api";
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import axios from "axios";
+import { useHistory } from "react-router-dom";
 
 const CheckoutForm = (props) => {
-
+    const history = useHistory();
     const Selected_Stripe_planid = useSelector(stripeDataPlanid);
     const Selected_Stripe_coinid = useSelector(stripeCoinDataPlanid);
 
@@ -56,6 +57,7 @@ const CheckoutForm = (props) => {
             axios
                 .post(ACTIVATE_STRIPE_PACKAGE, bodyParameters)
                 .then((response) => {
+                  
                     if(response.status==200)
                     { 
                     console.log(response);
@@ -63,6 +65,10 @@ const CheckoutForm = (props) => {
                     dispatch(stripePlanId({stripePlanId: null}));
                   }
                 }, (error) => {
+                    if (error.toString().match("403")) {
+                        localStorage.removeItem("session_id");
+                        history.push('/login');
+                      }
                     createNotification('error',error.message);
                 });
         }
@@ -77,7 +83,12 @@ const CheckoutForm = (props) => {
             }
             axios
                 .post(ACTIVATE_COIN_PACKAGE, bodyParameters)
-                .then((response) => {  
+                .then((response) => { 
+                    // if(response.error=="bad_request")
+                    // {
+                    //   localStorage.removeItem("session_id");
+                    //   history.push('/login');
+                    // }
                     if(response.status==200)
                     { 
                         console.log(response);
@@ -87,6 +98,10 @@ const CheckoutForm = (props) => {
                   }
                
                 }, (error) => {
+                    if (error.toString().match("403")) {
+                        localStorage.removeItem("session_id");
+                        history.push('/login');
+                      }
                     createNotification('error',error.message);
                 });
         }

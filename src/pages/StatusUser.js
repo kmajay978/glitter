@@ -9,10 +9,10 @@ const StatusUser = () => {
   const [status , setStatus] = useState([]); 
   
   useEffect(() => {
-      if (friendStatus.length > 0) {
-          let friendStatusDetails = friendStatus;
-          console.log(friendStatusDetails, "friendStatusDetails...")
-          let timeCount = 0;
+    //   if (friendStatus.length > 0) {
+    //       let friendStatusDetails = friendStatus;
+    //       console.log(friendStatusDetails, "friendStatusDetails...")
+    //       let timeCount = 0;
         //   for (let elm of friendStatusDetails) {
         //     if (elm.type === "text") {
         //         elm.tim = 3000;
@@ -33,30 +33,27 @@ const StatusUser = () => {
         // myInterval = window.setInterval(() => {
         //     manageTime = manageTime + 1000;
 
-        //     if (manageTime <= friendStatusDetails[defaultArrayTotalIndex].tim) {
-        //         for (let j in friendStatusDetails) {
-        //             if (j == defaultArrayTotalIndex) {
-        //                 document.getElementById("status-"+j).style.display = "block"
-        //             }
-        //             if (j != defaultArrayTotalIndex) {
-        //                 document.getElementById("status-"+j).style.display = "none"
-        //             }
-        //         }
-        //     }
+//         //     if (manageTime <= friendStatusDetails[defaultArrayTotalIndex].tim) {
+//         //         for (let j in friendStatusDetails) {
+//         //             if (j == defaultArrayTotalIndex) {
+//         //                 document.getElementById("status-"+j).style.display = "block"
+//         //             }
+//         //             if (j != defaultArrayTotalIndex) {
+//         //                 document.getElementById("status-"+j).style.display = "none"
+//         //             }
+//         //         }
+//         //     }
 
         //     if (manageTime == friendStatusDetails[defaultArrayTotalIndex].tim) {
         //         defaultArrayTotalIndex = ((defaultArrayTotalIndex + 1) <= arrayTotalIndex) ? defaultArrayTotalIndex + 1 : null;
         //         if (defaultArrayTotalIndex !== null) {
         //             friendStatusDetails[defaultArrayTotalIndex].tim = friendStatusDetails[defaultArrayTotalIndex].tim + manageTime;
         //         }
-        //     }
-
-           
-            
+        //     } 
         // }, timeCount)
 
-        setStatus(friendStatus);
-      }
+    //     setStatus(friendStatus);
+    //   }
  }, [friendStatus])
 
 return(
@@ -75,7 +72,6 @@ return(
                  <span className="timer d-block">{item.header.subheading}</span>
                  <span className="status_view"><img src="/assets/images/eye-icon.svg" alt="eye"/>{Number(item.totalviews)}</span>
              </div>
-              
           </div>
       
          
@@ -84,7 +80,7 @@ return(
       : item.type=="image"?  <img src={item.url} alt="status"/>
       : item.type=="video"? <video src={item.url} width="300" height="400" type="video/mp4"  />
       : ""}
-                 {/* <img src={item.url} alt="status"/> */}
+              
              </div>
             
       

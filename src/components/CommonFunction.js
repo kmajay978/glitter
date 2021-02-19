@@ -20,6 +20,13 @@ export function addBodyClass(className) {
 
 }
 
+export function stringLimit(string , counts){
+    var text = string;
+    var count = counts;
+    var result = text.slice(0, count) + (text.length > count ? "**********" : "");
+    return result;
+}
+
 export function setStorage(key, value) {
     return localStorage.setItem(key, value);
 }

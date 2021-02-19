@@ -1,15 +1,21 @@
 
 import React, { useState, useEffect } from "react";
+import $ from "jquery";
 import {  useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import * as path from "path";
 import {videoCall} from "../features/userSlice";
 
 const NavLinks = (props) =>{
     const dispatch = useDispatch();
+    const history = useHistory();
 console.log(props, "props..")
   let pathname = window.location.pathname;
+
     useEffect(() => {
+    
+      // alert(window.location.href)
+
         pathname = window.location.pathname;
         // if (pathname !==)/chat   /searching-profile  /video-chat  /answer-calling
         if (pathname !== "/chat" &&
@@ -19,6 +25,7 @@ console.log(props, "props..")
             localStorage.removeItem("videoCallPageRefresh");
             dispatch(videoCall(null))
         }
+       
     }, [window.location.pathname]);
 
     return(

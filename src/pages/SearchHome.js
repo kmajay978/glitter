@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import axios from "axios";
 import NavLinks from '../components/Nav';
 import FilterSide from '../components/Filter';
-import { ADD_STATUS , FRIENDLIST_API , GET_STATUS} from '../components/Api';
+import { ADD_STATUS , FRIENDLIST_API , GET_STATUS , VIEW_LIKE_STATUS} from '../components/Api';
 import {Modal, ModalBody , Dropdown} from 'react-bootstrap';
 import OwlCarousel from 'react-owl-carousel2';
 import {SOCKET} from '../components/Config';
@@ -14,6 +14,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {userProfile} from "../features/userSlice";
 import {generateLiveVideoChatToken} from "../api/videoApi";
 import {addDefaultSrc, returnDefaultImage} from "../commonFunctions";
+import useToggle from '../components/CommonFunction';
 import SyncLoader from "react-spinners/SyncLoader";
 import { css } from "@emotion/core";
 import {NotificationContainer, NotificationManager} from 'react-notifications';
@@ -46,12 +47,13 @@ const SearchHome = () =>
     const [randomNumber, setRandomNumber] = useState('');
     const [fetchedProfile, setFilterUser] = useState('');
     const [ friendList  , setFriendlist] = useState([]);
-
+    const [isOn, toggleIsOn] = useToggle(false);
     const [Click, setClick] = useState(false);
     const [StartPosition, setStartPosition] = useState([])
     const [statusData , setStatusData] = useState({});
     const [storyData , setStoryData] = useState([]);
     const [ friendId , setFriendId] = useState('');
+    const [statusId , setStatusId] = useState([]);
     const [statusLength , setStatusLength] = useState("");
     const [showLive,setShowLive] = useState(false);
     const [showPencil , setShowPencil] = useState(false);
@@ -76,8 +78,7 @@ const SearchHome = () =>
 
 const stories = !!storyData ? storyData : [];
 
-console.log(stories, "stories....")
-
+// console.log(storyData, "yuyuyuyu")
   
 const statusoptions = {
   loop: false,
@@ -93,6 +94,14 @@ const statusoptions = {
 
 };
 
+
+const SingleProfileView = (id) =>{
+  console.log(id,"idssss...");
+  history.push({
+    pathname: '/single-profile',
+    userId: id 
+  })
+}
 
 const handleFileChange = e => {
   var data = e.target.files[0];
@@ -139,6 +148,11 @@ const handleFileChange = e => {
     }
    axios.post(FRIENDLIST_API,bodyParameters)
     .then((response) => {
+      // if(response.error=="bad_request")
+      // {
+      //   localStorage.removeItem("session_id");
+      //   history.push('/login');
+      // }
       if (response.status === 200 ) {
         setIsLoaded(false);
           let friendList = response.data.data;
@@ -152,44 +166,63 @@ const handleFileChange = e => {
         setStatusLength(response.data.data.statuses);
       }
  }, (error) => {
+  if (error.toString().match("403")) {
+    localStorage.removeItem("session_id");
+    history.push('/login');
+  }
   friendLists = []
   setFriendlist('');
   setIsLoaded(true);
 
 });
   }
-   console.log(statusLength);
-  useEffect  (() => {
-   handleStatus();
-  },[friendId])
+  //Like view status api
+  const ViewStatus =() =>{
+
+  }
 
   const handleStatus = () =>
   {
+    setIsLoaded(true);
     const bodyParameters = {
       user_id: friendId,
     };
     axios.post(GET_STATUS,bodyParameters)
     .then((response) => {
+      setIsLoaded(false);
       if (response.status === 200 && !response.status.error) {
-        setStatusData(response.data);
-        setStoryData(response.data.result);
-        setStatusModel(true);
-        dispatch(
-          friendStatus({
-            friendStatus: response.data.result
-          })
-      );
+      
+        if (!!response.data && !!response.data.result && response.data.result.length > 0 ) {
+          // $('#modal').show(); 
+          setStatusData(response.data);
+          setStoryData(response.data.result);
+          toggleIsOn(true)
+        }
+        else {
+          setStatusData({});
+        setStoryData([]);
+        toggleIsOn(false)
+        setFriendId('');
       }
+    }
       else {
-        setStatusData('');
+        setStatusData({});
+        setIsLoaded(false);
+        setFriendId('');
       }
 
  }, (error) => {
-    setStatusData('');
+    setStatusData({});
+    setIsLoaded(false);
+    setFriendId('');
 });
   }
 
-  
+  useEffect  (() => {
+    handleStatus();
+    console.log(friendId,"hhhhhfriendId....")
+   },[friendId])
+ 
 // console.log(statusData);
 //  console.log(storyData);
 
@@ -199,6 +232,8 @@ const handleFileChange = e => {
   setPicture(null);
  }
  
+ 
+ 
  const modelClose= () => {
    setUploadStatus(false);
    setShowPencil(false);
@@ -206,7 +241,8 @@ const handleFileChange = e => {
    setVideoData(null);
    setPencilData('');
    dispatch(friendStatus({friendStatus: []}));
-   setStatusModel(false)
+   setStatusModel(false);
+   setFriendId('');
  }
 
 const config = {
@@ -215,10 +251,12 @@ const config = {
            "Content-Type": "multipart/form-data",
        }
  }
- useEffect(() => {
-   console.log(storyData, "storyData...")
- }, [storyData])
 
+ const closeDialog = () => {
+  toggleIsOn(false);
+  setIsLoaded(false);
+  setFriendId("")
+ }
 const handleUploadStatus =() => 
 {
   if (videoData=='image')
@@ -229,13 +267,23 @@ const handleUploadStatus =() =>
   bodyParameters.append("status_type", "" + 1);
   axios.post(ADD_STATUS , bodyParameters , config)
   .then((response)=> {
-  
+    // if(response.error=="bad_request")
+    // {
+    //   localStorage.removeItem("session_id");
+    //   history.push('/login');
+    // }
+  if(response.status==200){
    createNotification('sucess');
    setTimeout(() => {
     setUploadStatus(false);
   }, 1500);
    setPicture('');
+  }
  } ,(error) => {
+  if (error.toString().match("403")) {
+    localStorage.removeItem("session_id");
+    history.push('/login');
+  }
  });
   }
   else if (videoData=='video'){
@@ -245,12 +293,22 @@ const handleUploadStatus =() =>
    bodyParameters.append("status_type", "" + 2);
    axios.post(ADD_STATUS , bodyParameters , config)
    .then((response)=> {
+    // if(response.error=="bad_request")
+    // {
+    //   localStorage.removeItem("session_id");
+    //   history.push('/login');
+    // }
+     if(response.status==200){
     createNotification('sucess');
     setTimeout(() => {
       setUploadStatus(false);
     }, 1500);
-   
+  }
   } ,(error) => {
+    if (error.toString().match("403")) {
+      localStorage.removeItem("session_id");
+      history.push('/login');
+    }
  });
   }
   else if (videoData=='text'){
@@ -260,6 +318,8 @@ const handleUploadStatus =() =>
    bodyParameters.append("status_type", "" + 3);
    axios.post(ADD_STATUS , bodyParameters , config)
    .then((response)=> {
+   
+     if(response.status==200){
     createNotification('sucess');
     setTimeout(() => {
       setUploadStatus(false);
@@ -267,7 +327,12 @@ const handleUploadStatus =() =>
     
     setPencilData('');
     setShowPencil(false);
+  }
   } ,(error) => {
+    if (error.toString().match("403")) {
+      localStorage.removeItem("session_id");
+      history.push('/login');
+    }
  });
   }
  }
@@ -304,6 +369,35 @@ const uploadImage = () => {
     clearInterval(checkOnlineFrdsInterval)
  }
   useEffect (() => {
+    handleFriendList();
+    window.setTimeout(() => {
+      $(".main-status")
+   .mousedown(function (evt) {
+     isMouseClick = true;
+     glitterUid =  $(".main-status")
+
+       startingPos = [evt.pageX, evt.pageY]
+       glitterUid = evt.currentTarget.id
+       // setStartPosition(startingPos);
+
+   })
+   .mousemove(function (evt) {
+       if (!(evt.pageX === startingPos[0] && evt.pageY === startingPos[1])) {
+           isMouseClick = false;
+       }
+   })
+   .mouseup(function () {
+       if (!isMouseClick) {
+          setClick(isMouseClick);
+       } else {
+         isMouseClick = true;
+          setClick(isMouseClick);
+       }
+       startingPos = [];
+       setStartPosition(startingPos)
+   });
+   }, 1000);
+
     SOCKET.connect();
       checkOnlineFrdsInterval = window.setInterval(() => {
           console.log("interval started....")
@@ -311,8 +405,7 @@ const uploadImage = () => {
               session_id: localStorage.getItem("session_id")
           });
       }, 5000)
-    handleFriendList();
-
+ 
       SOCKET.on('sendAudienceToLiveVideo', (data) => {
         console.log(userData, data, "kkkkkk")
           if (userData.user_id === data.user_id) {
@@ -358,33 +451,6 @@ const uploadImage = () => {
           }
       });
 
-    window.setTimeout(() => {
-       $(".main")
-    .mousedown(function (evt) {
-      isMouseClick = true;
-      glitterUid =  $(".main")
-
-        startingPos = [evt.pageX, evt.pageY]
-        glitterUid = evt.currentTarget.id
-        // setStartPosition(startingPos);
-
-    })
-    .mousemove(function (evt) {
-        if (!(evt.pageX === startingPos[0] && evt.pageY === startingPos[1])) {
-            isMouseClick = false;
-        }
-    })
-    .mouseup(function () {
-        if (!isMouseClick) {
-           setClick(isMouseClick)
-        } else {
-          isMouseClick = true
-           setClick(isMouseClick)
-        }
-        startingPos = [];
-        setStartPosition(startingPos)
-    });
-    }, 1000);
     uploadImage();
     return () => componentWillUnmount()
     },[])
@@ -398,11 +464,7 @@ const uploadImage = () => {
   }
   },[Click])
 
-    // useEffect(() => {
-    //     if (!!userData) {
-    //
-    //     }
-    // }, [userData])
+
 //  console.log(friendList);
 //   console.log(fetchedProfile);
 
@@ -416,8 +478,13 @@ const uploadImage = () => {
         generateLiveVideoChatToken(dispatch, bodyParameters, call_type, user_id, uuidv4(), SOCKET);
 
     }
-    const makeMeAudience = (item) => {
+    const makeMeAudience = (item ) => {
         setFriendId(item.user_id);
+        // if(!!item.result.status_id){
+        //  item.result.map((item , index)=>{
+        //   setStatusId(item.status_id);
+        //  })
+        // }
         if (item.is_live) {
             SOCKET.emit("addAudienceToLiveVideo", {
                 user_id: userData.user_id,
@@ -427,7 +494,7 @@ const uploadImage = () => {
             })
         }
     }
-
+console.log(statusId);
     const convertToHtml = (data) => {
        const convertedHtml =  {__html: data};
       return <div dangerouslySetInnerHTML={convertedHtml} />
@@ -471,21 +538,23 @@ const uploadImage = () => {
                 <div className="add__status" onClick={() =>setUploadStatus(true)}>+</div>
 
                 <div className="status__slider">
+                
         <OwlCarousel  options={options}  >
         {friendList.map((item, i) =>(
-        (item.statuses.length > 0 || item.is_live === true) ?
-       
-         <div className="users-listing__slider__items" onClick={() =>  makeMeAudience(item)} id={item.user_id}  >
-            <div className="users-listing__slider__items__image"  data-toggle="modal" data-target="#status-modal" >
+           (item.statuses.length > 0 ||  item.is_live === true ) ?
+          
+         <div className="users-listing__slider__items" onClick={() =>  makeMeAudience(item )} id={item.user_id}  >
+         
+            <div className="users-listing__slider__items__image" id="modal" data-toggle="modal" >
            {!!friendList ? <img onError={(e) => addDefaultSrc(e)} src={!!item.profile_images ? item.profile_images : returnDefaultImage()} alt="marlene" /> : ""}
               <span className="circle-shape" />
             </div>
              {
                  item.is_live === true &&
-                 <span className="live">Live</span>
+                 <span class Name="live">Live</span>
              }
           </div>
-          : ""
+          :""
          ))}
 
         </OwlCarousel>
@@ -496,8 +565,10 @@ const uploadImage = () => {
       </div>
             <div className="search-people-row">
               <div className="row">
+                {!!friendList&&
+                <> 
                 {friendList.map((item,i) => {
-               return <div className=" main col-md-3" id={item.user_id}  >
+               return <div className=" main col-md-3" id={item.user_id} onClick = {() =>SingleProfileView(item.user_id)}>
                   <div className="sp-singular">
                     <a href="javascript:void(0)">
                       <figure>
@@ -510,10 +581,12 @@ const uploadImage = () => {
                         <div className="info">{item.distance}, {item.occupation}</div>
                       </div>
                     </a>
+                    {item.packages.length>0?  <span className="vip-user bg-grd-clr"><img src="/assets/images/level-img.png" alt="profile level"/></span> :""}       
                   </div>
                 </div>
                 })}
-           
+                </>
+                }
 
               </div>
               <SyncLoader color={"#fcd46f"} loading={isLoaded} css={override} size={20} />
@@ -525,18 +598,31 @@ const uploadImage = () => {
     
     </div>
   </div>
-  { stories.length > 0 &&
-  <Modal className ="theme-modal" id="upload-media-modal" show={statusModel} onHide={() => setStatusModel(false)} backdrop="static" keyboard={false}>
- 
-  <StatusUser/>
-  <a href="javascript:void(0)" className="modal-close" onClick={modelClose}><img src="/assets/images/btn_close.png" /></a>
-    </Modal>
+  <div className={isOn ? 'all-gifts-wrapper active': 'all-gifts-wrapper'} >
+    <div className="status-modal">
+    <a href="javascript:void(0)" className="close-gift-btn modal-close" onClick={closeDialog}><img src="/assets/images/btn_close.png" /></a>
+      <div className="all-gift-body">
+      
+      {
+  stories.length > 0 &&
+  
+  <Stories
+      stories={stories}
+      defaultInterval={3000}
+      width={377}
+      height={468}
+     
+  />      
 }
+      </div>
+      
+    </div>
+  </div>
   {/* <div className={isOn ? 'all-gifts-wrapper active': 'all-gifts-wrapper '} >
     <div className="all-gift-inner">
-    <a href="javascript:void(0)" className="close-gift-btn modal-close" onClick={toggleIsOn}><img src="/assets/images/btn_close.png" /></a>
+    <a href="javascript:void(0)" className="close-gift-btn modal-close" onClick={closeDialog}><img src="/assets/images/btn_close.png" /></a>
       <div className="all-gift-body">
-        <StatusUser/>
+      
       {
   stories.length > 0 &&
   
