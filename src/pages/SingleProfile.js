@@ -188,10 +188,7 @@ const SingleProfile = (props) =>{
             //  }
             },
             (error) => {
-              if (error.toString().match("403")) {
-              localStorage.removeItem("session_id");
-              history.push('/login');
-            }
+         
           }
           );
         }
