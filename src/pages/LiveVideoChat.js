@@ -356,7 +356,7 @@ const LiveVideoChat = () =>{
                         className="video_live"
                         style={{ width: "400px", height: "400px" }}
                     />
-                    <img src="/assets/images/video-chat-bg.jpg" alt="Video Calling"/>
+                    {/* <img src="/assets/images/video-chat-bg.jpg" alt="Video Calling"/> */}
                 </div>
                 <div className="charges-reminder-txt">
                     <p>After 25 Seconds, you will be charged 120 coins per minute</p>

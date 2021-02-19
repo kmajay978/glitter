@@ -2395,7 +2395,7 @@ body {
 .message .audio-right {
   display: inherit;
     position: relative;
-    right: 65px;
+    right: 60px;
 }
 
 .message .audio-left {
