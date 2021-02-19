@@ -64,7 +64,7 @@ const ChatBox = (props) =>{
           case 'error':
             NotificationManager.error('Please recharge and try again', 'Insufficient Balance!', 5000, () => {
             });
-            break; 
+            break;
       };
       };
 

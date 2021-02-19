@@ -14,10 +14,11 @@ import {useDispatch, useSelector} from "react-redux";
 import {userProfile} from "../features/userSlice";
 import {generateLiveVideoChatToken} from "../api/videoApi";
 import {addDefaultSrc, returnDefaultImage} from "../commonFunctions";
-import useToggle from '../components/CommonFunction';
 import SyncLoader from "react-spinners/SyncLoader";
 import { css } from "@emotion/core";
 import {NotificationContainer, NotificationManager} from 'react-notifications';
+import {friendStatus} from '../features/userSlice'
+import StatusUser from "../pages/StatusUser";
 
 let isMouseClick = false, startingPos = [], glitterUid, friendLists = [], userData= null, checkOnlineFrdsInterval;
 
@@ -40,8 +41,9 @@ const SearchHome = () =>
 {
     const history = useHistory();
     const dispatch = useDispatch();
-    const [isOn, toggleIsOn] = useToggle(false);
-    const[randomNumber, setRandomNumber] = useState('');
+    
+    const [statusModel, setStatusModel] = useState(false);
+    const [randomNumber, setRandomNumber] = useState('');
     const [fetchedProfile, setFilterUser] = useState('');
     const [ friendList  , setFriendlist] = useState([]);
 
@@ -49,14 +51,14 @@ const SearchHome = () =>
     const [StartPosition, setStartPosition] = useState([])
     const [statusData , setStatusData] = useState({});
     const [storyData , setStoryData] = useState([]);
-    const[ friendId , setFriendId] = useState('');
+    const [ friendId , setFriendId] = useState('');
     const [statusLength , setStatusLength] = useState("");
     const [showLive,setShowLive] = useState(false);
     const [showPencil , setShowPencil] = useState(false);
-    const[pencilData , setPencilData] = useState('')
+    const [pencilData , setPencilData] = useState('')
     const [picture, setPicture] = useState(null);
     const [imgData, setImgData] = useState(null);
-    const[FileName , setFileName] = useState(null);
+    const [FileName , setFileName] = useState(null);
     const [videoData, setVideoData] = useState(null);
     const [video, setVideo] = useState(null);
     const [showUploadStatus,setUploadStatus] = useState(false);
@@ -171,7 +173,12 @@ const handleFileChange = e => {
       if (response.status === 200 && !response.status.error) {
         setStatusData(response.data);
         setStoryData(response.data.result);
-        toggleIsOn(true);
+        setStatusModel(true);
+        dispatch(
+          friendStatus({
+            friendStatus: response.data.result
+          })
+      );
       }
       else {
         setStatusData('');
@@ -181,6 +188,8 @@ const handleFileChange = e => {
     setStatusData('');
 });
   }
+
+  
 // console.log(statusData);
 //  console.log(storyData);
 
@@ -196,6 +205,8 @@ const handleFileChange = e => {
    setPicture(null);
    setVideoData(null);
    setPencilData('');
+   dispatch(friendStatus({friendStatus: []}));
+   setStatusModel(false)
  }
 
 const config = {
@@ -514,15 +525,21 @@ const uploadImage = () => {
     
     </div>
   </div>
-
-
-  
-  <div className={isOn ? 'all-gifts-wrapper active': 'all-gifts-wrapper '} >
+  { stories.length > 0 &&
+  <Modal className ="theme-modal" id="upload-media-modal" show={statusModel} onHide={() => setStatusModel(false)} backdrop="static" keyboard={false}>
+ 
+  <StatusUser/>
+  <a href="javascript:void(0)" className="modal-close" onClick={modelClose}><img src="/assets/images/btn_close.png" /></a>
+    </Modal>
+}
+  {/* <div className={isOn ? 'all-gifts-wrapper active': 'all-gifts-wrapper '} >
     <div className="all-gift-inner">
     <a href="javascript:void(0)" className="close-gift-btn modal-close" onClick={toggleIsOn}><img src="/assets/images/btn_close.png" /></a>
       <div className="all-gift-body">
+        <StatusUser/>
       {
   stories.length > 0 &&
+  
   <Stories
       stories={stories}
       defaultInterval={3000}
@@ -534,7 +551,7 @@ const uploadImage = () => {
       </div>
       
     </div>
-  </div>
+  </div> */}
        
 
 {/* <div className="modal fade" id="status-modal" tabIndex={-1} role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

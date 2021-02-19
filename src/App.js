@@ -5,7 +5,7 @@ import {Elements} from '@stripe/react-stripe-js';
 import {loadStripe} from '@stripe/stripe-js';
 import {BrowserRouter as Router, Switch, Route, withRouter, useParams, useHistory } from 'react-router-dom';
 // Importing all pages from index.js 
-import {Home,Login,ChatBox,SearchHome,AnswerCalling,SignupCompleted,Profile,SingleProfile,RecentCall,VideoChat, LiveVideoChat, SearchProfile,Dummy, SearchHomeBkp, SearchProfileAudio, AudioChat} from './pages'
+import {Home,Login,ChatBox,SearchHome,AnswerCalling,StatusUser,SignupCompleted,Profile,SingleProfile,RecentCall,VideoChat, LiveVideoChat, SearchProfile,Dummy, SearchHomeBkp, SearchProfileAudio, AudioChat} from './pages'
 import  ProtectedRoute  from "./protected.route";
 import axios from "axios";
 import createBrowserHistory from 'history/createBrowserHistory';
@@ -14,6 +14,7 @@ import {login, userProfile, videoCall} from "./features/userSlice";
 import {useDispatch, useSelector} from "react-redux";
 import {profile, userAuth} from './features/userSlice';
 import {SOCKET} from "./components/Config";
+
 
 
 let is_auth = false, userData;
@@ -39,7 +40,7 @@ function App() {
   console.log(new_history, "new_history...")
   const dispatch = useDispatch();
   const is_auth = useSelector(userAuth); //using redux useSelector here
-  // console.log(is_auth, "is_auth....")
+  // console.log(is_auth, "is_auth....")0000000000
   userData = useSelector(userProfile).user.profile; //using redux useSelector here
   useEffect(() => {
     SOCKET.connect();
@@ -90,6 +91,12 @@ function App() {
         }
       }
     })
+
+
+
+
+
+    
     SOCKET.on('call_malfunctioned_in_between_receiver_call_video_call', (data) => {
       localStorage.removeItem("videoCallPageRefresh");
       // SOCKET.disconnect();
@@ -126,6 +133,7 @@ function App() {
           <ProtectedRoute exact path='/recent-call' component={RecentCall} />
           <ProtectedRoute exact path='/dummy' component={Dummy} />
           <ProtectedRoute exact path='/status' component={SearchHomeBkp} />
+          <ProtectedRoute exact path='/statusUser' component={StatusUser} />
           <ProtectedRoute exact path='/:receiver/:user_from_id/:user_to_id/:channel_id/:channel_name/video-chat' component={VideoChat} />
           <ProtectedRoute exact path='/:receiver/:user_from_id/:user_to_id/:channel_id/:channel_name/audio-chat' component={AudioChat} />
           <ProtectedRoute exact path='/:user_id/:channel_id/:channel_name/live-video-chat' component={LiveVideoChat} />

@@ -41,6 +41,7 @@ export const userSlice = createSlice({
         audio: audioInitState,
         live_video: liveVideoInitState,
         stripePlanId:null ,
+        friendStatus : [],
         stripeCoinPlanId :null
     }, 
     reducers: { 
@@ -74,15 +75,19 @@ export const userSlice = createSlice({
         },
         stripeCoinPlanId: (state , action) => {
             state.stripeCoinPlanId = action.payload.stripeCoinPlanId;
+        },
+        friendStatus: (state , action) => {
+            state.friendStatus= action.payload.friendStatus;
         }
     }
 });
-export const { login, logout, profile , filterData, videoCall, audioCall, stripePlanId , stripeCoinPlanId, liveVideoCall} = userSlice.actions;
+export const {friendStatus, login, logout, profile , filterData, videoCall, audioCall, stripePlanId , stripeCoinPlanId, liveVideoCall} = userSlice.actions;
 
 export const selectUser = (state) => state.user.user;
 export const userProfile = (state) => state;
 export const stripeDataPlanid = (state) => state.user.stripePlanId;
 export const stripeCoinDataPlanid = (state) => state.user.stripeCoinPlanId;
+export const friendStatusData = (state) => state.user.friendStatus;
 export const userAuth = (state) => state.user.is_authanticated;
 export const filterDataUser = (state) => state.user.filterData;
 export const videoCallUser = (state) => state.user.video;
