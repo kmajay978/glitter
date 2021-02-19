@@ -551,7 +551,7 @@ console.log(statusId);
             </div>
              {
                  item.is_live === true &&
-                 <span class Name="live">Live</span>
+                 <span className="live">Live</span>
              }
           </div>
           :""

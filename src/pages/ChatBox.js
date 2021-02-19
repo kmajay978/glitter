@@ -312,7 +312,20 @@ const ChatBox = (props) =>{
                 setUploadImage(false);
                 setPreviews('');
                }
+
+            const  stringLimit = (string , counts)=>{
+                var text = string;
+                var count = counts;
+                var result = text.slice(0, count) 
+                // + (text.length > count ? "*********" : "");
+                for(var i=0 ; i<=text.length ; i++){
+                    // text.replace(text.substr(1,text.length-3));
+                    var result = text.slice(0, count)+ (text.length > count ? "*********" : "");
+                } 
+                return result;
+            }
     /************************************* Working here socket *******************************************************/
+
 
     function readThenSendFile(data){
         var reader = new FileReader();
