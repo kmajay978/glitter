@@ -822,6 +822,14 @@ input[type="range"] {
     align-items: center;
 }
 
+.vip-icon-top + ul {
+    margin-left: 20px !important;
+}
+
+.vip-icon-top img {
+    width: 20px;
+}
+
 .feature-menu {
     background-color: #282828;
     padding: 15px;
