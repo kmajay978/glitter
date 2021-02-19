@@ -12,3 +12,10 @@ export const checkLiveDomain = () => {
     }
     return false
 }
+
+export const changeImageLinkDomain = () => {
+    if (window.location.hostname === "rrmr.co.in") {
+        return "https://rrmr.co.in/glitter-101/public/profile_images/"
+    }
+    return "http://167.172.209.57/glitter-101/public/profile_images/"
+}

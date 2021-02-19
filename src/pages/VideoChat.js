@@ -8,7 +8,7 @@ import NavLinks from '../components/Nav';
 import { joinChannel, leaveEventAudience, leaveEventHost } from "../components/VideoComponent";
 import {useSelector, useDispatch} from "react-redux";
 import {userProfile, videoCall, videoCallUser} from "../features/userSlice";
-import { checkLiveDomain } from "../commonFunctions";
+import { changeImageLinkDomain, checkLiveDomain } from "../commonFunctions";
 
 let videoCallStatus = 0, videoCallParams, interval, callType = 0;
 
@@ -238,7 +238,7 @@ console.log(userData, "userdata..")
                 <figure>
                   {
                     !user &&
-                    <img src={"http://167.172.209.57/glitter-101/public/profile_images/1611574536_download.jpg"} alt="placeholder"/>
+                    <img src={changeImageLinkDomain() + "1611574536_download.jpg"} alt="placeholder"/>
                   }
                   {
                     !!user &&

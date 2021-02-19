@@ -5,6 +5,7 @@ import NavLinks from '../components/Nav';
 import {SOCKET} from "../components/Config";
 import { useSelector } from "react-redux";
 import { userProfile } from "../features/userSlice";
+import { changeImageLinkDomain } from "../commonFunctions";
 
 let pickVideoCallInterval, pickVideoCallCount = 0, userData;
 
@@ -60,9 +61,9 @@ const AnswerCalling = () =>{
                             <figure>
                                 {
                                     !!senderDetails ?
-                                        <img src={"http://167.172.209.57/glitter-101/public/profile_images/"+senderDetails.profilePics} alt={senderDetails.firstName}/>
+                                        <img src={changeImageLinkDomain() + senderDetails.profilePics} alt={senderDetails.firstName}/>
                                         :
-                                        <img src={"http://167.172.209.57/glitter-101/public/profile_images/1611574536_download.jpg"} alt="placeholder"/>
+                                        <img src={changeImageLinkDomain() + "1611574536_download.jpg"} alt="placeholder"/>
                                 }
                                 {
                                     !!senderDetails &&
