@@ -71,6 +71,8 @@ const Profile = (props) =>{
   const [coinSpend , setCoinSpend] = useState('');
   const [Dob, setDob] = useState(''); 
   const [isLoaded, setIsLoaded] = useState(false);
+  const [warningMessage, setWarningMessage] = useState('');
+  
 
   const [showStripe , setShowStripe] = useState(false);
   const [showChecked , setMycheckbox] = useState(false);
@@ -364,18 +366,27 @@ catch (err) {
       }
       axios.post(COIN_HISTORY , bodyParameters)
       .then((response) =>{
-        console.log(response)
+        console.log(response,"workingadsfadsfasdf....")
        
-        if(response.status==200){
-        setIsLoaded(false);
-        setCoinHistory(response.data.result);
-        setCoinSpend(response.data.count_coins);
+        if(response.data.status_code == 200 && response.data.status == true)
+        {
+          setIsLoaded(false);
+          setCoinHistory(response.data.result);
+          setCoinSpend(response.data.count_coins);
+          setWarningMessage('');
         }
-      //  console.log(response.data, '...history');
+        else
+        {
+          setIsLoaded(false);
+          setWarningMessage(response.data.message);
+          createNotification('error' , response.data.message);
+        }
+
       }, (error)=> {
-        setIsLoaded(true);
+        setIsLoaded(false);
         if (error.toString().match("403")) {
           localStorage.removeItem("session_id");
+          createNotification('error' , error.message);
           history.push('/login');
         }
         
@@ -388,19 +399,9 @@ catch (err) {
      const bodyParameters = {
        session_id : sessionId,
      }
-     try {
-      const {data:{result, status, error}} = await axios.post(RECEIVED_GIFT_LIST , bodyParameters)
-     
-      if(status==200){
-        setGiftData(result);
-        }
-  }
-  catch (err) {
-      if (err.toString().match("403")) {
-          localStorage.removeItem("session_id");
-          history.push('/login');
-        }
-  }
+
+     const {data:{result , status}} = await axios.post(RECEIVED_GIFT_LIST,bodyParameters);
+      setGiftData(result);
    }
 
    //get single  gift item
@@ -552,15 +553,14 @@ catch (err) {
   };
   };
 
- const createNotification = (type) => {
+ const createNotification = (type , message) => {
   
     switch (type) {
         case 'unblock':
           NotificationManager.success('unblock Successfully ', 'unblock');
           break;
       case 'error':
-        NotificationManager.error('Error message', 'Click me!', 5000, () => {
-        });
+        NotificationManager.error(message ,'Error message')
         break; 
   };
   };
@@ -934,6 +934,7 @@ catch (err) {
         </div>
       </div>
      })} 
+     {warningMessage}
       <SyncLoader color={"#fcd46f"} loading={isLoaded} css={override} size={18} />
     </div>
     <a href="javascript:void(0)" className="modal-close" onClick={() => setShowCoin(false)}><img src="/assets/images/btn_close.png" /></a>
@@ -1170,10 +1171,7 @@ catch (err) {
             </a>
           </li>
            })}
-          <li>
-          </li>
-          <li>                                                    
-          </li>
+         
         </ul>
       </div>
     </div>

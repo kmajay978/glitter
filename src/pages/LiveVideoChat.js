@@ -261,9 +261,19 @@ const LiveVideoChat = () =>{
         if (!!modal) {
             modal.remove()
         }
-        const remoteVideo = document.getElementById("remote_video_");
-        if (!!remoteVideo) {
-            remoteVideo.remove()
+        if (Number(videoCallParams.user_id) == videoCallState.user_id) {
+            // sender
+            const remoteVideo = document.getElementById("remote_video_");
+            if (!!remoteVideo) {
+                remoteVideo.remove()
+            }
+        }
+        else {
+            // receiver
+            const local_stream = document.getElementById("local_stream");
+            if (!!local_stream) {
+                local_stream.remove()
+            }
         }
     }, [])
 
