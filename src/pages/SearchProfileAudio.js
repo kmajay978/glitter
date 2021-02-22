@@ -59,7 +59,7 @@ const SearchProfile = () =>{
           <div className="col-lg-4 mx-auto align-self-center">
             <div className="vc-head-title d-flex flex-wrap align-items-center ml-5">
               <div className="vc-user-name d-flex flex-wrap align-items-center">
-                <div className="name ml-2"><img src="/assets/images/clockwise.png" className="mr-3" alt="video chat" />video chat</div>
+                <div className="name ml-2"><img src="/assets/images/clockwise.png" className="mr-3" alt="audio chat" />Audio chat</div>
               </div>
               <div className="remaining-coins ml-5">
                 <img src="/assets/images/diamond-coin.png" alt="Coins" />

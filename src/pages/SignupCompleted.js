@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import {  useHistory } from 'react-router';
 import {addBodyClass} from '../components/CommonFunction'; 
 import axios from "axios";
+import { checkLiveDomain } from "../commonFunctions";
 
 const SignupCompleted = (props) =>{
   // Getting picture from prop
@@ -54,7 +55,7 @@ else
               </div>
               <h4 className="theme-txt">Awesome</h4>
               <p>Your profile looks great, ready to look around.</p>
-              <a className="btn bg-grd-clr d-block" href="/">Explore</a>
+              <a className="btn bg-grd-clr d-block" href={checkLiveDomain() ? "/glitter-web" : "/"}>Explore</a>
             </div>
           </div>
         </div>

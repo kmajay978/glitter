@@ -201,6 +201,8 @@ const handleFileChange = e => {
         if (!!response.data && !!response.data.result && response.data.result.length > 0 ) {
           // $('#modal').show(); 
           setStatusData(response.data);
+
+
           setStoryData(response.data.result);
           toggleIsOn(true)
         }
@@ -318,10 +320,20 @@ const handleUploadStatus =() =>
  });
   }
   else if (videoData=='text'){
-   const bodyParameters =new FormData();
-   bodyParameters.append("session_id", "" + localStorage.getItem('session_id'));
-   bodyParameters.append("status", pencilData);
-   bodyParameters.append("status_type", "" + 3);
+
+        //Converting text to image here
+       var tCtx = document.getElementById('textCanvas').getContext('2d'),
+          imageElem = document.getElementById('image');
+
+          tCtx.canvas.width = tCtx.measureText(pencilData).width;
+          tCtx.fillText(pencilData, 0, 10);
+          imageElem.src = tCtx.canvas.toDataURL();
+
+          const bodyParameters =new FormData();
+          bodyParameters.append("session_id", "" + localStorage.getItem('session_id'));
+          bodyParameters.append("status", imageElem.src);
+          bodyParameters.append("status_type", "" + 3);
+
    axios.post(ADD_STATUS , bodyParameters , config)
    .then((response)=> {
    
@@ -744,12 +756,13 @@ console.log(statusId);
                         
                     </div>
              </form>
-            
+           
           {/* </div> */}
           {/* End Modal start here */}
           <a href="javascript:void(0)" className="modal-close" onClick={modelClose}><img src="/assets/images/btn_close.png" /></a>
       </Modal>
-
+      <canvas id='textCanvas' height={465} width={380} />
+            <img id='image' />
 </section>
 
 

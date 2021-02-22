@@ -8,7 +8,7 @@ import NavLinks from '../components/Nav';
 import { joinChannelAudio, leaveEventAudience, leaveEventHost } from "../components/VideoComponent";
 import {useSelector, useDispatch} from "react-redux";
 import {userProfile, audioCall, audioCallUser} from "../features/userSlice";
-import {checkLiveDomain, returnDefaultImage} from "../commonFunctions";
+import {changeImageLinkDomain, checkLiveDomain, returnDefaultImage} from "../commonFunctions";
 
 let videoCallStatus = 0, videoCallParams, interval;
 
@@ -145,7 +145,7 @@ console.log(userData, "userdata..")
         if (!!userData && (data.user_to_id == userData.user_id)) {
           for (let i in userDetails) {
             if (userDetails[i].id != userData.user_id) {
-              document.getElementById("audioCallingPic").setAttribute("src", "http://167.172.209.57/glitter-101/public/profile_images/"+userDetails[i].profilePics)
+              document.getElementById("audioCallingPic").setAttribute("src", changeImageLinkDomain() +userDetails[i].profilePics)
               break;
             }
           }
@@ -190,7 +190,7 @@ console.log(userData, "userdata..")
         else {
           for (let i in userDetails) {
             if (userDetails[i].id != userData.user_id) {
-              document.getElementById("audioCallingPic").setAttribute("src", "http://167.172.209.57/glitter-101/public/profile_images/"+userDetails[i].profilePics)
+              document.getElementById("audioCallingPic").setAttribute("src", changeImageLinkDomain() +userDetails[i].profilePics)
               break;
             }
           }
@@ -248,7 +248,7 @@ console.log(userData, "userdata..")
                 <figure>
                   {
                     !user &&
-                    <img src={"http://167.172.209.57/glitter-101/public/profile_images/1611574536_download.jpg"} alt="placeholder"/>
+                    <img src={changeImageLinkDomain() + "1611574536_download.jpg"} alt="placeholder"/>
                   }
                   {
                     !!user &&

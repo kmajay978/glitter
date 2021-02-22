@@ -1537,6 +1537,52 @@ position: absolute;
     width: 100%;
 }
 
+.gifter {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    left: 30px;
+    animation:gifter 1s ease-in;
+    animation-fill-mode: forwards;
+}
+/*
+@keyframes gifter {
+    0% {transform: translateY(80px);opacity: 1;}
+    100% {transform: translateY(-80px);opacity: 0;}
+  }
+
+
+  @-moz-keyframes gifter {
+    from {background-color: red;}
+    to {background-color: yellow;}
+  }
+
+  @-webkit-keyframes gifter {
+    from {background-color: red;}
+    to {background-color: yellow;}
+  }
+*/
+
+.gifter > img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 5px;
+    border: 2px solid var(--theme-color);
+}
+
+.gifter__info h6 {
+    margin-bottom: 0px;
+}
+.gifter__info span {
+    font-size: 13px;
+    opacity: 0.7;
+}
+.gifter__media {
+    margin-left: 5px;
+}
 .charges-reminder-txt {
     position: absolute;
     left: 15px;
@@ -2403,7 +2449,7 @@ body {
 .message .audio-right {
   display: inherit;
     position: relative;
-    right: 65px;
+    right: 60px;
 }
 
 .message .audio-left {
@@ -2478,6 +2524,13 @@ body {
 .message.dark:after,
 .message.dark:before {
     border-right: 13px solid #314557;
+}
+
+.message-text.warning-msg p {
+    text-align: center;
+    width: 80%;
+    margin: 0 auto;
+    color: rgba(255,255,255,0.40);
 }
 
 .chat-footer {
@@ -3026,6 +3079,14 @@ textarea.send-message-text::placeholder {
 }
 
 /*carousel css*/
+
+.sprofile-inner .items img {
+    width: 100%;
+    height: 450px;
+    object-fit: cover;
+    object-position: top;
+}
+
 .carousel-indicators li {
     width: 10px;
     height: 10px;

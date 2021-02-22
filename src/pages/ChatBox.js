@@ -60,7 +60,8 @@ const ChatBox = (props) =>{
     let [loading, setLoading] = useState(false);
     const[recording, setRecording] = useState(false);
     const [dummyMediaRc, setDummyMediaRc] = useState(null)
-    const [chatTyping, setChatTyping] = useState("")
+    const [chatTyping, setChatTyping] = useState("");
+    const [threeMessageWarning, setWarningMessage] = useState("");
 
     const createNotificationCustom = (type) => {
   
@@ -75,7 +76,7 @@ const ChatBox = (props) =>{
       };
       };
 
-// console.log(UserMessage);
+ console.log(threeMessageWarning,"threeMessageWarning....");
     const[GetActivity, setActivity] = useState(0);
 
     userData = useSelector(userProfile).user.profile; //using redux useSelector here
@@ -118,7 +119,10 @@ const ChatBox = (props) =>{
                 localStorage.removeItem("session_id");
                 history.push('/login');
               }
-        }  
+        }
+       
+        
+        
     }
 
     const getVisitors = async () => {  // Visitors here
@@ -300,7 +304,7 @@ const ChatBox = (props) =>{
                   
                };
                console.log(files ,"fileName...");
-         
+
                
                const handleSendFile =() => {
                 setUploadImage(false);
@@ -310,14 +314,16 @@ const ChatBox = (props) =>{
             const  stringLimit = (string , counts)=>{
                 var text = string;
                 var count = counts;
-                // var result = text.slice(0, count)  + (text.length > count ? "*********" : "");
+                var result = text.slice(0, count) 
+                // + (text.length > count ? "*********" : "");
                 for(var i=0 ; i<=text.length ; i++){
-                    // text.replace(text.substr(/./g,text.length-3));
-                    var result =  text.replace(text.substring(count,text.length[i]),"*");
+                    // text.replace(text.substr(1,text.length-3));
+                    var result = text.slice(0, count)+ (text.length > count ? "*********" : "");
                 } 
                 return result;
             }
     /************************************* Working here socket *******************************************************/
+
 
     function readThenSendFile(data){
         var reader = new FileReader();
@@ -368,27 +374,21 @@ const ChatBox = (props) =>{
     }, [randomNumber])
 // console.log(FriendUserId);
     useEffect(()=>{
-        $(document).on("click", "#upload__media", function () {
-            $('#uploadfile').trigger("click");
-          });
-         
-          $(document).on("click", "#uploadfile", function (e) {
-            e.stopPropagation();
-        });
-        // window.setTimeout(() => {
-        //     $('#uploadfile').bind('change', function(e){
-        //         var data = e.originalEvent.target.files[0];
-        //         const fileName = data.name.split(".");
-        //         const imageFormat = fileName[fileName.length - 1];
-        //         if (imageFormat === "png" || imageFormat === "jpg" || imageFormat === "jpeg" ||
-        //             imageFormat === "PNG" || imageFormat === "JPG" || imageFormat === "JPEG") {
-        //             // readThenSendFile(data);
-        //         }
-        //         else {
-        //             alert("Only .png, .jpg, .jpeg image formats supported.")
-        //         }
-        //     })
-        // }, 1000);
+        window.setTimeout(() => {
+            $(document).on('change', '#uploadfile', function(e) {
+               
+                var data = e.originalEvent.target.files[0]; 
+                const fileName = data.name.split(".");
+                const imageFormat = fileName[fileName.length - 1];
+                if (imageFormat === "png" || imageFormat === "jpg" || imageFormat === "jpeg" ||
+                    imageFormat === "PNG" || imageFormat === "JPG" || imageFormat === "JPEG") {  
+                    readThenSendFile(data);
+                }
+                else {
+                    alert("Only .png, .jpg, .jpeg image formats supported.")
+                }
+            })
+        }, 1000);
 
         getAllDetails();
 
@@ -420,12 +420,21 @@ const ChatBox = (props) =>{
                     ||
                     (messages.obj.user_from_id === receiver_id && messages.obj.user_to_id === userData.user_id)
                 ) { // check one-to-one data sync
+
+                    if (!!messages.obj.warningMessage) {
+                    
+                        setWarningMessage(messages.obj.warningMessage);
+                        //alert(messages.obj.warningMessage)
+                    }
+                    else {
+                        setWarningMessage('');
                     messagesList.push(messages.obj);
                     messageList = messagesList;
                     console.log(messagesList, "messageList...")
                     setMessages(messagesList);
                     setRandomNumber(Math.random());
                     scrollToBottom()
+                    }
                 }
             }
         });
@@ -437,6 +446,14 @@ const ChatBox = (props) =>{
                     ||
                     (messages.obj.user_from_id === receiver_id && messages.obj.user_to_id === userData.user_id)
                 ) {
+                    if (!!messages.obj.warningMessage) {
+                    
+                        setWarningMessage(messages.obj.warningMessage);
+                        //alert(messages.obj.warningMessage)
+                        setLoading(false);
+                    }
+                    else {
+                        setWarningMessage('');
                     messagesList.push(messages.obj);
                     messageList = messagesList;
                     console.log(messagesList, "messageList... pic")
@@ -445,6 +462,7 @@ const ChatBox = (props) =>{
                     setLoading(false);
                     setRandomNumber(Math.random());
                     scrollToBottom()
+                    }
                 }
             }
         });
@@ -459,6 +477,14 @@ const ChatBox = (props) =>{
                     (messages.obj.user_from_id === receiver_id && messages.obj.user_to_id === userData.user_id)
                 )
                 {
+                    if (!!messages.obj.warningMessage) {
+                    
+                        setWarningMessage(messages.obj.warningMessage);
+                        //alert(messages.obj.warningMessage)
+                        setLoading(false);
+                    }
+                    else {
+                        setWarningMessage('');
                     messagesList.push(messages.obj);
                     messageList = messagesList;
                     console.log(messagesList,"messageList_gift_send ........ ");
@@ -466,6 +492,7 @@ const ChatBox = (props) =>{
                     setLoading(false);
                     setRandomNumber(Math.random());
                     scrollToBottom();
+                    }
                 }
             }
         });
@@ -478,6 +505,13 @@ const ChatBox = (props) =>{
                     ||
                     (arrayBuffer.obj.user_from_id === receiver_id && arrayBuffer.obj.user_to_id === userData.user_id)
                 ) {
+                    if (!!arrayBuffer.obj.warningMessage) {
+                        setWarningMessage(arrayBuffer.obj.warningMessage); 
+                      
+                    }
+                    else {
+                       
+                        setWarningMessage('');
                     messagesList.push(arrayBuffer.obj);
                     messageList = messagesList;
                     console.log(messagesList, "messageList... pic")
@@ -485,6 +519,7 @@ const ChatBox = (props) =>{
                     setuserMessage(''); //Empty user input here
                     setRandomNumber(Math.random());
                     scrollToBottom()
+                    }
                 }
             }
             // src= window.URL.createObjectURL(blob);
@@ -525,12 +560,15 @@ const ChatBox = (props) =>{
                 setLoading(false);
                 console.log(messages, "messages..")
                 console.log(messages, "hahahaha")
-                setMessages(messages.message_list);
-                messageList = messages.message_list;
+              
+                    setMessages(messages.message_list);
+                    messageList = messages.message_list;
+                
             });
         }
         if (!!FriendUserId) {
             receiver_id = FriendUserId;
+            setWarningMessage('');
             DetermineUser();
             setLoading(true);
             //  GetAllMessages();
@@ -938,86 +976,24 @@ const ChatBox = (props) =>{
                                                 ))
                                             }
                                             <NotificationContainer/>
+                                            {
+                                                
+                                                    !!threeMessageWarning &&
+                                                    <div className="message-text warning-msg" >
+                                                    <p>{threeMessageWarning}</p>
+                                                </div>
+                                                }
                                         </div>
                                         <form onSubmit={CheckTextInputIsEmptyOrNot}>
 
-                                        <div className="chat-footer">
-                                        {uploadImage ?                                 
-                                        <div className="send-photos-modal">
-                                            <a href="javascript:void(0)" className="theme-txt done-media" onClick={readThenSendFile}>Done</a>
-                                            <a href="javascript:void(0)" className="close-image-btn modal-close" onClick={handleSendFile}><img src="/assets/images/btn_close.png" /></a>
-                                            <h6 className="text-center">Send Photos</h6>
-                                            
-                                            <div className="send-photos-listing d-flex my-4">
-                                                <div className="media-box add-media">
-                                                <a id="upload__media"   href="javascript:void(0)">
-                                                <img src="/assets/images/add-media.svg" alt="add media" />
-                                                 <input id="uploadfile" type="file" className="d-none" onChange={handleFileChange} multiple accept="image/* , video/*"/>
-                                                    </a>
-                                                </div>
-                                                <div id="myImages">
-                                                  
-                                                   </div>
-
-                                               {/* <div className="media-box">
-                           
-                                               <video id="video_preview" src={imgData} controls></video>
-                          
-                                                </div> */}
-                                              
-                                              
-                                                {/* <div className="media-box">
-                                                    <img src="images/send-media.jpg" alt="media"/>
-                                                </div>
-                                                <div className="media-box">
-                                                    <img src="images/send-media.jpg" alt="media"/>
-                                                </div>
-                                                <div className="media-box">
-                                                    <span>0:45</span>
-                                                    <img src="images/send-media.jpg" alt="media"/>
-                                                </div> */}
-                                                
-                                            </div>
-                                            
-                                            <h6>Put Price</h6>
-                                            <div className="image-coins d-flex">
-                                            <div className="coin-price">
-                                                <input type="radio" id="coin-value1" name="coin" />
-                                                <label for="coin-value1">0 coins</label>
-                                                
-                                            </div>
-                                            
-                                            <div className="coin-price">
-                                                <input type="radio" id="coin-value2" name="coin"/>
-                                                <label for="coin-value2">50 coins</label>
-                                                
-                                            </div>
-                                            
-                                            <div className="coin-price">
-                                                <input type="radio" id="coin-value3" name="coin"/>
-                                                <label for="coin-value3">100 coins</label>
-                                                
-                                            </div>
-                                            
-                                            <div className="coin-price">
-                                                <input type="radio" id="coin-value4" name="coin"/>
-                                                <label for="coin-value4">250 coins</label>
-                                                
-                                            </div>
-                                            </div>
-                                        </div>
-                                        
-                                        : ""}
-
+                                            <div className="chat-footer">
                                                 <div className="sweet-loading">
                                                     <BarLoader color={"#fcd46f"} loading={loading} css={override} size={1000} />
                                                 </div>
                                                 <label className="upload-file">
                                                     <div>
-                                                    <a href="javascript:void(0)" onClick={()=> setUploadImage(true)} >
-                                                        {/* <input id="uploadfile" type="file" accept=".png, .jpg, .jpeg, .PNG, .JPG, .JPEG" /> */}
+                                                        <input id="uploadfile" type="file" accept=".png, .jpg, .jpeg, .PNG, .JPG, .JPEG" />
                                                         <i className="far fa-image" />
-                                                        </a>
                                                     </div>
                                                 </label>
                                                 {/* <textarea className="send-message-text" placeholder="Message..." defaultValue={UserMessage} /> */}

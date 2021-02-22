@@ -1,5 +1,6 @@
 import React, { useEffect, useState} from "react";
 import { useSelector } from "react-redux";
+import { changeImageLinkDomain } from "../commonFunctions";
 import {friendStatusData} from "../features/userSlice";
 let myInterval;
 
@@ -76,7 +77,7 @@ return(
       
          
              <div className="status-bar__items">
-             {item.type=="text" ? <div><p>{item.url.replace("http://167.172.209.57/glitter-101/public/profile_images/")}</p></div>
+             {item.type=="text" ? <div><p>{item.url.replace(changeImageLinkDomain())}</p></div>
       : item.type=="image"?  <img src={item.url} alt="status"/>
       : item.type=="video"? <video src={item.url} width="300" height="400" type="video/mp4"  />
       : ""}

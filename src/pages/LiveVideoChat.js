@@ -261,6 +261,20 @@ const LiveVideoChat = () =>{
         if (!!modal) {
             modal.remove()
         }
+        if (Number(videoCallParams.user_id) == videoCallState.user_id) {
+            // sender
+            const remoteVideo = document.getElementById("remote_video_");
+            if (!!remoteVideo) {
+                remoteVideo.remove()
+            }
+        }
+        else {
+            // receiver
+            const local_stream = document.getElementById("local_stream");
+            if (!!local_stream) {
+                local_stream.remove()
+            }
+        }
     }, [])
 
     const endCall = () => {
@@ -356,8 +370,21 @@ const LiveVideoChat = () =>{
                         className="video_live"
                         style={{ width: "400px", height: "400px" }}
                     />
-                    <img src="/assets/images/video-chat-bg.jpg" alt="Video Calling"/>
+                    {/* <img src="/assets/images/video-chat-bg.jpg" alt="Video Calling"/> */}
                 </div>
+
+                <div className="gifter">
+                    <img src="/assets/images/vc-self.png" alt="gifter" />
+                    <div className="gifter__info">
+                         <h6>Steve Barnet</h6>                
+                          <span>Sent a gift</span>  
+                    </div>
+                    <div className="gifter__media">
+                    <img src="/assets/images/heart-balloons.png" alt="gift" />
+                        </div>                    
+                </div>
+                
+
                 <div className="charges-reminder-txt">
                     <p>After 25 Seconds, you will be charged 120 coins per minute</p>
                 </div>

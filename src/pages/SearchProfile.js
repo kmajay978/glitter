@@ -91,12 +91,12 @@ const SearchProfile = () =>{
                     <div className="two" />
                     <div className="three" />
                   </div>
-                  <div className="cancel-call">
+                  {/* <div className="cancel-call">
                     <a href="javascript:void(0)" onClick={goToChat} style={{color:"#F3C661"}}>
                       Cancel
                     </a>
 
-                  </div>   
+                  </div>    */}
                 
                   <div className="cardContainer"> 
                  
