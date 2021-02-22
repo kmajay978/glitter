@@ -24,6 +24,9 @@ const LiveVideoChat = () =>{
     const videoCallState = !!localStorage.getItem("liveVideoProps") ? JSON.parse(localStorage.getItem("liveVideoProps")) : null; //using redux useSelector here
 
     const [isExpired, setIsExpired] = useState(false);
+    const[UserMessage, setuserMessage] = useState('');
+
+    const sessionId = localStorage.getItem('session_id');
 
     userData = useSelector(userProfile).user.profile; //using redux useSelector here
    
@@ -148,114 +151,6 @@ const LiveVideoChat = () =>{
                 }
                 }
             });
-
-
-            //     SOCKET.on('sender_show_video_call', (data) => {
-            //         if ((data.user_from_id == videoCallParams.user_from_id && data.user_to_id == videoCallParams.user_to_id)
-            //             ||
-            //             (data.user_from_id == videoCallParams.user_to_id && data.user_to_id == videoCallParams.user_from_id)
-            //         ) { // check one-to-one data sync
-            //             if (!!userData && (data.user_from_id == userData.user_id)) {
-            //                 const option = {
-            //                     appID: "52cacdcd9b5e4b418ac2dca58f69670c",
-            //                     channel: videoCallState.channel_name,
-            //                     uid: 0,
-            //                     token: videoCallState.channel_token,
-            //                     key: '',
-            //                     secret: ''
-            //                 }
-            //                 joinChannel('audience', option)
-            //                 interval = window.setInterval(() => {
-            //                     var list = document.getElementById("local_stream");   // Get the <ul> element with id="myList"
-            //                     if (!!list) {
-            //                         list.remove() // Remove <ul>'s first child node (index 0)
-            //                         clearInterval(interval)
-            //                     }
-            //                 }, 1000)
-            //             }
-            //         }
-            //     })
-            //     SOCKET.on('authorize_video_call', (data) => {
-            //         if ((data.user_from_id == videoCallParams.user_from_id && data.user_to_id == videoCallParams.user_to_id)
-            //             ||
-            //             (data.user_from_id == videoCallParams.user_to_id && data.user_to_id == videoCallParams.user_from_id)
-            //         ) { // check one-to-one data sync
-            //
-            //             // change backend status === 1 if loggedIn user is "user_to"
-            //
-            //             if (!!userData && (data.user_to_id == userData.user_id)) {
-            //                 SOCKET.emit("acknowledged_video_call", {
-            //                     sender: {user_from_id: videoCallParams.user_from_id, session_id: localStorage.getItem("session_id")},
-            //                     reciever_id: videoCallParams.user_to_id,
-            //                     channel_name: videoCallParams.channel_name,
-            //                     type: 0,
-            //                     status: 1
-            //                 });
-            //                 // initate video call for receiver...
-            //                 const option = {
-            //                     appID: "52cacdcd9b5e4b418ac2dca58f69670c",
-            //                     channel: data.videoCallState.channel_name,
-            //                     uid: 0,
-            //                     token: data.videoCallState.channel_token,
-            //                     key: '',
-            //                     secret: ''
-            //                 }
-            //                 joinChannel('audience', option);
-            //                 joinChannel('host', option);
-            //                 interval = window.setInterval(() => {
-            //                     var list = document.getElementById("remote_video_");
-            //                     if (!!list) {
-            //                         list.removeChild(list.childNodes[0]);
-            //                         clearInterval(interval)// Remove <ul>'s first child node (index 0)
-            //                     }
-            //                 }, 1000)
-            //
-            //                 // add timer... after 1 min to detect the expire of the link
-            //
-            //                 SOCKET.emit("timeCounter_video_call", {
-            //                     sender: {user_from_id: videoCallParams.user_from_id, session_id: localStorage.getItem("session_id")},
-            //                     reciever_id: videoCallParams.user_to_id,
-            //                     channel_name: videoCallParams.channel_name,
-            //                     type: 0,
-            //                     status: 1
-            //                 });
-            //             }
-            //             else {
-            //                 // initate video call for sender...
-            //                 const option = {
-            //                     appID: "52cacdcd9b5e4b418ac2dca58f69670c",
-            //                     channel: videoCallState.channel_name,
-            //                     uid: 0,
-            //                     token: videoCallState.channel_token,
-            //                     key: '',
-            //                     secret: ''
-            //                 }
-            //                 joinChannel('host', option)
-            //             }
-            //         }
-            //     });
-            // }, [])
-            //
-            // const endCall = () => {
-            //     if (params.receiver == "false") {
-            //         SOCKET.emit("sender_decline_video_call", {
-            //             sender: {user_from_id: videoCallParams.user_from_id},
-            //             reciever_id: videoCallParams.user_to_id,
-            //             channel_name: videoCallParams.channel_name,
-            //             type: 0,
-            //             status: 2
-            //         });
-            //     }
-            //     else {
-            //         SOCKET.emit("receiver_decline_video_call", {
-            //             sender: {user_from_id: videoCallParams.user_from_id},
-            //             reciever_id: videoCallParams.user_to_id,
-            //             channel_name: videoCallParams.channel_name,
-            //             type: 0,
-            //             status: 2
-            //         });
-            //     }
-            // }
         }
         const modal = document.getElementsByClassName("modal-backdrop")[0]
         if (!!modal) {
@@ -265,6 +160,33 @@ const LiveVideoChat = () =>{
         if (!!remoteVideo) {
             remoteVideo.remove()
         }
+
+        SOCKET.on('message_data_live_video', (messages) => {
+            let messagesList = messageList;
+            if (!!messages) {
+
+                if ((messages.obj.user_from_id === userData.user_id && messages.obj.user_to_id === receiver_id)
+                    ||
+                    (messages.obj.user_from_id === receiver_id && messages.obj.user_to_id === userData.user_id)
+                ) { // check one-to-one data sync
+
+                    if (!!messages.obj.warningMessage) {
+                    
+                        setWarningMessage(messages.obj.warningMessage);
+                        //alert(messages.obj.warningMessage)
+                    }
+                    else {
+                        setWarningMessage('');
+                    messagesList.push(messages.obj);
+                    messageList = messagesList;
+                    console.log(messagesList, "messageList...")
+                    setMessages(messagesList);
+                    setRandomNumber(Math.random());
+                    scrollToBottom()
+                    }
+                }
+            }
+        });
     }, [])
 
     const endCall = () => {
@@ -286,6 +208,25 @@ const LiveVideoChat = () =>{
                 is_host: false
             })
         }
+    }
+
+    const CheckTextInputIsEmptyOrNot = (e) =>  {
+        e.preventDefault()
+        if ( UserMessage != '') {
+            var message = { "user_id": videoCallState.user_id, "message": UserMessage, "channel": videoCallParams.channel_name }
+            SOCKET.emit("send_message_live_video", message);
+            setuserMessage(''); //Empty user input here
+        } else {
+            console.log("Please enter message")
+        }
+    }
+
+    const changeInput = (e) => {
+        setuserMessage(e.target.value)
+        SOCKET.emit("typing_live_video", {
+            user_id: videoCallState.user_id,
+            typing_user: userData.first_name + " " + userData.last_name
+        })
     }
 
     return(
@@ -352,8 +293,9 @@ const LiveVideoChat = () =>{
                     </div>
                 </div>
             </div>
-            <div className="vc-screen-wrapper">
-                <div className="vc-screen">
+            <div className="vc-screen-wrapper image-auto">
+                <div className="vc-screen d-flex h-100">
+                    <div className="col-md-9 p-0">
                     <div id="local_stream" className="local_stream" style={{ width: "400px", height: "400px" }}></div>
                     <div
                         id="remote_video_"
@@ -361,7 +303,8 @@ const LiveVideoChat = () =>{
                         style={{ width: "400px", height: "400px" }}
                     />
                     {/* <img src="/assets/images/video-chat-bg.jpg" alt="Video Calling"/> */}
-                </div>
+                
+                
                 <div className="charges-reminder-txt">
                     <p>After 25 Seconds, you will be charged 120 coins per minute</p>
                 </div>
@@ -400,11 +343,27 @@ const LiveVideoChat = () =>{
                         </ul>
                     </div>
                 </div>
+                </div>
+                <div class="col-md-3 live__comments_bg p-4">
+            <div class="live__comments">
+                <form onSubmit={CheckTextInputIsEmptyOrNot}>
+                    <div class="live__comments__items">
+                        <span class="comment_username">Andrew :</span> followed this host 
+                    </div>
+                </form>
+            </div>   
+            
+            <div class="write-comments">
+            <div class="write-comments__fields position-relative">
+                <input type="text" name="comments" id="Message" placeholder="Message..." value={UserMessage} onChange={e => changeInput(e)}/>
+                <button type="submit" class="send-message-button bg-grd-clr"><i class="fas fa-paper-plane"></i></button>   
+            
+            </div>
+            </div>
+            </div>
+            </div>
             </div>
         </section>
     )
 }
 export default LiveVideoChat;
-
-
-

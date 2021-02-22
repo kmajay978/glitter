@@ -1532,7 +1532,9 @@ position: absolute;
     position: relative;
     height: calc(100vh - 105px);
 }
-
+.vc-screen-wrapper.image-auto img {
+    width: auto;
+}
 .vc-screen img {
     width: 100%;
 }
@@ -4517,7 +4519,7 @@ span.gift__discount {
 }
 
 .vc-screen .col-md-9{
-    background: url('../images/live-host.jpg');
+    /* background: url('../images/live-host.jpg'); */
 }
 
 .live__comments_bg{
