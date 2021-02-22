@@ -39,7 +39,7 @@ transform: translateY(-50%);
 `;
 
 const Profile = (props) =>{
-  const userData = useSelector(userProfile).user.profile; //using redux useSelector here
+
   
    //Adding class to body and removing the class
   // addBodyClass('no-bg')('login-body')
@@ -90,7 +90,8 @@ const Profile = (props) =>{
   const handleAbout = () => {setShowSetting(false); setShowAbout(true);}
   const handleShare =() => {setShowSetting(false); setShowShare(true);} // show share glitter model
   
-  
+  const userData = useSelector(userProfile).user.profile; //using redux useSelector here
+
   const dates = moment(Dob).format('YYYY/M/D');
   console.log(Dob , "...dob");
   console.log(dates , "date");
@@ -767,7 +768,7 @@ catch (err) {
                     </>}{<p>0</p>}</span>
                 </li>
                 <li><span className="user-profile__status__heading d-block text-uppercase">Story</span>
-                  <span className="user-profile__status__counter d-block">0</span>
+                  <span className="user-profile__status__counter d-block">{!!userData ? userData.statuses.length :""}</span>
                 </li>
                 <li><span className="user-profile__status__heading d-block text-uppercase">Coins</span>
                   <span className="user-profile__status__counter d-block">
@@ -946,7 +947,15 @@ catch (err) {
         </div>
       </div>
      })} 
-     {warningMessage}
+     {
+       !!warningMessage ?
+       <h6 className="text-center">
+         {warningMessage}
+       </h6>
+       :
+       ""
+     }
+     
       <SyncLoader color={"#fcd46f"} loading={isLoaded} css={override} size={18} />
     </div>
     <a href="javascript:void(0)" className="modal-close" onClick={() => setShowCoin(false)}><img src="/assets/images/btn_close.png" /></a>

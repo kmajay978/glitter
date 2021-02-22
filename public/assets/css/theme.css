@@ -1533,6 +1533,26 @@ position: absolute;
     height: calc(100vh - 105px);
 }
 
+.video-streaming-gift .all-gift-inner {
+    max-width: 800px;
+    -webkit-backdrop-filter: blur( 10.0px );
+    background: rgba( 255, 255, 255, 0.20 );
+    box-shadow: 0 8px 32px 0 rgb(31 38 135 / 37%);
+    backdrop-filter: blur( 10.0px );
+    -webkit-backdrop-filter: blur( 10.0px );
+    border-radius: 10px;
+    border: 1px solid rgba( 255, 255, 255, 0.18 );
+}
+
+.video-streaming-gift .all-gift-body ul{
+    border:1px solid rgba(243, 198, 97, 0.26);
+}
+.video-streaming-gift .all-gift-body ul li {
+    border-right: 1px solid rgba(243, 198, 97, 0.26);
+    border-bottom: 1px solid rgba(243, 198, 97, 0.26);
+}
+
+
 .vc-screen img {
     width: 100%;
 }

@@ -9,6 +9,9 @@ import {useSelector, useDispatch} from "react-redux";
 import {userProfile, liveVideoCall, liveVideoCallUser} from "../features/userSlice";
 import {func} from "prop-types";
 import {addDefaultSrc, checkLiveDomain, returnDefaultImage} from "../commonFunctions";
+import { GIFT_LIST_API, GIFT_PURCHASE_API } from "../components/Api";
+import useToggle from "../components/CommonFunction";
+import { Number } from "core-js";
 
 let videoCallStatus = 0, videoCallParams, interval, userData;
 
@@ -19,6 +22,12 @@ const clearChatState = (dispatch) => {
 const LiveVideoChat = () =>{
     const params = useParams();
     const [user, setUserData] = useState(null);
+    const [GiftData,setGiftData] = useState([]);
+    const [isOn, toggleIsOn] = useToggle();
+    const [givenGift, setGivenGift] = useState();
+    
+
+   
     const history = useHistory();
     const dispatch = useDispatch();
     const videoCallState = !!localStorage.getItem("liveVideoProps") ? JSON.parse(localStorage.getItem("liveVideoProps")) : null; //using redux useSelector here
@@ -26,7 +35,7 @@ const LiveVideoChat = () =>{
     const [isExpired, setIsExpired] = useState(false);
 
     userData = useSelector(userProfile).user.profile; //using redux useSelector here
-   
+    const sessionId = localStorage.getItem('session_id');
     const componentWillUnmount = () => {
         if (videoCallStatus == 4) {
             console.log(videoCallParams, "videoCallParams... test")
@@ -298,6 +307,61 @@ const LiveVideoChat = () =>{
         }
     }
 
+      //all gift
+      const handleGift = async() =>{
+        toggleIsOn(true);
+        
+        const bodyParameters = {
+            session_id :  localStorage.getItem('session_id'),
+            }
+            const {data:{result , status}} = await axios.post(GIFT_LIST_API , bodyParameters)
+            
+             if(status==200){
+             setGiftData(result);
+             }
+             }
+
+             //get single  gift item
+           const getGiftItem = async(giftId) => {
+            const bodyParameters ={
+            session_id:sessionId,
+            gift_id : giftId ,
+            given_to : Number(videoCallParams.user_id)
+            }
+             const {data : {giftStatus}} = await axios.post(GIFT_PURCHASE_API , bodyParameters)
+                 // alert(giftStatus.get_gifts.image);
+ 
+                 if(!!giftStatus)
+                 {
+                 toggleIsOn(false);
+                 var msg = {};
+                 msg.file = giftStatus.get_gifts.image;
+                 msg.fileName = "abc_image";
+                 msg.sessionId = sessionId;
+                 msg.reciever_id = Number(videoCallParams.user_id);
+                 SOCKET.emit('gift_send', msg);
+                 setGivenGift('');
+                //  setLoading(true);
+                 }
+                 else
+                 {
+                     toggleIsOn(false);
+                     
+                 }
+              }
+
+              useEffect(() => {
+                  //   Listing gift here
+              SOCKET.on('gift_send',(messages) =>{
+                console.log(messages,"message_gift....");
+                setGivenGift(messages.obj.media)
+            });
+              }, [])
+           
+    if(!!givenGift)
+    {
+        console.log(givenGift,"givenGif....");
+    }
     return(
         <section className="home-wrapper">
             <img className="bg-mask" src="/assets/images/mask-bg.png" alt="Mask" />
@@ -327,7 +391,7 @@ const LiveVideoChat = () =>{
                                     </div>
                                     <div className="remaining-coins ml-4">
                                         <img src="/assets/images/diamond-coin.png" alt="Coins" />
-                                        <span>152</span>
+                                        <span>{!!userData&& userData.coins!=0 ?  userData.coins :  "0" }</span>
                                     </div>
                                 </div>
                             </div>
@@ -413,7 +477,7 @@ const LiveVideoChat = () =>{
                                 </a>
                             </li>
                             <li>
-                                <a className="btn-round bg-grd-clr" href="javascript:void(0)">
+                                <a className="btn-round bg-grd-clr" href="javascript:void(0)"  onClick={handleGift}>
                                     <img src="/assets/images/gift.png" alt="Gift"/>
                                 </a>
                             </li>
@@ -423,6 +487,44 @@ const LiveVideoChat = () =>{
                         </ul>
                     </div>
                 </div>
+
+                <div className={isOn ? 'video-streaming-gift all-gifts-wrapper active': 'all-gifts-wrapper video-streaming-gift'} >
+                            <div className="all-gift-inner">
+                                <a href="javascript:void(0)" className="close-gift-btn modal-close" onClick={toggleIsOn}><img src="/assets/images/btn_close.png" /></a>
+                                <div className="all-gift-header d-flex flex-wrap align-items-center mb-3">
+                                    <h5 className="mb-0 mr-4">Send Gift</h5>
+                                    <div className="remaining-coins">
+                                        <img src="/assets/images/diamond-coin.png" alt="Coins" />
+                                        <span>{!!userData&& userData.coins!=0 ?  userData.coins :  "0" }</span>
+                                    </div>
+                                </div>
+                                <div className="all-gift-body">
+
+                                    <ul className="d-flex flex-wrap text-center gift__items">
+                                        {GiftData.map((items , i) => {
+                                            return <li onClick={() => getGiftItem(items.id)}>
+                                                <a href="javascript:void(0)" >
+                                                    <div>
+                                                        <figure>
+                                                            <img onError={(e) => addDefaultSrc(e)} src={!!items.image ? items.image : returnDefaultImage()} alt={items.name} />
+                                                        </figure>
+                                                        <div className="gift-price">
+                                                            <img src="/assets/images/diamond-coin.png" alt="Coins" />
+                                                            <span>{items.coins}</span>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </li>
+                                        })}
+                                        <li>
+                                        </li>
+                                        <li>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
             </div>
         </section>
     )
