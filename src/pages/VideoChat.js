@@ -256,7 +256,7 @@ console.log(userData, "userdata..")
               </div>
               <div className="remaining-coins ml-4">
                 <img src="/assets/images/diamond-coin.png" alt="Coins" />
-                <span>152</span>
+                <span>{!!userData&& userData.coins!=0 ?  userData.coins :  "0" }</span>
               </div>
             </div>
           </div>
