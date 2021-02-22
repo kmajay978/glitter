@@ -39,7 +39,8 @@ transform: translateY(-50%);
 `;
 
 const Profile = (props) =>{
-
+  const userData = useSelector(userProfile).user.profile; //using redux useSelector here
+  
    //Adding class to body and removing the class
   // addBodyClass('no-bg')('login-body')
  
@@ -87,9 +88,10 @@ const Profile = (props) =>{
   const handleAbout = () => {setShowSetting(false); setShowAbout(true);}
   const handleShare =() => {setShowSetting(false); setShowShare(true);} // show share glitter model
   
-  const userData = useSelector(userProfile).user.profile; //using redux useSelector here
+  
   const dates = moment(Dob).format('YYYY/M/D');
   console.log(Dob , "...dob");
+  console.log(dates , "date");
   // Getting form value here
   const [form , setForm] = useState({
     
@@ -144,7 +146,7 @@ const handleCheck = (e) => {
       session_id: sessionId,
       };
      const {data:{data}}= await axios.post(GET_LOGGEDPROFILE_API,bodyParameters)
-     console.log(moment(data.dob).format('ddd MMM DD YYYY   h:mm:ss') , "...hhhhhh");
+     console.log(moment(data.dob).format('ddd MMM DD YYYY   h:mm:ss') , "...hhhhh");
       
     //  Setting data variable to state object 
       form.firstName = data.first_name
@@ -389,9 +391,9 @@ catch (err) {
        session_id : sessionId,
      }
      try {
-      const {data:{result, status, error}} = await axios.post(RECEIVED_GIFT_LIST , bodyParameters)
+      const {data:{result, status_code}} = await axios.post(RECEIVED_GIFT_LIST , bodyParameters)
      
-      if(status==200){
+      if(status_code==200){
         setGiftData(result);
         }
   }
@@ -605,7 +607,7 @@ catch (err) {
                           </div>
                           </div>
               <div className="form-group">
-              <label for="">About Me</label>
+              <label htmlFor="">About Me</label>
               <input className="form-control bg-trsp" name="aboutMe" type="text" value={form.aboutMe} onChange={handleChange} />
               </div>
 

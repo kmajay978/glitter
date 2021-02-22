@@ -55,7 +55,7 @@ const ChatBox = (props) =>{
     const [imgData, setImgData] = useState(null);
     const [files, setFiles] = useState([]);
     const [previews, setPreviews] = useState([]);
-   
+    const [ fileSrc , setFileSrc] = useState("");
 
     let [loading, setLoading] = useState(false);
     const[recording, setRecording] = useState(false);
@@ -252,8 +252,9 @@ const ChatBox = (props) =>{
                     createNotificationCustom('error');       
                 }
              }
+           
             const fileObj = [];
-           const fileArray = [];
+            const fileArray = [];
              const handleFileChange = e => {
                 var data = e.target.files[0];
                 const filename =  e.target.files[0];
@@ -261,9 +262,6 @@ const ChatBox = (props) =>{
                 const imageFormat = fileName[fileName.length - 1];
                 const fileList = Array.from(e.target.files);
                  if (e.target.files[0]) { 
-                   if (imageFormat === "png" || imageFormat === "jpg" || imageFormat === "jpeg" ||
-                   imageFormat==="SVG"||imageFormat==="svg"||imageFormat === "PNG" || imageFormat === "JPG" || imageFormat === "JPEG") 
-                   {
                     function createElementWithClass(elementName, className)
                     {
                         var el = document.createElement(elementName);
@@ -277,34 +275,29 @@ const ChatBox = (props) =>{
                     y=document.body.appendChild(x);
                     y.src = URL.createObjectURL(e.target.files[0]);
                     y.width = '100';
-                   // console.log(y , "Testfiles...");
+                 
+                   
+                    console.log(y.src , "hhhhhhh...");
                 
-                   let imageAppned =  y ;
-                   outerDiv.appendChild(imageAppned)
+                    let imageAppned =  y ;
+                    outerDiv.appendChild(imageAppned);
                     document.getElementById("myImages").appendChild(outerDiv); 
                     var fileArray = files;
                     fileArray.push(imageAppned);
-                  
                     setFiles(fileArray);
+
+                    var fileObj = fileSrc;
+                    fileObj.push(y.src);
+                    setFileSrc(fileObj);
+                    console.log(fileObj,"imagePath....");
                     console.log(files, "Testfiles...");
-                
-                   }
-                   else if(imageFormat === "mp4" || imageFormat === "MP4")
-                   {
-                     console.log("video_file: ", e.target.files[0]);
-                     setPicture(e.target.files[0]);
-                     const reader = new FileReader();
-                     reader.addEventListener("load", () => {
-                       setImgData(reader.result); 
-                      
-                     });
-                     reader.readAsDataURL(e.target.files[0]);
-                   }
+                   
+                }
                    else
                    {
                      console.log("Invlid format");
                    }
-                  }
+                  
                };
                console.log(files ,"fileName...");
          
