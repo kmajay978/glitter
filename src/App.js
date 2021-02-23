@@ -15,8 +15,6 @@ import {useDispatch, useSelector} from "react-redux";
 import {profile, userAuth} from './features/userSlice';
 import {SOCKET} from "./components/Config";
 import { checkLiveDomain } from './commonFunctions';
-
-
 let userData;
 const history = createBrowserHistory({forceRefresh: true});
 const  ProfileData = async(dispatch, sessionId) => {
@@ -30,9 +28,7 @@ const  ProfileData = async(dispatch, sessionId) => {
       })
   );
 }
-
 const stripePromise = loadStripe('pk_test_51HYm96CCuLYI2aV0fK3RrIAT8wXVzKScEtomL2gzY9XCMrgBa4KMPmhWmsCorW2cqL2MLSJ45GKAAZW7WxEmytDs009WzuDby2');
-
 function App() {
   //  const {latitude, longitude, error} = usePosition();
   const new_history = useHistory();
@@ -59,21 +55,27 @@ function App() {
       localStorage.removeItem("videoCallPageRefresh");
       // SOCKET.disconnect();
       dispatch(videoCall(null))
+      const page = checkLiveDomain() ? "/glitter-web/chat" : "/chat"
       if (!!userData && (data.user_from_id == userData.user_id)) { // check one-to-one data sync
         alert("receiver declined your call...")
-      }
-      const page = checkLiveDomain() ? "/glitter-web/chat" : "/chat"
         history.push(page)
+      }
+      if (!!userData && (data.user_to_id == userData.user_id)) { // check one-to-one data sync
+        history.push(page)
+      }
     })
     SOCKET.on('sender_decline_video_call', (data) => {
       localStorage.removeItem("videoCallPageRefresh");
       // SOCKET.disconnect();
       dispatch(videoCall(null))
+      const page = checkLiveDomain() ? "/glitter-web/chat" : "/chat"
       if (!!userData && (data.user_to_id == userData.user_id)) { // check one-to-one data sync
         alert("sender declined the call...")
-      }
-      const page = checkLiveDomain() ? "/glitter-web/chat" : "/chat"
         history.push(page)
+      }
+      if (!!userData && (data.user_from_id == userData.user_id)) { // check one-to-one data sync
+        history.push(page)
+      }
     })
     SOCKET.on('call_not_picked_receiver_hide_page_video_call', (data) => {
       localStorage.removeItem("videoCallPageRefresh");
@@ -91,12 +93,6 @@ function App() {
         }
       }
     })
-
-
-
-
-
-    
     SOCKET.on('call_malfunctioned_in_between_receiver_call_video_call', (data) => {
       localStorage.removeItem("videoCallPageRefresh");
       // SOCKET.disconnect();
@@ -116,8 +112,6 @@ function App() {
       //  }, 600000);
     }
   }, [is_auth])
-  
-
   return (
       <Router>
         <Switch>
@@ -139,7 +133,6 @@ function App() {
           <ProtectedRoute exact path='/:receiver/:user_from_id/:user_to_id/:channel_id/:channel_name/video-chat' component={VideoChat} />
           <ProtectedRoute exact path='/:receiver/:user_from_id/:user_to_id/:channel_id/:channel_name/audio-chat' component={AudioChat} />
           <ProtectedRoute exact path='/:user_id/:channel_id/:channel_name/live-video-chat' component={LiveVideoChat} />
-         
         </Elements>
         </Switch>
       </Router>

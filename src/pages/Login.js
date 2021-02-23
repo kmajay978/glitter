@@ -42,7 +42,7 @@ addBodyClass('login-body')('')
 //   };
 
    const [phoneNumber, setPhone] = useState('');   //For past users
-  const [cntCode, setCntCode] = useState('');   //For past users
+  const [cntCode, setCntCode] = useState('93');   //For past users
 
 
 
@@ -73,7 +73,7 @@ addBodyClass('login-body')('')
   const [dobErr, setDobErr] = useState({});
   const [ termPolicyErr , setTermPolicyErr] =useState({});
   const [ clickTerm , setClickTerm] = useState(true);
-  const dates = moment(Dob).format('YYYY/M/D');
+  const dates = moment(Dob).format('YYYY/MM/DD');
  
   {/* { divToggle ? "signup-inner" : "signup-inner active-tab-2"} */}
 //  Setting value here radio button
