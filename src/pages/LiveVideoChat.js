@@ -1,35 +1,57 @@
 import React, { useState, useEffect } from "react";
-import {  useHistory, useParams } from 'react-router';
+import { useHistory, useParams } from 'react-router';
 import axios from "axios";
 import Logo from '../components/Logo';
-import {SOCKET} from '../components/Config';
+import { SOCKET } from '../components/Config';
 import NavLinks from '../components/Nav';
 import { joinChannel, leaveEventAudience, leaveEventHost } from "../components/VideoComponent";
-import {useSelector, useDispatch} from "react-redux";
-import {userProfile, liveVideoCall, liveVideoCallUser} from "../features/userSlice";
-import {func} from "prop-types";
-import {addDefaultSrc, checkLiveDomain, returnDefaultImage} from "../commonFunctions";
+import { useSelector, useDispatch } from "react-redux";
+import { css } from "@emotion/core";
+import BarLoader from "react-spinners/BarLoader";
+import { userProfile, liveVideoCall, liveVideoCallUser } from "../features/userSlice";
+import { func } from "prop-types";
+import { addDefaultSrc, checkLiveDomain, returnDefaultImage } from "../commonFunctions";
+import { GIFT_LIST_API, GIFT_PURCHASE_API } from "../components/Api";
+import useToggle from "../components/CommonFunction";
+import { Number } from "core-js";
 
-let videoCallStatus = 0, videoCallParams, interval, userData;
+let videoCallStatus = 0, videoCallParams, interval, userData, messageList = [], receiver_id
+
+const override = css`
+  display: block;
+  margin: 10px auto;
+  border-radius: 50px !important;
+  width: 95%;
+`;
 
 const clearChatState = (dispatch) => {
     dispatch(liveVideoCall(null))
 }
 
-const LiveVideoChat = () =>{
+const LiveVideoChat = () => {
     const params = useParams();
     const [user, setUserData] = useState(null);
+    const [GiftData, setGiftData] = useState([]);
+    const [isOn, toggleIsOn] = useToggle();
+    const [givenGift, setGivenGift] = useState();
+    const [CompleteMessageList, setMessages] = useState([]);
+    const [randomNumber, setRandomNumber] = useState('');
+    let [loading, setLoading] = useState(false);
+
+
+
     const history = useHistory();
     const dispatch = useDispatch();
     const videoCallState = !!localStorage.getItem("liveVideoProps") ? JSON.parse(localStorage.getItem("liveVideoProps")) : null; //using redux useSelector here
 
     const [isExpired, setIsExpired] = useState(false);
-    const[UserMessage, setuserMessage] = useState('');
+    const [UserMessage, setuserMessage] = useState('');
 
     const sessionId = localStorage.getItem('session_id');
+    const [chatTyping, setChatTyping] = useState("");
+
 
     userData = useSelector(userProfile).user.profile; //using redux useSelector here
-   
     const componentWillUnmount = () => {
         if (videoCallStatus == 4) {
             console.log(videoCallParams, "videoCallParams... test")
@@ -46,7 +68,7 @@ const LiveVideoChat = () =>{
         clearChatState(dispatch);
         window.location.href = checkLiveDomain() ? "/glitter-web/search-home" : "/search-home";
     }
-    useEffect(() =>{
+    useEffect(() => {
         if (!!userData) {
             setUserData(userData)
         }
@@ -73,6 +95,7 @@ const LiveVideoChat = () =>{
             }
             // check with backend + socket if this channel exist...
             SOCKET.connect()
+            setLoading(true);
             SOCKET.emit("authenticate_live_video_call", {
                 host_id: Number(videoCallParams.user_id),
                 user_id: videoCallState.user_id,
@@ -80,6 +103,16 @@ const LiveVideoChat = () =>{
                 type: 1,
                 is_host: Number(videoCallParams.user_id) === videoCallState.user_id,
                 // videoCallProps: Number(videoCallParams.user_id) === userData.user_id ?
+            });
+            console.log({
+                sender_id: videoCallParams.user_id,
+                user_id: videoCallState.user_id,
+                channel_name: videoCallParams.channel_name
+            }, "test...")
+            SOCKET.emit("authenticate_live_video_message", {
+                sender_id: Number(videoCallParams.user_id),
+                user_id: Number(videoCallState.user_id),
+                channel_name: videoCallParams.channel_name
             });
 
             SOCKET.on('end_live_video_call_host', (data) => {
@@ -123,71 +156,126 @@ const LiveVideoChat = () =>{
 
             SOCKET.on('authorize_live_video_call', (data) => {
                 if (data.user_id === videoCallState.user_id) {
-                if (Number(videoCallParams.user_id) === data.user_id) {
-                    // opnen host camera
-                    const option = {
-                        appID: "52cacdcd9b5e4b418ac2dca58f69670c",
-                        channel: videoCallState.channel_name,
-                        uid: 0,
-                        token: videoCallState.channel_token,
-                        key: '',
-                        secret: ''
+                    if (Number(videoCallParams.user_id) === data.user_id) {
+                        // opnen host camera
+                        const option = {
+                            appID: "52cacdcd9b5e4b418ac2dca58f69670c",
+                            channel: videoCallState.channel_name,
+                            uid: 0,
+                            token: videoCallState.channel_token,
+                            key: '',
+                            secret: ''
+                        }
+                        console.log(videoCallState, "videoCallState...")
+                        joinChannel('host', option)
                     }
-                    console.log(videoCallState, "videoCallState...")
-                    joinChannel('host', option)
-                }
-                else { // audience..
-                    // open audience camera...
-                    const option = {
-                        appID: "52cacdcd9b5e4b418ac2dca58f69670c",
-                        channel: videoCallState.channel_name,
-                        uid: 0,
-                        token: videoCallState.channel_token,
-                        key: '',
-                        secret: ''
+                    else { // audience..
+                        // open audience camera...
+                        const option = {
+                            appID: "52cacdcd9b5e4b418ac2dca58f69670c",
+                            channel: videoCallState.channel_name,
+                            uid: 0,
+                            token: videoCallState.channel_token,
+                            key: '',
+                            secret: ''
+                        }
+                        console.log(option, "jkjk...")
+                        joinChannel('audience', option)
                     }
-                    console.log(option, "jkjk...")
-                    joinChannel('audience', option)
-                }
                 }
             });
+
+            SOCKET.on('send_live_video_item', (message) => {
+                let messagesList = messageList;
+                console.log(message, "messages...test")
+    
+                if (
+                    // message.sender_id == videoCallParams.user_id &&
+                    // message.user_id == videoCallState.user_id &&
+                    videoCallParams.channel_name == message.channel_name) { //check one-to-one data sync
+                    if (!!message.message.message) {
+                        alert(message.message.message)
+                    }
+                    else {
+                        if (message.message.chat_type === 0) {
+                            const new_message = {
+                                message: message.message.text_message,
+                                message_sender_name: message.message.message_sender_name,
+                                receiver_id: videoCallState.user_id,
+                                user_id: videoCallParams.user_id
+                            }
+                            messagesList.push(new_message);
+                            messageList = messagesList;
+                            console.log(messagesList, "messageList...")
+                            setMessages(messagesList);
+                            setRandomNumber(Math.random());
+                            scrollToBottom()
+                        }
+                    }
+    
+                }
+    
+            });
+    
+            SOCKET.on('get_messages_live_video', (messages) => { // only one time
+                if (messages.sender_id == videoCallParams.user_id &&
+                    messages.user_id == videoCallState.user_id &&
+                    videoCallParams.channel_name == messages.channel_name) {
+                    setLoading(false);
+                    console.log(messages, "messages..")
+                    console.log(messages, "hahahaha")
+                    let all_messages = [];
+                    const socket_messages = messages.messages;
+                    for (let i in socket_messages) {
+                        all_messages.push({
+                            message: socket_messages[i].message,
+                            message_sender_name: socket_messages[i].message_sender_name,
+                            receiver_id: socket_messages[i].receiver_id,
+                            user_id: socket_messages[i].user_id
+                        })
+                    }
+    
+                    setMessages(all_messages);
+                    messageList = all_messages;
+                }
+            });
+    
+            SOCKET.on('typing_live_video_message', (typing) => { // only one time
+                if (videoCallParams.channel_name == typing.channel_name) {
+                    if (typing.user_id !== userData.user_id) {
+                        setChatTyping(typing.typing_user)
+                        window.setTimeout(() => {
+                            setChatTyping("")
+                        }, 2000)
+                    }
+                }
+            })
         }
         const modal = document.getElementsByClassName("modal-backdrop")[0]
         if (!!modal) {
             modal.remove()
         }
-        const remoteVideo = document.getElementById("remote_video_");
-        if (!!remoteVideo) {
-            remoteVideo.remove()
-        }
-
-        SOCKET.on('message_data_live_video', (messages) => {
-            let messagesList = messageList;
-            if (!!messages) {
-
-                if ((messages.obj.user_from_id === userData.user_id && messages.obj.user_to_id === receiver_id)
-                    ||
-                    (messages.obj.user_from_id === receiver_id && messages.obj.user_to_id === userData.user_id)
-                ) { // check one-to-one data sync
-
-                    if (!!messages.obj.warningMessage) {
-                    
-                        setWarningMessage(messages.obj.warningMessage);
-                        //alert(messages.obj.warningMessage)
-                    }
-                    else {
-                        setWarningMessage('');
-                    messagesList.push(messages.obj);
-                    messageList = messagesList;
-                    console.log(messagesList, "messageList...")
-                    setMessages(messagesList);
-                    setRandomNumber(Math.random());
-                    scrollToBottom()
-                    }
-                }
+        if (Number(videoCallParams.user_id) == videoCallState.user_id) {
+            // sender
+            const remoteVideo = document.getElementById("remote_video_");
+            if (!!remoteVideo) {
+                remoteVideo.remove()
             }
-        });
+        }
+        else {
+            // receiver
+            const local_stream = document.getElementById("local_stream");
+            if (!!local_stream) {
+                local_stream.remove()
+            }
+        }
     }, [])
+
+    const scrollToBottom = () => {
+        var div = document.getElementById('chat-body');
+        if (!!div)
+            div.scroll({ top: div.scrollHeight, behavior: 'smooth' });
+    }
 
     const endCall = () => {
         if (Number(videoCallParams.user_id) === videoCallState.user_id) { // host
@@ -210,11 +298,25 @@ const LiveVideoChat = () =>{
         }
     }
 
-    const CheckTextInputIsEmptyOrNot = (e) =>  {
+    useEffect(() => {
+        scrollToBottom();
+    }, [randomNumber])
+
+    const CheckTextInputIsEmptyOrNot = (e) => {
         e.preventDefault()
-        if ( UserMessage != '') {
-            var message = { "user_id": videoCallState.user_id, "message": UserMessage, "channel": videoCallParams.channel_name }
-            SOCKET.emit("send_message_live_video", message);
+        if (UserMessage != '') {
+            var message = {
+                "user_id": Number(videoCallState.user_id),
+                "text_message": UserMessage,
+                "channel_name": videoCallParams.channel_name,
+                "sender_id": Number(videoCallParams.user_id),
+                "type": 0,
+                "gift_id": null,
+                "is_send_heart": 0,
+                "coins": 0,
+                "message_sender_name": userData.first_name + " " + userData.last_name
+            }
+            SOCKET.emit("send_live_video_item", message);
             setuserMessage(''); //Empty user input here
         } else {
             console.log("Please enter message")
@@ -223,13 +325,66 @@ const LiveVideoChat = () =>{
 
     const changeInput = (e) => {
         setuserMessage(e.target.value)
-        SOCKET.emit("typing_live_video", {
+        SOCKET.emit("typing_live_video_message", {
             user_id: videoCallState.user_id,
-            typing_user: userData.first_name + " " + userData.last_name
+            typing_user: userData.first_name + " " + userData.last_name,
+            channel_name: videoCallParams.channel_name
         })
     }
 
-    return(
+    //all gift
+    const handleGift = async () => {
+        toggleIsOn(true);
+
+        const bodyParameters = {
+            session_id: localStorage.getItem('session_id'),
+        }
+        const { data: { result, status } } = await axios.post(GIFT_LIST_API, bodyParameters)
+
+        if (status == 200) {
+            setGiftData(result);
+        }
+    }
+
+    //get single  gift item
+    const getGiftItem = async (giftId) => {
+        const bodyParameters = {
+            session_id: sessionId,
+            gift_id: giftId,
+            given_to: Number(videoCallParams.user_id)
+        }
+        const { data: { giftStatus } } = await axios.post(GIFT_PURCHASE_API, bodyParameters)
+        // alert(giftStatus.get_gifts.image);
+
+        if (!!giftStatus) {
+            toggleIsOn(false);
+            var msg = {};
+            msg.file = giftStatus.get_gifts.image;
+            msg.fileName = "abc_image";
+            msg.sessionId = sessionId;
+            msg.reciever_id = Number(videoCallParams.user_id);
+            SOCKET.emit('gift_send', msg);
+            setGivenGift('');
+            //  setLoading(true);
+        }
+        else {
+            toggleIsOn(false);
+
+        }
+    }
+
+    useEffect(() => {
+        //   Listing gift here
+        SOCKET.on('gift_send', (messages) => {
+            console.log(messages, "message_gift....");
+            setGivenGift(messages.obj.media)
+        });
+    }, [])
+
+    if (!!givenGift) {
+        console.log(givenGift, "givenGif....");
+    }
+    return (
         <section className="home-wrapper">
             <img className="bg-mask" src="/assets/images/mask-bg.png" alt="Mask" />
             <div className="header-bar">
@@ -245,7 +400,7 @@ const LiveVideoChat = () =>{
                                 <div className="vc-head-title d-flex flex-wrap align-items-center ml-5">
                                     <div className="vc-user-name d-flex flex-wrap align-items-center">
                                         <figure>
-                                                <img onError={(e) => addDefaultSrc(e)} src={!!user ? user.profile_images[0] : returnDefaultImage()} alt="Augusta Castro" />
+                                            <img onError={(e) => addDefaultSrc(e)} src={!!user ? user.profile_images[0] : returnDefaultImage()} alt="Augusta Castro" />
                                         </figure>
                                         {
                                             !!user &&
@@ -258,7 +413,7 @@ const LiveVideoChat = () =>{
                                     </div>
                                     <div className="remaining-coins ml-4">
                                         <img src="/assets/images/diamond-coin.png" alt="Coins" />
-                                        <span>152</span>
+                                        <span>{!!userData && userData.coins != 0 ? userData.coins : "0"}</span>
                                     </div>
                                 </div>
                             </div>
@@ -296,72 +451,136 @@ const LiveVideoChat = () =>{
             <div className="vc-screen-wrapper image-auto">
                 <div className="vc-screen d-flex h-100">
                     <div className="col-md-9 p-0">
-                    <div id="local_stream" className="local_stream" style={{ width: "400px", height: "400px" }}></div>
-                    <div
-                        id="remote_video_"
-                        className="video_live"
-                        style={{ width: "400px", height: "400px" }}
-                    />
-                    {/* <img src="/assets/images/video-chat-bg.jpg" alt="Video Calling"/> */}
-                
-                
-                <div className="charges-reminder-txt">
-                    <p>After 25 Seconds, you will be charged 120 coins per minute</p>
-                </div>
-                <div className="vc-timer-box text-center">
-                    <div className="timer">
-                        <i className="far fa-clock"></i>
-                        <span>25 Sec</span>
-                    </div>
-                    <div className="vc-sppiner">
-                        <a className="sppiner bg-grd-clr" href="javascript:void(0)">
-                            <img src="/assets/images/sppiner.png" alt="Sppiner"/>
-                        </a>
-                    </div>
-                </div>
-                <div className="vc-option-block d-flex flex-wrap align-items-end">
-                    <div className="vc-options">
-                        <ul>
-                            <li>
-                                <a className="btn-round bg-grd-clr" href="javascript:void(0)">
-                                    <img src="/assets/images/magic-stick.png" alt="Magic"/>
+                        <div id="local_stream" className="local_stream" style={{ width: "400px", height: "400px" }}></div>
+                        <div
+                            id="remote_video_"
+                            className="video_live"
+                            style={{ width: "400px", height: "400px" }}
+                        />
+                        {/* <img src="/assets/images/video-chat-bg.jpg" alt="Video Calling"/> */}
+
+
+                        <div className="charges-reminder-txt">
+                            <p>After 25 Seconds, you will be charged 120 coins per minute</p>
+                        </div>
+                        <div className="vc-timer-box text-center">
+                            <div className="timer">
+                                <i className="far fa-clock"></i>
+                                <span>25 Sec</span>
+                            </div>
+                            <div className="vc-sppiner">
+                                <a className="sppiner bg-grd-clr" href="javascript:void(0)">
+                                    <img src="/assets/images/sppiner.png" alt="Sppiner" />
                                 </a>
-                            </li>
-                            <li>
-                                <a className="btn-round bg-grd-clr" href="javascript:void(0)">
-                                    <img src="/assets/images/chat.png" alt="Chat"/>
-                                </a>
-                            </li>
-                            <li>
-                                <a className="btn-round bg-grd-clr" href="javascript:void(0)">
-                                    <img src="/assets/images/gift.png" alt="Gift"/>
-                                </a>
-                            </li>
-                            <li>
-                                <a className="btn btn-nxt bg-grd-clr" href="javascript:void(0)">Next</a>
-                            </li>
-                        </ul>
+                            </div>
+                        </div>
+                        <div className="vc-option-block d-flex flex-wrap align-items-end">
+                            <div className="vc-options">
+                                <ul>
+                                    <li>
+                                        <a className="btn-round bg-grd-clr" href="javascript:void(0)">
+                                            <img src="/assets/images/magic-stick.png" alt="Magic" />
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a className="btn-round bg-grd-clr" href="javascript:void(0)">
+                                            <img src="/assets/images/chat.png" alt="Chat" />
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a className="btn-round bg-grd-clr" href="javascript:void(0)" onClick={handleGift}>
+                                            <img src="/assets/images/gift.png" alt="Gift" />
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a className="btn btn-nxt bg-grd-clr" href="javascript:void(0)">Next</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-md-3 live__comments_bg p-4">
+                        <div class="live__comments" id="chat-body">
+                            <form onSubmit={CheckTextInputIsEmptyOrNot}>
+                                {
+                                    !loading && CompleteMessageList.length === 0 &&
+                                    <div className="nothing-to-see text-center active">
+                                        <figure>
+                                            <img src="/assets/images/message-circle.png" alt="Message" />
+                                            <figcaption>Nothing To See</figcaption>
+                                        </figure>
+                                    </div>
+                                }
+                                <div class="live__comments__items">
+                                    {
+                                        CompleteMessageList.map((data, i) => (
+                                            <>
+                                                <span class="comment_username">{data.message_sender_name} :</span> {data.message} <br/>
+                                            </>
+                                        ))
+                                    }
+
+
+
+                                </div>
+
+                                <div class="write-comments">
+                                    <div className="sweet-loading">
+                                        <BarLoader color={"#fcd46f"} loading={loading} css={override} size={1000} />
+                                    </div>
+                                    <div class="write-comments__fields position-relative">
+                                        <input type="text" name="comments" id="Message" placeholder="Message..." value={UserMessage} onChange={e => changeInput(e)} />
+                                        <button type="submit" class="send-message-button bg-grd-clr"><i class="fas fa-paper-plane"></i></button>
+                                        {
+                                            !!chatTyping &&
+                                            <div>{chatTyping} is typing...</div>
+                                        }
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
-                </div>
-                <div class="col-md-3 live__comments_bg p-4">
-            <div class="live__comments">
-                <form onSubmit={CheckTextInputIsEmptyOrNot}>
-                    <div class="live__comments__items">
-                        <span class="comment_username">Andrew :</span> followed this host 
+
+
+                <div className={isOn ? 'video-streaming-gift all-gifts-wrapper active' : 'all-gifts-wrapper video-streaming-gift'} >
+                    <div className="all-gift-inner">
+                        <a href="javascript:void(0)" className="close-gift-btn modal-close" onClick={toggleIsOn}><img src="/assets/images/btn_close.png" /></a>
+                        <div className="all-gift-header d-flex flex-wrap align-items-center mb-3">
+                            <h5 className="mb-0 mr-4">Send Gift</h5>
+                            <div className="remaining-coins">
+                                <img src="/assets/images/diamond-coin.png" alt="Coins" />
+                                <span>{!!userData && userData.coins != 0 ? userData.coins : "0"}</span>
+                            </div>
+                        </div>
+                        <div className="all-gift-body">
+
+                            <ul className="d-flex flex-wrap text-center gift__items">
+                                {GiftData.map((items, i) => {
+                                    return <li onClick={() => getGiftItem(items.id)}>
+                                        <a href="javascript:void(0)" >
+                                            <div>
+                                                <figure>
+                                                    <img onError={(e) => addDefaultSrc(e)} src={!!items.image ? items.image : returnDefaultImage()} alt={items.name} />
+                                                </figure>
+                                                <div className="gift-price">
+                                                    <img src="/assets/images/diamond-coin.png" alt="Coins" />
+                                                    <span>{items.coins}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                })}
+                                <li>
+                                </li>
+                                <li>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
-                </form>
-            </div>   
-            
-            <div class="write-comments">
-            <div class="write-comments__fields position-relative">
-                <input type="text" name="comments" id="Message" placeholder="Message..." value={UserMessage} onChange={e => changeInput(e)}/>
-                <button type="submit" class="send-message-button bg-grd-clr"><i class="fas fa-paper-plane"></i></button>   
-            
-            </div>
-            </div>
-            </div>
-            </div>
+                </div>
+
             </div>
         </section>
     )

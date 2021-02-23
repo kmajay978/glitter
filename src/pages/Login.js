@@ -174,7 +174,7 @@ const tokencheck = () =>{
        Valid = false;
      }
      
-      if(Dob.length == "")
+      if(Dob == null)
      {
       dobErr.dobShort="date of birth is empty"
        Valid = false;
@@ -292,17 +292,24 @@ const registerHandle = (e) =>{
         
         axios.post(SIGNUP_API,bodyParameters, config)
         .then((response) => { 
-        
-        // Setting session id in local storage
-         
-          localStorage.setItem('session_id', response.data.data.session_id);
-          history.push({
-                    pathname: '/signup-completed',
-                    mypicture: imgData // your data array of objects
-                  })
-        
+          console.log(response, "kkk")
+          if(response.data.status_code == 200 && response.data.error == false)
+          {
+            localStorage.setItem('session_id', response.data.data.session_id);
+            history.push({
+                      pathname: '/signup-completed',
+                      mypicture: imgData // your data array of objects
+                    })
+          }
+          else
+          {
+            localStorage.removeItem('session_id');
+            createNotification('error' , response.data.message);
+          }
+
         }, (error) => {
           localStorage.removeItem('session_id');
+          
           createNotification('error' , error.message);
         });
 }
@@ -346,6 +353,13 @@ const handleResponse = (data) => {
 
 const handleError = (error) => {
   console.log({ error });
+}
+const changeDate = (date) => {
+  $('.react-date-picker').find(':input[type="number"]').each(function() {
+    $(this).attr('readOnly', true);
+    $(this).attr('readOnly', true);
+});
+  setDob(date)
 }
   const tabScreen = () =>{
     
@@ -450,7 +464,7 @@ const handleError = (error) => {
                 <h4 className="theme-txt">Your Information</h4>
                 </div>
                 <div className="form-group">
-                <DatePicker  className="bg-trsp" name="date-birth"   value={Dob} selected={Dob} required onChange={date => setDob(date)} placeholder="Your Date of birth"/>
+                <DatePicker className="bg-trsp" id="dateob" name="date-birth"   value={Dob} selected={Dob} required onChange={date => changeDate(date)} placeholder="Your Date of birth" />
                 { Object.keys(dobErr).map((key) => {
                           return <div style={{color : "red"}}>{dobErr[key]}</div>
                         }) }
