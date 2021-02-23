@@ -212,7 +212,10 @@ const LiveVideoChat = () => {
                             scrollToBottom()
                         }
                         if (message.message.chat_type === 1) {
+                            
+                            //  http://167.172.209.57/glitter-101/public/gifts_icons/1611753455.png
                          // animate gift
+
                         }
                         if (message.message.chat_type === 2) {
                             // animate heart
@@ -457,7 +460,16 @@ const LiveVideoChat = () => {
                             style={{ width: "400px", height: "400px" }}
                         />
                         {/* <img src="/assets/images/video-chat-bg.jpg" alt="Video Calling"/> */}
-
+                        <div className="gifter">
+                                <img src="/assets/images/vc-self.png" alt="gifter" />
+                                <div className="gifter__info">
+                                    <h6>Steve Barnet</h6>                
+                                    <span>Sent a gift</span>  
+                                </div>
+                                <div className="gifter__media">
+                                    <img src="/assets/images/heart-balloons.png" alt="gift" />
+                                </div>                    
+                            </div>
 
                         <div className="charges-reminder-txt">
                             <p>After 25 Seconds, you will be charged 120 coins per minute</p>
