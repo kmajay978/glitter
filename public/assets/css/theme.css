@@ -1563,6 +1563,52 @@ position: absolute;
     width: 100%;
 }
 
+.gifter {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    left: 30px;
+    animation:gifter 1s ease-in;
+    animation-fill-mode: forwards;
+}
+/*
+@keyframes gifter {
+    0% {transform: translateY(80px);opacity: 1;}
+    100% {transform: translateY(-80px);opacity: 0;}
+  }
+
+
+  @-moz-keyframes gifter {
+    from {background-color: red;}
+    to {background-color: yellow;}
+  }
+
+  @-webkit-keyframes gifter {
+    from {background-color: red;}
+    to {background-color: yellow;}
+  }
+*/
+
+.gifter > img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 5px;
+    border: 2px solid var(--theme-color);
+}
+
+.gifter__info h6 {
+    margin-bottom: 0px;
+}
+.gifter__info span {
+    font-size: 13px;
+    opacity: 0.7;
+}
+.gifter__media {
+    margin-left: 5px;
+}
 .charges-reminder-txt {
     position: absolute;
     left: 15px;

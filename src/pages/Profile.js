@@ -40,6 +40,7 @@ transform: translateY(-50%);
 
 const Profile = (props) =>{
 
+  
    //Adding class to body and removing the class
   // addBodyClass('no-bg')('login-body')
  
@@ -93,6 +94,7 @@ const Profile = (props) =>{
 
   const dates = moment(Dob).format('YYYY/M/D');
   console.log(Dob , "...dob");
+  console.log(dates , "date");
   // Getting form value here
   const [form , setForm] = useState({
     
@@ -147,7 +149,7 @@ const handleCheck = (e) => {
       session_id: sessionId,
       };
      const {data:{data}}= await axios.post(GET_LOGGEDPROFILE_API,bodyParameters)
-     console.log(moment(data.dob).format('ddd MMM DD YYYY   h:mm:ss') , "...hhhhhh");
+     console.log(moment(data.dob).format('ddd MMM DD YYYY   h:mm:ss') , "...hhhhh");
       
     //  Setting data variable to state object 
       form.firstName = data.first_name
@@ -400,9 +402,19 @@ catch (err) {
      const bodyParameters = {
        session_id : sessionId,
      }
-
-     const {data:{result , status}} = await axios.post(RECEIVED_GIFT_LIST,bodyParameters);
-      setGiftData(result);
+     try {
+      const {data:{result, status_code}} = await axios.post(RECEIVED_GIFT_LIST , bodyParameters)
+     
+      if(status_code==200){
+        setGiftData(result);
+        }
+  }
+  catch (err) {
+      if (err.toString().match("403")) {
+          localStorage.removeItem("session_id");
+          history.push('/login');
+        }
+  }
    }
 
    //get single  gift item
@@ -606,7 +618,7 @@ catch (err) {
                           </div>
                           </div>
               <div className="form-group">
-              <label for="">About Me</label>
+              <label htmlFor="">About Me</label>
               <input className="form-control bg-trsp" name="aboutMe" type="text" value={form.aboutMe} onChange={handleChange} />
               </div>
 
