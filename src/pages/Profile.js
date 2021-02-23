@@ -35,7 +35,6 @@ top: 50%;
 -webkit-transform: translateY(-50%);
 -moz-transform: translateY(-50%);
 transform: translateY(-50%);
-
 `;
 
 const Profile = (props) =>{
@@ -73,7 +72,7 @@ const Profile = (props) =>{
   const [Dob, setDob] = useState(''); 
   const [isLoaded, setIsLoaded] = useState(false);
   const [warningMessage, setWarningMessage] = useState('');
-  
+  const [loadedModel , setLoadedModel] = useState(false);
 
   const [showStripe , setShowStripe] = useState(false);
   const [showChecked , setMycheckbox] = useState(false);
@@ -92,7 +91,7 @@ const Profile = (props) =>{
   
   const userData = useSelector(userProfile).user.profile; //using redux useSelector here
 
-  const dates = moment(Dob).format('YYYY/M/D');
+  const dates = moment(Dob).format('YYYY/MM/DD');
   console.log(Dob , "...dob");
   console.log(dates , "date");
   // Getting form value here
@@ -282,21 +281,25 @@ const handleCheck = (e) => {
 
    //block list
    const handleBlockList = async() => {
+     setLoadedModel(true);
      setShowBlock(true);
    const bodyParameters ={
     session_id: sessionId,
    };
    try {
     const{data : {data,status_code, error}} = await axios.post(BLOCK_USERLIST_API ,bodyParameters)
-  
+  setLoadedModel(false);
     if(status_code==200){
       setBlockData(data);
-      }
+     
+      setLoadedModel(false);
+    }
 }
 catch (err) {
     if (err.toString().match("403")) {
         localStorage.removeItem("session_id");
         history.push('/login');
+        setLoadedModel(true);
       }
 }
    }
@@ -332,11 +335,11 @@ catch (err) {
 // console.log(blockId);
   useEffect(() => {
      handleBlock();
-  }, [blockId])
+   }, [blockId])
 
    // coin package
    const handleBuyCoins = () => {
-     setIsLoaded(true);
+    setLoadedModel(true);
      setShowBuyCoins(true);
      axios.get(GET_ALL_COIN_PACKAGE)
      .then((response) => { 
@@ -347,14 +350,14 @@ catch (err) {
     // }
        if(response.status==200){
       setCoinPackage(response.data.coin_list);
-      setIsLoaded(false);
+      setLoadedModel(false);
        }
        }, (error) =>{
         if (error.toString().match("403")) {
           localStorage.removeItem("session_id");
           history.push('/login');
         }
-        setIsLoaded(true);
+        setLoadedModel(true);
        }); 
     }
  
@@ -362,31 +365,30 @@ catch (err) {
 
     //coin history 
     const handleCoinHistory = () => {
-      setIsLoaded(true);
+      setLoadedModel(true);
       setShowCoin(true);
       const bodyParameters ={
         session_id :sessionId,
       }
       axios.post(COIN_HISTORY , bodyParameters)
       .then((response) =>{
-        console.log(response,"workingadsfadsfasdf....")
        
         if(response.data.status_code == 200 && response.data.status == true)
         {
-          setIsLoaded(false);
+          setLoadedModel(false);
           setCoinHistory(response.data.result);
           setCoinSpend(response.data.count_coins);
           setWarningMessage('');
         }
         else
         {
-          setIsLoaded(false);
+          setLoadedModel(false);
           setWarningMessage(response.data.message);
           createNotification('error' , response.data.message);
         }
 
       }, (error)=> {
-        setIsLoaded(false);
+        setLoadedModel(false);
         if (error.toString().match("403")) {
           localStorage.removeItem("session_id");
           createNotification('error' , error.message);
@@ -398,18 +400,20 @@ catch (err) {
     
    //all gift
    const handleGift = async() =>{
+    setLoadedModel(true);
     toggleIsOn(true);
      const bodyParameters = {
        session_id : sessionId,
      }
      try {
       const {data:{result, status_code}} = await axios.post(RECEIVED_GIFT_LIST , bodyParameters)
-     
+      setLoadedModel(false);
       if(status_code==200){
         setGiftData(result);
         }
   }
   catch (err) {
+    setLoadedModel(false);
       if (err.toString().match("403")) {
           localStorage.removeItem("session_id");
           history.push('/login');
@@ -485,9 +489,10 @@ catch (err) {
   // ------------------------------ Stipe payment module -----------------------------------------------//
 
   const GetStipePackage = async() =>{
+    setIsLoaded(true);
     try {
       const {data:{plan_list, status_code , error}} = await axios.get(GET_STRIPE_PACKAGE)
-     
+      setIsLoaded(false);
       if(status_code==200){
         setPackage(plan_list);
         }
@@ -545,6 +550,22 @@ catch (err) {
     dispatch(stripeCoinPlanId({stripeCoinPlanId: null}));
   }
 
+  const closeGiftModel = () => {
+    setGiftData('');
+    toggleIsOn(false);
+  }
+
+  const closeCoinSpend = () => {
+    setShowCoin(false);
+    setCoinHistory('');
+    setCoinSpend('');
+  }
+
+  const closeBlockModel =() => {
+    setShowBlock(false);
+    setBlockData('');
+  }
+
     useEffect(() =>{
     GetStipePackage();
     ProfileData(dispatch)
@@ -572,8 +593,8 @@ catch (err) {
         case 'unblock':
           NotificationManager.success('unblock Successfully ', 'unblock');
           break;
-      case 'error':
-        NotificationManager.error(message ,'Error message')
+        case 'error':
+        NotificationManager.error(message ,'Error message');
         break; 
   };
   };
@@ -744,7 +765,7 @@ catch (err) {
             < img onError={(e) => addDefaultSrc(e)} src={!!profileData.profile_images ? profileData.profile_images : returnDefaultImage()} alt="user" className="user-profile__image img-circle medium-image" onClick={handleImage}/>
            
               <div className="user-profile__details__data">
-                <h5 className="user-profile__name">{profileData.first_name +' '+ profileData.last_name } </h5>
+                <h5 className="user-profile__name">{!!profileData ?profileData.first_name +' '+ profileData.last_name :"" } </h5>
                 <div className="user-profile__level d-inline-block">
                 {!!userData&&
                             <>
@@ -762,20 +783,17 @@ catch (err) {
               <ul className="d-flex flex-wrap justify-content-center">
                 <li><span className="user-profile__status__heading d-block text-uppercase">Liked</span>
                   <span className="user-profile__status__counter d-block">  
-                   {!!profileData &&
-                    <>
-                    {profileData.likes!=0 ?  profileData.likes :  "" }
-                    </>}{<p>0</p>}</span>
+                   {!!profileData ? profileData.likes!=0 ?  profileData.likes :  "0" : "0"}</span>
                 </li>
                 <li><span className="user-profile__status__heading d-block text-uppercase">Story</span>
-                  <span className="user-profile__status__counter d-block">{!!userData ? userData.statuses.length :""}</span>
+                  <span className="user-profile__status__counter d-block">{!!userData ? userData.statuses.length :"0"}</span>
                 </li>
                 <li><span className="user-profile__status__heading d-block text-uppercase">Coins</span>
                   <span className="user-profile__status__counter d-block">
-                    {!!userData &&
-                    <>
-                    {userData.coins!=0 ?  userData.coins :  "" }
-                    </>}
+                    {!!userData ?
+                   
+                    userData.coins!=0 ?  userData.coins :  "0"
+                 : "0"}
              
                     </span>
                 </li>
@@ -814,6 +832,7 @@ catch (err) {
             <a href="javascript:void(0)" className="text-white signout-btn" onClick={handleLogout}>Sign out</a>
           </div>
         </div>
+     
         <div className="col-md-4">
           <div className="membership-plans">
           {!!userData&&
@@ -849,8 +868,9 @@ catch (err) {
         </div>
             
          ))}
-
+          <SyncLoader color={"#fcd46f"} loading={isLoaded} css={override} size={18} />
           </div>
+        
         </div>
       
         <div className="col-md-4">
@@ -895,6 +915,7 @@ catch (err) {
           <StripeForm />
 
            </div>
+       
            <a href="javascript:void(0)" className="modal-close" onClick={closeStripeModel}><img src="/assets/images/btn_close.png" /></a>
     </Modal>
 
@@ -933,7 +954,7 @@ catch (err) {
     <div className="edit-profile-modal__inner">
           <h4 className="theme-txt text-center mb-4 ">Coin Spend</h4>
           <h4 className="total-coins-spend text-center mb-4">{coinSpend}</h4>
-      {coinHistory.map((item , index)=> {
+      {!!coinHistory&& coinHistory.map((item , index)=> {
      return  <div className="coin-spend">
         <div className="coin-spend__host">
           <img src={item.receiver_image} alt="host" />
@@ -947,6 +968,7 @@ catch (err) {
         </div>
       </div>
      })} 
+     
      {
        !!warningMessage ?
        <h6 className="text-center">
@@ -956,9 +978,9 @@ catch (err) {
        ""
      }
      
-      <SyncLoader color={"#fcd46f"} loading={isLoaded} css={override} size={18} />
+      <SyncLoader color={"#fcd46f"} loading={loadedModel} css={override} size={18} />
     </div>
-    <a href="javascript:void(0)" className="modal-close" onClick={() => setShowCoin(false)}><img src="/assets/images/btn_close.png" /></a>
+    <a href="javascript:void(0)" className="modal-close" onClick={closeCoinSpend}><img src="/assets/images/btn_close.png" /></a>
   </Modal>
  
   <Modal className ="blacklist-modal " show={showBlock} onHide={()=> setShowBlock(false)} backdrop="static" keyboard={false}>
@@ -967,7 +989,7 @@ catch (err) {
          
     {!!blockData&&
     <>
-    {blockData.map((item, i) => {
+    {!!blockData&& blockData.map((item, i) => {
   
     return <div className="coin-spend">
      <div className="coin-spend__host">
@@ -983,11 +1005,11 @@ catch (err) {
      </div>
   
    </div>
- })}</>} 
-
+    })}</>} 
+  <SyncLoader color={"#fcd46f"} loading={loadedModel} css={override} size={18} />
     </div>
    
-    <a href="javascript:void(0)" className="modal-close" onClick={() => setShowBlock(false)}><img src="/assets/images/btn_close.png" /></a>
+    <a href="javascript:void(0)" className="modal-close" onClick={closeBlockModel}><img src="/assets/images/btn_close.png" /></a>
    
  </Modal>
 
@@ -1095,7 +1117,7 @@ catch (err) {
                </a>
           </div>
           ))} 
-        <SyncLoader color={"#fcd46f"} loading={isLoaded} css={override} size={18} />
+        <SyncLoader color={"#fcd46f"} loading={loadedModel} css={override} size={18} />
        </div>
        <a href="javascript:void(0)" className="modal-close" onClick={() => setShowBuyCoins(false)}><img src="/assets/images/btn_close.png" /></a>
       
@@ -1166,18 +1188,18 @@ catch (err) {
 
   <div className={isOn ? 'all-gifts-wrapper active': 'all-gifts-wrapper '} >
     <div className="all-gift-inner">
-    <a href="javascript:void(0)" className="close-gift-btn modal-close" onClick={toggleIsOn}><img src="/assets/images/btn_close.png" /></a>
+    <a href="javascript:void(0)" className="close-gift-btn modal-close" onClick={closeGiftModel}><img src="/assets/images/btn_close.png" /></a>
       <div className="all-gift-header d-flex flex-wrap align-items-center mb-3">
         <h5 className="mb-0 mr-4">Send Gift</h5>
         <div className="remaining-coins">
           <img src="/assets/images/diamond-coin.png" alt="Coins" />
-          <span>152</span>
+          <span> {!!userData&& userData.coins!=0 ?  userData.coins :  "0" }</span>
         </div>
       </div>
       <div className="all-gift-body">
         
         <ul className="d-flex flex-wrap text-center ">
-        {GiftData.map((items , i) => {
+        {!!GiftData && GiftData.map((items , i) => {
         return<li onClick={() => getGiftItem(items.id)}>
             <a href="javascript:void(0)" >
               <div>
@@ -1195,7 +1217,9 @@ catch (err) {
          
         </ul>
       </div>
+     
     </div>
+    <SyncLoader color={"#fcd46f"} loading={loadedModel} css={override} size={18} />
   </div>
 </div>
 

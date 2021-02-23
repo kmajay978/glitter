@@ -61,7 +61,7 @@ addBodyClass('login-body')('')
 
   // All form fields
   const [otp , setOtp] = useState('');
-  const [Dob, setDob] = useState(new Date()); 
+  const [Dob, setDob] = useState(); 
   const [FirstName, setFirst] = useState(''); 
   const [LastName, setLast] = useState(''); 
   const [genderName, setGender] = useState('');  
@@ -73,7 +73,7 @@ addBodyClass('login-body')('')
   const [dobErr, setDobErr] = useState({});
   const [ termPolicyErr , setTermPolicyErr] =useState({});
   const [ clickTerm , setClickTerm] = useState(true);
-  const dates = moment(Dob).format('YYYY/M/D');
+  const dates = moment(Dob).format('YYYY/MM/DD');
  
   {/* { divToggle ? "signup-inner" : "signup-inner active-tab-2"} */}
 //  Setting value here radio button

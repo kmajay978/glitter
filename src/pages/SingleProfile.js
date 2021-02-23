@@ -264,22 +264,21 @@ const SingleProfile = (props) =>{
             <div className="photo-count">
               <i className="far fa-image" />
               <span className="d-inline-block"> 
-               {/* {setCount(count+1)} */}4
+               {!!userData&& userData.profile_images.length}
               </span>
             </div>
           </div>
           {/* <div className="owl-carousel owl-theme profile-carousel"> */}
           <Carousel id="images_crousal" >
           <Carousel.Item interval={900}>
-            <div className="items">
            
-              <figure>
 
-                  <img onError={(e) => addDefaultSrc(e)} src={!!userData ? userData.profile_images : returnDefaultImage()} alt="Marlene" />
-
-              
+            <div className="items">
+            {userData.profile_images.map((item , index) => {
+            return  <figure>
+                  <img onError={(e) => addDefaultSrc(e)} src={!!item ? item : returnDefaultImage()} alt="Marlene" />
               </figure>
-      
+            })}
               <div className="sp-meta-info">
                 <div className="meta-info-data">
                   {
@@ -297,9 +296,10 @@ const SingleProfile = (props) =>{
                   }
                   
                 </div>
-                <span className="liked"><i className="fas fa-heart" /> {!!userData ? userData.likes : ""}</span>
+                <span className="liked"><i className="fas fa-heart" /> {!!userData && userData.likes!=0 ?  userData.likes : "0" }</span>
              </div>
             </div>
+           
             </Carousel.Item>
             </Carousel>
           {/* </div> */}
