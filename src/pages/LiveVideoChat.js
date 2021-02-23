@@ -13,6 +13,7 @@ import { func } from "prop-types";
 import { addDefaultSrc, checkLiveDomain, returnDefaultImage } from "../commonFunctions";
 import { GIFT_LIST_API, GIFT_PURCHASE_API } from "../components/Api";
 import useToggle from "../components/CommonFunction";
+import {changeImageLinkDomain, changeGiftLinkDomain} from "../commonFunctions"
 import { Number } from "core-js";
 
 let videoCallStatus = 0, videoCallParams, interval, userData, messageList = [], receiver_id
@@ -49,6 +50,7 @@ const LiveVideoChat = () => {
 
     const sessionId = localStorage.getItem('session_id');
     const [chatTyping, setChatTyping] = useState("");
+    const [friendGift, setFriendGift] = useState(null);
 
 
     userData = useSelector(userProfile).user.profile; //using redux useSelector here
@@ -194,7 +196,10 @@ const LiveVideoChat = () => {
                     // message.user_id == videoCallState.user_id &&
                     videoCallParams.channel_name == message.channel_name) { //check one-to-one data sync
                     if (!!message.message.message) {
-                        alert(message.message.message)
+                        if ( message.sender_id == videoCallParams.user_id &&
+                            message.user_id == videoCallState.user_id) {
+                                alert(message.message.message)
+                            }
                     }
                     else {
                         if (message.message.chat_type === 0) {
@@ -212,7 +217,17 @@ const LiveVideoChat = () => {
                             scrollToBottom()
                         }
                         if (message.message.chat_type === 1) {
-                            
+                            const gift = {
+                                user: changeImageLinkDomain() + message.message.userImage,
+                                gift: changeGiftLinkDomain() +message.message.giftImage,
+                                f_name: message.message.user_first_name,
+                                l_name: message.message.user_last_name
+                            }
+                            setFriendGift(gift)
+                            // setRandomNumber(Math.random())
+                            // window.setTimeout(() => {
+                            //     setFriendGift(null)
+                            // }, 6000)
                             //  http://167.172.209.57/glitter-101/public/gifts_icons/1611753455.png
                          // animate gift
 
@@ -243,7 +258,6 @@ const LiveVideoChat = () => {
                             user_id: socket_messages[i].user_id
                         })
                     }
-    
                     setMessages(all_messages);
                     messageList = all_messages;
                 }
@@ -460,16 +474,19 @@ const LiveVideoChat = () => {
                             style={{ width: "400px", height: "400px" }}
                         />
                         {/* <img src="/assets/images/video-chat-bg.jpg" alt="Video Calling"/> */}
-                        <div className="gifter">
-                                <img src="/assets/images/vc-self.png" alt="gifter" />
-                                <div className="gifter__info">
-                                    <h6>Steve Barnet</h6>                
-                                    <span>Sent a gift</span>  
+                        {
+                            !!friendGift &&
+                                <div className="gifter">
+                                    <img src={friendGift.user} alt="gifter" />
+                                    <div className="gifter__info">
+                                        <h6>{friendGift.f_name + " " + friendGift.l_name}</h6>                
+                                        <span>Sent a gift</span>  
+                                    </div>
+                                        <div className="gifter__media">
+                                        <img src={friendGift.gift} alt="gift" />
+                                    </div>     
                                 </div>
-                                <div className="gifter__media">
-                                    <img src="/assets/images/heart-balloons.png" alt="gift" />
-                                </div>                    
-                            </div>
+                        }
 
                         <div className="charges-reminder-txt">
                             <p>After 25 Seconds, you will be charged 120 coins per minute</p>

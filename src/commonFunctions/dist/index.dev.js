@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.changeImageLinkDomain = exports.checkLiveDomain = exports.returnDefaultImage = exports.addDefaultSrc = void 0;
+exports.changeGiftLinkDomain = exports.changeImageLinkDomain = exports.checkLiveDomain = exports.returnDefaultImage = exports.addDefaultSrc = void 0;
 
 var addDefaultSrc = function addDefaultSrc(ev) {
   ev.target.src = '/assets/images/image-placeholder.jpg';
@@ -36,3 +36,13 @@ var changeImageLinkDomain = function changeImageLinkDomain() {
 };
 
 exports.changeImageLinkDomain = changeImageLinkDomain;
+
+var changeGiftLinkDomain = function changeGiftLinkDomain() {
+  if (window.location.hostname === "rrmr.co.in") {
+    return "https://rrmr.co.in/glitter-101/public/gifts_icons/";
+  }
+
+  return "http://167.172.209.57/glitter-101/public/gifts_icons/";
+};
+
+exports.changeGiftLinkDomain = changeGiftLinkDomain;
