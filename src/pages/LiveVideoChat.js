@@ -158,7 +158,6 @@ const LiveVideoChat = () => {
                 if (data.user_id === videoCallState.user_id) {
                     if (Number(videoCallParams.user_id) === data.user_id) {
                         // opnen host camera
-                        alert(123)
                         const option = {
                             appID: "52cacdcd9b5e4b418ac2dca58f69670c",
                             channel: videoCallState.channel_name,
