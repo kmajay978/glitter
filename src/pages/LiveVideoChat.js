@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import $ from "jquery";
 import { useHistory, useParams } from 'react-router';
 import axios from "axios";
 import Logo from '../components/Logo';
@@ -16,7 +17,8 @@ import useToggle from "../components/CommonFunction";
 import {changeImageLinkDomain, changeGiftLinkDomain} from "../commonFunctions"
 import { Number } from "core-js";
 
-let videoCallStatus = 0, videoCallParams, interval, userData, messageList = [], receiver_id
+let videoCallStatus = 0, videoCallParams, interval, userData, 
+messageList = [], receiver_id, removeGiftInterval, allGifts = []
 
 const override = css`
   display: block;
@@ -37,6 +39,8 @@ const LiveVideoChat = () => {
     const [givenGift, setGivenGift] = useState();
     const [CompleteMessageList, setMessages] = useState([]);
     const [randomNumber, setRandomNumber] = useState('');
+    const [randomNumberGift, setRandomNumberGift] = useState('');
+    const [reRenderGifts, setReRenderGifts] = useState('');
     let [loading, setLoading] = useState(false);
 
 
@@ -50,7 +54,7 @@ const LiveVideoChat = () => {
 
     const sessionId = localStorage.getItem('session_id');
     const [chatTyping, setChatTyping] = useState("");
-    const [friendGift, setFriendGift] = useState(null);
+    const [friendGift, setFriendGift] = useState([]);
 
 
     userData = useSelector(userProfile).user.profile; //using redux useSelector here
@@ -68,6 +72,7 @@ const LiveVideoChat = () => {
         localStorage.removeItem("videoCallLivePageRefresh");
         localStorage.removeItem("liveVideoProps");
         clearChatState(dispatch);
+        clearInterval(removeGiftInterval)
         window.location.href = checkLiveDomain() ? "/glitter-web/search-home" : "/search-home";
     }
     useEffect(() => {
@@ -221,16 +226,15 @@ const LiveVideoChat = () => {
                                 user: changeImageLinkDomain() + message.message.userImage,
                                 gift: changeGiftLinkDomain() +message.message.giftImage,
                                 f_name: message.message.user_first_name,
-                                l_name: message.message.user_last_name
+                                l_name: message.message.user_last_name,
+                                dateTime: new Date()
                             }
-                            setFriendGift(gift)
-                            // setRandomNumber(Math.random())
-                            // window.setTimeout(() => {
-                            //     setFriendGift(null)
-                            // }, 6000)
-                            //  http://167.172.209.57/glitter-101/public/gifts_icons/1611753455.png
-                         // animate gift
-
+                            let newGift = friendGift; 
+                            newGift.unshift(gift);
+                            console.log(newGift, "hiiiiiiiiiiiii")
+                            setFriendGift(newGift);
+                            allGifts = newGift;
+                            setRandomNumberGift(Math.random())
                         }
                         if (message.message.chat_type === 2) {
                             // animate heart
@@ -292,12 +296,29 @@ const LiveVideoChat = () => {
                 local_stream.remove()
             }
         }
+
+        removeGiftInterval = window.setInterval(() => {
+            const current_time = new Date();
+                for (let i in allGifts) {
+                    const startDate = allGifts[i].dateTime;
+                    const seconds = (current_time.getTime() - startDate.getTime()) / 1000;
+                    if (seconds > 5) {
+                        allGifts.splice(i, 1)
+                    }
+                }  
+                setReRenderGifts(Math.random())
+        }, 1000)
+
     }, [])
 
     const scrollToBottom = () => {
         var div = document.getElementById('chat-body');
         if (!!div)
             div.scroll({ top: div.scrollHeight, behavior: 'smooth' });
+    }
+
+    const scrollToTop = () => {
+        $('body, html, #giftSender').scrollTop(0);
     }
 
     const endCall = () => {
@@ -324,6 +345,10 @@ const LiveVideoChat = () => {
     useEffect(() => {
         scrollToBottom();
     }, [randomNumber])
+
+    useEffect(() => {
+        scrollToTop();
+    }, [randomNumberGift])
 
     const CheckTextInputIsEmptyOrNot = (e) => {
         e.preventDefault()
@@ -474,19 +499,24 @@ const LiveVideoChat = () => {
                             style={{ width: "400px", height: "400px" }}
                         />
                         {/* <img src="/assets/images/video-chat-bg.jpg" alt="Video Calling"/> */}
+                        <div class="gift-sender" id="giftSender">
                         {
-                            !!friendGift &&
+                            friendGift.map((item, index) => (
                                 <div className="gifter">
-                                    <img src={friendGift.user} alt="gifter" />
-                                    <div className="gifter__info">
-                                        <h6>{friendGift.f_name + " " + friendGift.l_name}</h6>                
-                                        <span>Sent a gift</span>  
-                                    </div>
-                                        <div className="gifter__media">
-                                        <img src={friendGift.gift} alt="gift" />
-                                    </div>     
+                                <img src={item.user} alt="gifter" />
+                                <div className="gifter__info">
+                                    <h6>{item.f_name +" "+ item.l_name}</h6>                
+                                    <span>Sent a gift</span>  
                                 </div>
+                                    <div className="gifter__media">
+                                    <img src={item.gift} alt="gift" />
+                                </div>     
+                            </div>
+                                )) 
+                               
                         }
+                        </div>
+                        
 
                         <div className="charges-reminder-txt">
                             <p>After 25 Seconds, you will be charged 120 coins per minute</p>

@@ -1560,22 +1560,39 @@ position: absolute;
     width: 100%;
 }
 
-.gifter {
+.gift-sender {
+    opacity: 1 !important;
     position: fixed;
     top: 50%;
     transform: translateY(-50%);
     display: flex;
     align-items: center;
     left: 30px;
-    animation:gifter 5s linear;
+    /* animation: gifter 5s linear; */
     animation-fill-mode: forwards;
+    display: flex;
+    flex-wrap: wrap;
+    width: 250px;
+    height: 350px;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
-@keyframes gifter {
+.gifter {
+    width: 100%;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    background-color:rgba(0,0,0,0.20);
+    border-radius: 5px;
+    padding: 10px;
+}
+
+/* @keyframes gifter {
     0% {top:70%;opacity: 1;}
     50% {top:35%;opacity: 1;}
     100% {top:10%;opacity: 0;}
-  }
+  } */
 
 /*
   @-moz-keyframes gifter {
@@ -1596,6 +1613,12 @@ position: absolute;
     border-radius: 50%;
     margin-right: 5px;
     border: 2px solid var(--theme-color);
+}
+
+.gifter__media img{
+    width: 40px !important;
+    height: auto;
+    margin-left: 10px;
 }
 
 .gifter__info h6 {
@@ -2318,12 +2341,12 @@ body {
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
-.contacts-outter-wrapper::-webkit-scrollbar {
+.contacts-outter-wrapper::-webkit-scrollbar, .gift-sender::-webkit-scrollbar {
     display: none;
 }
 
 /* Hide scrollbar for IE, Edge and Firefox */
-.contacts-outter-wrapper {
+.contacts-outter-wrapper., .gift-sender {
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
 }
@@ -4587,9 +4610,9 @@ span.gift__discount {
     height: 105px;
 }
 
-.vc-screen .col-md-9{
-    /* background: url('../images/live-host.jpg'); */
-}
+/* .vc-screen .col-md-9{
+     background: url('../images/live-host.jpg'); 
+} */
 
 .live__comments_bg{
     background-color: #282828;
@@ -4678,13 +4701,18 @@ span.gift__discount {
 
 .send-photos-modal{
 	margin-bottom: 100px;
- background-color: #282828;
-border-radius: 10px;
+    background-color: #282828;
+    border-radius: 10px;
 	border-radius: 30px;
 	padding: 40px;
     position: absolute;
     top: -300px;
     width: 100%;
+}
+
+.send-photos-modal .modal-close{
+    left: 15px;
+    top: 15px;
 }
 
 .done-media {
@@ -4694,7 +4722,7 @@ border-radius: 10px;
 }
 
 
-    .send-photos-listing > div, .coin-price {
+.send-photos-listing > div, .coin-price {
         margin-right: 15px;
 }
 

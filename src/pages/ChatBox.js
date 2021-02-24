@@ -65,8 +65,7 @@ const ChatBox = (props) =>{
     let [loading, setLoading] = useState(false);
     const[recording, setRecording] = useState(false);
     const [dummyMediaRc, setDummyMediaRc] = useState(null)
-    const [chatTyping, setChatTyping] = useState("");
-    const [threeMessageWarning, setWarningMessage] = useState("");
+    const [chatTyping, setChatTyping] = useState("")
 
     const createNotificationCustom = (type) => {
   
@@ -125,10 +124,7 @@ const ChatBox = (props) =>{
                 localStorage.removeItem("session_id");
                 history.push('/login');
               }
-        }
-       
-        
-        
+        }  
     }
 
     const getVisitors = async () => {  // Visitors here
@@ -210,7 +206,7 @@ const ChatBox = (props) =>{
                 //  }
                 if(response.status==200)
                 {
-                    createNotification('accept');
+                    createNotification('accept' , response.message);
                 }
             }, (error) => {
                 if (error.toString().match("403")) {
@@ -293,17 +289,16 @@ const ChatBox = (props) =>{
                
                const handleSendFile =() => {
                 setUploadImage(false);
-                setPreviews('');
+   
                }
 
             const  stringLimit = (string , counts)=>{
                 var text = string;
                 var count = counts;
-                var result = text.slice(0, count) 
-                // + (text.length > count ? "*********" : "");
+                // var result = text.slice(0, count)  + (text.length > count ? "*********" : "");
                 for(var i=0 ; i<=text.length ; i++){
-                    // text.replace(text.substr(1,text.length-3));
-                    var result = text.slice(0, count)+ (text.length > count ? "*********" : "");
+                    // text.replace(text.substr(/./g,text.length-3));
+                    var result =  text.replace(text.substring(count,text.length[i]),"*");
                 } 
                 return result;
             }
@@ -413,21 +408,12 @@ const ChatBox = (props) =>{
                     ||
                     (messages.obj.user_from_id === receiver_id && messages.obj.user_to_id === userData.user_id)
                 ) { // check one-to-one data sync
-
-                    if (!!messages.obj.warningMessage) {
-                    
-                        setWarningMessage(messages.obj.warningMessage);
-                        //alert(messages.obj.warningMessage)
-                    }
-                    else {
-                        setWarningMessage('');
                     messagesList.push(messages.obj);
                     messageList = messagesList;
                     console.log(messagesList, "messageList...")
                     setMessages(messagesList);
                     setRandomNumber(Math.random());
                     scrollToBottom()
-                    }
                 }
             }
         });
@@ -439,14 +425,6 @@ const ChatBox = (props) =>{
                     ||
                     (messages.obj.user_from_id === receiver_id && messages.obj.user_to_id === userData.user_id)
                 ) {
-                    if (!!messages.obj.warningMessage) {
-                    
-                        setWarningMessage(messages.obj.warningMessage);
-                        //alert(messages.obj.warningMessage)
-                        setLoading(false);
-                    }
-                    else {
-                        setWarningMessage('');
                     messagesList.push(messages.obj);
                     messageList = messagesList;
                     console.log(messagesList, "messageList... pic")
@@ -455,7 +433,6 @@ const ChatBox = (props) =>{
                     setLoading(false);
                     setRandomNumber(Math.random());
                     scrollToBottom()
-                    }
                 }
             }
         });
@@ -470,14 +447,6 @@ const ChatBox = (props) =>{
                     (messages.obj.user_from_id === receiver_id && messages.obj.user_to_id === userData.user_id)
                 )
                 {
-                    if (!!messages.obj.warningMessage) {
-                    
-                        setWarningMessage(messages.obj.warningMessage);
-                        //alert(messages.obj.warningMessage)
-                        setLoading(false);
-                    }
-                    else {
-                        setWarningMessage('');
                     messagesList.push(messages.obj);
                     messageList = messagesList;
                     console.log(messagesList,"messageList_gift_send ........ ");
@@ -485,7 +454,6 @@ const ChatBox = (props) =>{
                     setLoading(false);
                     setRandomNumber(Math.random());
                     scrollToBottom();
-                    }
                 }
             }
         });
@@ -498,13 +466,6 @@ const ChatBox = (props) =>{
                     ||
                     (arrayBuffer.obj.user_from_id === receiver_id && arrayBuffer.obj.user_to_id === userData.user_id)
                 ) {
-                    if (!!arrayBuffer.obj.warningMessage) {
-                        setWarningMessage(arrayBuffer.obj.warningMessage); 
-                      
-                    }
-                    else {
-                       
-                        setWarningMessage('');
                     messagesList.push(arrayBuffer.obj);
                     messageList = messagesList;
                     console.log(messagesList, "messageList... pic")
@@ -512,7 +473,6 @@ const ChatBox = (props) =>{
                     setuserMessage(''); //Empty user input here
                     setRandomNumber(Math.random());
                     scrollToBottom()
-                    }
                 }
             }
             // src= window.URL.createObjectURL(blob);
@@ -553,15 +513,12 @@ const ChatBox = (props) =>{
                 setLoading(false);
                 console.log(messages, "messages..")
                 console.log(messages, "hahahaha")
-              
-                    setMessages(messages.message_list);
-                    messageList = messages.message_list;
-                
+                setMessages(messages.message_list);
+                messageList = messages.message_list;
             });
         }
         if (!!FriendUserId) {
             receiver_id = FriendUserId;
-            setWarningMessage('');
             DetermineUser();
             setLoading(true);
             //  GetAllMessages();
@@ -665,11 +622,11 @@ const ChatBox = (props) =>{
         history.push("/searching-profile-call");
     }
 
-    const createNotification = (type) => {
+    const createNotification = (type , message) => {
         return () => {
             switch (type) {
                 case 'accept':
-                    NotificationManager.success('Like sucessfully', 'Like');
+                    NotificationManager.success(message , 'Like');
                     break;
                 case 'success':
                     NotificationManager.success('Success message', 'Title here');
@@ -799,8 +756,9 @@ const ChatBox = (props) =>{
                                           
                                         </ul>
                                         {/* } */}
-                                        <NotificationContainer/>
+                                       
                                     </div>
+
                                 </div>
                                 <div id="visitors" className="contacts-outter-wrapper tab-pane fade" role="tabpanel" aria-labelledby="tab-visitors">
                                     <div className="contacts-outter">
@@ -974,13 +932,6 @@ const ChatBox = (props) =>{
                                                 ))
                                             }
                                             <NotificationContainer/>
-                                            {
-                                                
-                                                    !!threeMessageWarning &&
-                                                    <div className="message-text warning-msg" >
-                                                    <p>{threeMessageWarning}</p>
-                                                </div>
-                                                }
                                         </div>
                                         <form onSubmit={CheckTextInputIsEmptyOrNot}>
 
@@ -1132,6 +1083,7 @@ const ChatBox = (props) =>{
                             </div>
                         </div>
                     </div>
+                    <NotificationContainer/>
                 </div>
             </div>
         </section>
