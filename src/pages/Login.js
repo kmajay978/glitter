@@ -42,7 +42,7 @@ addBodyClass('login-body')('')
 //   };
 
    const [phoneNumber, setPhone] = useState('');   //For past users
-  const [cntCode, setCntCode] = useState('');   //For past users
+  const [cntCode, setCntCode] = useState('93');   //For past users
 
 
 

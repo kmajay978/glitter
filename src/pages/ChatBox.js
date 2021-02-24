@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import  $ from 'jquery';
 import {useSelector, useDispatch} from 'react-redux';
 import axios from "axios";
@@ -36,6 +36,8 @@ const scrollToBottom = () => {
 }
 
 const ChatBox = (props) =>{
+
+    const inputFile = useRef(null);
     const dispatch = useDispatch();
     const history = useHistory()
     // window.setTimeout()
@@ -53,9 +55,12 @@ const ChatBox = (props) =>{
     const [GiftData , setGiftData] =useState([]);
     const [picture, setPicture] = useState(null);
     const [imgData, setImgData] = useState(null);
+    const [previewData, setPreviewData] = useState([]);
     const [files, setFiles] = useState([]);
     const [previews, setPreviews] = useState([]);
-    const [ fileSrc , setFileSrc] = useState("");
+    const [myFiles, setMyFiles] = useState([]);
+    const [myUrls, setUrls] = useState([]);
+
 
     let [loading, setLoading] = useState(false);
     const[recording, setRecording] = useState(false);
@@ -75,7 +80,8 @@ const ChatBox = (props) =>{
       };
       };
 
-// console.log(UserMessage);
+
+ console.log(previewData,"threeMessageWarning....");
     const[GetActivity, setActivity] = useState(0);
 
     userData = useSelector(userProfile).user.profile; //using redux useSelector here
@@ -252,51 +258,34 @@ const ChatBox = (props) =>{
                     createNotificationCustom('error');       
                 }
              }
-           
-            const fileObj = [];
-            const fileArray = [];
+            
+            //  On change getting image files 
              const handleFileChange = e => {
-                var data = e.target.files[0];
-                const filename =  e.target.files[0];
-                const fileName = data.name.split(".");
-                const imageFormat = fileName[fileName.length - 1];
-                const fileList = Array.from(e.target.files);
-                 if (e.target.files[0]) { 
-                    function createElementWithClass(elementName, className)
-                    {
-                        var el = document.createElement(elementName);
-                
-                        el.className = className;
-                
-                        return el;
-                    }
-                    var outerDiv = createElementWithClass('div', 'media-box')
-                    var x=document.createElement('img'),
-                    y=document.body.appendChild(x);
-                    y.src = URL.createObjectURL(e.target.files[0]);
-                    y.width = '100';
-                 
-                   
-                    console.log(y.src , "hhhhhhh...");
-                
-                    let imageAppned =  y ;
-                    outerDiv.appendChild(imageAppned);
-                    document.getElementById("myImages").appendChild(outerDiv); 
-                    var fileArray = files;
-                    fileArray.push(imageAppned);
-                    setFiles(fileArray);
-                    
-                    console.log(files, "Testfiles...");
-                   
-                }
-                   else
-                   {
-                     console.log("Invlid format");
-                   }
-                  
+
+                    const files = [...myFiles]; 
+                    files.push(...e.target.files); 
+                    setMyFiles(files);
+
+                    setFileUrls(files) 
                };
-               console.log(files ,"fileName...");
-         
+
+            //    Setting urls for displaying here
+               const setFileUrls = (files) => {
+                const urls = files.map((file) => URL.createObjectURL(file));
+                console.log(urls,"bbbbbb")
+                if(myUrls.length > 0) {
+                    myUrls.forEach((url) => URL.revokeObjectURL(url));
+                }
+                
+                setUrls(urls);
+              }
+              
+            // returning in html form to display 
+              const displayUploadedFiles = (urls) => {
+                return urls.map((url, i) => <div className="media-box"><img key={i} src={url}/></div>);
+              }
+   
+
                
                const handleSendFile =() => {
                 setUploadImage(false);
@@ -316,18 +305,24 @@ const ChatBox = (props) =>{
     /************************************* Working here socket *******************************************************/
 
     function readThenSendFile(data){
-        var reader = new FileReader();
+      
+        console.log(data,"mydata.......")
+         var reader = new FileReader()
         reader.onload = function(evt){
-            var msg ={};
-            msg.file = evt.target.result;
-            msg.fileName = data.name;
-            msg.sessionId = sessionId;
-            msg.reciever_id = receiver_id;
-            console.log(msg, "msg...")
-            SOCKET.emit('media_file', msg);
-            setLoading(true);
+            
+        //     var msg ={};
+        //     msg.file = evt.target.result;
+        //     msg.fileName = data.name;
+        //     msg.sessionId = sessionId;
+        //     msg.reciever_id = receiver_id;
+        //     console.log(msg, "msg...")
+        //     SOCKET.emit('media_file', msg);
+        //     setLoading(true);
+
         };
-        reader.readAsDataURL(data);
+         reader.readAsDataURL(data);
+
+        
     }
 
 
@@ -364,27 +359,24 @@ const ChatBox = (props) =>{
     }, [randomNumber])
 // console.log(FriendUserId);
     useEffect(()=>{
-        $(document).on("click", "#upload__media", function () {
-            $('#uploadfile').trigger("click");
-          });
-         
-          $(document).on("click", "#uploadfile", function (e) {
-            e.stopPropagation();
-        });
         // window.setTimeout(() => {
-        //     $('#uploadfile').bind('change', function(e){
-        //         var data = e.originalEvent.target.files[0];
+        //     $(document).on('change', '#uploadfile', function(e) {
+               
+        //         var data = e.originalEvent.target.files[0]; 
+        //         var imageData = e.target.files;
         //         const fileName = data.name.split(".");
         //         const imageFormat = fileName[fileName.length - 1];
         //         if (imageFormat === "png" || imageFormat === "jpg" || imageFormat === "jpeg" ||
-        //             imageFormat === "PNG" || imageFormat === "JPG" || imageFormat === "JPEG") {
-        //             // readThenSendFile(data);
+        //             imageFormat === "PNG" || imageFormat === "JPG" || imageFormat === "JPEG") {  
+        //             readThenSendFile(imageData);
         //         }
         //         else {
         //             alert("Only .png, .jpg, .jpeg image formats supported.")
         //         }
         //     })
         // }, 1000);
+
+             
 
         getAllDetails();
 
@@ -650,6 +642,11 @@ const ChatBox = (props) =>{
             }
         };
     };
+
+    const openFileHandler = () => {
+       inputFile.current.click();
+      
+      };
     return(
 
         <section className="home-wrapper">
@@ -941,39 +938,25 @@ const ChatBox = (props) =>{
                                         <div className="chat-footer">
                                         {uploadImage ?                                 
                                         <div className="send-photos-modal">
-                                            <a href="javascript:void(0)" className="theme-txt done-media" onClick={readThenSendFile}>Done</a>
+                                            <a href="javascript:void(0)" className="theme-txt done-media">Done</a>
                                             <a href="javascript:void(0)" className="close-image-btn modal-close" onClick={handleSendFile}><img src="/assets/images/btn_close.png" /></a>
                                             <h6 className="text-center">Send Photos</h6>
                                             
                                             <div className="send-photos-listing d-flex my-4">
                                                 <div className="media-box add-media">
-                                                <a id="upload__media"   href="javascript:void(0)">
+                                                <a id="upload__media"   href="javascript:void(0)" onClick={openFileHandler}>
                                                 <img src="/assets/images/add-media.svg" alt="add media" />
-                                                 <input id="uploadfile" type="file" className="d-none" onChange={handleFileChange} multiple accept="image/* , video/*"/>
+                                                 <input id="uploadfile" type="file" className="d-none" ref={inputFile} onChange={handleFileChange} multiple="true" accept="image/* , video/*"/>
                                                     </a>
                                                 </div>
-                                                <div id="myImages">
-                                                  
-                                                   </div>
-
-                                               {/* <div className="media-box">
-                           
-                                               <video id="video_preview" src={imgData} controls></video>
-                          
-                                                </div> */}
-                                              
-                                              
-                                                {/* <div className="media-box">
-                                                    <img src="images/send-media.jpg" alt="media"/>
-                                                </div>
-                                                <div className="media-box">
-                                                    <img src="images/send-media.jpg" alt="media"/>
-                                                </div>
-                                                <div className="media-box">
-                                                    <span>0:45</span>
-                                                    <img src="images/send-media.jpg" alt="media"/>
-                                                </div> */}
-                                                
+                                               
+                                              {/* Displaying image here */}
+                                              {myUrls.length > 0 &&
+                                                   <>
+                                                   { displayUploadedFiles(myUrls) }
+                                                   </> 
+                                                }
+                                         
                                             </div>
                                             
                                             <h6>Put Price</h6>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import {  useHistory } from 'react-router';
 import axios from "axios";
 import NavLinks from '../components/Nav';
-import {GET_SINGLE_STATUS , GIFT_LIST_API , GET_GIFT_API , DISLIKE_USER , LIKE_USER, GET_USERPROFILE_API , BLOCK_USER_API , REPORT_USER_API } from '../components/Api';
+import {GET_SINGLE_STATUS , GIFT_LIST_API , GIFT_PURCHASE_API , DISLIKE_USER , LIKE_USER, GET_USERPROFILE_API , BLOCK_USER_API , REPORT_USER_API } from '../components/Api';
 import {Modal, ModalBody , Dropdown} from 'react-bootstrap';
 import Carousel from 'react-bootstrap/Carousel';
 import Logo from '../components/Logo';
@@ -11,11 +11,13 @@ import moment from 'moment'
 import {addDefaultSrc, returnDefaultImage} from "../commonFunctions";
 // import NotificationContainer from "react-notifications/lib/NotificationContainer";
 import {NotificationContainer, NotificationManager} from 'react-notifications';
+import { useSelector } from "react-redux";
+import {userProfile} from '../features/userSlice';
 
 const SingleProfile = (props) =>{
     const [userData, setUser] = useState(null);
    
-    const [count, setCount] = useState('0');
+   
     const [checkUid, setUserId] = useState(props.location.userId);
     const [blk, setBlock ]= useState(false);
     const [smShow, setSmShow] = useState(false);
@@ -28,8 +30,11 @@ const SingleProfile = (props) =>{
     const [ showStatus , setShowStatus] =useState(false);
     
     const showAllStatus = () => setShowStatus(true);
+    const showAllGift =() =>       toggleIsOn(true);
     const history = useHistory()
    
+    const profileData = useSelector(userProfile).user.profile; //using redux useSelector here
+
     const handleBack = () => {
       history.goBack();
     }
@@ -78,7 +83,7 @@ const SingleProfile = (props) =>{
 
           //all gift
        const handleGift = async() =>{
-       toggleIsOn(true);
+ 
        const bodyParameters = {
        session_id :  localStorage.getItem('session_id'),
        }
@@ -90,6 +95,7 @@ const SingleProfile = (props) =>{
       //   }
        if(status==200){
        setGiftData(result);
+    
        }
        }
 
@@ -97,10 +103,11 @@ const SingleProfile = (props) =>{
       const getGiftItem = async(Uid) => {
       const bodyParameters ={
       session_id :  localStorage.getItem('session_id') ,
-      gift_id : Uid
+      gift_id : Uid ,
+      given_to : checkUid
       }
-       const {data : {result}} = await axios.post(GET_GIFT_API , bodyParameters)
-       
+       const {data : {result}} = await axios.post(GIFT_PURCHASE_API , bodyParameters)
+       createNotification('gift-send');
         }
  
         const handleblock = async() => {
@@ -199,6 +206,9 @@ const SingleProfile = (props) =>{
               case 'report':
                 NotificationManager.success('report Successfully ', 'report');
                 break;
+                case 'gift-send':
+                NotificationManager.success('gift send successfully' , 'gift');
+                break;
                 case 'block':
                   NotificationManager.success('block Successfully ', 'block');
                   break;
@@ -210,6 +220,7 @@ const SingleProfile = (props) =>{
    useEffect(() =>{
     getUser();
     handleStatus();
+    handleGift();
     },[])
     
     return(
@@ -274,7 +285,7 @@ const SingleProfile = (props) =>{
            
 
             <div className="items">
-            {userData.profile_images.map((item , index) => {
+            {userData&& userData.profile_images.map((item , index) => {
             return  <figure>
                   <img onError={(e) => addDefaultSrc(e)} src={!!item ? item : returnDefaultImage()} alt="Marlene" />
               </figure>
@@ -333,11 +344,14 @@ const SingleProfile = (props) =>{
             <div className="bio-interest">
               <h5 className="mb-3">Interests</h5>
               <div className="interest-tags">
-                <span>Fitness</span>
-                <span>Beauty</span>
-                <span>Dogs</span>
-                <span>Laundry</span>
-                <span>Cats</span>
+                {!!userData&& 
+                <>
+                 { Object.keys(userData.interest_hobbies).map((key) => {
+                  return <span> {userData.interest_hobbies[key]} </span>
+                })}
+                </>
+                }
+             
               </div>
             </div>
             <div className="bio-basics">
@@ -345,7 +359,7 @@ const SingleProfile = (props) =>{
               <ul>
                 <li>
                   <div className="theme-txt">Height:</div>
-              <div>{!!userData ? userData.height: ""}</div>
+              <div>{!!userData ?   `${userData.height} cm`   : ""}</div>
                 </li>
                 <li>
                   <div className="theme-txt">Weight:</div>
@@ -353,12 +367,19 @@ const SingleProfile = (props) =>{
                 </li>
                 <li>
                   <div className="theme-txt">Relationship status:</div>
-                  <div>{!!userData ? userData.occupation : ""}</div>
+                  <div>
+                  {!!userData&&
+                  <>
+                 {userData.relationship_status == '1' ? "Single" 
+                : userData.relationship_status == '2'  ? "Married" 
+                : "Unmarried"}
+                 </>}
+                 { <> </>}</div>
                 </li>
                 <li>
                   <div className="theme-txt">join date:</div>
 
-                  <div>{!!userData ? moment(userData.joined_date.date).format('YYYY/M/D') : ""}</div>
+                  <div>{!!userData ? moment(userData.joined_date.date).format('MMM DD , YYYY') : ""}</div>
                  
                 </li>
               </ul>
@@ -389,35 +410,23 @@ const SingleProfile = (props) =>{
               <div className="flex-wrapper d-flex align-items-center mb-3">
                 <h5 className="mb-0">Gifts</h5>
                 <span className="see-all ml-5">
-                  <a href="javascript:void(0)" className="theme-txt all-gift-btn"onClick={handleGift}>Send Gifts</a>
+                  <a href="javascript:void(0)" className="theme-txt all-gift-btn"onClick={showAllGift}>Send Gifts</a>
+                  
                 </span>
               </div>
+             
               <div className="gifts-wrapper d-flex flex-wrap">
-                <div className="gift-box">
-                  <figure>
-                    <img src="/assets/images/rose.png" alt="rose" />
-                  </figure>
-                  <div className="gift-price mt-2"><span className="star"><i className="fas fa-star" /></span> 12</div>
-                </div>
-                <div className="gift-box">
-                  <figure>
-                    <img src="/assets/images/heart-cake.png" alt="Heart Cake" />
-                  </figure>
-                  <div className="gift-price mt-2"><span className="star"><i className="fas fa-star" /></span> 2929</div>
-                </div>
-                <div className="gift-box">
-                  <figure>
-                    <img src="/assets/images/heart-balloons.png" alt="Heart Balloons" />
-                  </figure>
-                  <div className="gift-price mt-2"><span className="star"><i className="fas fa-star" /></span> 2929</div>
-                </div>
-                <div className="gift-box">
-                  <figure>
-                    <img src="/assets/images/cake.png" alt="Cake" />
-                  </figure>
-                  <div className="gift-price mt-2"><span className="star"><i className="fas fa-star" /></span> 2929</div>
-                </div>
+                {GiftData.slice(0,4).map((item , index) => (
+                    <div className="gift-box" onClick={() => getGiftItem(item.id)}>
+                    <figure>
+                      <img src={item.image} alt={item.name} />
+                    </figure>
+                    <div className="gift-price mt-2"><span className="star"><i className="fas fa-star" /></span> {item.coins}</div>
+                  </div>
+                ))}
+              
               </div>
+              
             </div>
             <div className="bio-looking">
               <h5 className="mb-3">Looking For</h5>
@@ -444,13 +453,11 @@ const SingleProfile = (props) =>{
               <div className="flex-wrapper d-flex align-items-center mb-3">
                 <h5 className="mb-0">Archived Stories</h5>
 
-
-
               </div>
             <div className="archived-stories d-flex flex-wrap">
-            <div className="single-stories locked">
+            {/* <div className="single-stories locked">
                   <i className="fas fa-lock" />
-                </div>
+                </div> */}
                 
                 {statusData.map((item, i) => {
              return   <div className="single-stories">
@@ -504,11 +511,10 @@ const SingleProfile = (props) =>{
         <h5 className="mb-0 mr-4">Send Gift</h5>
         <div className="remaining-coins">
           <img src="/assets/images/diamond-coin.png" alt="Coins" />
-          <span>152</span>
+          <span>{!!profileData ? profileData.coins : "0"}</span>
         </div>
       </div>
-      <div className="all-gift-body">
-        
+      <div className="all-gift-body"> 
         <ul className="d-flex flex-wrap text-center gift__items">
       {GiftData.map((items , i) => {
         return <li onClick={() => getGiftItem(items.id)}>
@@ -527,8 +533,10 @@ const SingleProfile = (props) =>{
         })}
           <li>
           </li>
+          
         </ul>
       </div>
+     
     </div>
   </div>
 </section>

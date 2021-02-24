@@ -158,7 +158,6 @@ const LiveVideoChat = () => {
                 if (data.user_id === videoCallState.user_id) {
                     if (Number(videoCallParams.user_id) === data.user_id) {
                         // opnen host camera
-                        alert(123)
                         const option = {
                             appID: "52cacdcd9b5e4b418ac2dca58f69670c",
                             channel: videoCallState.channel_name,
@@ -212,6 +211,12 @@ const LiveVideoChat = () => {
                             setRandomNumber(Math.random());
                             scrollToBottom()
                         }
+                        if (message.message.chat_type === 1) {
+                         // animate gift
+                        }
+                        if (message.message.chat_type === 2) {
+                            // animate heart
+                           }
                     }
     
                 }
@@ -349,29 +354,22 @@ const LiveVideoChat = () => {
 
     //get single  gift item
     const getGiftItem = async (giftId) => {
-        const bodyParameters = {
-            session_id: sessionId,
-            gift_id: giftId,
-            given_to: Number(videoCallParams.user_id)
-        }
-        const { data: { giftStatus } } = await axios.post(GIFT_PURCHASE_API, bodyParameters)
-        // alert(giftStatus.get_gifts.image);
+            var message = {
+                "user_id": Number(videoCallState.user_id),
+                "text_message": "",
+                "channel_name": videoCallParams.channel_name,
+                "sender_id": Number(videoCallParams.user_id),
+                "type": 1,
+                "gift_id": giftId,
+                "is_send_heart": 0,
+                "coins": 0,
+                "message_sender_name": userData.first_name + " " + userData.last_name
+            }
 
-        if (!!giftStatus) {
-            toggleIsOn(false);
-            var msg = {};
-            msg.file = giftStatus.get_gifts.image;
-            msg.fileName = "abc_image";
-            msg.sessionId = sessionId;
-            msg.reciever_id = Number(videoCallParams.user_id);
-            SOCKET.emit('gift_send', msg);
+            SOCKET.emit('send_live_video_item', message);
             setGivenGift('');
             //  setLoading(true);
-        }
-        else {
             toggleIsOn(false);
-
-        }
     }
 
     useEffect(() => {

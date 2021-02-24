@@ -1,38 +1,34 @@
 import './App.css';
 import './components/jqueryfile.js';
 import React, { useEffect } from 'react';
-import {Elements} from '@stripe/react-stripe-js';
-import {loadStripe} from '@stripe/stripe-js';
-import {BrowserRouter as Router, Switch, Route, withRouter, useParams, useHistory } from 'react-router-dom';
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+import { BrowserRouter as Router, Switch, Route, withRouter, useParams, useHistory } from 'react-router-dom';
 // Importing all pages from index.js 
-import {Home,Login,ChatBox,SearchHome,AnswerCalling,SignupCompleted,Profile,SingleProfile,RecentCall,VideoChat, LiveVideoChat, SearchProfile,Dummy, SearchHomeBkp, SearchProfileAudio, AudioChat} from './pages'
-import  ProtectedRoute  from "./protected.route";
+import { Home, Login, ChatBox, SearchHome, AnswerCalling, SignupCompleted, Profile, SingleProfile, RecentCall, VideoChat, LiveVideoChat, SearchProfile, Dummy, SearchHomeBkp, SearchProfileAudio, AudioChat } from './pages'
+import ProtectedRoute from "./protected.route";
 import axios from "axios";
 import createBrowserHistory from 'history/createBrowserHistory';
-import {GET_LOGGEDPROFILE_API} from "./components/Api";
-import {userProfile, videoCall} from "./features/userSlice";
-import {useDispatch, useSelector} from "react-redux";
-import {profile, userAuth} from './features/userSlice';
-import {SOCKET} from "./components/Config";
+import { GET_LOGGEDPROFILE_API } from "./components/Api";
+import { userProfile, videoCall } from "./features/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { profile, userAuth } from './features/userSlice';
+import { SOCKET } from "./components/Config";
 import { checkLiveDomain } from './commonFunctions';
-
-
 let userData;
-const history = createBrowserHistory({forceRefresh: true});
-const  ProfileData = async(dispatch, sessionId) => {
+const history = createBrowserHistory({ forceRefresh: true });
+const ProfileData = async (dispatch, sessionId) => {
   const bodyParameters = {
     session_id: sessionId,
   };
-  const {data: {data}} = await axios.post(GET_LOGGEDPROFILE_API, bodyParameters);
+  const { data: { data } } = await axios.post(GET_LOGGEDPROFILE_API, bodyParameters);
   dispatch(
-      profile({
-        profile: data
-      })
+    profile({
+      profile: data
+    })
   );
 }
-
 const stripePromise = loadStripe('pk_test_51HYm96CCuLYI2aV0fK3RrIAT8wXVzKScEtomL2gzY9XCMrgBa4KMPmhWmsCorW2cqL2MLSJ45GKAAZW7WxEmytDs009WzuDby2');
-
 function App() {
   //  const {latitude, longitude, error} = usePosition();
   const new_history = useHistory();
@@ -48,7 +44,7 @@ function App() {
       ProfileData(dispatch, sessionId)
     }
     SOCKET.on('pick_video_call', (data) => {
-      console.log(data.user_to_id , userData.user_id, "checkkkkkkkkkkkkkkkk")
+      console.log(data.user_to_id, userData.user_id, "checkkkkkkkkkkkkkkkk")
       if (!!userData && (data.user_to_id == userData.user_id)) { // check one-to-one data sync
         localStorage.setItem("receiverDetails", JSON.stringify(data))
         const page = checkLiveDomain() ? "/glitter-web/answer-calling" : "/answer-calling"
@@ -59,21 +55,27 @@ function App() {
       localStorage.removeItem("videoCallPageRefresh");
       // SOCKET.disconnect();
       dispatch(videoCall(null))
+      const page = checkLiveDomain() ? "/glitter-web/chat" : "/chat"
       if (!!userData && (data.user_from_id == userData.user_id)) { // check one-to-one data sync
         alert("receiver declined your call...")
-      }
-      const page = checkLiveDomain() ? "/glitter-web/chat" : "/chat"
         history.push(page)
+      }
+      if (!!userData && (data.user_to_id == userData.user_id)) { // check one-to-one data sync
+        history.push(page)
+      }
     })
     SOCKET.on('sender_decline_video_call', (data) => {
       localStorage.removeItem("videoCallPageRefresh");
       // SOCKET.disconnect();
       dispatch(videoCall(null))
+      const page = checkLiveDomain() ? "/glitter-web/chat" : "/chat"
       if (!!userData && (data.user_to_id == userData.user_id)) { // check one-to-one data sync
         alert("sender declined the call...")
-      }
-      const page = checkLiveDomain() ? "/glitter-web/chat" : "/chat"
         history.push(page)
+      }
+      if (!!userData && (data.user_from_id == userData.user_id)) { // check one-to-one data sync
+        history.push(page)
+      }
     })
     SOCKET.on('call_not_picked_receiver_hide_page_video_call', (data) => {
       localStorage.removeItem("videoCallPageRefresh");
@@ -87,16 +89,10 @@ function App() {
       if (!!userData && (data.user_to_id == userData.user_id)) { // check one-to-one data sync
         if (window.location.pathname === "/answer-calling") {
           const page = checkLiveDomain() ? "/glitter-web" : "/"
-        history.push(page)
+          history.push(page)
         }
       }
     })
-
-
-
-
-
-    
     SOCKET.on('call_malfunctioned_in_between_receiver_call_video_call', (data) => {
       localStorage.removeItem("videoCallPageRefresh");
       // SOCKET.disconnect();
@@ -104,23 +100,21 @@ function App() {
       if (!!userData && (data.user_to_id == userData.user_id)) { // check one-to-one data sync
         if (window.location.pathname === "/answer-calling") {
           const page = checkLiveDomain() ? "/glitter-web" : "/"
-        history.push(page)
+          history.push(page)
         }
       }
     })
   }, [])
-  useEffect(() => { 
+  useEffect(() => {
     if (is_auth) {
       // logic to handle 10 min location time interval....
       //  window.setInterval(() => {
       //  }, 600000);
     }
   }, [is_auth])
-  
-
   return (
-      <Router>
-        <Switch>
+    <Router>
+      <Switch>
         <Elements stripe={stripePromise}>
           <Route exact path="/login" component={Login} />
           <Route exact path='/signup-completed' component={SignupCompleted} />
@@ -139,10 +133,9 @@ function App() {
           <ProtectedRoute exact path='/:receiver/:user_from_id/:user_to_id/:channel_id/:channel_name/video-chat' component={VideoChat} />
           <ProtectedRoute exact path='/:receiver/:user_from_id/:user_to_id/:channel_id/:channel_name/audio-chat' component={AudioChat} />
           <ProtectedRoute exact path='/:user_id/:channel_id/:channel_name/live-video-chat' component={LiveVideoChat} />
-         
         </Elements>
-        </Switch>
-      </Router>
+      </Switch>
+    </Router>
   );
 }
 export default withRouter(App);
