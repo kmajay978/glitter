@@ -19,3 +19,10 @@ export const changeImageLinkDomain = () => {
     }
     return "http://167.172.209.57/glitter-101/public/profile_images/"
 }
+
+export const changeGiftLinkDomain = () => {
+    if (window.location.hostname === "rrmr.co.in") {
+        return "https://rrmr.co.in/glitter-101/public/gifts_icons/"
+    }
+    return "http://167.172.209.57/glitter-101/public/gifts_icons/"
+}
