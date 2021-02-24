@@ -1567,16 +1567,17 @@ position: absolute;
     display: flex;
     align-items: center;
     left: 30px;
-    animation:gifter 1s ease-in;
+    animation:gifter 5s linear;
     animation-fill-mode: forwards;
 }
-/*
+
 @keyframes gifter {
-    0% {transform: translateY(80px);opacity: 1;}
-    100% {transform: translateY(-80px);opacity: 0;}
+    0% {top:70%;opacity: 1;}
+    50% {top:35%;opacity: 1;}
+    100% {top:10%;opacity: 0;}
   }
 
-
+/*
   @-moz-keyframes gifter {
     from {background-color: red;}
     to {background-color: yellow;}
@@ -1586,10 +1587,11 @@ position: absolute;
     from {background-color: red;}
     to {background-color: yellow;}
   }
+
 */
 
 .gifter > img {
-    width: 50px;
+    width: 50px !important;
     height: 50px;
     border-radius: 50%;
     margin-right: 5px;
@@ -4585,9 +4587,9 @@ span.gift__discount {
     height: 105px;
 }
 
-.vc-screen .col-md-9{
-    /* background: url('../images/live-host.jpg'); */
-}
+/* .vc-screen .col-md-9{
+     background: url('../images/live-host.jpg'); 
+} */
 
 .live__comments_bg{
     background-color: #282828;
@@ -4676,13 +4678,18 @@ span.gift__discount {
 
 .send-photos-modal{
 	margin-bottom: 100px;
- background-color: #282828;
-border-radius: 10px;
+    background-color: #282828;
+    border-radius: 10px;
 	border-radius: 30px;
 	padding: 40px;
     position: absolute;
     top: -300px;
     width: 100%;
+}
+
+.send-photos-modal .modal-close{
+    left: 15px;
+    top: 15px;
 }
 
 .done-media {
@@ -4692,7 +4699,7 @@ border-radius: 10px;
 }
 
 
-    .send-photos-listing > div, .coin-price {
+.send-photos-listing > div, .coin-price {
         margin-right: 15px;
 }
 

@@ -289,7 +289,7 @@ const ChatBox = (props) =>{
                
                const handleSendFile =() => {
                 setUploadImage(false);
-                setPreviews('');
+   
                }
 
             const  stringLimit = (string , counts)=>{
