@@ -69,7 +69,7 @@ const Profile = (props) =>{
   const [coinPackage , setCoinPackage] = useState([]);
   const [coinHistory , setCoinHistory] = useState([]);
   const [coinSpend , setCoinSpend] = useState('');
-  const [Dob, setDob] = useState(''); 
+  const [Dob, setDob] = useState(new Date()); 
   const [isLoaded, setIsLoaded] = useState(false);
   const [warningMessage, setWarningMessage] = useState('');
   const [loadedModel , setLoadedModel] = useState(false);
@@ -138,9 +138,13 @@ const handleCheck = (e) => {
 
     const shareUrl = 'http://localhost:3000/';
     const title = 'glitter-app';
-
-
-  // Fetching profile Data
+    
+    // useEffect(()=>{
+    // var date = document.getElementsByName('dob')[0].value ;
+    //   console.log(date ,"hii");
+    // },[])
+   // console.log(userData.dob);
+   // Fetching profile Data
   var sessionId = localStorage.getItem("session_id")
   const ProfileData = async() =>{
 
@@ -153,7 +157,7 @@ const handleCheck = (e) => {
     //  Setting data variable to state object 
       form.firstName = data.first_name
       form.lastName = data.last_name
-      form.dob = moment(data.dob).format('ddd MMM DD YYYY   h:mm:ss');
+      form.dob = moment(data.dob).format('ddd MMM DD YYYY   h:mm:ss')
       form.aboutMe = data.about_me
       form.height = data.height
       form.weight = data.weight
