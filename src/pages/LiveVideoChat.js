@@ -18,7 +18,9 @@ import {changeImageLinkDomain, changeGiftLinkDomain} from "../commonFunctions"
 import { Number } from "core-js";
 
 let videoCallStatus = 0, videoCallParams, interval, userData, 
-messageList = [], receiver_id, removeGiftInterval, allGifts = []
+messageList = [], receiver_id, removeGiftInterval, allGifts = [],
+
+manageCoinsTimeViewsInterval, manageCoinsTimeViewsCounter = 0
 
 const override = css`
   display: block;
@@ -56,6 +58,10 @@ const LiveVideoChat = () => {
     const [chatTyping, setChatTyping] = useState("");
     const [friendGift, setFriendGift] = useState([]);
 
+    const [totalCoinsLeft, setTotalCoinsLeft] = useState(null);
+    const [totalViews, setTotalViews] = useState(null);
+    const [totalTimeLeft, setTotalTimeLeft] = useState(null);
+
 
     userData = useSelector(userProfile).user.profile; //using redux useSelector here
     const componentWillUnmount = () => {
@@ -72,7 +78,8 @@ const LiveVideoChat = () => {
         localStorage.removeItem("videoCallLivePageRefresh");
         localStorage.removeItem("liveVideoProps");
         clearChatState(dispatch);
-        clearInterval(removeGiftInterval)
+        clearInterval(removeGiftInterval);
+        clearInterval(manageCoinsTimeViewsInterval);
         window.location.href = checkLiveDomain() ? "/glitter-web/search-home" : "/search-home";
     }
     useEffect(() => {
@@ -142,6 +149,21 @@ const LiveVideoChat = () => {
                 }
             })
 
+            SOCKET.on('live_video_manage_coins_time_views', (data) => {
+                if (data.channel_name === videoCallState.channel_name) {
+                   if (data.msg === "") {
+                        setTotalCoinsLeft(data.coins);
+                        setTotalViews(data.total_views);
+                        setTotalTimeLeft(data.time);
+                   }
+                   else {
+                       alert(data.msg)
+                   }
+                }
+            })
+
+
+
             SOCKET.on('unauthorize_live_video_call', (data) => {
                 if (data.is_host) {
 
@@ -164,6 +186,16 @@ const LiveVideoChat = () => {
             SOCKET.on('authorize_live_video_call', (data) => {
                 if (data.user_id === videoCallState.user_id) {
                     if (Number(videoCallParams.user_id) === data.user_id) {
+                        manageCoinsTimeViewsInterval = window.setInterval(() => {
+                            SOCKET.emit("live_video_manage_coins_time_views", {
+                                channel_name: videoCallState.channel_name,
+                                user_id: videoCallState.user_id,
+                                sender_id: videoCallState.user_id,
+                                counter: manageCoinsTimeViewsCounter,
+                                time: manageCoinsTimeViewsCounter + "sec"
+                            })
+                            manageCoinsTimeViewsCounter = manageCoinsTimeViewsCounter + 10
+                        }, 10000)
                         // opnen host camera
                         const option = {
                             appID: "52cacdcd9b5e4b418ac2dca58f69670c",
@@ -191,6 +223,17 @@ const LiveVideoChat = () => {
                     }
                 }
             });
+
+            function animate(elem,style,unit,from,to,time) {
+                if( !elem) return;
+                var start = new Date().getTime(),
+                    timer = setInterval(function() {
+                        var step = Math.min(1,(new Date().getTime()-start)/time);
+                        elem.style[style] = (from+step*(to-from))+unit;
+                        if( step == 1) clearInterval(timer);
+                    },25);
+                elem.style[style] = from+unit;
+            }
 
             SOCKET.on('send_live_video_item', (message) => {
                 let messagesList = messageList;
@@ -227,6 +270,7 @@ const LiveVideoChat = () => {
                                 gift: changeGiftLinkDomain() +message.message.giftImage,
                                 f_name: message.message.user_first_name,
                                 l_name: message.message.user_last_name,
+                                gift_name: message.message.giftName,
                                 dateTime: new Date()
                             }
                             let newGift = friendGift; 
@@ -234,7 +278,20 @@ const LiveVideoChat = () => {
                             console.log(newGift, "hiiiiiiiiiiiii")
                             setFriendGift(newGift);
                             allGifts = newGift;
-                            setRandomNumberGift(Math.random())
+                            setRandomNumberGift(Math.random());
+                        //     const gifters = !!document.querySelectorAll(".gifter") ? document.querySelectorAll(".gifter") : [];
+                        //     gifters.forEach((item, index) => {
+                        //         // document.getElementsByClassName("gifter")[index].classList.remove("new")
+                        //     })
+                        //   console.log(document.getElementsByClassName("gifter")[document.getElementsByClassName("gifter").length - 1], "check.....")
+                        //   window.setTimeout(() => {
+                        //     document.getElementsByClassName("gifter")[0].style.animation = "gifter 1s ease-in-out";
+                        //   }, 1000)  
+                          
+
+                        //         // document.getElementsByClassName("gifter")[0].classList.add("new")
+                        
+                            
                         }
                         if (message.message.chat_type === 2) {
                             // animate heart
@@ -302,12 +359,13 @@ const LiveVideoChat = () => {
                 for (let i in allGifts) {
                     const startDate = allGifts[i].dateTime;
                     const seconds = (current_time.getTime() - startDate.getTime()) / 1000;
-                    if (seconds > 5) {
+                    if (seconds > 10) {
                         allGifts.splice(i, 1)
                     }
                 }  
+                setFriendGift(allGifts);
                 setReRenderGifts(Math.random())
-        }, 1000)
+        }, 250)
 
     }, [])
 
@@ -318,7 +376,10 @@ const LiveVideoChat = () => {
     }
 
     const scrollToTop = () => {
-        $('body, html, #giftSender').scrollTop(0);
+        // $('body, html, #giftSender').scrollTop(0);
+        $('body, html, #giftSender').animate({
+            scrollTop: 0
+        }, 1000);
     }
 
     const endCall = () => {
@@ -425,6 +486,7 @@ const LiveVideoChat = () => {
     if (!!givenGift) {
         console.log(givenGift, "givenGif....");
     }
+    console.log(userData, userData.user_id ,params.user_id, "test...")
     return (
         <section className="home-wrapper">
             <img className="bg-mask" src="/assets/images/mask-bg.png" alt="Mask" />
@@ -453,8 +515,12 @@ const LiveVideoChat = () => {
                                         }
                                     </div>
                                     <div className="remaining-coins ml-4">
-                                        <img src="/assets/images/diamond-coin.png" alt="Coins" />
-                                        <span>{!!userData && userData.coins != 0 ? userData.coins : "0"}</span>
+                                        <><img src="/assets/images/diamond-coin.png" alt="Coins" /></>
+                                        {
+                                            (!!userData && userData.user_id == params.user_id) &&
+                                            <span>{totalCoinsLeft !== null && totalCoinsLeft}</span>
+                                        }
+                                       
                                     </div>
                                 </div>
                             </div>
@@ -502,11 +568,11 @@ const LiveVideoChat = () => {
                         <div class="gift-sender" id="giftSender">
                         {
                             friendGift.map((item, index) => (
-                                <div className="gifter">
+                                <div className="gifter" id={item.gift}>
                                 <img src={item.user} alt="gifter" />
                                 <div className="gifter__info">
                                     <h6>{item.f_name +" "+ item.l_name}</h6>                
-                                    <span>Sent a gift</span>  
+                                    <span>Sent a {item.gift_name}</span>  
                                 </div>
                                     <div className="gifter__media">
                                     <img src={item.gift} alt="gift" />
@@ -515,8 +581,9 @@ const LiveVideoChat = () => {
                                 )) 
                                
                         }
-                        </div>
-                        
+
+                      </div>              
+
 
                         <div className="charges-reminder-txt">
                             <p>After 25 Seconds, you will be charged 120 coins per minute</p>
@@ -524,7 +591,7 @@ const LiveVideoChat = () => {
                         <div className="vc-timer-box text-center">
                             <div className="timer">
                                 <i className="far fa-clock"></i>
-                                <span>25 Sec</span>
+                                <span>{totalTimeLeft}</span>
                             </div>
                             <div className="vc-sppiner">
                                 <a className="sppiner bg-grd-clr" href="javascript:void(0)">
@@ -545,11 +612,15 @@ const LiveVideoChat = () => {
                                             <img src="/assets/images/chat.png" alt="Chat" />
                                         </a>
                                     </li>
-                                    <li>
+                                    {
+                                        (!!userData && userData.user_id != params.user_id) &&
+                                        <li>
                                         <a className="btn-round bg-grd-clr" href="javascript:void(0)" onClick={handleGift}>
                                             <img src="/assets/images/gift.png" alt="Gift" />
                                         </a>
                                     </li>
+                                    }
+                                   
                                     <li>
                                         <a className="btn btn-nxt bg-grd-clr" href="javascript:void(0)">Next</a>
                                     </li>
@@ -607,10 +678,10 @@ const LiveVideoChat = () => {
                         <a href="javascript:void(0)" className="close-gift-btn modal-close" onClick={toggleIsOn}><img src="/assets/images/btn_close.png" /></a>
                         <div className="all-gift-header d-flex flex-wrap align-items-center mb-3">
                             <h5 className="mb-0 mr-4">Send Gift</h5>
-                            <div className="remaining-coins">
+                            {/* <div className="remaining-coins">
                                 <img src="/assets/images/diamond-coin.png" alt="Coins" />
                                 <span>{!!userData && userData.coins != 0 ? userData.coins : "0"}</span>
-                            </div>
+                            </div> */}
                         </div>
                         <div className="all-gift-body">
 

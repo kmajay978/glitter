@@ -1573,7 +1573,8 @@ position: absolute;
     display: flex;
     flex-wrap: wrap;
     width: 250px;
-    height: 350px;
+    height: auto;
+    max-height: 350px;
     overflow-x: hidden;
     overflow-y: auto;
 }
@@ -1585,27 +1586,29 @@ position: absolute;
     align-items: center;
     background-color:rgba(0,0,0,0.20);
     border-radius: 5px;
-    padding: 10px;
+    padding: 10px
 }
 
-/* @keyframes gifter {
-    0% {top:70%;opacity: 1;}
-    50% {top:35%;opacity: 1;}
-    100% {top:10%;opacity: 0;}
-  } */
+.gifter.new {
+    animation: gifter 1s ease-in-out;
+}
+ @keyframes gifter {
+    0% {top:-20px;opacity: 0;}
+    100% {top:0px;opacity: 1;}
+  } 
 
-/*
+
   @-moz-keyframes gifter {
-    from {background-color: red;}
-    to {background-color: yellow;}
+    0% {top:-20px;opacity: 0;}
+    100% {top:0px;opacity: 1;}
   }
 
   @-webkit-keyframes gifter {
-    from {background-color: red;}
-    to {background-color: yellow;}
+    0% {top:-20px;opacity: 0;}
+    100% {top:0px;opacity: 1;}
   }
 
-*/
+
 
 .gifter > img {
     width: 50px !important;
