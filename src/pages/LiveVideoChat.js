@@ -65,6 +65,7 @@ const LiveVideoChat = () => {
 
     userData = useSelector(userProfile).user.profile; //using redux useSelector here
     const componentWillUnmount = () => {
+        alert("leave")
         if (videoCallStatus == 4) {
             console.log(videoCallParams, "videoCallParams... test")
             SOCKET.emit("unauthorize_live_video_call", {
@@ -201,6 +202,7 @@ const LiveVideoChat = () => {
             }
 
             SOCKET.on('authorize_live_video_call', (data) => {
+                if (data.user_id === videoCallState.user_id) {
                     if (Number(videoCallParams.user_id) === data.user_id) {
                         manageLiveAudienceHostDetails()
                         manageTimeInterval = window.setInterval(() => {
@@ -234,6 +236,7 @@ const LiveVideoChat = () => {
                         console.log(option, "jkjk...")
                         joinChannel('audience', option)
                     }
+                }
             });
 
             function animate(elem,style,unit,from,to,time) {
