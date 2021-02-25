@@ -13,7 +13,8 @@ import {selectUser, userProfile, videoCall, audioCall} from "../features/userSli
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import useToggle from '../components/CommonFunction';
 import { useHistory } from "react-router-dom";
-import {addDefaultSrc, returnDefaultImage} from "../commonFunctions";
+import {addDefaultSrc, returnDefaultImage, useForceUpdate} from "../commonFunctions";
+import { setWeekYear } from "date-fns";
 // import stringLimit from '../components/CommonFunction';
 
 const override = css`
@@ -22,13 +23,9 @@ const override = css`
   border-radius: 50px !important;
   width: 95%;
 `;
-// app id: bd7c4ac2265f496dbaa84d9837960c78
-// app secret: 40082f25ff2a4b88ac1358f7e863cba6
-// channel: test
-// token: 006bd7c4ac2265f496dbaa84d9837960c78IAAq1GZbv3moec3u6pFg67UZMEm0pzTuHT21ki9gqV9EXQx+f9gAAAAAEAAH/YchlRMJYAEAAQCYEwlg
 
-let messageList = [], receiver_id, userData;
-
+let messageList = [], receiver_id, userData, myInterval;
+let allBaseImages = [];
 const scrollToBottom = () => {
     var div = document.getElementById('chat-body');
     if (!!div)
@@ -37,6 +34,7 @@ const scrollToBottom = () => {
 
 const ChatBox = (props) =>{
 
+    const forceUpdate = useForceUpdate();
     const inputFile = useRef(null);
     const dispatch = useDispatch();
     const history = useHistory()
@@ -60,6 +58,7 @@ const ChatBox = (props) =>{
     const [previews, setPreviews] = useState([]);
     const [myFiles, setMyFiles] = useState([]);
     const [myUrls, setUrls] = useState([]);
+    const [baseMultipleImage, setbase64] = useState([]);
 
 
     let [loading, setLoading] = useState(false);
@@ -68,6 +67,7 @@ const ChatBox = (props) =>{
     const [chatTyping, setChatTyping] = useState("");
     const [threeMessageWarning, setWarningMessage] = useState("");
 
+    console.log(baseMultipleImage,"baseMultipleImage..........")
     const createNotificationCustom = (type) => {
   
         switch (type) {
@@ -176,25 +176,7 @@ const ChatBox = (props) =>{
         setData(data);
     }
 
-    // Adding call functionality here
-    // const handleCall =() =>{
-    //     const bodyParameters = {
-    //         session_id: localStorage.getItem('session_id'),
-    //         user_id :FriendUserId,
-    //         type : 'audio',
-    //         room_id : '1'
-    //     }
-    //     axios.post(VIDEOCALL_API , bodyParameters)
-    //         .then((response) => {
-    //             if(response.status==200)
-    //             {
-    //                 createNotification('sucess');
-    //                 alert("call made successfully");
-    //             }
-    //         }, (error) => {
-
-    //         });
-    // }
+  
 
     const AcceptUserRequest = (LikedUserId) =>{
         const bodyParameters = {
@@ -262,26 +244,63 @@ const ChatBox = (props) =>{
                     createNotificationCustom('error');       
                 }
              }
+             
             
             //  On change getting image files 
              const handleFileChange = e => {
-
                     const files = [...myFiles]; 
                     files.push(...e.target.files); 
                     setMyFiles(files);
-
                     setFileUrls(files) 
+
+                    // Pusing inform with base64
+                    const reader = new FileReader();
+                    reader.addEventListener("load", () => {
+                        allBaseImages.push(reader.result); 
+                     setbase64(allBaseImages);
+                    });
+                    reader.readAsDataURL(e.target.files[0]);
+
                };
 
-            //    Setting urls for displaying here
+               //    Setting urls for displaying here
+            
                const setFileUrls = (files) => {
                 const urls = files.map((file) => URL.createObjectURL(file));
-                console.log(urls,"bbbbbb")
                 if(myUrls.length > 0) {
                     myUrls.forEach((url) => URL.revokeObjectURL(url));
                 }
                 
                 setUrls(urls);
+              }
+              
+
+              const convertBlobTobase64 = () =>{
+               
+            !!baseMultipleImage && baseMultipleImage.map((image,i) =>{
+
+                              var msg ={};
+                                msg.file = image;
+                                msg.fileName = "test";
+                                msg.sessionId = sessionId;
+                                msg.reciever_id = receiver_id;
+                                console.log(msg, "mymsg...")
+                                SOCKET.emit('media_file', msg);
+                                setLoading(true);
+
+                                if(baseMultipleImage.length - 1 === i) {
+                                    allBaseImages = []
+                                        setbase64('')
+                                        setMyFiles('')
+                                        setUrls('')
+                                        setUploadImage(false);
+                                      
+                                }
+                                
+                                
+            });
+             
+          
               }
               
             // returning in html form to display 
@@ -291,10 +310,6 @@ const ChatBox = (props) =>{
    
 
                
-               const handleSendFile =() => {
-                setUploadImage(false);
-                setPreviews('');
-               }
 
             const  stringLimit = (string , counts)=>{
                 var text = string;
@@ -311,7 +326,6 @@ const ChatBox = (props) =>{
 
     function readThenSendFile(data){
       
-        console.log(data,"mydata.......")
          var reader = new FileReader()
         reader.onload = function(evt){
             
@@ -361,6 +375,7 @@ const ChatBox = (props) =>{
 
     useEffect(() => {
         scrollToBottom();
+        forceUpdate(); // force re-render
     }, [randomNumber])
 // console.log(FriendUserId);
     useEffect(()=>{
@@ -426,6 +441,7 @@ const ChatBox = (props) =>{
                     console.log(messagesList, "messageList...")
                     setMessages(messagesList);
                     setRandomNumber(Math.random());
+                    forceUpdate();
                     scrollToBottom()
                     }
                 }
@@ -987,8 +1003,8 @@ const ChatBox = (props) =>{
                                         <div className="chat-footer">
                                         {uploadImage ?                                 
                                         <div className="send-photos-modal">
-                                            <a href="javascript:void(0)" className="theme-txt done-media">Done</a>
-                                            <a href="javascript:void(0)" className="close-image-btn modal-close" onClick={handleSendFile}><img src="/assets/images/btn_close.png" /></a>
+                                            <a href="javascript:void(0)" className="theme-txt done-media" onClick={convertBlobTobase64}>Done</a>
+                                            {/* <a href="javascript:void(0)" className="close-image-btn modal-close" onClick={(() => setUploadImage(false))}><span className="close-image-btn modal-close"><img src="/assets/images/btn_close.png" /></span></a> */}
                                             <h6 className="text-center">Send Photos</h6>
                                             
                                             <div className="send-photos-listing d-flex my-4">
@@ -1043,7 +1059,7 @@ const ChatBox = (props) =>{
                                                 </div>
                                                 <label className="upload-file">
                                                     <div>
-                                                    <a href="javascript:void(0)" onClick={()=> setUploadImage(true)} >
+                                                    <a href="javascript:void(0)" onClick={()=> setUploadImage(!uploadImage)} >
                                                         {/* <input id="uploadfile" type="file" accept=".png, .jpg, .jpeg, .PNG, .JPG, .JPEG" /> */}
                                                         <i className="far fa-image" />
                                                         </a>

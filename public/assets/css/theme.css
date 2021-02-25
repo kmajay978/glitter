@@ -4678,13 +4678,18 @@ span.gift__discount {
 
 .send-photos-modal{
 	margin-bottom: 100px;
- background-color: #282828;
-border-radius: 10px;
+    background-color: #282828;
+    border-radius: 10px;
 	border-radius: 30px;
 	padding: 40px;
     position: absolute;
     top: -300px;
     width: 100%;
+}
+
+.send-photos-modal .modal-close{
+    left: 15px;
+    top: 15px;
 }
 
 .done-media {
@@ -4716,6 +4721,15 @@ border-radius: 10px;
     position: relative;
 }
 
+.media-box.add-media img {
+    width: auto !important;
+    height: auto;
+}
+
+.media-box img {
+    width: 50px;
+    height: 50px;
+}
 
 .media-box span {
 	position: absolute;

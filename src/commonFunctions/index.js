@@ -1,3 +1,5 @@
+import { useCallback, useState } from "react"
+
 export const addDefaultSrc = (ev) => {
     ev.target.src = '/assets/images/image-placeholder.jpg'
 }
@@ -26,3 +28,13 @@ export const changeGiftLinkDomain = () => {
     }
     return "http://167.172.209.57/glitter-101/public/gifts_icons/"
 }
+
+
+export function useForceUpdate() {
+    const [, setTick] = useState(0);
+    const update = useCallback(() => {
+      setTick(tick => tick + 1);
+    }, [])
+    return update;
+  }
+  
