@@ -187,7 +187,7 @@ const LiveVideoChat = () => {
                 SOCKET.emit("live_video_manage_coins_time_views", {
                     channel_name: videoCallState.channel_name,
                     user_id: videoCallState.user_id,
-                    sender_id: videoCallState.user_id,
+                    sender_id: videoCallParams.user_id,
                     counter: manageCoinsTimeViewsCounter
                 })
             }
