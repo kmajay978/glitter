@@ -147,6 +147,9 @@ const LiveVideoChat = () => {
                     }
                     else { // audience..
                         // alert("decline audience with id:"+ data.user_id);
+                        if (!!data.msg) {
+                            alert(data.msg)
+                        }
                         componentWillUnmount();
                     }
                 }
@@ -579,11 +582,11 @@ const LiveVideoChat = () => {
                         <div className="col-lg-7 p-3">
                             <div className="tab-top d-flex flex-wrap-wrap align-items-center">
                                 <div className="vc-action-tab ml-auto mr-4 position-relative">
-                                    <div className="vc-action-btn">
+                                    {/* <div className="vc-action-btn">
                                         <span />
                                         <span />
                                         <span />
-                                    </div>
+                                    </div> */}
                                     <ul className="action-menu">
                                         <li>
                                             <a href="javascript:void(0)">Report</a>
@@ -632,25 +635,27 @@ const LiveVideoChat = () => {
 
                       </div>              
 
-
-                        <div className="charges-reminder-txt">
-                            <p>After 25 Seconds, you will be charged 120 coins per minute</p>
-                        </div>
+                      {
+                        (!!userData && userData.user_id != params.user_id) &&
+                            <div className="charges-reminder-txt">
+                                    <p>After 25 Seconds, you will be charged 120 coins per minute</p>
+                            </div>
+                      }
                         <div className="vc-timer-box text-center">
                             {/* <div className="timer">
                                 <i className="far fa-clock"></i>
                                 <span>{totalTimeLeft}</span>
                             </div> */}
-                            <div className="vc-sppiner">
+                            {/* <div className="vc-sppiner">
                                 <a className="sppiner bg-grd-clr" href="javascript:void(0)">
                                     <img src="/assets/images/sppiner.png" alt="Sppiner" />
                                 </a>
-                            </div>
+                            </div> */}
                         </div>
                         <div className="vc-option-block d-flex flex-wrap align-items-end">
                             <div className="vc-options">
                                 <ul>
-                                    <li>
+                                    {/* <li>
                                         <a className="btn-round bg-grd-clr" href="javascript:void(0)">
                                             <img src="/assets/images/magic-stick.png" alt="Magic" />
                                         </a>
@@ -659,7 +664,7 @@ const LiveVideoChat = () => {
                                         <a className="btn-round bg-grd-clr" href="javascript:void(0)">
                                             <img src="/assets/images/chat.png" alt="Chat" />
                                         </a>
-                                    </li>
+                                    </li> */}
                                     {
                                         (!!userData && userData.user_id != params.user_id) &&
                                         <li>
@@ -669,9 +674,9 @@ const LiveVideoChat = () => {
                                     </li>
                                     }
                                    
-                                    <li>
+                                    {/* <li>
                                         <a className="btn btn-nxt bg-grd-clr" href="javascript:void(0)">Next</a>
-                                    </li>
+                                    </li> */}
                                 </ul>
                             </div>
                         </div>

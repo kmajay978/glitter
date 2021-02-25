@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import $ from "jquery";
 import {  useDispatch } from 'react-redux';
@@ -9,7 +8,9 @@ import {videoCall} from "../features/userSlice";
 const NavLinks = (props) =>{
     const dispatch = useDispatch();
     const history = useHistory();
-console.log(props, "props..")
+
+    const [path, setPath] = useState("")
+
   let pathname = window.location.pathname;
 
     useEffect(() => {
@@ -25,10 +26,12 @@ console.log(props, "props..")
             localStorage.removeItem("videoCallPageRefresh");
             dispatch(videoCall(null))
         }
+        setPath(pathname)
        
     }, [window.location.pathname]);
 
     return(
+      !path.match("/live-video-chat") &&
          <ul className="feature-menu ml-auto">
               <li className={`${pathname.match('/home') ? 'active' : ''}`}>
                    <Link to="/">
