@@ -140,7 +140,7 @@ const LiveVideoChat = () => {
             })
 
             SOCKET.on('end_live_video_call_audience', (data) => {
-                if (data.user_id === videoCallState.user_id) {
+                if (data.user_id === videoCallState.user_id && data.channel_name == videoCallParams.channel_name) {
                     if (Number(videoCallParams.user_id) === data.user_id) {
                         // alert("host")
 
@@ -523,7 +523,6 @@ const LiveVideoChat = () => {
     if (!!givenGift) {
         console.log(givenGift, "givenGif....");
     }
-    console.log(userData, userData.user_id ,params.user_id, "test...")
     return (
         <section className="home-wrapper">
             <img className="bg-mask" src="/assets/images/mask-bg.png" alt="Mask" />
@@ -546,7 +545,7 @@ const LiveVideoChat = () => {
                                             !!user &&
                                             <div class="name ml-2">
                                                 {user.first_name} 
-                                                <span class="age">{user.age}</span>
+                                                <span class="age"> {user.age}</span>
                                                 <span class="d-block small">{totalTimeLeft}</span>
                                                 <span class="small">
                                                     <img src="/assets/images/eye-icon.svg"/> {totalViews}</span>
@@ -565,7 +564,7 @@ const LiveVideoChat = () => {
                                         }
                                     </div>
                                     <div className="remaining-coins ml-4">
-                                        <><img src="/assets/images/diamond-coin.png" alt="Coins" /></>
+                                        <><img src="/assets/images/diamond-coin.png" alt="Coins" /> </>
                                         {
                                             <span>{totalCoinsLeft !== null && totalCoinsLeft}</span>
                                         }
@@ -729,7 +728,7 @@ const LiveVideoChat = () => {
                             <h5 className="mb-0 mr-4">Send Gift</h5>
                             <div className="remaining-coins">
                                 <img src="/assets/images/diamond-coin.png" alt="Coins" />
-                                <span>{totalCoinsLeft !== null && totalCoinsLeft}</span>
+                                <span> {totalCoinsLeft !== null && totalCoinsLeft}</span>
                             </div>
                         </div>
                         <div className="all-gift-body">
