@@ -65,7 +65,6 @@ const LiveVideoChat = () => {
 
     userData = useSelector(userProfile).user.profile; //using redux useSelector here
     const componentWillUnmount = () => {
-        alert("leave")
         if (videoCallStatus == 4) {
             console.log(videoCallParams, "videoCallParams... test")
             SOCKET.emit("unauthorize_live_video_call", {
@@ -530,11 +529,24 @@ const LiveVideoChat = () => {
                                         </figure>
                                         {
                                             !!user &&
-                                            <div className="name ml-2">{user.first_name} <span className="age">{user.age}</span></div>
+                                            <div class="name ml-2">
+                                                {user.first_name} 
+                                                <span class="age">{user.age}</span>
+                                                <span class="d-block small">{totalTimeLeft}</span>
+                                                <span class="small">
+                                                    <img src="/assets/images/eye-icon.svg"/> {totalViews}</span>
+                                                    </div>
+                                            
                                         }
                                         {
                                             !user &&
-                                            <div className="name ml-2"> <span className="age"> </span></div>
+                                            <div class="name ml-2">
+                                                
+                                                <span class="age"> </span>
+                                                <span class="d-block small"> </span>
+                                                <span class="small">
+                                                    <img src="/assets/images/eye-icon.svg"/> </span>
+                                                    </div>
                                         }
                                     </div>
                                     <div className="remaining-coins ml-4">
@@ -611,10 +623,10 @@ const LiveVideoChat = () => {
                             <p>After 25 Seconds, you will be charged 120 coins per minute</p>
                         </div>
                         <div className="vc-timer-box text-center">
-                            <div className="timer">
+                            {/* <div className="timer">
                                 <i className="far fa-clock"></i>
                                 <span>{totalTimeLeft}</span>
-                            </div>
+                            </div> */}
                             <div className="vc-sppiner">
                                 <a className="sppiner bg-grd-clr" href="javascript:void(0)">
                                     <img src="/assets/images/sppiner.png" alt="Sppiner" />
