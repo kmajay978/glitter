@@ -20,7 +20,8 @@ import { Number } from "core-js";
 let videoCallStatus = 0, videoCallParams, interval, userData, 
 messageList = [], receiver_id, removeGiftInterval, allGifts = [],
 
-manageCoinsTimeViewsInterval, manageCoinsTimeViewsCounter = 0, manageTimeInterval
+manageCoinsTimeViewsInterval, manageCoinsTimeViewsCounter = 0, manageTimeInterval, 
+manageViewsInterval
 
 const override = css`
   display: block;
@@ -80,7 +81,8 @@ const LiveVideoChat = () => {
         clearChatState(dispatch);
         clearInterval(removeGiftInterval);
         clearInterval(manageCoinsTimeViewsInterval);
-        clearInterval(manageTimeInterval)
+        clearInterval(manageTimeInterval);
+        clearInterval(manageViewsInterval);
         window.location.href = checkLiveDomain() ? "/glitter-web/search-home" : "/search-home";
     }
     useEffect(() => {
@@ -154,7 +156,6 @@ const LiveVideoChat = () => {
                 if (data.channel_name === videoCallState.channel_name && videoCallState.user_id == data.user_id) {
                    if (data.msg === "") {
                         setTotalCoinsLeft(data.coins);
-                        setTotalViews(data.total_views);
                    }
                    else {
                        alert(data.msg)
@@ -209,6 +210,13 @@ const LiveVideoChat = () => {
                             channel_name: videoCallState.channel_name
                         })
                     }, 1000)
+
+                    manageViewsInterval = window.setInterval(() => {
+                        SOCKET.emit("live_video_manage_views", {
+                            channel_name: videoCallState.channel_name
+                        })
+                    }, 1000)
+                    
                         // opnen host camera
                         const option = {
                             appID: "52cacdcd9b5e4b418ac2dca58f69670c",
@@ -255,6 +263,13 @@ const LiveVideoChat = () => {
                    setTotalTimeLeft(data.time)
                }
             })
+
+            SOCKET.on('live_video_manage_views', (data) => {
+                if (data.channel_name == videoCallState.channel_name) {
+                    setTotalViews(data.views)
+                }
+             })
+            
              
 
             SOCKET.on('send_live_video_item', (message) => {
