@@ -151,7 +151,7 @@ const LiveVideoChat = () => {
             })
 
             SOCKET.on('live_video_manage_coins_time_views', (data) => {
-                if (data.channel_name === videoCallState.channel_name && videoCallState.user_id == userData.user_id) {
+                if (data.channel_name === videoCallState.channel_name && videoCallState.user_id == data.user_id) {
                    if (data.msg === "") {
                         setTotalCoinsLeft(data.coins);
                         setTotalViews(data.total_views);
