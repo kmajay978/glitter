@@ -139,6 +139,19 @@ const LiveVideoChat = () => {
                 }
             })
 
+            SOCKET.on('end_live_video_call_host_warning', (data) => {
+                if (data.channel_name == videoCallParams.channel_name) {
+                    alert("Live video call is closing soon. Something went wrong...")
+                    SOCKET.emit("end_live_video_call_host", {
+                        host_id: Number(videoCallParams.user_id),
+                        user_id: Number(videoCallParams.user_id),
+                        channel_name: videoCallParams.channel_name,
+                        type: 1,
+                        is_host: true
+                    })
+                }
+            })
+
             SOCKET.on('end_live_video_call_audience', (data) => {
                 if (data.user_id === videoCallState.user_id && data.channel_name == videoCallParams.channel_name) {
                     if (Number(videoCallParams.user_id) === data.user_id) {
@@ -147,13 +160,31 @@ const LiveVideoChat = () => {
                     }
                     else { // audience..
                         // alert("decline audience with id:"+ data.user_id);
-                        if (!!data.msg) {
-                            alert(data.msg)
-                        }
                         componentWillUnmount();
                     }
                 }
             })
+            SOCKET.on('end_live_video_call_audience_warning', (data) => {
+                if (data.user_id === videoCallState.user_id && data.channel_name == videoCallParams.channel_name) {
+                    if (Number(videoCallParams.user_id) === data.user_id) {
+                        // alert("host")
+
+                    }
+                    else { // audience..
+                        // alert("decline audience with id:"+ data.user_id);
+                        alert(data.msg)
+                        SOCKET.emit("end_live_video_call_audience", {
+                            host_id: Number(videoCallParams.user_id),
+                            user_id: Number(data.user_id),
+                            channel_name: videoCallParams.channel_name,
+                            type: 1,
+                            is_host: false
+                        })
+                    }
+                }
+            })
+
+           
 
             SOCKET.on('live_video_manage_coins_time_views', (data) => {
                 if (data.channel_name === videoCallState.channel_name && videoCallState.user_id == data.user_id) {
