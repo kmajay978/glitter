@@ -20,7 +20,7 @@ import { Number } from "core-js";
 let videoCallStatus = 0, videoCallParams, interval, userData, 
 messageList = [], receiver_id, removeGiftInterval, allGifts = [],
 
-manageCoinsTimeViewsInterval, manageCoinsTimeViewsCounter = 0
+manageCoinsTimeViewsInterval, manageCoinsTimeViewsCounter = 0, manageTimeInterval
 
 const override = css`
   display: block;
@@ -80,6 +80,7 @@ const LiveVideoChat = () => {
         clearChatState(dispatch);
         clearInterval(removeGiftInterval);
         clearInterval(manageCoinsTimeViewsInterval);
+        clearInterval(manageTimeInterval)
         window.location.href = checkLiveDomain() ? "/glitter-web/search-home" : "/search-home";
     }
     useEffect(() => {
@@ -150,11 +151,10 @@ const LiveVideoChat = () => {
             })
 
             SOCKET.on('live_video_manage_coins_time_views', (data) => {
-                if (data.channel_name === videoCallState.channel_name) {
+                if (data.channel_name === videoCallState.channel_name && videoCallState.user_id == userData.user_id) {
                    if (data.msg === "") {
                         setTotalCoinsLeft(data.coins);
                         setTotalViews(data.total_views);
-                        setTotalTimeLeft(data.time);
                    }
                    else {
                        alert(data.msg)
@@ -183,19 +183,31 @@ const LiveVideoChat = () => {
                 }
             });
 
+            const liveVideoManageCoinsTimeViews = () => {
+                SOCKET.emit("live_video_manage_coins_time_views", {
+                    channel_name: videoCallState.channel_name,
+                    user_id: videoCallState.user_id,
+                    sender_id: videoCallState.user_id,
+                    counter: manageCoinsTimeViewsCounter
+                })
+            }
+
+            const manageLiveAudienceHostDetails = () => {
+                liveVideoManageCoinsTimeViews()
+                manageCoinsTimeViewsInterval = window.setInterval(() => {
+                    liveVideoManageCoinsTimeViews()
+                    manageCoinsTimeViewsCounter = manageCoinsTimeViewsCounter + 10
+                }, 10000)
+            }
+
             SOCKET.on('authorize_live_video_call', (data) => {
-                if (data.user_id === videoCallState.user_id) {
                     if (Number(videoCallParams.user_id) === data.user_id) {
-                        manageCoinsTimeViewsInterval = window.setInterval(() => {
-                            SOCKET.emit("live_video_manage_coins_time_views", {
-                                channel_name: videoCallState.channel_name,
-                                user_id: videoCallState.user_id,
-                                sender_id: videoCallState.user_id,
-                                counter: manageCoinsTimeViewsCounter,
-                                time: manageCoinsTimeViewsCounter + "sec"
-                            })
-                            manageCoinsTimeViewsCounter = manageCoinsTimeViewsCounter + 10
-                        }, 10000)
+                        manageLiveAudienceHostDetails()
+                        manageTimeInterval = window.setInterval(() => {
+                        SOCKET.emit("live_video_manage_time", {
+                            channel_name: videoCallState.channel_name
+                        })
+                    }, 1000)
                         // opnen host camera
                         const option = {
                             appID: "52cacdcd9b5e4b418ac2dca58f69670c",
@@ -209,6 +221,7 @@ const LiveVideoChat = () => {
                         joinChannel('host', option)
                     }
                     else { // audience..
+                        manageLiveAudienceHostDetails()
                         // open audience camera...
                         const option = {
                             appID: "52cacdcd9b5e4b418ac2dca58f69670c",
@@ -221,7 +234,6 @@ const LiveVideoChat = () => {
                         console.log(option, "jkjk...")
                         joinChannel('audience', option)
                     }
-                }
             });
 
             function animate(elem,style,unit,from,to,time) {
@@ -234,6 +246,14 @@ const LiveVideoChat = () => {
                     },25);
                 elem.style[style] = from+unit;
             }
+
+
+            SOCKET.on('live_video_manage_time', (data) => {
+               if (data.channel_name == videoCallState.channel_name) {
+                   setTotalTimeLeft(data.time)
+               }
+            })
+             
 
             SOCKET.on('send_live_video_item', (message) => {
                 let messagesList = messageList;
@@ -517,7 +537,6 @@ const LiveVideoChat = () => {
                                     <div className="remaining-coins ml-4">
                                         <><img src="/assets/images/diamond-coin.png" alt="Coins" /></>
                                         {
-                                            (!!userData && userData.user_id == params.user_id) &&
                                             <span>{totalCoinsLeft !== null && totalCoinsLeft}</span>
                                         }
                                        
@@ -678,10 +697,10 @@ const LiveVideoChat = () => {
                         <a href="javascript:void(0)" className="close-gift-btn modal-close" onClick={toggleIsOn}><img src="/assets/images/btn_close.png" /></a>
                         <div className="all-gift-header d-flex flex-wrap align-items-center mb-3">
                             <h5 className="mb-0 mr-4">Send Gift</h5>
-                            {/* <div className="remaining-coins">
+                            <div className="remaining-coins">
                                 <img src="/assets/images/diamond-coin.png" alt="Coins" />
-                                <span>{!!userData && userData.coins != 0 ? userData.coins : "0"}</span>
-                            </div> */}
+                                <span>{totalCoinsLeft !== null && totalCoinsLeft}</span>
+                            </div>
                         </div>
                         <div className="all-gift-body">
 
