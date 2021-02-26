@@ -355,6 +355,7 @@ const LiveVideoChat = () => {
                             let count = 0;
                             let heartInterval = window.setInterval(() => {
                                 if (count < 5) {
+                                    console.log(document.getElementById("next"), "test...")
                                     document.getElementById("next").click();
                                     count++;
                                 }
@@ -735,22 +736,17 @@ const LiveVideoChat = () => {
                                         <a id="next" className="btn btn-nxt bg-grd-clr" href="javascript:void(0)">Next</a>
                                     </li>
                                     {
-                                        (!!userData && userData.user_id != params.user_id) &&
-
                                         <li className="send-heart">
-                                            <div class="hearts"></div>
-                                            {/* <div > */}
-                                            {/* <div id="heart" class="send-message-button bg-grd-clr" onClick={sendHeart}> */}
-                                            <a className="btn-round bg-grd-clr" href="javascript:void(0)" id="heart" onClick={sendHeart}><i class="fa fa-heart"></i></a>
-                                            {/* </div> */}
-                                            {/* </div> */}
+                                            <div class="hearts" style={{left: (!!userData && userData.user_id != params.user_id) ? "0px" : "-50px"}}></div>
+                                            {
+                                                (!!userData && userData.user_id != params.user_id) &&
+                                                    <a className="btn-round bg-grd-clr" href="javascript:void(0)" id="heart" onClick={sendHeart}><i class="fa fa-heart"></i></a>
+                                            }
                                         </li>
                                     }
                                 </ul>
                             </div>
                         </div>
-                        {/* <div class="hearts"></div> */}
-
                     </div>
                     <div class="col-md-3 live__comments_bg p-4">
                         <div class="live__comments" id="chat-body">

@@ -1407,6 +1407,7 @@ position: absolute;
     position: relative;
     top: 50%;
     transform: translateY(-50%);
+    z-index: 999;
 }
 
 .all-gift-body ul {
@@ -4880,7 +4881,7 @@ span.gift__discount {
     /* margin-left: -50px; */
     right: 0;
     margin: 0 auto;
-    z-index: 999;
+    z-index: 9;
 }
   div.heart {
       width: 30px;
