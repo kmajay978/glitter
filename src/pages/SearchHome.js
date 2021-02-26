@@ -490,10 +490,10 @@ const uploadImage = () => {
         const bodyParameters ={
             session_id: localStorage.getItem("session_id"),
             user_id: userData.user_id,
-            type: 1
+            type: 3
         }
         const call_type = 1, user_id = userData.user_id;
-        generateLiveVideoChatToken(dispatch, bodyParameters, call_type, user_id, uuidv4(), SOCKET);
+        generateLiveVideoChatToken(dispatch, history, bodyParameters, call_type, user_id, uuidv4(), SOCKET);
 
     }
     const makeMeAudience = ( item ) => {

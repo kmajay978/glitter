@@ -1560,35 +1560,55 @@ position: absolute;
     width: 100%;
 }
 
-.gifter {
+.gift-sender {
+    opacity: 1 !important;
     position: fixed;
     top: 50%;
     transform: translateY(-50%);
     display: flex;
     align-items: center;
     left: 30px;
-    animation:gifter 5s linear;
+    /* animation: gifter 5s linear; */
     animation-fill-mode: forwards;
+    display: flex;
+    flex-wrap: wrap;
+    width: 250px;
+    height: auto;
+    max-height: 350px;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
-@keyframes gifter {
-    0% {top:70%;opacity: 1;}
-    50% {top:35%;opacity: 1;}
-    100% {top:10%;opacity: 0;}
-  }
+.gifter {
+    width: 100%;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    background-color:rgba(0,0,0,0.20);
+    border-radius: 5px;
+    padding: 10px
+}
 
-/*
+.gifter.new {
+    animation: gifter 1s ease-in-out;
+}
+ @keyframes gifter {
+    0% {top:-20px;opacity: 0;}
+    100% {top:0px;opacity: 1;}
+  } 
+
+
   @-moz-keyframes gifter {
-    from {background-color: red;}
-    to {background-color: yellow;}
+    0% {top:-20px;opacity: 0;}
+    100% {top:0px;opacity: 1;}
   }
 
   @-webkit-keyframes gifter {
-    from {background-color: red;}
-    to {background-color: yellow;}
+    0% {top:-20px;opacity: 0;}
+    100% {top:0px;opacity: 1;}
   }
 
-*/
+
 
 .gifter > img {
     width: 50px !important;
@@ -1596,6 +1616,12 @@ position: absolute;
     border-radius: 50%;
     margin-right: 5px;
     border: 2px solid var(--theme-color);
+}
+
+.gifter__media img{
+    width: 40px !important;
+    height: auto;
+    margin-left: 10px;
 }
 
 .gifter__info h6 {
@@ -2318,12 +2344,12 @@ body {
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
-.contacts-outter-wrapper::-webkit-scrollbar {
+.contacts-outter-wrapper::-webkit-scrollbar, .gift-sender::-webkit-scrollbar {
     display: none;
 }
 
 /* Hide scrollbar for IE, Edge and Firefox */
-.contacts-outter-wrapper {
+.contacts-outter-wrapper., .gift-sender {
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
 }
@@ -4587,9 +4613,9 @@ span.gift__discount {
     height: 105px;
 }
 
-.vc-screen .col-md-9{
-    /* background: url('../images/live-host.jpg'); */
-}
+/* .vc-screen .col-md-9{
+     background: url('../images/live-host.jpg'); 
+} */
 
 .live__comments_bg{
     background-color: #282828;
@@ -4699,7 +4725,7 @@ span.gift__discount {
 }
 
 
-    .send-photos-listing > div, .coin-price {
+.send-photos-listing > div, .coin-price {
         margin-right: 15px;
 }
 

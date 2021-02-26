@@ -115,9 +115,7 @@ console.log(allData);
           
             console.log(direction);
             console.log("removing: " + userId);
-            alreadyRemoved.push(userId);
-          
-            
+            alreadyRemoved.push(userId); 
           }
         },
         (error) => {
@@ -267,7 +265,7 @@ console.log(allData);
               <GlitterCard ref={childRefs[index]} className="swipe" key={currentUser.user_id} onSwipe={(dir) => swiped(dir, currentUser.user_id)} >
                 <div className="user__card position-relative">
                 {liked_clicked ? <div className="accept__user"><img src="/assets/images/accept-icon.png" width="auto" height="auto" /></div>:""}
-               {disliked_clicked ?<div class="accept__user"><img src="https://image.ibb.co/heTxf7/20_status_close_3x.png" width="auto" height="auto"/></div> : ""} 
+                  {disliked_clicked ?<div class="accept__user"><img src="/assets/images/country-close.svg" width="auto" height="auto"/></div> : ""} 
                   <img src={currentUser.profile_images}  alt={currentUser.first_name} width="100%"/>
                   <div className="card-titles">
                   <h3>
@@ -292,7 +290,7 @@ console.log(allData);
               <GlitterCard ref={childRefs[index]} className="swipe" key={currentUser.user_id} onSwipe={(dir) => swiped(dir, currentUser.user_id)} >
                 <div className="user__card position-relative">
                 {liked_clicked ? <div className="accept__user"><img src="/assets/images/accept-icon.png" width="auto" height="auto" /></div>:""}
-               {disliked_clicked ? <div class="accept__user"><img src="https://image.ibb.co/heTxf7/20_status_close_3x.png" width="auto" height="auto"/></div> : ""} 
+               {disliked_clicked ? <div class="accept__user"><img src="/assets/images/country-close.svg" width="auto" height="auto"/></div> : ""} 
                   <img src={currentUser.profile_images}  alt={currentUser.first_name} width="100%"/>
                   <div className="card-titles">
 

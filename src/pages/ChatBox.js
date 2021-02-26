@@ -264,7 +264,6 @@ const ChatBox = (props) =>{
                };
 
                //    Setting urls for displaying here
-            
                const setFileUrls = (files) => {
                 const urls = files.map((file) => URL.createObjectURL(file));
                 if(myUrls.length > 0) {
@@ -300,7 +299,6 @@ const ChatBox = (props) =>{
                                 
             });
              
-          
               }
               
             // returning in html form to display 

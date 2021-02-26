@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import $ from "jquery";
 import { useHistory, useParams } from 'react-router';
 import axios from "axios";
 import Logo from '../components/Logo';
@@ -16,7 +17,11 @@ import useToggle from "../components/CommonFunction";
 import {changeImageLinkDomain, changeGiftLinkDomain} from "../commonFunctions"
 import { Number } from "core-js";
 
-let videoCallStatus = 0, videoCallParams, interval, userData, messageList = [], receiver_id
+let videoCallStatus = 0, videoCallParams, interval, userData, 
+messageList = [], receiver_id, removeGiftInterval, allGifts = [],
+
+manageCoinsTimeViewsInterval, manageCoinsTimeViewsCounter = 0, manageTimeInterval, 
+manageViewsInterval
 
 const override = css`
   display: block;
@@ -37,6 +42,8 @@ const LiveVideoChat = () => {
     const [givenGift, setGivenGift] = useState();
     const [CompleteMessageList, setMessages] = useState([]);
     const [randomNumber, setRandomNumber] = useState('');
+    const [randomNumberGift, setRandomNumberGift] = useState('');
+    const [reRenderGifts, setReRenderGifts] = useState('');
     let [loading, setLoading] = useState(false);
 
 
@@ -50,7 +57,11 @@ const LiveVideoChat = () => {
 
     const sessionId = localStorage.getItem('session_id');
     const [chatTyping, setChatTyping] = useState("");
-    const [friendGift, setFriendGift] = useState(null);
+    const [friendGift, setFriendGift] = useState([]);
+
+    const [totalCoinsLeft, setTotalCoinsLeft] = useState(null);
+    const [totalViews, setTotalViews] = useState(null);
+    const [totalTimeLeft, setTotalTimeLeft] = useState(null);
 
 
     userData = useSelector(userProfile).user.profile; //using redux useSelector here
@@ -68,6 +79,10 @@ const LiveVideoChat = () => {
         localStorage.removeItem("videoCallLivePageRefresh");
         localStorage.removeItem("liveVideoProps");
         clearChatState(dispatch);
+        clearInterval(removeGiftInterval);
+        clearInterval(manageCoinsTimeViewsInterval);
+        clearInterval(manageTimeInterval);
+        clearInterval(manageViewsInterval);
         window.location.href = checkLiveDomain() ? "/glitter-web/search-home" : "/search-home";
     }
     useEffect(() => {
@@ -124,8 +139,21 @@ const LiveVideoChat = () => {
                 }
             })
 
+            SOCKET.on('end_live_video_call_host_warning', (data) => {
+                if (data.channel_name == videoCallParams.channel_name) {
+                    alert("Live video call is closing soon. Something went wrong...")
+                    SOCKET.emit("end_live_video_call_host", {
+                        host_id: Number(videoCallParams.user_id),
+                        user_id: Number(videoCallParams.user_id),
+                        channel_name: videoCallParams.channel_name,
+                        type: 1,
+                        is_host: true
+                    })
+                }
+            })
+
             SOCKET.on('end_live_video_call_audience', (data) => {
-                if (data.user_id === videoCallState.user_id) {
+                if (data.user_id === videoCallState.user_id && data.channel_name == videoCallParams.channel_name) {
                     if (Number(videoCallParams.user_id) === data.user_id) {
                         // alert("host")
 
@@ -136,6 +164,40 @@ const LiveVideoChat = () => {
                     }
                 }
             })
+            SOCKET.on('end_live_video_call_audience_warning', (data) => {
+                if (data.user_id === videoCallState.user_id && data.channel_name == videoCallParams.channel_name) {
+                    if (Number(videoCallParams.user_id) === data.user_id) {
+                        // alert("host")
+
+                    }
+                    else { // audience..
+                        // alert("decline audience with id:"+ data.user_id);
+                        alert(data.msg)
+                        SOCKET.emit("end_live_video_call_audience", {
+                            host_id: Number(videoCallParams.user_id),
+                            user_id: Number(data.user_id),
+                            channel_name: videoCallParams.channel_name,
+                            type: 1,
+                            is_host: false
+                        })
+                    }
+                }
+            })
+
+           
+
+            SOCKET.on('live_video_manage_coins_time_views', (data) => {
+                if (data.channel_name === videoCallState.channel_name && videoCallState.user_id == data.user_id) {
+                   if (data.msg === "") {
+                        setTotalCoinsLeft(data.coins);
+                   }
+                   else {
+                       alert(data.msg)
+                   }
+                }
+            })
+
+
 
             SOCKET.on('unauthorize_live_video_call', (data) => {
                 if (data.is_host) {
@@ -156,9 +218,39 @@ const LiveVideoChat = () => {
                 }
             });
 
+            const liveVideoManageCoinsTimeViews = () => {
+                SOCKET.emit("live_video_manage_coins_time_views", {
+                    channel_name: videoCallState.channel_name,
+                    user_id: videoCallState.user_id,
+                    sender_id: videoCallParams.user_id,
+                    counter: manageCoinsTimeViewsCounter
+                })
+            }
+
+            const manageLiveAudienceHostDetails = () => {
+                liveVideoManageCoinsTimeViews()
+                manageCoinsTimeViewsInterval = window.setInterval(() => {
+                    liveVideoManageCoinsTimeViews()
+                    manageCoinsTimeViewsCounter = manageCoinsTimeViewsCounter + 10
+                }, 10000)
+            }
+
             SOCKET.on('authorize_live_video_call', (data) => {
                 if (data.user_id === videoCallState.user_id) {
                     if (Number(videoCallParams.user_id) === data.user_id) {
+                        manageLiveAudienceHostDetails()
+                        manageTimeInterval = window.setInterval(() => {
+                        SOCKET.emit("live_video_manage_time", {
+                            channel_name: videoCallState.channel_name
+                        })
+                    }, 1000)
+
+                    manageViewsInterval = window.setInterval(() => {
+                        SOCKET.emit("live_video_manage_views", {
+                            channel_name: videoCallState.channel_name
+                        })
+                    }, 1000)
+                    
                         // opnen host camera
                         const option = {
                             appID: "52cacdcd9b5e4b418ac2dca58f69670c",
@@ -172,6 +264,7 @@ const LiveVideoChat = () => {
                         joinChannel('host', option)
                     }
                     else { // audience..
+                        manageLiveAudienceHostDetails()
                         // open audience camera...
                         const option = {
                             appID: "52cacdcd9b5e4b418ac2dca58f69670c",
@@ -186,6 +279,32 @@ const LiveVideoChat = () => {
                     }
                 }
             });
+
+            function animate(elem,style,unit,from,to,time) {
+                if( !elem) return;
+                var start = new Date().getTime(),
+                    timer = setInterval(function() {
+                        var step = Math.min(1,(new Date().getTime()-start)/time);
+                        elem.style[style] = (from+step*(to-from))+unit;
+                        if( step == 1) clearInterval(timer);
+                    },25);
+                elem.style[style] = from+unit;
+            }
+
+
+            SOCKET.on('live_video_manage_time', (data) => {
+               if (data.channel_name == videoCallState.channel_name) {
+                   setTotalTimeLeft(data.time)
+               }
+            })
+
+            SOCKET.on('live_video_manage_views', (data) => {
+                if (data.channel_name == videoCallState.channel_name) {
+                    setTotalViews(data.views)
+                }
+             })
+            
+             
 
             SOCKET.on('send_live_video_item', (message) => {
                 let messagesList = messageList;
@@ -221,16 +340,29 @@ const LiveVideoChat = () => {
                                 user: changeImageLinkDomain() + message.message.userImage,
                                 gift: changeGiftLinkDomain() +message.message.giftImage,
                                 f_name: message.message.user_first_name,
-                                l_name: message.message.user_last_name
+                                l_name: message.message.user_last_name,
+                                gift_name: message.message.giftName,
+                                dateTime: new Date()
                             }
-                            setFriendGift(gift)
-                            // setRandomNumber(Math.random())
-                            // window.setTimeout(() => {
-                            //     setFriendGift(null)
-                            // }, 6000)
-                            //  http://167.172.209.57/glitter-101/public/gifts_icons/1611753455.png
-                         // animate gift
+                            let newGift = friendGift; 
+                            newGift.unshift(gift);
+                            console.log(newGift, "hiiiiiiiiiiiii")
+                            setFriendGift(newGift);
+                            allGifts = newGift;
+                            setRandomNumberGift(Math.random());
+                        //     const gifters = !!document.querySelectorAll(".gifter") ? document.querySelectorAll(".gifter") : [];
+                        //     gifters.forEach((item, index) => {
+                        //         // document.getElementsByClassName("gifter")[index].classList.remove("new")
+                        //     })
+                        //   console.log(document.getElementsByClassName("gifter")[document.getElementsByClassName("gifter").length - 1], "check.....")
+                        //   window.setTimeout(() => {
+                        //     document.getElementsByClassName("gifter")[0].style.animation = "gifter 1s ease-in-out";
+                        //   }, 1000)  
+                          
 
+                        //         // document.getElementsByClassName("gifter")[0].classList.add("new")
+                        
+                            
                         }
                         if (message.message.chat_type === 2) {
                             // animate heart
@@ -292,12 +424,33 @@ const LiveVideoChat = () => {
                 local_stream.remove()
             }
         }
+
+        removeGiftInterval = window.setInterval(() => {
+            const current_time = new Date();
+                for (let i in allGifts) {
+                    const startDate = allGifts[i].dateTime;
+                    const seconds = (current_time.getTime() - startDate.getTime()) / 1000;
+                    if (seconds > 10) {
+                        allGifts.splice(i, 1)
+                    }
+                }  
+                setFriendGift(allGifts);
+                setReRenderGifts(Math.random())
+        }, 250)
+
     }, [])
 
     const scrollToBottom = () => {
         var div = document.getElementById('chat-body');
         if (!!div)
             div.scroll({ top: div.scrollHeight, behavior: 'smooth' });
+    }
+
+    const scrollToTop = () => {
+        // $('body, html, #giftSender').scrollTop(0);
+        $('body, html, #giftSender').animate({
+            scrollTop: 0
+        }, 1000);
     }
 
     const endCall = () => {
@@ -324,6 +477,10 @@ const LiveVideoChat = () => {
     useEffect(() => {
         scrollToBottom();
     }, [randomNumber])
+
+    useEffect(() => {
+        scrollToTop();
+    }, [randomNumberGift])
 
     const CheckTextInputIsEmptyOrNot = (e) => {
         e.preventDefault()
@@ -420,16 +577,32 @@ const LiveVideoChat = () => {
                                         </figure>
                                         {
                                             !!user &&
-                                            <div className="name ml-2">{user.first_name} <span className="age">{user.age}</span></div>
+                                            <div class="name ml-2">
+                                                {user.first_name} 
+                                                <span class="age"> {user.age}</span>
+                                                <span class="d-block small">{totalTimeLeft}</span>
+                                                <span class="small">
+                                                    <img src="/assets/images/eye-icon.svg"/> {totalViews}</span>
+                                                    </div>
+                                            
                                         }
                                         {
                                             !user &&
-                                            <div className="name ml-2"> <span className="age"> </span></div>
+                                            <div class="name ml-2">
+                                                
+                                                <span class="age"> </span>
+                                                <span class="d-block small"> </span>
+                                                <span class="small">
+                                                    <img src="/assets/images/eye-icon.svg"/> </span>
+                                                    </div>
                                         }
                                     </div>
                                     <div className="remaining-coins ml-4">
-                                        <img src="/assets/images/diamond-coin.png" alt="Coins" />
-                                        <span>{!!userData && userData.coins != 0 ? userData.coins : "0"}</span>
+                                        <><img src="/assets/images/diamond-coin.png" alt="Coins" /> </>
+                                        {
+                                            <span>{totalCoinsLeft !== null && totalCoinsLeft}</span>
+                                        }
+                                       
                                     </div>
                                 </div>
                             </div>
@@ -440,11 +613,11 @@ const LiveVideoChat = () => {
                         <div className="col-lg-7 p-3">
                             <div className="tab-top d-flex flex-wrap-wrap align-items-center">
                                 <div className="vc-action-tab ml-auto mr-4 position-relative">
-                                    <div className="vc-action-btn">
+                                    {/* <div className="vc-action-btn">
                                         <span />
                                         <span />
                                         <span />
-                                    </div>
+                                    </div> */}
                                     <ul className="action-menu">
                                         <li>
                                             <a href="javascript:void(0)">Report</a>
@@ -474,38 +647,46 @@ const LiveVideoChat = () => {
                             style={{ width: "400px", height: "400px" }}
                         />
                         {/* <img src="/assets/images/video-chat-bg.jpg" alt="Video Calling"/> */}
+                        <div class="gift-sender" id="giftSender">
                         {
-                            !!friendGift &&
-                                <div className="gifter">
-                                    <img src={friendGift.user} alt="gifter" />
-                                    <div className="gifter__info">
-                                        <h6>{friendGift.f_name + " " + friendGift.l_name}</h6>                
-                                        <span>Sent a gift</span>  
-                                    </div>
-                                        <div className="gifter__media">
-                                        <img src={friendGift.gift} alt="gift" />
-                                    </div>     
+                            friendGift.map((item, index) => (
+                                <div className="gifter" id={item.gift}>
+                                <img src={item.user} alt="gifter" />
+                                <div className="gifter__info">
+                                    <h6>{item.f_name +" "+ item.l_name}</h6>                
+                                    <span>Sent a {item.gift_name}</span>  
                                 </div>
+                                    <div className="gifter__media">
+                                    <img src={item.gift} alt="gift" />
+                                </div>     
+                            </div>
+                                )) 
+                               
                         }
 
-                        <div className="charges-reminder-txt">
-                            <p>After 25 Seconds, you will be charged 120 coins per minute</p>
-                        </div>
-                        <div className="vc-timer-box text-center">
-                            <div className="timer">
-                                <i className="far fa-clock"></i>
-                                <span>25 Sec</span>
+                      </div>              
+
+                      {
+                        (!!userData && userData.user_id != params.user_id) &&
+                            <div className="charges-reminder-txt">
+                                    <p>After 25 Seconds, you will be charged 120 coins per minute</p>
                             </div>
-                            <div className="vc-sppiner">
+                      }
+                        <div className="vc-timer-box text-center">
+                            {/* <div className="timer">
+                                <i className="far fa-clock"></i>
+                                <span>{totalTimeLeft}</span>
+                            </div> */}
+                            {/* <div className="vc-sppiner">
                                 <a className="sppiner bg-grd-clr" href="javascript:void(0)">
                                     <img src="/assets/images/sppiner.png" alt="Sppiner" />
                                 </a>
-                            </div>
+                            </div> */}
                         </div>
                         <div className="vc-option-block d-flex flex-wrap align-items-end">
                             <div className="vc-options">
                                 <ul>
-                                    <li>
+                                    {/* <li>
                                         <a className="btn-round bg-grd-clr" href="javascript:void(0)">
                                             <img src="/assets/images/magic-stick.png" alt="Magic" />
                                         </a>
@@ -514,15 +695,19 @@ const LiveVideoChat = () => {
                                         <a className="btn-round bg-grd-clr" href="javascript:void(0)">
                                             <img src="/assets/images/chat.png" alt="Chat" />
                                         </a>
-                                    </li>
-                                    <li>
+                                    </li> */}
+                                    {
+                                        (!!userData && userData.user_id != params.user_id) &&
+                                        <li>
                                         <a className="btn-round bg-grd-clr" href="javascript:void(0)" onClick={handleGift}>
                                             <img src="/assets/images/gift.png" alt="Gift" />
                                         </a>
                                     </li>
-                                    <li>
+                                    }
+                                   
+                                    {/* <li>
                                         <a className="btn btn-nxt bg-grd-clr" href="javascript:void(0)">Next</a>
-                                    </li>
+                                    </li> */}
                                 </ul>
                             </div>
                         </div>
@@ -579,7 +764,7 @@ const LiveVideoChat = () => {
                             <h5 className="mb-0 mr-4">Send Gift</h5>
                             <div className="remaining-coins">
                                 <img src="/assets/images/diamond-coin.png" alt="Coins" />
-                                <span>{!!userData && userData.coins != 0 ? userData.coins : "0"}</span>
+                                <span> {totalCoinsLeft !== null && totalCoinsLeft}</span>
                             </div>
                         </div>
                         <div className="all-gift-body">

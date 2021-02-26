@@ -6,7 +6,7 @@ import moment from "moment";
 export const generateVideoChatToken = (history, dispatch, bodyParameters, startVideoChatInitParams) => {
       axios.post(TOKEN_AGORA_API,bodyParameters)
       .then((response) => { 
-        if (response.status === 200) {
+        if (response.status === 200 && !response.data.error) {
             let nowDate = moment().format();
             nowDate = nowDate.replace("T", " ").replace("+", " ");
             nowDate = nowDate.split(" ");
@@ -25,10 +25,17 @@ export const generateVideoChatToken = (history, dispatch, bodyParameters, startV
             startVideoChatInit(history, dispatch, newState)
         }
         else {
-         alert(response.data.message)
+            if (response.status === 200 && response.data.error) {
+                alert(response.data.message)
+            }
+            else {
+                alert(response.data.message)
+            }
+            history.push("/chat")
         }
    }, (error) => {
       alert(error.message)
+      history.push("/chat")
   });
 }
 
@@ -36,7 +43,7 @@ export const generateAudioChatToken = (history, dispatch, bodyParameters, startV
     console.log("audioScreen")
     axios.post(TOKEN_AGORA_API,bodyParameters)
     .then((response) => { 
-      if (response.status === 200) {
+        if (response.status === 200 && !response.data.error) {
           let nowDate = moment().format();
           nowDate = nowDate.replace("T", " ").replace("+", " ");
           nowDate = nowDate.split(" ");
@@ -55,18 +62,25 @@ export const generateAudioChatToken = (history, dispatch, bodyParameters, startV
           startAudioChatInit(history, dispatch, newState)
       }
       else {
-       alert(response.data.message)
+        if (response.status === 200 && response.data.error) {
+            alert(response.data.message)
+        }
+        else {
+            alert(response.data.message)
+        }
+        history.push("/chat")
       }
  }, (error) => {
     alert(error.message)
+    history.push("/chat")
 });
 }
 
 
-export const generateLiveVideoChatToken = (dispatch, bodyParameters, call_type, user_id, channel_id, SOCKET) => {
+export const generateLiveVideoChatToken = (dispatch, history, bodyParameters, call_type, user_id, channel_id, SOCKET) => {
     axios.post(TOKEN_AGORA_API,bodyParameters)
         .then((response) => {
-            if (response.status === 200) {
+            if (response.status === 200 && !response.data.error) {
                 let newState = {};
                 newState.host_id = user_id;
                 newState.user_id = user_id;
@@ -81,10 +95,17 @@ export const generateLiveVideoChatToken = (dispatch, bodyParameters, call_type, 
                 SOCKET.emit("start_live_video_call", newState)
             }
             else {
-                alert(response.data.message)
+                if (response.status === 200 && response.data.error) {
+                    alert(response.data.message)
+                }
+                else {
+                    alert(response.data.message)
+                }
+                history.push("/search-home")
             }
         }, (error) => {
-            alert(error.message)
+            alert(error.message);
+            history.push("/search-home")
         });
 }
 export const startVideoChatInit = (history, dispatch, bodyParameters) => {

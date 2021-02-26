@@ -61,7 +61,7 @@ addBodyClass('login-body')('')
 
   // All form fields
   const [otp , setOtp] = useState('');
-  const [Dob, setDob] = useState(new Date()); 
+  const [Dob, setDob] = useState(); 
   const [FirstName, setFirst] = useState(''); 
   const [LastName, setLast] = useState(''); 
   const [genderName, setGender] = useState('');  
