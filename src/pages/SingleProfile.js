@@ -344,13 +344,15 @@ const SingleProfile = (props) =>{
             <div className="bio-interest">
               <h5 className="mb-3">Interests</h5>
               <div className="interest-tags">
-                {!!userData&& 
+                
+                {!!userData && userData.interest_hobbies.length != "" &&    
                 <>
                  { Object.keys(userData.interest_hobbies).map((key) => {
                   return <span> {userData.interest_hobbies[key]} </span>
                 })}
                 </>
                 }
+                {""}
              
               </div>
             </div>
