@@ -1407,6 +1407,7 @@ position: absolute;
     position: relative;
     top: 50%;
     transform: translateY(-50%);
+    z-index: 999;
 }
 
 .all-gift-body ul {
@@ -1691,6 +1692,7 @@ position: absolute;
 
 .vc-options ul li {
     display: inline-block;
+    position: relative;
 }
 
 .vc-options ul li .btn-round {
@@ -4857,3 +4859,144 @@ span.gift__discount {
         box-shadow: 0 0 0 1em rgba(204, 145, 36, 0.3), 0 0 0 3em rgba(204, 145, 36 , 0.3), 0 0 0 5em rgba(204, 145, 36, 0.3), 0 0 0 8em rgba(204, 145, 36, 0);
     }
 }
+
+/* heart live video */
+/* body, html {
+    background-image: url(""),
+      linear-gradient(110deg, #f93d66, #6d47d9);
+    background-attachment: fixed;
+    color: #ffffff;
+    height: 100vh;
+    cursor: pointer;
+    user-select: none;
+  } */
+  h1 {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+      Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    font-weight: 900;
+    font-size: 60px;
+    text-shadow: 0 2px 0 rgba(0, 0, 0, 0.07);
+    color: #ffc600 !important;
+    text-align: center;
+    text-transform: uppercase;
+    text-shadow: 0 2px 0 rgba(0, 0, 0, 0.07);
+  }
+  div.hearts {
+    width: 200px;
+    height: 600px;
+    position: absolute;
+    bottom: 50px;
+    left: 0;
+    /* margin-left: -50px; */
+    right: 0;
+    margin: 0 auto;
+    z-index: 9;
+}
+  div.heart {
+      width: 30px;
+      height: 30px;
+      opacity: 1;
+      position: absolute;
+      bottom: 0;
+      display: none;
+  }
+  div.heart i {
+      position: absolute;
+      left: 0;
+      top: 0;
+      opacity: 1;
+  }
+  .colOne {
+      color: #ffc600 !important;
+  }
+  .colTwo {
+      color: #ffc600 !important;
+  }
+  .colThree {
+      color: #ffc600 !important;
+  }
+  .colFour {
+      color: #ffc600 !important;
+  }
+  .colFive {
+      color: #ffc600 !important;
+  }
+  .colSix {
+      color: #ffc600 !important;
+  }
+  @keyframes flowOne {
+      0% {
+      opacity: 0;
+      bottom: 0;
+      left: 14%}
+  40% {
+      opacity: .8;
+  }
+  50% {
+      opacity: 1;
+      left: 0;
+  }
+  60% {
+      opacity: .2;
+  }
+  80% {
+      bottom: 80%}
+  100% {
+      opacity: 0;
+      bottom: 100%;
+      left: 18%}
+  }@keyframes flowTwo {
+      0% {
+      opacity: 0;
+      bottom: 0;
+      left: 0;
+  }
+  40% {
+      opacity: .8;
+  }
+  50% {
+      opacity: 1;
+      left: 11%}
+  60% {
+      opacity: .2;
+  }
+  80% {
+      bottom: 60%}
+  100% {
+      opacity: 0;
+      bottom: 80%;
+      left: 0;
+  }
+  }@keyframes flowThree {
+      0% {
+      opacity: 0;
+      bottom: 0;
+      left: 0;
+  }
+  40% {
+      opacity: .8;
+  }
+  50% {
+      opacity: 1;
+      left: 30%}
+  60% {
+      opacity: .2;
+  }
+  80% {
+      bottom: 70%}
+  100% {
+      opacity: 0;
+      bottom: 90%;
+      left: 0;
+  }
+  }
+
+  .fa-heart {
+      color: #F4C862 !important;
+      font-size: 35px !important;
+  }
+  .send-heart a i{
+  font-size: 19px !important;
+    color: #fff !important;
+    line-height: 44px !important;
+  }

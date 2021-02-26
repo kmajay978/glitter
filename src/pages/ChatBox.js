@@ -276,27 +276,36 @@ const ChatBox = (props) =>{
 
               const convertBlobTobase64 = () =>{
                
-            !!baseMultipleImage && baseMultipleImage.map((image,i) =>{
+            if(!!baseMultipleImage && 
+            baseMultipleImage.length > 0) {
+                
+            }
+            else {
+                alert("select atlease onre image..")
+            }
 
-                              var msg ={};
-                                msg.file = image;
-                                msg.fileName = "test";
-                                msg.sessionId = sessionId;
-                                msg.reciever_id = receiver_id;
-                                console.log(msg, "mymsg...")
-                                SOCKET.emit('media_file', msg);
-                                setLoading(true);
 
-                                if(baseMultipleImage.length - 1 === i) {
-                                    allBaseImages = []
-                                        setbase64('')
-                                        setMyFiles('')
-                                        setUrls('')
-                                        setUploadImage(false);
-                                      
-                                }
-                                
-                                
+
+
+
+            baseMultipleImage.forEach((image,i) =>{
+                var msg ={};
+                msg.file = image;
+                msg.fileName = "test";
+                msg.sessionId = sessionId;
+                msg.reciever_id = receiver_id;
+                console.log(msg, "mymsg...")
+                SOCKET.emit('media_file', msg);
+                setLoading(true);
+
+                if(baseMultipleImage.length - 1 === i) {
+                    allBaseImages = []
+                        setbase64('')
+                        setMyFiles('')
+                        setUrls('')
+                        setUploadImage(false);
+                        
+                }               
             });
              
               }
