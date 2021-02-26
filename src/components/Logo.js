@@ -5,7 +5,7 @@ import {addDefaultSrc} from "../commonFunctions";
 const Logo = () =>{
     return (
           <Link to="/">
-                    <img src="/assets/images/glitters.png" alt="Glitters" />
+                    <img src="/assets/images/glitters.png"  alt="Glitters" />
           </Link>
     )  
 }

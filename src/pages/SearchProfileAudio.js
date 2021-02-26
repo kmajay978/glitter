@@ -30,7 +30,7 @@ const SearchProfile = () =>{
       const bodyParameters ={
         session_id: localStorage.getItem("session_id"),
         user_id: videoCallState.user_to_id,
-        type: 1
+        type: 2
       }
       generateAudioChatToken(history, dispatch, bodyParameters, videoCallState)
     }
