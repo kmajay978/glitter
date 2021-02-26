@@ -1,6 +1,7 @@
 import './App.css';
 import './components/jqueryfile.js';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import $ from 'jquery';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import { BrowserRouter as Router, Switch, Route, withRouter, useParams, useHistory } from 'react-router-dom';
@@ -15,6 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { profile, userAuth } from './features/userSlice';
 import { SOCKET } from "./components/Config";
 import { checkLiveDomain } from './commonFunctions';
+
 let userData;
 const history = createBrowserHistory({ forceRefresh: true });
 const ProfileData = async (dispatch, sessionId) => {
@@ -29,10 +31,12 @@ const ProfileData = async (dispatch, sessionId) => {
   );
 }
 const stripePromise = loadStripe('pk_test_51HYm96CCuLYI2aV0fK3RrIAT8wXVzKScEtomL2gzY9XCMrgBa4KMPmhWmsCorW2cqL2MLSJ45GKAAZW7WxEmytDs009WzuDby2');
-function App() {
+function App(props) {
   //  const {latitude, longitude, error} = usePosition();
   const new_history = useHistory();
-  console.log(new_history, "new_history...")
+  const [currentPathname, setCurrentPathname] = useState(null);
+  const [currentSearch, setCurrentSearch] = useState(null);
+
   const dispatch = useDispatch();
   const is_auth = useSelector(userAuth); //using redux useSelector here
   // console.log(is_auth, "is_auth....")0000000000
@@ -112,6 +116,41 @@ function App() {
       //  }, 600000);
     }
   }, [is_auth])
+
+ 
+  useEffect(() => {
+
+    $(document).ready(function() {
+      function disableBack() { window.history.forward() }
+
+      window.onload = disableBack();
+      window.onpageshow = function(evt) { if (evt.persisted) disableBack() }
+  });
+    // // Anything in here is fired on component mount. Component did mount
+    // const { history } = props;
+    // history.listen((newLocation, action) => {
+    //   if (action === "PUSH") {
+    //     if (
+    //       newLocation.pathname !== currentPathname ||
+    //       newLocation.search !== currentSearch
+    //     ) {
+    //       currentPathname = newLocation.pathname;
+    //       currentSearch = newLocation.search;
+    //       history.push({
+    //         pathname: newLocation.pathname,
+    //         search: newLocation.search
+    //       });
+    //     }
+    //   } else {
+    //     history.go(1);
+    //   }
+    // });
+    // return () => {
+    //     // Anything in here is fired on component unmount. component will mount 
+    //     window.onpopstate = null;
+    // }
+}, [])
+
   return (
     <Router>
       <Switch>

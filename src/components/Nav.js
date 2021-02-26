@@ -12,6 +12,7 @@ const NavLinks = (props) =>{
 console.log(props, "props..")
   let pathname = window.location.pathname;
 
+ 
     useEffect(() => {
     
       // alert(window.location.href)

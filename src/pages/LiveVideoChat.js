@@ -306,6 +306,7 @@ const LiveVideoChat = () => {
                         allGifts.splice(i, 1)
                     }
                 }  
+                setFriendGift(allGifts);
                 setReRenderGifts(Math.random())
         }, 1000)
 

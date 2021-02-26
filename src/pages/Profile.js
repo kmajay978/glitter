@@ -16,11 +16,13 @@ import AboutGlitter from '../components/AboutGlitter';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import { EmailIcon, FacebookIcon,  TelegramIcon, TwitterIcon, WhatsappIcon,EmailShareButton,FacebookShareButton,TelegramShareButton,WhatsappShareButton, TwitterShareButton,} from "react-share";
 import StripeForm from '../components/StripeForm';
-import DatePicker from 'react-date-picker';
+// import DatePicker from 'react-date-picker';
 import moment from 'moment'
 import SyncLoader from "react-spinners/SyncLoader";
 import { css } from "@emotion/core";
 import {addDefaultSrc, returnDefaultImage} from "../commonFunctions";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const override = css`
     
@@ -69,7 +71,7 @@ const Profile = (props) =>{
   const [coinPackage , setCoinPackage] = useState([]);
   const [coinHistory , setCoinHistory] = useState([]);
   const [coinSpend , setCoinSpend] = useState('');
-  const [Dob, setDob] = useState(new Date()); 
+  const [Dob, setDob] = useState(''); 
   const [isLoaded, setIsLoaded] = useState(false);
   const [warningMessage, setWarningMessage] = useState('');
   const [loadedModel , setLoadedModel] = useState(false);
@@ -91,7 +93,7 @@ const Profile = (props) =>{
   
   const userData = useSelector(userProfile).user.profile; //using redux useSelector here
 
-  const dates = moment(Dob).format('YYYY/MM/DD');
+  var dates = moment(Dob).format('YYYY/MM/DD');
   console.log(Dob , "...dob");
   console.log(dates , "date");
   // Getting form value here
@@ -139,14 +141,24 @@ const handleCheck = (e) => {
     const shareUrl = 'http://localhost:3000/';
     const title = 'glitter-app';
     
-    // useEffect(()=>{
-    // var date = document.getElementsByName('dob')[0].value ;
-    //   console.log(date ,"hii");
-    // },[])
-   // console.log(userData.dob);
-   // Fetching profile Data
-  var sessionId = localStorage.getItem("session_id")
-  const ProfileData = async() =>{
+  //   useEffect(()=>{
+  //  var date = document.getElementsByName('dob')[0].value +=userData.dob ;
+
+  //  document.getElementsByClassName('react-date-picker__inputGroup__day')[0].value= 1;
+
+  //  window.setTimeout(() => {
+  //   $("input[name='dob']").attr('value', '1997-05-05');
+  //   $('.react-date-picker__inputGroup__day').val('05');
+  //   $('.react-date-picker__inputGroup__month').val('05');
+  //   $('.react-date-picker__inputGroup__year').val('1997');
+  // }, 2000)
+   
+  //     console.log(date ,"hii");
+  //   },[show])
+    // console.log(userData.dob);
+    // Fetching profile Data
+   var sessionId = localStorage.getItem("session_id")
+   const ProfileData = async() =>{
 
     const bodyParameters = {
       session_id: sessionId,
@@ -157,7 +169,7 @@ const handleCheck = (e) => {
     //  Setting data variable to state object 
       form.firstName = data.first_name
       form.lastName = data.last_name
-      form.dob = moment(data.dob).format('ddd MMM DD YYYY   h:mm:ss')
+      const Dob =moment(data.dob).format('ddd MMM DD YYYY   h:mm:ss')+'GMT+0530 (India Standard Time)'
       form.aboutMe = data.about_me
       form.height = data.height
       form.weight = data.weight
@@ -239,7 +251,7 @@ const handleCheck = (e) => {
       bodyParameters.append("device_type", "" + 0);
       bodyParameters.append("first_name", "" + form.firstName);
       bodyParameters.append("last_name", form.lastName);
-      bodyParameters.append("dob", "" + form.dob);
+      bodyParameters.append("dob", "" + dates);
       bodyParameters.append("gender", "" + form.gender);
       bodyParameters.append("aboutMe", "" +  form.aboutMe);
       bodyParameters.append("height",  form.height);
@@ -270,7 +282,7 @@ const handleCheck = (e) => {
 
   const bodyParameters= {
   session_id : sessionId
- };
+  };
  axios.post(LOGOUT_API , bodyParameters)
  .then((response) => { 
    localStorage.removeItem("session_id");
@@ -307,7 +319,7 @@ catch (err) {
       }
 }
    }
-   
+   // block user 
    const handleBlock = async() => {
     const bodyParameters={
       session_id : localStorage.getItem('session_id'),
@@ -621,8 +633,8 @@ catch (err) {
               </div>
               <div className="form-group dob-field">
                   <label className="d-block">DOB</label>
-                  <DatePicker  className="bg-trsp" name="dob"  value={Dob} selected={Dob} required={true} onChange={date => setDob(date)} />
-                 
+                  {/* <DatePicker  className="bg-trsp" name="dob"  value={Dob} selected={Dob} required={true} onChange={date => setDob(date)} /> */}
+                  <DatePicker  className="bg-trsp" name ="dates" dateFormat="dd/MM/yyyy" selected={Dob} onChange={date => setDob(date)}   isClearable /> 
                   {/* <input className="form-control bg-trsp" name="dob" type="text" value={form.dob} onChange={handleChange}  /> */}
               </div>
 
