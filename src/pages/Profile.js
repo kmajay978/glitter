@@ -714,6 +714,7 @@ catch (err) {
          <div className="tab-title">
          <label>Interest hobbies</label>
            </div>
+           
           {interestData.map((item , i) => (
             // checked={CheckedItem(item.id)}
           <div className="form-group">

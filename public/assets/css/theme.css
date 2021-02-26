@@ -1292,7 +1292,7 @@ position: absolute;
 
 .interest-tags span {
     display: inline-block;
-    padding: 5px 20px;
+    padding: 0px 20px;
     background-color: #564E3B;
     border-radius: 60px;
     font-size: 13px;
@@ -1407,6 +1407,7 @@ position: absolute;
     position: relative;
     top: 50%;
     transform: translateY(-50%);
+    z-index: 999;
 }
 
 .all-gift-body ul {
@@ -4876,7 +4877,7 @@ span.gift__discount {
     /* margin-left: -50px; */
     right: 0;
     margin: 0 auto;
-    z-index: 999;
+    z-index: 9;
 }
   div.heart {
       width: 30px;

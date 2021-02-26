@@ -118,18 +118,19 @@ const SingleProfile = (props) =>{
           axios.post(BLOCK_USER_API , bodyParameters)
           .then((response)=> {
            
-          if(response.status==200 && !response.error) {
-           createNotification('block');
-            setTimeout(() => {
-              setBlockData(true);
-            }, 1500);
+          if(response.status==200 && !response.error ) {
+           createNotification('blocked' , response.data.message );
+           console.log(response);
+            // setTimeout(() => {
+            //   setBlockData(true);
+            // }, 1500);
           }
           else {
-            setBlockData(false);
+            // setBlockData(false);
           }
           }, (error) =>{
            
-            setBlockData(false);
+            // setBlockData(false);
           });
         }
 
@@ -199,8 +200,8 @@ const SingleProfile = (props) =>{
           }
           );
         }
-
-        const createNotification = (type ) => {
+    
+        const createNotification = (type , message ) => {
   
           switch (type) {
               case 'report':
@@ -209,9 +210,9 @@ const SingleProfile = (props) =>{
                 case 'gift-send':
                 NotificationManager.success('gift send successfully' , 'gift');
                 break;
-                case 'block':
-                  NotificationManager.success('block Successfully ', 'block');
-                  break;
+                case 'blocked':
+              NotificationManager.success(message ,'sucesssfully')
+              break; 
             case 'error':
               NotificationManager.error('This User was already reported.');
               break; 
@@ -345,14 +346,13 @@ const SingleProfile = (props) =>{
               <h5 className="mb-3">Interests</h5>
               <div className="interest-tags">
                 
-                {!!userData && userData.interest_hobbies.length != "" &&    
+                {!!userData && Object.keys(userData.interest_hobbies).length >0 ?   
                 <>
-                 { Object.keys(userData.interest_hobbies).map((key) => {
-                  return <span> {userData.interest_hobbies[key]} </span>
-                })}
+                 { Object.keys(userData.interest_hobbies).map((key) => (
+                   <span> {userData.interest_hobbies[key]} </span>
+                 ))}
                 </>
-                }
-                {""}
+                : ""}
              
               </div>
             </div>
@@ -361,7 +361,7 @@ const SingleProfile = (props) =>{
               <ul>
                 <li>
                   <div className="theme-txt">Height:</div>
-              <div>{!!userData ?   `${userData.height} cm`   : ""}</div>
+              <div>{!!userData && userData.height!="" ?   `${userData.height} cm`   : ""}</div>
                 </li>
                 <li>
                   <div className="theme-txt">Weight:</div>
@@ -376,7 +376,7 @@ const SingleProfile = (props) =>{
                 : userData.relationship_status == '2'  ? "Married" 
                 : "Unmarried"}
                  </>}
-                 { <> </>}</div>
+                 </div>
                 </li>
                 <li>
                   <div className="theme-txt">join date:</div>
@@ -533,6 +533,8 @@ const SingleProfile = (props) =>{
             </a>
           </li>
         })}
+          <li>
+          </li>
           <li>
           </li>
           
