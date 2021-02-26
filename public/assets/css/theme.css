@@ -4332,6 +4332,7 @@ div#remote_video_.video_live > div:last-child {
     text-align: center;
     border-radius: 50px;
     line-height: 51px;
+    z-index: 999;
 }
 
 
