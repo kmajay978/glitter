@@ -13,7 +13,8 @@ import {selectUser, userProfile, videoCall, audioCall} from "../features/userSli
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import useToggle from '../components/CommonFunction';
 import { useHistory } from "react-router-dom";
-import {addDefaultSrc, returnDefaultImage} from "../commonFunctions";
+import {addDefaultSrc, returnDefaultImage, useForceUpdate} from "../commonFunctions";
+import { setWeekYear } from "date-fns";
 // import stringLimit from '../components/CommonFunction';
 
 const override = css`
@@ -22,13 +23,9 @@ const override = css`
   border-radius: 50px !important;
   width: 95%;
 `;
-// app id: bd7c4ac2265f496dbaa84d9837960c78
-// app secret: 40082f25ff2a4b88ac1358f7e863cba6
-// channel: test
-// token: 006bd7c4ac2265f496dbaa84d9837960c78IAAq1GZbv3moec3u6pFg67UZMEm0pzTuHT21ki9gqV9EXQx+f9gAAAAAEAAH/YchlRMJYAEAAQCYEwlg
 
-let messageList = [], receiver_id, userData;
-
+let messageList = [], receiver_id, userData, myInterval;
+let allBaseImages = [];
 const scrollToBottom = () => {
     var div = document.getElementById('chat-body');
     if (!!div)
@@ -37,6 +34,7 @@ const scrollToBottom = () => {
 
 const ChatBox = (props) =>{
 
+    const forceUpdate = useForceUpdate();
     const inputFile = useRef(null);
     const dispatch = useDispatch();
     const history = useHistory()
@@ -60,13 +58,16 @@ const ChatBox = (props) =>{
     const [previews, setPreviews] = useState([]);
     const [myFiles, setMyFiles] = useState([]);
     const [myUrls, setUrls] = useState([]);
+    const [baseMultipleImage, setbase64] = useState([]);
 
 
     let [loading, setLoading] = useState(false);
     const[recording, setRecording] = useState(false);
     const [dummyMediaRc, setDummyMediaRc] = useState(null)
-    const [chatTyping, setChatTyping] = useState("")
+    const [chatTyping, setChatTyping] = useState("");
+    const [threeMessageWarning, setWarningMessage] = useState("");
 
+    console.log(baseMultipleImage,"baseMultipleImage..........")
     const createNotificationCustom = (type) => {
   
         switch (type) {
@@ -124,7 +125,10 @@ const ChatBox = (props) =>{
                 localStorage.removeItem("session_id");
                 history.push('/login');
               }
-        }  
+        }
+       
+        
+        
     }
 
     const getVisitors = async () => {  // Visitors here
@@ -172,25 +176,7 @@ const ChatBox = (props) =>{
         setData(data);
     }
 
-    // Adding call functionality here
-    // const handleCall =() =>{
-    //     const bodyParameters = {
-    //         session_id: localStorage.getItem('session_id'),
-    //         user_id :FriendUserId,
-    //         type : 'audio',
-    //         room_id : '1'
-    //     }
-    //     axios.post(VIDEOCALL_API , bodyParameters)
-    //         .then((response) => {
-    //             if(response.status==200)
-    //             {
-    //                 createNotification('sucess');
-    //                 alert("call made successfully");
-    //             }
-    //         }, (error) => {
-
-    //         });
-    // }
+  
 
     const AcceptUserRequest = (LikedUserId) =>{
         const bodyParameters = {
@@ -206,7 +192,7 @@ const ChatBox = (props) =>{
                 //  }
                 if(response.status==200)
                 {
-                    createNotification('accept' , response.message);
+                    createNotification('accept');
                 }
             }, (error) => {
                 if (error.toString().match("403")) {
@@ -258,26 +244,69 @@ const ChatBox = (props) =>{
                     createNotificationCustom('error');       
                 }
              }
+             
             
             //  On change getting image files 
              const handleFileChange = e => {
-
                     const files = [...myFiles]; 
                     files.push(...e.target.files); 
                     setMyFiles(files);
-
                     setFileUrls(files) 
+
+                    // Pusing inform with base64
+                    const reader = new FileReader();
+                    reader.addEventListener("load", () => {
+                        allBaseImages.push(reader.result); 
+                     setbase64(allBaseImages);
+                    });
+                    reader.readAsDataURL(e.target.files[0]);
+                    if (allBaseImages.length < 3) {
+                        document.getElementById("image-media").style.display = "block"
+                    }
+                    else {
+                        document.getElementById("image-media").style.display = "none"
+                    }
                };
 
-            //    Setting urls for displaying here
+               //    Setting urls for displaying here
                const setFileUrls = (files) => {
                 const urls = files.map((file) => URL.createObjectURL(file));
-                console.log(urls,"bbbbbb")
                 if(myUrls.length > 0) {
                     myUrls.forEach((url) => URL.revokeObjectURL(url));
                 }
                 
                 setUrls(urls);
+              }
+              
+
+              const convertBlobTobase64 = () =>{
+               
+            if(!!baseMultipleImage && 
+            baseMultipleImage.length > 0) {
+                console.log(baseMultipleImage, "check........")
+                const imageMedia = document.getElementById("image-media");
+                let count = 0;
+                let photoInterval = window.setInterval(() => {
+                    if (count > baseMultipleImage.length - 1) {
+                        clearPhotoState()
+                        clearInterval(photoInterval);
+                       
+                    }
+                    else {
+                        var msg ={};
+                        msg.file = baseMultipleImage[count];
+                        msg.fileName = "test";
+                        msg.sessionId = sessionId;
+                        msg.reciever_id = receiver_id;
+                        SOCKET.emit('media_file', msg);
+                        setLoading(true);
+                        count += 1;
+                    }
+                }, 2000)
+            }
+            else {
+                alert("select atlease one image..")
+            }
               }
               
             // returning in html form to display 
@@ -287,18 +316,15 @@ const ChatBox = (props) =>{
    
 
                
-               const handleSendFile =() => {
-                setUploadImage(false);
-   
-               }
 
             const  stringLimit = (string , counts)=>{
                 var text = string;
                 var count = counts;
-                // var result = text.slice(0, count)  + (text.length > count ? "*********" : "");
+                var result = text.slice(0, count) 
+                // + (text.length > count ? "*********" : "");
                 for(var i=0 ; i<=text.length ; i++){
-                    // text.replace(text.substr(/./g,text.length-3));
-                    var result =  text.replace(text.substring(count,text.length[i]),"*");
+                    // text.replace(text.substr(1,text.length-3));
+                    var result = text.slice(0, count)+ (text.length > count ? "*********" : "");
                 } 
                 return result;
             }
@@ -306,7 +332,6 @@ const ChatBox = (props) =>{
 
     function readThenSendFile(data){
       
-        console.log(data,"mydata.......")
          var reader = new FileReader()
         reader.onload = function(evt){
             
@@ -356,6 +381,7 @@ const ChatBox = (props) =>{
 
     useEffect(() => {
         scrollToBottom();
+        forceUpdate(); // force re-render
     }, [randomNumber])
 // console.log(FriendUserId);
     useEffect(()=>{
@@ -408,12 +434,22 @@ const ChatBox = (props) =>{
                     ||
                     (messages.obj.user_from_id === receiver_id && messages.obj.user_to_id === userData.user_id)
                 ) { // check one-to-one data sync
+
+                    if (!!messages.obj.warningMessage) {
+                    
+                        setWarningMessage(messages.obj.warningMessage);
+                        //alert(messages.obj.warningMessage)
+                    }
+                    else {
+                        setWarningMessage('');
                     messagesList.push(messages.obj);
                     messageList = messagesList;
                     console.log(messagesList, "messageList...")
                     setMessages(messagesList);
                     setRandomNumber(Math.random());
+                    forceUpdate();
                     scrollToBottom()
+                    }
                 }
             }
         });
@@ -425,6 +461,14 @@ const ChatBox = (props) =>{
                     ||
                     (messages.obj.user_from_id === receiver_id && messages.obj.user_to_id === userData.user_id)
                 ) {
+                    if (!!messages.obj.warningMessage) {
+                    
+                        setWarningMessage(messages.obj.warningMessage);
+                        //alert(messages.obj.warningMessage)
+                        setLoading(false);
+                    }
+                    else {
+                        setWarningMessage('');
                     messagesList.push(messages.obj);
                     messageList = messagesList;
                     console.log(messagesList, "messageList... pic")
@@ -433,6 +477,7 @@ const ChatBox = (props) =>{
                     setLoading(false);
                     setRandomNumber(Math.random());
                     scrollToBottom()
+                    }
                 }
             }
         });
@@ -447,6 +492,14 @@ const ChatBox = (props) =>{
                     (messages.obj.user_from_id === receiver_id && messages.obj.user_to_id === userData.user_id)
                 )
                 {
+                    if (!!messages.obj.warningMessage) {
+                    
+                        setWarningMessage(messages.obj.warningMessage);
+                        //alert(messages.obj.warningMessage)
+                        setLoading(false);
+                    }
+                    else {
+                        setWarningMessage('');
                     messagesList.push(messages.obj);
                     messageList = messagesList;
                     console.log(messagesList,"messageList_gift_send ........ ");
@@ -454,6 +507,7 @@ const ChatBox = (props) =>{
                     setLoading(false);
                     setRandomNumber(Math.random());
                     scrollToBottom();
+                    }
                 }
             }
         });
@@ -466,6 +520,13 @@ const ChatBox = (props) =>{
                     ||
                     (arrayBuffer.obj.user_from_id === receiver_id && arrayBuffer.obj.user_to_id === userData.user_id)
                 ) {
+                    if (!!arrayBuffer.obj.warningMessage) {
+                        setWarningMessage(arrayBuffer.obj.warningMessage); 
+                      
+                    }
+                    else {
+                       
+                        setWarningMessage('');
                     messagesList.push(arrayBuffer.obj);
                     messageList = messagesList;
                     console.log(messagesList, "messageList... pic")
@@ -473,6 +534,7 @@ const ChatBox = (props) =>{
                     setuserMessage(''); //Empty user input here
                     setRandomNumber(Math.random());
                     scrollToBottom()
+                    }
                 }
             }
             // src= window.URL.createObjectURL(blob);
@@ -513,12 +575,16 @@ const ChatBox = (props) =>{
                 setLoading(false);
                 console.log(messages, "messages..")
                 console.log(messages, "hahahaha")
-                setMessages(messages.message_list);
-                messageList = messages.message_list;
+              
+                    setMessages(messages.message_list);
+                    messageList = messages.message_list;
+                
             });
         }
         if (!!FriendUserId) {
+            clearPhotoState()
             receiver_id = FriendUserId;
+            setWarningMessage('');
             DetermineUser();
             setLoading(true);
             //  GetAllMessages();
@@ -622,11 +688,11 @@ const ChatBox = (props) =>{
         history.push("/searching-profile-call");
     }
 
-    const createNotification = (type , message) => {
+    const createNotification = (type) => {
         return () => {
             switch (type) {
                 case 'accept':
-                    NotificationManager.success(message , 'Like');
+                    NotificationManager.success('Like sucessfully', 'Like');
                     break;
                 case 'success':
                     NotificationManager.success('Success message', 'Title here');
@@ -644,9 +710,21 @@ const ChatBox = (props) =>{
     };
 
     const openFileHandler = () => {
-       inputFile.current.click();
-      
+        if(baseMultipleImage.length < 4) {
+            inputFile.current.click();
+        }
+        else {
+            alert("You can upload max 4 images at a time..")
+        }
       };
+
+    const clearPhotoState = () => {
+        allBaseImages = []
+        setbase64([])
+        setMyFiles([])
+        setUrls([])
+        setUploadImage(false);
+    }
     return(
 
         <section className="home-wrapper">
@@ -756,9 +834,8 @@ const ChatBox = (props) =>{
                                           
                                         </ul>
                                         {/* } */}
-                                       
+                                        <NotificationContainer/>
                                     </div>
-
                                 </div>
                                 <div id="visitors" className="contacts-outter-wrapper tab-pane fade" role="tabpanel" aria-labelledby="tab-visitors">
                                     <div className="contacts-outter">
@@ -932,19 +1009,26 @@ const ChatBox = (props) =>{
                                                 ))
                                             }
                                             <NotificationContainer/>
+                                            {
+                                                
+                                                    !!threeMessageWarning &&
+                                                    <div className="message-text warning-msg" >
+                                                    <p>{threeMessageWarning}</p>
+                                                </div>
+                                                }
                                         </div>
                                         <form onSubmit={CheckTextInputIsEmptyOrNot}>
 
                                         <div className="chat-footer">
                                         {uploadImage ?                                 
                                         <div className="send-photos-modal">
-                                            <a href="javascript:void(0)" className="theme-txt done-media">Done</a>
-                                            <a href="javascript:void(0)" className="close-image-btn modal-close" onClick={handleSendFile}><img src="/assets/images/btn_close.png" /></a>
+                                            <a href="javascript:void(0)" className="theme-txt done-media" onClick={convertBlobTobase64}>Done</a>
+                                            <a href="javascript:void(0)"  onClick={(() => clearPhotoState())} className="close-image-btn"><span className="close-image-btn "><img src="/assets/images/btn_close.png" /></span></a>
                                             <h6 className="text-center">Send Photos</h6>
                                             
                                             <div className="send-photos-listing d-flex my-4">
-                                                <div className="media-box add-media">
-                                                <a id="upload__media"   href="javascript:void(0)" onClick={openFileHandler}>
+                                                <div id="image-media"className="media-box add-media">
+                                                <a id="upload__media" href="javascript:void(0)" onClick={openFileHandler}>
                                                 <img src="/assets/images/add-media.svg" alt="add media" />
                                                  <input id="uploadfile" type="file" className="d-none" ref={inputFile} onChange={handleFileChange} multiple="true" accept="image/* , video/*"/>
                                                     </a>
@@ -959,7 +1043,7 @@ const ChatBox = (props) =>{
                                          
                                             </div>
                                             
-                                            <h6>Put Price</h6>
+                                            {/* <h6>Put Price</h6>
                                             <div className="image-coins d-flex">
                                             <div className="coin-price">
                                                 <input type="radio" id="coin-value1" name="coin" />
@@ -984,7 +1068,7 @@ const ChatBox = (props) =>{
                                                 <label for="coin-value4">250 coins</label>
                                                 
                                             </div>
-                                            </div>
+                                            </div> */}
                                         </div>
                                         
                                         : ""}
@@ -994,7 +1078,7 @@ const ChatBox = (props) =>{
                                                 </div>
                                                 <label className="upload-file">
                                                     <div>
-                                                    <a href="javascript:void(0)" onClick={()=> setUploadImage(true)} >
+                                                    <a href="javascript:void(0)" onClick={()=> setUploadImage(!uploadImage)} >
                                                         {/* <input id="uploadfile" type="file" accept=".png, .jpg, .jpeg, .PNG, .JPG, .JPEG" /> */}
                                                         <i className="far fa-image" />
                                                         </a>
@@ -1083,7 +1167,6 @@ const ChatBox = (props) =>{
                             </div>
                         </div>
                     </div>
-                    <NotificationContainer/>
                 </div>
             </div>
         </section>
