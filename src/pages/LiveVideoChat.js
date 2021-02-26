@@ -350,21 +350,9 @@ const LiveVideoChat = () => {
                             setFriendGift(newGift);
                             allGifts = newGift;
                             setRandomNumberGift(Math.random());
-                        //     const gifters = !!document.querySelectorAll(".gifter") ? document.querySelectorAll(".gifter") : [];
-                        //     gifters.forEach((item, index) => {
-                        //         // document.getElementsByClassName("gifter")[index].classList.remove("new")
-                        //     })
-                        //   console.log(document.getElementsByClassName("gifter")[document.getElementsByClassName("gifter").length - 1], "check.....")
-                        //   window.setTimeout(() => {
-                        //     document.getElementsByClassName("gifter")[0].style.animation = "gifter 1s ease-in-out";
-                        //   }, 1000)  
-                          
-
-                        //         // document.getElementsByClassName("gifter")[0].classList.add("new")
-                        
-                            
                         }
                         if (message.message.chat_type === 2) {
+                            document.getElementById("next").click()
                             // animate heart
                            }
                     }
@@ -437,6 +425,20 @@ const LiveVideoChat = () => {
                 setFriendGift(allGifts);
                 setReRenderGifts(Math.random())
         }, 250)
+
+        $("#next").on("click", function() {
+            var b = Math.floor((Math.random() * 100) + 1);
+            var d = ["flowOne", "flowTwo", "flowThree"];
+            var a = ["colOne", "colTwo", "colThree", "colFour", "colFive", "colSix"];
+            var c = (Math.random() * (1.6 - 1.2) + 1.2).toFixed(1);
+            $('<div class="heart part-' + b + " " + a[Math.floor((Math.random() * 6))] + '" style="font-size:' + Math.floor(Math.random() * (50 - 22) + 22) + 'px;"><i class="fa fa-heart"></i></div>').appendTo(".hearts").css({
+                animation: "" + d[Math.floor((Math.random() * 3))] + " " + c + "s linear"
+            });
+            $(".part-" + b).show();
+            setTimeout(function() {
+                $(".part-" + b).remove()
+            }, c * 900)
+        });
 
     }, [])
 
@@ -512,6 +514,20 @@ const LiveVideoChat = () => {
         })
     }
 
+    const sendHeart = () => {
+        var message = {
+            "user_id": Number(videoCallState.user_id),
+            "text_message": "",
+            "channel_name": videoCallParams.channel_name,
+            "sender_id": Number(videoCallParams.user_id),
+            "type": 2,
+            "gift_id": null,
+            "is_send_heart": 1,
+            "coins": 0,
+            "message_sender_name": userData.first_name + " " + userData.last_name
+        }
+        SOCKET.emit("send_live_video_item", message);
+    }
     //all gift
     const handleGift = async () => {
         toggleIsOn(true);
@@ -559,6 +575,7 @@ const LiveVideoChat = () => {
     }
     return (
         <section className="home-wrapper">
+            {/* <div class="hearts"></div> */}
             <img className="bg-mask" src="/assets/images/mask-bg.png" alt="Mask" />
             <div className="header-bar">
                 <div className="container-fluid p-0">
@@ -683,10 +700,10 @@ const LiveVideoChat = () => {
                                 </a>
                             </div> */}
                         </div>
-                        <div className="vc-option-block d-flex flex-wrap align-items-end">
+                        <div className="vc-option-block d-flex flex-wrap align-items-end" style={{right: "15px"}}>
                             <div className="vc-options">
                                 <ul>
-                                    {/* <li>
+                                    <li>
                                         <a className="btn-round bg-grd-clr" href="javascript:void(0)">
                                             <img src="/assets/images/magic-stick.png" alt="Magic" />
                                         </a>
@@ -695,9 +712,9 @@ const LiveVideoChat = () => {
                                         <a className="btn-round bg-grd-clr" href="javascript:void(0)">
                                             <img src="/assets/images/chat.png" alt="Chat" />
                                         </a>
-                                    </li> */}
+                                    </li>
                                     {
-                                        (!!userData && userData.user_id != params.user_id) &&
+                                        // (!!userData && userData.user_id != params.user_id) &&
                                         <li>
                                         <a className="btn-round bg-grd-clr" href="javascript:void(0)" onClick={handleGift}>
                                             <img src="/assets/images/gift.png" alt="Gift" />
@@ -705,12 +722,21 @@ const LiveVideoChat = () => {
                                     </li>
                                     }
                                    
-                                    {/* <li>
-                                        <a className="btn btn-nxt bg-grd-clr" href="javascript:void(0)">Next</a>
-                                    </li> */}
+                                    <li style={{display: "none"}}>
+                                        <a id="next" className="btn btn-nxt bg-grd-clr" href="javascript:void(0)">Next</a>
+                                    </li>
+                                    <li className="send-heart">
+                                    <div class="hearts"></div>
+                                        {/* <div > */}
+                                            {/* <div id="heart" class="send-message-button bg-grd-clr" onClick={sendHeart}> */}
+                                            <a className="btn-round bg-grd-clr" href="javascript:void(0)" id="heart" onClick={sendHeart}><i  class="fa fa-heart"></i></a>
+                                            {/* </div> */}
+                                        {/* </div> */}
+                                    </li>
                                 </ul>
                             </div>
                         </div>
+                        {/* <div class="hearts"></div> */}
 
                     </div>
                     <div class="col-md-3 live__comments_bg p-4">
