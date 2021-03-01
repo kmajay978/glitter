@@ -83,6 +83,7 @@ const storyContent = {
 }
 
 const stories = !!storyData ? storyData : [];
+console.log(stories, "stories...")
 
 // console.log(storyData, "yuyuyuyu")
   
@@ -443,10 +444,17 @@ const uploadImage = () => {
     SOCKET.on('live_friends', (data) => {
         let frdList = friendLists;
         console.log(frdList, "mmmm")
-        const totalLiveFrds = data;
+        const totalLiveFrds = data.live;
+        const onlineUsers = data.online;
         console.log(totalLiveFrds, "totalLiveFrds...")
         for (let i in frdList) {
             frdList[i].is_live = false;
+            frdList[i].online = false;
+            for (let k in onlineUsers) {
+              if (frdList[i].user_id == onlineUsers[k].user_id) {
+                 frdList[i].online = true
+              }
+            }
             for (let j in totalLiveFrds) {
                 if (totalLiveFrds[j].user_id == frdList[i].user_id) {
                     frdList[i].is_live = true;
@@ -565,7 +573,10 @@ console.log(statusId);
          
             <div className="users-listing__slider__items__image" id="modal" data-toggle="modal" >
            {!!friendList ? <img onError={(e) => addDefaultSrc(e)} src={!!item.profile_images ? item.profile_images : returnDefaultImage()} alt="marlene" /> : ""}
-              <span className="circle-shape" />
+            
+              
+                 <span className="circle-shape" style={{background: item.online ? '#00FF31' : '#f5473bec'}}  />
+             
             </div>
              {
                  item.is_live === true &&
@@ -593,7 +604,7 @@ console.log(statusId);
                         <img onError={(e) => addDefaultSrc(e)} src={!!item.profile_images ? item.profile_images : returnDefaultImage()} alt="Marlene" />
                       </figure>
                       <div className="sp-singular-content">
-                      {item.online == ''? <div className="status offline">Offline</div>: <div className="status online">Online</div>}
+                      {!item.online? <div className="status offline">Offline</div>: <div className="status online">Online</div>}
 
                         <h4>{item.first_name + ' ' + item.last_name} <span className="age">{item.age}</span></h4>
                         <div className="info">{item.distance}, {item.occupation}</div>
