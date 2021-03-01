@@ -326,8 +326,20 @@ const handleUploadStatus =() =>
        var tCtx = document.getElementById('textCanvas').getContext('2d'),
           imageElem = document.getElementById('image');
 
-          tCtx.canvas.width = tCtx.measureText(pencilData).width;
-          tCtx.fillText(pencilData, 0, 10);
+          // tCtx.canvas.width = tCtx.measureText(pencilData).width;
+          // tCtx.fillText(pencilData, 10, 50);
+    
+          tCtx.canvas.width = 375;
+          tCtx.canvas.height = 460;
+
+          tCtx.fillStyle = "#fff";
+          tCtx.font = '20px san-serif';
+          tCtx.canvas.setAttribute('style', 'background-color:#fff');
+          var textString = pencilData,
+              textWidth = tCtx.measureText(textString ).width;
+      tCtx.fillText(textString , (tCtx.canvas.width/2) - (textWidth / 2), 100);
+
+
           imageElem.src = tCtx.canvas.toDataURL();
 
           const bodyParameters =new FormData();
