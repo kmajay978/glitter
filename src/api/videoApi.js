@@ -129,7 +129,7 @@ export const startAudioChatInit = (history, dispatch, bodyParameters) => {
     .then((response) => {
       if (response.status === 200) {
           window.setTimeout(() => {
-              history.push("/false/" + bodyParameters.user_from_id + "/" + bodyParameters.user_to_id + "/" + bodyParameters.channel_id + "/" + bodyParameters.channel_name + "/audio-chat");
+            //   history.push("/false/" + bodyParameters.user_from_id + "/" + bodyParameters.user_to_id + "/" + bodyParameters.channel_id + "/" + bodyParameters.channel_name + "/audio-chat");
           }, 5000)
       }
       else {

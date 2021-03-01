@@ -30,7 +30,7 @@ const SearchProfile = () =>{
       const bodyParameters ={
         session_id: localStorage.getItem("session_id"),
         user_id: videoCallState.user_to_id,
-        type: 2
+        type: 2 
       }
       generateAudioChatToken(history, dispatch, bodyParameters, videoCallState)
     }
@@ -83,7 +83,7 @@ const SearchProfile = () =>{
                 <div id="stacked-cards-block" className="stackedcards stackedcards--animatable init">
                   <div className="pulse">
                     <span className="searching-label">
-                      Searching
+                      Connecting
                     </span>
                     <div className="one" />
                     <div className="two" />

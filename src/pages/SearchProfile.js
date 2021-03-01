@@ -85,7 +85,7 @@ const SearchProfile = () =>{
                 <div id="stacked-cards-block" className="stackedcards stackedcards--animatable init">
                   <div className="pulse">
                     <span className="searching-label">
-                      Searching
+                      Connecting
                     </span>
                     <div className="one" />
                     <div className="two" />
