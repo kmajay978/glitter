@@ -595,7 +595,7 @@ const LiveVideoChat = () => {
                         <div className="col-lg-5 p-3">
                             <div className="d-flex flex-wrap align-items-center">
                                 <div className="logo-tab d-flex justify-content-between align-items-start">
-                                    <a href="javascript:void(0)">
+                                    <a href="javascript:void(0)" style={{cursor: "default"}}>
                                         <img src="/assets/images/glitters.png" alt="Glitters" />
                                     </a>
                                 </div>

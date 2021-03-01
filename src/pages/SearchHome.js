@@ -20,6 +20,7 @@ import { css } from "@emotion/core";
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import {friendStatus} from '../features/userSlice'
 import StatusUser from "../pages/StatusUser";
+import { Link } from "react-router-dom";
 
 let isMouseClick = false, startingPos = [], glitterUid, friendLists = [], userData= null, checkOnlineFrdsInterval;
 
@@ -601,9 +602,9 @@ console.log(statusId);
       <div className="row no-gutters">
         <div className="col-lg-3 option-bar p-3 vh-100 position-fixed">
           <div className="logo-tab mb-5 d-flex justify-content-between align-items-start">
-            <a href="javascript:void(0)">
+            <Link to="/">
               <img src="/assets/images/glitters.png" alt="Glitters" />
-            </a>
+            </Link>
             <span className="chat-point">
               <a href="javascript:void(0)">
                 <i className="fas fa-comment" />
