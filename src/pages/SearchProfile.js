@@ -18,6 +18,7 @@ const SearchProfile = () =>{
   const [user_to, setUserTo] = useState({image: ""});
   let videoCallState = useSelector(videoCallUser); //using redux useSelector here
   const userData = useSelector(userProfile).user.profile; //using redux useSelector here
+  console.log(userData, "userData....")
 
   useEffect(() => {
     document.getElementById("stacked-cards-block").classList.remove("init");

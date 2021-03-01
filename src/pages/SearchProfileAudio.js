@@ -6,7 +6,7 @@ import axios from "axios";
 import Logo from '../components/Logo';
 import NavLinks from '../components/Nav';
 import { VIDEO_CALL_START } from "../components/Api";
-import { audioCall, audioCallUser} from "../features/userSlice";
+import { audioCall, audioCallUser, userProfile} from "../features/userSlice";
 import { generateAudioChatToken } from "../api/videoApi";
 import GlitterCard from "react-tinder-card";
 import {addDefaultSrc, returnDefaultImage} from "../commonFunctions";
@@ -17,6 +17,7 @@ const SearchProfile = () =>{
 
   const [user_to, setUserTo] = useState({image: ""});
   let videoCallState = useSelector(audioCallUser); //using redux useSelector here
+  const userData = useSelector(userProfile).user.profile; //using redux useSelector here
   useEffect(() => {
     document.getElementById("stacked-cards-block").classList.remove("init");
     // call api to post data...
@@ -63,7 +64,7 @@ const SearchProfile = () =>{
               </div>
               <div className="remaining-coins ml-5">
                 <img src="/assets/images/diamond-coin.png" alt="Coins" />
-                <span>152</span>
+                <span>{!!userData ?userData.coins : "0"}</span>
               </div>
             </div>
           </div>
@@ -104,39 +105,8 @@ const SearchProfile = () =>{
                    </div>
                    
                  </GlitterCard>
-                
                   </div> 
-                  <div className="daily-matches">
-                  <span className="daily-matches__counter">Match: 1280 - Success: 34 - Score: 100</span>
-                  <p className="daily-matches__txt">You have 1000 daily matches. Win 10 extra matches for each success. You will earn 5 points for each video chat</p>
-                </div>
-           
-                  <div className="stackedcards--animatable stackedcards-overlay top"><img src="https://image.ibb.co/m1ykYS/rank_army_star_2_3x.png" width="auto" height="auto" /></div>
-                  <div className="stackedcards--animatable stackedcards-overlay right"><img src="/assets/images/accept-icon.png" width="auto" height="auto" /></div>
-                  <div className="stackedcards--animatable stackedcards-overlay left"><img src="https://image.ibb.co/heTxf7/20_status_close_3x.png" width="auto" height="auto" /></div>
-                </div>
-                <div className="action-tray global-actions d-flex flex-wrap justify-content-center align-items-center">
-                  <div className="close-btn tray-btn-s">
-                    <a className="left-action" href="javascript:void(0)">×</a>
                   </div>
-                  <div className="chat tray-btn-l">
-                    <a href="javascript:void(0)">
-                      <i className="fas fa-comment" />
-                    </a>
-                  </div>
-                  <div className="video-chat tray-btn-l">
-                    <a href="javascript:void(0)">
-                      <i className="fas fa-video" />
-                    </a>
-                  </div>
-                  <div className="like-profile tray-btn-s">
-                    <a className="right-action" href="javascript:void(0)">
-                      <i className="fas fa-heart" />
-                    </a>
-                  </div>
-                </div>
-                
-              
             </div>
           </div>
         </div>

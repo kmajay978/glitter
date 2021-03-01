@@ -5,18 +5,16 @@ import { Link, useHistory } from 'react-router-dom';
 import * as path from "path";
 import {videoCall} from "../features/userSlice";
 
-const NavLinks = (props) =>{
+const NavLinks = () => {
     const dispatch = useDispatch();
     const history = useHistory();
 
     const [path, setPath] = useState("")
 
-  let pathname = window.location.pathname;
+    let pathname = window.location.pathname;
 
     useEffect(() => {
-    
       // alert(window.location.href)
-
         pathname = window.location.pathname;
         // if (pathname !==)/chat   /searching-profile  /video-chat  /answer-calling
         if (pathname !== "/chat" &&
@@ -31,7 +29,8 @@ const NavLinks = (props) =>{
     }, [window.location.pathname]);
 
     return(
-      !path.match("/live-video-chat") &&
+      !path.match("/live-video-chat") && !path.match("/searching-profile") &&
+      !path.match("/audio-chat") && !path.match("/video-chat") &&
          <ul className="feature-menu ml-auto">
               <li className={`${pathname.match('/home') ? 'active' : ''}`}>
                    <Link to="/">
