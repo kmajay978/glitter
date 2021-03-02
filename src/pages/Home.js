@@ -46,9 +46,9 @@ const Home = (props) =>{
               </div>
               <div className="col-lg-9 main-bar p-3">
                 <div className="tab-top d-flex flex-wrap-wrap">
-                  <div className="live-icon">
+                  {/* <div className="live-icon">
                     <img src="/assets/images/live.png" alt="Live" />
-                  </div>
+                  </div> */}
                  <NavLinks/>
                 </div>
                 <div className="profile-swipe-wrapper">

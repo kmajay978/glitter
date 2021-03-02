@@ -22,6 +22,7 @@ import {friendStatus} from '../features/userSlice'
 import StatusUser from "../pages/StatusUser";
 import { Link } from "react-router-dom";
 
+
 let isMouseClick = false, startingPos = [], glitterUid, friendLists = [], userData= null, checkOnlineFrdsInterval;
 
 const override = css`
@@ -484,7 +485,7 @@ const uploadImage = () => {
           SOCKET.emit("authenticate_friend_list_live", {
               session_id: localStorage.getItem("session_id")
           });
-      }, 5000)
+      }, 1000)
  
       SOCKET.on('sendAudienceToLiveVideo', (data) => {
         console.log(userData, data, "kkkkkk")
@@ -615,9 +616,9 @@ console.log(statusId);
         </div>
         <div className="col-lg-9 main-bar p-3" style={{marginLeft: '25%'}}>
           <div className="tab-top d-flex flex-wrap-wrap">
-            <div className="live-icon">
+            {/* <div className="live-icon">
               <img src="/assets/images/live.png" style={{cursor: "pointer"}} onClick={makeMeLive} alt="Live" />
-            </div>
+            </div> */}
             <NavLinks />
           </div>
           <div className="search-section-wrapper mt-4 px-4">
