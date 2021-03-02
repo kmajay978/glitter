@@ -63,6 +63,7 @@ const CheckoutForm = (props) => {
                     console.log(response);
                     createNotification('success',response.message);
                     dispatch(stripePlanId({stripePlanId: null}));
+                    profileData();
                   }
                 }, (error) => {
                     if (error.toString().match("403")) {

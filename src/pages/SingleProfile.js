@@ -160,16 +160,17 @@ const SingleProfile = (props) =>{
           //   localStorage.removeItem("session_id");
           //   history.push('/login');
           // }
-          if(response.status==200)
+          if(response.status==200&& response.data.error == false)
           { 
             createNotification('report');
             setTimeout(() => {
               setSmShow(false);
             }, 1500);
             }
-           
+           else {
+            createNotification('error' , response.data.error_message);
+           }
          } ,(error) => {
-       
           createNotification('error' , error.message);
          });
          createNotification('');

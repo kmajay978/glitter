@@ -801,7 +801,7 @@ const handleCheck = (e) => {
                 {!!userData&&
                             <>
                              {userData.packages.length>0 ? 
-                              <span className="d-block"><img src="/assets/images/level-img.png" alt="profile level" />Premium, vip</span>
+                              <span className="d-block"><img src="/assets/images/level-img.png" alt="profile level" />Premium, VIP</span>
                             : ""}
                             </>
                             }
@@ -837,9 +837,9 @@ const handleCheck = (e) => {
               <li><a href="javascript:void(0)" id="gift-modal" onClick={handleGift}><img src="/assets/images/gift-icon.png" alt="gifts" />
                   <h6>Gifts</h6> <i className="fas fa-chevron-right"/>
                 </a></li>
-              <li><a href="javascript:void(0)" id="edit-profile" onClick={handleShow}><img src="/assets/images/edit-profile.png" alt="Edit Profile" />
+              {/* <li><a href="javascript:void(0)" id="edit-profile" onClick={handleShow}><img src="/assets/images/edit-profile.png" alt="Edit Profile" />
                   <h6>Edit Profile</h6> <i className="fas fa-chevron-right" />
-                </a></li>
+                </a></li> */}
               <li><a href="javascript:void(0)" id="coin-spend" onClick={handleCoinHistory}><img src="/assets/images/diamond-coin.png" alt="Coins" />
                   <h6>Coins</h6> <i className="fas fa-chevron-right" />
                 </a></li>
