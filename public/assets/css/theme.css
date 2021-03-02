@@ -1292,7 +1292,7 @@ position: absolute;
 
 .interest-tags span {
     display: inline-block;
-    padding: 5px 20px;
+    padding: 0px 20px;
     background-color: #564E3B;
     border-radius: 60px;
     font-size: 13px;
@@ -1418,10 +1418,6 @@ position: absolute;
 .all-gift-body ul li {
     border-right: 1px solid #ccc;
     border-bottom: 1px solid #fff;
-    /* display: flex; */
-    /* flex-wrap: wrap; */
-    /* justify-content: center; */
-    /* align-items: center; */
     height: 126px;
     width: 126px;
     width: calc(100% / 8);
@@ -2351,7 +2347,7 @@ body {
 }
 
 /* Hide scrollbar for IE, Edge and Firefox */
-.contacts-outter-wrapper., .gift-sender {
+.contacts-outter-wrapper, .gift-sender {
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
 }
@@ -5001,3 +4997,7 @@ span.gift__discount {
     color: #fff !important;
     line-height: 44px !important;
   }
+
+  .unknown-home.btn:hover {
+    opacity: 0.65;
+}

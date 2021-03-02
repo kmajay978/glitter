@@ -80,6 +80,7 @@ const FilterUser = ({ fetchedProfile }) => {
      
       }
     );
+   
   };
 
 
@@ -197,8 +198,7 @@ console.log(allData);
 
    if (cardClick) {
       history.push({
-                    pathname: '/single-profile',
-                    userId: glitterUid // Your userId
+                    pathname:'/'+glitterUid+'/single-profile',          
                   })
   }
  }, [cardClick])
@@ -314,7 +314,6 @@ console.log(allData);
            </div>
    
     
-     
       <div className="action-tray global-actions d-flex flex-wrap justify-content-center align-items-center mt-3">
            
         <div className="close-btn tray-btn-s">

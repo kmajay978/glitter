@@ -107,8 +107,7 @@ const statusoptions = {
 const SingleProfileView = (id) =>{
   console.log(id,"idssss...");
   history.push({
-    pathname: '/single-profile',
-    userId: id 
+    pathname: '/'+id+'/single-profile'
   })
 }
 
@@ -616,9 +615,9 @@ console.log(statusId);
         </div>
         <div className="col-lg-9 main-bar p-3" style={{marginLeft: '25%'}}>
           <div className="tab-top d-flex flex-wrap-wrap">
-            {/* <div className="live-icon">
+            <div className="live-icon">
               <img src="/assets/images/live.png" style={{cursor: "pointer"}} onClick={makeMeLive} alt="Live" />
-            </div> */}
+            </div>
             <NavLinks />
           </div>
           <div className="search-section-wrapper mt-4 px-4">
