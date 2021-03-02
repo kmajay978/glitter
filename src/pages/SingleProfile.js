@@ -273,14 +273,14 @@ const SingleProfile = (props) =>{
               <span className="d-inline-block">ID:2837289739</span>
             </div>
             <div className="photo-count">
-              <i className="far fa-image" />
+              <i className="far fa-image mr-1" />
               <span className="d-inline-block"> 
-               {!!userData&& userData.profile_images.length}
+               {!!userData&& userData.profile_images.length} Photos
               </span>
             </div>
           </div>
           {/* <div className="owl-carousel owl-theme profile-carousel"> */}
-          <Carousel id="images_crousal" >
+          <Carousel id="images_crousal" className="profile-carousel">
           <Carousel.Item interval={900}>
            
 
@@ -295,7 +295,7 @@ const SingleProfile = (props) =>{
                   {
                     !!userData &&
                     <>
-                      <h4>{userData.first_name}, {userData.age}</h4>
+                      <h5>{userData.first_name}, {userData.age}</h5>
                       <span>{userData.distance}, {userData.occupation}</span>
                     </>
                   }

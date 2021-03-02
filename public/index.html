@@ -27,6 +27,9 @@
     <!-- Owl Carousel Css -->
     <link rel="stylesheet" href="/assets/css/owl.carousel.min.css">
     
+     <!-- Custom scrollbar style -->
+    <link rel="stylesheet" href="/assets/css/jquery.jscrollpane.css">
+    
     <!-- Range Slider Css -->
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="/assets/css/rangeslider.css">
@@ -45,23 +48,23 @@
     -->
 
 
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  
-<script src="/assets/js/owl.carousel.min.js"></script>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>  
+      <script src="/assets/js/owl.carousel.min.js"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+      <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+      <script src="/assets/js/rangeslider.min.js"></script>
 
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
-
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<script src="/assets/js/rangeslider.min.js"></script>
-
- <!-- Custom JS -->
-<script src="/assets/js/scripts.js"></script>
-<script src="https://hammerjs.github.io/dist/hammer.min.js"></script>
+       <!-- Custom scrollbar script -->
+       <script src="/assets/js/jquery.jscrollpane.min.js"></script>
+    
+     <!-- Custom JS -->
+    <script src="/assets/js/scripts.js"></script>
+    <script src="https://hammerjs.github.io/dist/hammer.min.js"></script>
 
 
  <!-- SWIPE JS -->
 <!--script src="/assets/js/swipe.js"></script-->
-<script src="/assests/js/cardSwipe.js"></script>
+<!--script src="/assests/js/cardSwipe.js"></script-->
 <script>
 $(document).on("click", ".gift__items li a", function(){
   $(".gift__items li a").removeClass("active-gift");
@@ -76,7 +79,7 @@ $(document).on("click", ".gift__items li a", function(){
   </head>
   <body  >
     <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
+    <div id="root" class="h-100"></div>
     <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.

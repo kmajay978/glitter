@@ -33,7 +33,7 @@ const NavLinks = (props) =>{
     return(
       !path.match("/live-video-chat") &&
          <ul className="feature-menu ml-auto">
-              <li className={`${pathname.match('/home') ? 'active' : ''}`}>
+              <li className={`${pathname.match('/') ? 'active' : ''}`}>
                    <Link to="/">
                     <i className="fas fa-compass" />
                     <span>Discover</span>

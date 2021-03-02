@@ -544,7 +544,7 @@ console.log(statusId);
             <a href="javascript:void(0)">
               <img src="/assets/images/glitters.png" alt="Glitters" />
             </a>
-            <span className="chat-point">
+            <span className="chat-point position-relative">
               <a href="javascript:void(0)">
                 <i className="fas fa-comment" />
               </a>
@@ -600,7 +600,7 @@ console.log(statusId);
                return <div className=" main col-md-3" id={item.user_id} onClick = {() =>SingleProfileView(item.user_id)}>
                   <div className="sp-singular">
                     <a href="javascript:void(0)">
-                      <figure>
+                      <figure className="mb-0">
                         <img onError={(e) => addDefaultSrc(e)} src={!!item.profile_images ? item.profile_images : returnDefaultImage()} alt="Marlene" />
                       </figure>
                       <div className="sp-singular-content">
@@ -726,7 +726,7 @@ console.log(statusId);
           <form action="" id="glitter_status" >
                   <div className="modal-body p-0">
                     <div className="upload__status__opt text-center">
-                    <h2>Upload Status</h2>
+                    <h4 className="theme-txt">Upload Status</h4>
                     <div className="upload-status d-flex justify-content-center mt-5">
                       <a id="upload__media" className="upload__media bg-grd-clr"  href="javascript:void(0)">
                       <i className="fas fa-camera"></i>

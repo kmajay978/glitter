@@ -526,7 +526,7 @@ const changeDate = (date) => {
             <a href="javascript:void(0)" className="login-back-4 btn-back" onClick={() => setStep(step - 1)}><i className="fas fa-chevron-left" /></a>
           <h4 class="theme-txt">Upload Profile Photo</h4>
           </div>
-          <div className="form-group upload-field mb-5">
+          <div className="form-group upload-field position-relative mb-5">
             <img id="PreviewPicture" src={imgData} />
             <input type="file" id="profile-photo" name="profile-photo" onChange={handleFileChange} accept="image/*" />
             <span className="camera-icon" >
