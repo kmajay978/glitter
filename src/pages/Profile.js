@@ -23,6 +23,7 @@ import { css } from "@emotion/core";
 import {addDefaultSrc, returnDefaultImage} from "../commonFunctions";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import Notifications from "react-notifications/lib/Notifications";
 
 const override = css`
     
@@ -164,12 +165,12 @@ const handleCheck = (e) => {
       session_id: sessionId,
       };
      const {data:{data}}= await axios.post(GET_LOGGEDPROFILE_API,bodyParameters)
-     console.log(moment(data.dob).format('ddd MMM DD YYYY   h:mm:ss') , "...hhhhh");
+     console.log(moment(data.dob).format('ddd MMM DD YYYY   h:mm:ss' ) , "...hhhhh");
       
     //  Setting data variable to state object 
       form.firstName = data.first_name
       form.lastName = data.last_name
-      const Dob =moment(data.dob).format('ddd MMM DD YYYY   h:mm:ss')+'GMT+0530 (India Standard Time)'
+      var Dob =moment(data.dob).format('ddd MMM DD YYYY   h:mm:ss')
       form.aboutMe = data.about_me
       form.height = data.height
       form.weight = data.weight
@@ -229,6 +230,7 @@ const handleCheck = (e) => {
    Notification('update');
  
    }
+   Notification('');
    }, (error) =>{
     if (error.toString().match("403")) {
       localStorage.removeItem("session_id");
@@ -273,6 +275,7 @@ const handleCheck = (e) => {
     // setShowImage(false);
     ProfileData();
    }
+   Notification('');
    }, (error) =>{
 
    });
@@ -306,21 +309,29 @@ const handleCheck = (e) => {
     const{data : {data,status_code, error}} = await axios.post(BLOCK_USERLIST_API ,bodyParameters)
   setLoadedModel(false);
     if(status_code==200){
-      setBlockData(data);
-     
-      setLoadedModel(false);
+      if(data.length>0){
+        setBlockData(data);
+        setLoadedModel(false);
+        setWarningMessage('');
+      }
+     else{
+       setWarningMessage('No user blocked');
+       setLoadedModel(false);
+     }
     }
-}
-catch (err) {
+    
+  }
+   catch (err) {
     if (err.toString().match("403")) {
         localStorage.removeItem("session_id");
         history.push('/login');
         setLoadedModel(true);
       }
-}
+  }
+  
    }
    // block user 
-   const handleBlock = async() => {
+   const handleBlock = (blockId) => {
     const bodyParameters={
       session_id : localStorage.getItem('session_id'),
       blocked_user: blockId,
@@ -329,15 +340,12 @@ catch (err) {
     axios.post(BLOCK_USER_API , bodyParameters)
     .then((response)=>
     {
-    //   if(response.error=="bad_request")
-    // {
-    //   localStorage.removeItem("session_id");
-    //   history.push('/login');
-    // }
+  
     if(response.status==200 && !response.error) {
-      createNotification('unblock');
+      createNoti('unblock');
       setTimeout(() => {
         setShowBlock(false);
+        setBlockData('');
       }, 1500);
     }
     }, (error) =>{
@@ -346,12 +354,12 @@ catch (err) {
         history.push('/login');
       }
     });
-    
+   createNoti('');
   }
-// console.log(blockId);
-  useEffect(() => {
-     handleBlock();
-   }, [blockId])
+  // console.log(blockId);
+  // useEffect(() => {
+  //    handleBlock();
+  //  }, [blockId])
 
    // coin package
    const handleBuyCoins = () => {
@@ -400,18 +408,19 @@ catch (err) {
         {
           setLoadedModel(false);
           setWarningMessage(response.data.message);
-          createNotification('error' , response.data.message);
+         
         }
-
+      
       }, (error)=> {
         setLoadedModel(false);
         if (error.toString().match("403")) {
           localStorage.removeItem("session_id");
-          createNotification('error' , error.message);
+          createNoti('error' , error.message);
           history.push('/login');
         }
         
       });
+ 
     }
     
    //all gift
@@ -575,11 +584,16 @@ catch (err) {
     setShowCoin(false);
     setCoinHistory('');
     setCoinSpend('');
+    createNoti('');
+    setWarningMessage('');
+
   }
 
   const closeBlockModel =() => {
     setShowBlock(false);
     setBlockData('');
+    createNoti('');
+    setWarningMessage('');
   }
 
     useEffect(() =>{
@@ -603,11 +617,11 @@ catch (err) {
   };
   };
 
- const createNotification = (type , message) => {
+ const createNoti = (type , message) => {
   
     switch (type) {
         case 'unblock':
-          NotificationManager.success('unblock Successfully ', 'unblock');
+          NotificationManager.success('user is unblock successfully' );
           break;
         case 'error':
         NotificationManager.error(message ,'Error message');
@@ -634,7 +648,7 @@ catch (err) {
               <div className="form-group dob-field">
                   <label className="d-block">DOB</label>
                   {/* <DatePicker  className="bg-trsp" name="dob"  value={Dob} selected={Dob} required={true} onChange={date => setDob(date)} /> */}
-                  <DatePicker  className="bg-trsp" name ="dates" dateFormat="dd/MM/yyyy" selected={Dob} onChange={date => setDob(date)}   isClearable /> 
+                  <DatePicker  className="bg-trsp" name ="dates"  dateFormat="dd/MM/yyyy" selected={Dob} onChange={date => setDob(date)}   isClearable /> 
                   {/* <input className="form-control bg-trsp" name="dob" type="text" value={form.dob} onChange={handleChange}  /> */}
               </div>
 
@@ -944,9 +958,6 @@ catch (err) {
    <a href="javascript:void(0)"  className="btn bg-grd-clr">Select Photo</a>
    
   <input type="file" id="profile-photo" name="profile-photo" onChange={handleFileChange} className="d-none" accept="image/*" />
-
-
-{/* <button onClick={updateImage}>Upload</button> */}
 </div>
 <a href="javascript:void(0)" onClick={updateImage} className="btn bg-grd-clr">Publish Photo</a>
 <NotificationContainer/>
@@ -956,8 +967,6 @@ catch (err) {
    <Modal className =" edit-profile-modal" show={show} onHide={() => setShow(false)} backdrop="static" keyboard={false}>
         <div className="edit-profile-modal__inner">
         
-         
-      
         <form>
       
           {tabScreen()}
@@ -1015,14 +1024,23 @@ catch (err) {
      <div className="coins-spend__hostname">
        <span>{item.first_name}</span> <span className="counter">{item.age}</span>
        <div className="coin-spend__total" > 
-           <a className="theme-txt" href="javascript:void(0)" onClick={() => setBlockId(item.user_id)}>Unblock</a>
-           <NotificationContainer/>
+           <a className="theme-txt" href="javascript:void(0)" onClick={() => handleBlock(item.user_id)}>Unblock</a>
+         
          </div>
          
      </div>
   
    </div>
     })}</>} 
+      <NotificationContainer/> 
+     {
+       !!warningMessage ?
+       <h6 className="text-center">
+         {warningMessage}
+       </h6>
+       :
+       ""
+     }
   <SyncLoader color={"#fcd46f"} loading={loadedModel} css={override} size={18} />
     </div>
    

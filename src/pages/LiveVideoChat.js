@@ -498,6 +498,8 @@ const LiveVideoChat = () => {
         e.preventDefault()
         if (UserMessage != '') {
             var message = {
+                "firstName": userData.first_name,
+                "lastName": userData.last_name,
                 "user_id": Number(videoCallState.user_id),
                 "text_message": UserMessage,
                 "channel_name": videoCallParams.channel_name,

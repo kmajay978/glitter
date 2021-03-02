@@ -105,7 +105,7 @@ function valuetextweight(value) {
   }
 
   const [isLoading ,setLoading]= useState();
-
+  const [path , setPath] = useState('');
   
   const handleReset =(e) => {
     setGender(filter.gender);
@@ -167,9 +167,14 @@ function valuetextweight(value) {
  });
 }
 
+const handleButton =() => {
+  const pathname = window.location.pathname;
+   setPath(pathname);
+}
+console.log(path);
 useEffect(()=>{
   //  filterHandle();
-    
+    handleButton();
 },[])
 
   return(
@@ -248,8 +253,12 @@ useEffect(()=>{
                       max={100} getAriaValueText={valuetextweight}/>
                     </div>
                     <div className="btns-group d-flex justify-content-between flex-wrap my-5">
-                      <button className="btn bg-grd-clr" type="submit" onClick={filterHandle}>Done</button>
-                      <button className="btn bg-grd-clr" type="reset" onClick={handleReset}>Reset</button>
+                     {path=="/" ? <> <button className="btn bg-grd-clr" type="submit" onClick={filterHandle}>Done</button>
+                      <button className="btn bg-grd-clr" type="reset" onClick={handleReset}>Reset</button></>
+                   : path=="/search-home" ? <> <button className="btn bg-grd-clr" type="submit" onClick={filterHandle} disabled>Done</button>
+                   <button className="btn bg-grd-clr" type="reset" onClick={handleReset} disabled>Reset</button></>
+                    :  <> <button className="btn bg-grd-clr" type="submit" onClick={filterHandle}>Done</button>
+                    <button className="btn bg-grd-clr" type="reset" onClick={handleReset}>Reset</button></>}
                     </div>
                   </form>
                 </div>

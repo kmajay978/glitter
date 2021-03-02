@@ -71,6 +71,7 @@ const CheckoutForm = (props) => {
                       }
                     createNotification('error',error.message);
                 });
+                createNotification('');
         }
 
         // Activating coin package here
@@ -105,6 +106,7 @@ const CheckoutForm = (props) => {
                     createNotification('error',error.message);
                 });
         }
+        createNotification('');
     }
     };
 

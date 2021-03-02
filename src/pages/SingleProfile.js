@@ -22,7 +22,7 @@ const SingleProfile = (props) =>{
     const [blk, setBlock ]= useState(false);
     const [smShow, setSmShow] = useState(false);
     const [showGift , setShowGift] = useState(false);
-    const[ form, setForm] =useState({ report :""})
+    const[ form, setForm] =useState({ report :"other"})
     const [GiftData , setGiftData] =useState([]);
     const [blockData , setBlockData] = useState(false);
     const [statusData , setStatusData] = useState([]);
@@ -109,7 +109,8 @@ const SingleProfile = (props) =>{
        const {data : {result}} = await axios.post(GIFT_PURCHASE_API , bodyParameters)
        createNotification('gift-send');
         }
- 
+        
+    // block the user 
         const handleblock = async() => {
           const bodyParameters={
             session_id : localStorage.getItem('session_id'),
@@ -128,10 +129,12 @@ const SingleProfile = (props) =>{
           else {
             // setBlockData(false);
           }
+          createNotification('');
           }, (error) =>{
            
             // setBlockData(false);
           });
+          createNotification('');
         }
 
       const handleReport =() =>{
@@ -154,52 +157,54 @@ const SingleProfile = (props) =>{
               setSmShow(false);
             }, 1500);
             }
+           
          } ,(error) => {
        
           createNotification('error');
          });
+         createNotification('');
         };
 
-        const handleLike =() => {
-           const bodyParameters ={
-            session_id  : localStorage.getItem('session_id'),
-            user_id : checkUid
-            }
-            axios.post(LIKE_USER, bodyParameters).then(
-              (response) => {   
-                // if(response.error=="bad_request")
-                // {
-                //   localStorage.removeItem("session_id");
-                //   history.push('/login');
-                // }
-              },
-              (error) => {
-                if (error.toString().match("403")) {
-                localStorage.removeItem("session_id");
-                history.push('/login');
-              }
-            }
-            );
-        }
+        // const handleLike =() => {
+        //    const bodyParameters ={
+        //     session_id  : localStorage.getItem('session_id'),
+        //     user_id : checkUid
+        //     }
+        //     axios.post(LIKE_USER, bodyParameters).then(
+        //       (response) => {   
+        //         if(response.error=="bad_request")
+        //         {
+        //           localStorage.removeItem("session_id");
+        //           history.push('/login');
+        //         }
+        //       },
+        //       (error) => {
+        //         if (error.toString().match("403")) {
+        //         localStorage.removeItem("session_id");
+        //         history.push('/login');
+        //       }
+        //     }
+        //     );
+        // }
 
-        const handleDislike = () => {
-          const bodyParameters ={
-            session_id : localStorage.getItem('session_id'),
-            user_id : checkUid
-          }
-          axios.post(DISLIKE_USER, bodyParameters).then(
-            (response) => {
-            //   if(response.error=="bad_request")
-            //    {
-            //   localStorage.removeItem("session_id");
-            //   history.push('/login');
-            //  }
-            },
-            (error) => {
+        // const handleDislike = () => {
+        //   const bodyParameters ={
+        //     session_id : localStorage.getItem('session_id'),
+        //     user_id : checkUid
+        //   }
+        //   axios.post(DISLIKE_USER, bodyParameters).then(
+        //     (response) => {
+        //       if(response.error=="bad_request")
+        //        {
+        //       localStorage.removeItem("session_id");
+        //       history.push('/login');
+        //      }
+        //     },
+        //     (error) => {
          
-          }
-          );
-        }
+        //   }
+        //   );
+        // }
     
         const createNotification = (type , message ) => {
   
@@ -211,7 +216,7 @@ const SingleProfile = (props) =>{
                 NotificationManager.success('gift send successfully' , 'gift');
                 break;
                 case 'blocked':
-              NotificationManager.success(message ,'sucesssfully')
+              NotificationManager.success(message )
               break; 
             case 'error':
               NotificationManager.error('This User was already reported.');
@@ -315,7 +320,7 @@ const SingleProfile = (props) =>{
             </Carousel.Item>
             </Carousel>
           {/* </div> */}
-          <div className="action-tray d-flex flex-wrap justify-content-center align-items-center">
+          {/* <div className="action-tray d-flex flex-wrap justify-content-center align-items-center">
             <div className="close-btn tray-btn-s">
               <a href="javascript:void(0)" onClick={handleDislike}>×</a>
             </div>
@@ -334,7 +339,7 @@ const SingleProfile = (props) =>{
                 <i className="fas fa-heart" />
               </a>
             </div>
-          </div>
+          </div> */}
         </div>
         <div className="col-md-7 pl-5">
           <div className="profile-bio-inner my-3">
@@ -494,7 +499,7 @@ const SingleProfile = (props) =>{
                             </div>
                               
                             <div className="form-group">
-                              <input type="radio" name="report" value="more"  id="third-option" onChange={ handleChange }  />
+                              <input type="radio" name="report" value="more"  id="third-option" onChange={ handleChange } checked  />
                               <label for="third-option"></label>
                               <span>Other</span>  
                           </div>

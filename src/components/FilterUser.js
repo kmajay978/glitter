@@ -80,6 +80,7 @@ const FilterUser = ({ fetchedProfile }) => {
      
       }
     );
+   
   };
 
 
@@ -314,7 +315,6 @@ console.log(allData);
            </div>
    
     
-     
       <div className="action-tray global-actions d-flex flex-wrap justify-content-center align-items-center mt-3">
            
         <div className="close-btn tray-btn-s">

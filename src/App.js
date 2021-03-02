@@ -48,7 +48,7 @@ function App(props) {
       ProfileData(dispatch, sessionId)
     }
     SOCKET.on('pick_video_call', (data) => {
-      console.log(data.user_to_id, userData.user_id, "checkkkkkkkkkkkkkkkk")
+      // console.log(data.user_to_id, userData.user_id, "checkkkkkkkkkkkkkkkk")
       if (!!userData && (data.user_to_id == userData.user_id)) { // check one-to-one data sync
         localStorage.setItem("receiverDetails", JSON.stringify(data))
         const page = checkLiveDomain() ? "/glitter-web/answer-calling" : "/answer-calling"
@@ -157,6 +157,7 @@ function App(props) {
         <Elements stripe={stripePromise}>
           <Route exact path="/login" component={Login} />
           <Route exact path='/signup-completed' component={SignupCompleted} />
+          <Route exact path='/dummy' component={Dummy} />
           {/* Private routes */}
           <ProtectedRoute exact path='/' component={Home} />
           <ProtectedRoute exact path='/profile' component={Profile} />
@@ -167,7 +168,7 @@ function App(props) {
           <ProtectedRoute exact path='/search-home' component={SearchHome} />
           <ProtectedRoute exact path='/single-profile' component={SingleProfile} />
           <ProtectedRoute exact path='/recent-call' component={RecentCall} />
-          <ProtectedRoute exact path='/dummy' component={Dummy} />
+         
           <ProtectedRoute exact path='/status' component={SearchHomeBkp} />
           <ProtectedRoute exact path='/:receiver/:user_from_id/:user_to_id/:channel_id/:channel_name/video-chat' component={VideoChat} />
           <ProtectedRoute exact path='/:receiver/:user_from_id/:user_to_id/:channel_id/:channel_name/audio-chat' component={AudioChat} />
