@@ -198,8 +198,7 @@ console.log(allData);
 
    if (cardClick) {
       history.push({
-                    pathname: '/single-profile',
-                    userId: glitterUid // Your userId
+                    pathname:'/'+glitterUid+'/single-profile',          
                   })
   }
  }, [cardClick])

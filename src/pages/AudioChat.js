@@ -239,7 +239,7 @@ console.log(userData, "userdata..")
         <div className="col-lg-5 p-3">
           <div className="d-flex flex-wrap align-items-center">
             <div className="logo-tab d-flex justify-content-between align-items-start">
-              <a href="javascript:void(0)">
+              <a href="javascript:void(0)" style={{cursor: "default"}}>
                 <img src="/assets/images/glitters.png" alt="Glitters" />
               </a>
             </div>
@@ -277,12 +277,12 @@ console.log(userData, "userdata..")
         <div className="col-lg-7 p-3">
           <div className="tab-top d-flex flex-wrap-wrap align-items-center">
             <div className="vc-action-tab ml-auto mr-4 position-relative">
-              <div className="vc-action-btn">
+              {/* <div className="vc-action-btn">
                 <span />
                 <span />
                 <span />
-              </div>
-              <ul className="action-menu">
+              </div> */}
+              {/* <ul className="action-menu">
                 <li>
                   <a href="javascript:void(0)">Report</a>
                 </li>
@@ -292,7 +292,7 @@ console.log(userData, "userdata..")
                 <li>
                   <a href="javascript:void(0)" onClick={endCall}>End Audio</a>
                 </li>
-              </ul>
+              </ul> */}
             </div>
            <NavLinks />
             <a href="javascript:void(0)" className="end-video bg-grd-clr" onClick={endCall}>End Audio</a>
@@ -316,22 +316,22 @@ console.log(userData, "userdata..")
          />
 
        </div>
-       <div className="charges-reminder-txt">
+       {/* <div className="charges-reminder-txt">
          <p>After 25 Seconds, you will be charged 120 coins per minute</p>
-       </div>
+       </div> */}
        <div className="vc-timer-box text-center">
-         <div className="timer">
+         {/* <div className="timer">
            <i className="far fa-clock"></i>
            <span>25 Sec</span>
-         </div>
-         <div className="vc-sppiner">
+         </div> */}
+         {/* <div className="vc-sppiner">
            <a className="sppiner bg-grd-clr" href="javascript:void(0)">
              <img src="/assets/images/sppiner.png" alt="Sppiner"/>
            </a>
-         </div>
+         </div> */}
        </div>
        <div className="vc-option-block d-flex flex-wrap align-items-end">
-         <div className="vc-options">
+         {/* <div className="vc-options">
            <ul>
              <li>
                <a className="btn-round bg-grd-clr" href="javascript:void(0)">
@@ -352,7 +352,7 @@ console.log(userData, "userdata..")
                <a className="btn btn-nxt bg-grd-clr" href="javascript:void(0)">Next</a>
              </li>
            </ul>
-         </div>
+         </div> */}
        </div>
      </div>
 </section>

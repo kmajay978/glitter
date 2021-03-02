@@ -209,8 +209,8 @@ const ChatBox = (props) =>{
      // onclick vistior list then open single profile 
       const handleVistior =(userId) => {
       history.push({
-      pathname: '/single-profile',
-      userId: userId // Your userId
+      pathname: '/'+userId+'/single-profile',
+     
       })
       }
 

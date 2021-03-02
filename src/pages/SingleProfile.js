@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {  useHistory } from 'react-router';
+import {  useHistory, useParams } from 'react-router';
 import axios from "axios";
 import NavLinks from '../components/Nav';
 import {GET_SINGLE_STATUS , GIFT_LIST_API , GIFT_PURCHASE_API , DISLIKE_USER , LIKE_USER, GET_USERPROFILE_API , BLOCK_USER_API , REPORT_USER_API } from '../components/Api';
@@ -15,19 +15,19 @@ import { useSelector } from "react-redux";
 import {userProfile} from '../features/userSlice';
 
 const SingleProfile = (props) =>{
+    const params = useParams();
     const [userData, setUser] = useState(null);
-   
-   
-    const [checkUid, setUserId] = useState(props.location.userId);
+    const [checkUid, setUserId] = useState(params.userId);
     const [blk, setBlock ]= useState(false);
     const [smShow, setSmShow] = useState(false);
     const [showGift , setShowGift] = useState(false);
-    const[ form, setForm] =useState({ report :"other"})
+    const[ form, setForm] =useState({ report :""})
     const [GiftData , setGiftData] =useState([]);
     const [blockData , setBlockData] = useState(false);
     const [statusData , setStatusData] = useState([]);
     const [isOn, toggleIsOn] = useToggle();
     const [ showStatus , setShowStatus] =useState(false);
+    const [ random, setRandom] = useState(0);
     
     const showAllStatus = () => setShowStatus(true);
     const showAllGift =() =>       toggleIsOn(true);
@@ -39,13 +39,13 @@ const SingleProfile = (props) =>{
       history.goBack();
     }
 
-    const handleChat = () => {
-      history.push("/chat");
-    }
+    // const handleChat = () => {
+    //   history.push("/chat");
+    // }
     
-    const handleVideo =() => {
-      history.push("/searching-profile");
-    }
+    // const handleVideo =() => {
+    //   history.push("/searching-profile");
+    // }
       const handleChange = e => { 
       setForm({
         ...form,
@@ -73,7 +73,14 @@ const SingleProfile = (props) =>{
             axios.post(GET_USERPROFILE_API,bodyParameters)
             .then((response) => {
               if (response.status === 200 && !response.status.error) {
+                if ( response.data.data.is_reported_message!=""){
+                form.report= response.data.data.is_reported_message
+                }
+                else {
+                  form.report="more"
+                }
             setUser(response.data.data);
+            
             console.log(response.data.data, "jjjj")
               }
          }, (error) => {
@@ -109,7 +116,7 @@ const SingleProfile = (props) =>{
        const {data : {result}} = await axios.post(GIFT_PURCHASE_API , bodyParameters)
        createNotification('gift-send');
         }
-        
+
     // block the user 
         const handleblock = async() => {
           const bodyParameters={
@@ -120,6 +127,9 @@ const SingleProfile = (props) =>{
           .then((response)=> {
            
           if(response.status==200 && !response.error ) {
+              userData.is_blocked = !!response.data.block_status ? 0 : 1
+              setUser(userData);
+              setRandom(Math.random());
            createNotification('blocked' , response.data.message );
            console.log(response);
             // setTimeout(() => {
@@ -160,7 +170,7 @@ const SingleProfile = (props) =>{
            
          } ,(error) => {
        
-          createNotification('error');
+          createNotification('error' , error.message);
          });
          createNotification('');
         };
@@ -219,7 +229,7 @@ const SingleProfile = (props) =>{
               NotificationManager.success(message )
               break; 
             case 'error':
-              NotificationManager.error('This User was already reported.');
+              NotificationManager.error(message);
               break; 
         };
         };
@@ -262,7 +272,7 @@ const SingleProfile = (props) =>{
         <div className="col-md-7">
           <div className="report-tab d-flex flex-wrap align-items-center justify-content-end ml-auto">
             <span className="block-cta">
-              <a className="theme-txt" href="javascript:void(0)" onClick={handleblock}>{blockData ?'unblock':'block'}</a>
+              <a className="theme-txt" href="javascript:void(0)" onClick={handleblock}>{!!userData && userData.is_blocked==1 ? "unblock" : "block"}</a>
           <NotificationContainer/>
             </span>
             <span className="report-cta">
@@ -488,18 +498,18 @@ const SingleProfile = (props) =>{
       
         <div className="choose-report d-flex flex-wrap">
                             <div className="form-group">
-                              <input type="radio"  name="report" value="it's spam" id="first-option"  onChange={ handleChange } />
+                              <input type="radio"  name="report" value="it's spam" id="first-option"  onChange={ handleChange }checked={form.report == "it's spam" ? "checked" : ""} />
                               <label for="first-option"></label>
                               <span>it's Spam</span>  
                             </div>
                             <div className="form-group">
-                              <input type="radio"  name="report" value="Fake user"  id="second-option" onChange={ handleChange }  />
+                              <input type="radio"  name="report" value="Fake user"  id="second-option" onChange={ handleChange }  checked={form.report == "Fake user" ? "checked" : ""}  />
                               <label for="second-option"></label>
                               <span>Fake User</span>
                             </div>
                               
                             <div className="form-group">
-                              <input type="radio" name="report" value="more"  id="third-option" onChange={ handleChange } checked  />
+                              <input type="radio" name="report" value="more"  id="third-option" onChange={ handleChange }  checked={form.report == "more" ? "checked" : ""}  />
                               <label for="third-option"></label>
                               <span>Other</span>  
                           </div>

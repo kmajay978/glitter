@@ -36,6 +36,7 @@ function App(props) {
   const new_history = useHistory();
   const [currentPathname, setCurrentPathname] = useState(null);
   const [currentSearch, setCurrentSearch] = useState(null);
+  
 
   const dispatch = useDispatch();
   const is_auth = useSelector(userAuth); //using redux useSelector here
@@ -150,7 +151,6 @@ function App(props) {
     //     window.onpopstate = null;
     // }
 }, [])
-
   return (
     <Router>
       <Switch>
@@ -166,9 +166,8 @@ function App(props) {
           <ProtectedRoute exact path='/searching-profile' component={SearchProfile} />
           <ProtectedRoute exact path='/searching-profile-call' component={SearchProfileAudio} />
           <ProtectedRoute exact path='/search-home' component={SearchHome} />
-          <ProtectedRoute exact path='/single-profile' component={SingleProfile} />
+          <ProtectedRoute exact path='/:userId/single-profile' component={SingleProfile} />
           <ProtectedRoute exact path='/recent-call' component={RecentCall} />
-         
           <ProtectedRoute exact path='/status' component={SearchHomeBkp} />
           <ProtectedRoute exact path='/:receiver/:user_from_id/:user_to_id/:channel_id/:channel_name/video-chat' component={VideoChat} />
           <ProtectedRoute exact path='/:receiver/:user_from_id/:user_to_id/:channel_id/:channel_name/audio-chat' component={AudioChat} />

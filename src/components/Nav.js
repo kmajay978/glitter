@@ -5,19 +5,17 @@ import { Link, useHistory } from 'react-router-dom';
 import * as path from "path";
 import {videoCall} from "../features/userSlice";
 
-const NavLinks = (props) =>{
+const NavLinks = () => {
     const dispatch = useDispatch();
     const history = useHistory();
 
     const [path, setPath] = useState("")
 
-  let pathname = window.location.pathname;
+    let pathname = window.location.pathname;
 
  
     useEffect(() => {
-    
       // alert(window.location.href)
-
         pathname = window.location.pathname;
         // if (pathname !==)/chat   /searching-profile  /video-chat  /answer-calling
         if (pathname !== "/chat" &&
@@ -32,7 +30,8 @@ const NavLinks = (props) =>{
     }, [window.location.pathname]);
 
     return(
-      !path.match("/live-video-chat") &&
+      !path.match("/live-video-chat") && !path.match("/searching-profile") &&
+      !path.match("/audio-chat") && !path.match("/video-chat") &&
          <ul className="feature-menu ml-auto">
               <li className={`${pathname.match('/home') ? 'active' : ''}`}>
                    <Link to="/">
@@ -40,12 +39,12 @@ const NavLinks = (props) =>{
                     <span>Discover</span>
                   </Link>
                 </li>
-                <li className={`${pathname.match('/searching-profile') ? 'active' : ''}`}>
+                {/* <li className={`${pathname.match('/searching-profile') ? 'active' : ''}`}>
                     <Link to="/searching-profile">
                      <i className="fas fa-video" />
                     <span>Video Chat</span>
                   </Link>
-                </li>
+                </li> */}
                 <li className={`${pathname.match('/chat') ? 'active' : ''}`}>
                    <Link to="/chat">
                      <i className="fas fa-layer-group" />
