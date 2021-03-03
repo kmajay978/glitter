@@ -111,13 +111,11 @@ console.log(userData, "userdata..")
       if (data.channel_name == videoCallParams.channel_name) {
           if (Number(userData.user_id) === data.user_id) {
             alert("No coins Left")
-            videoCallStatus = 3
-            componentWillUnmount()
+            endCall()
           }
           else { // audience..
               alert("Your friend is left with no coins. Sorry the call is declining.")
-              videoCallStatus = 3
-              componentWillUnmount()
+              endCall()
           }
       }
   })
@@ -126,13 +124,11 @@ console.log(userData, "userdata..")
     if (data.channel_name == videoCallParams.channel_name) {
         if (Number(userData.user_id) === data.user_id) {
           alert(data.msg)
-          videoCallStatus = 3
-          componentWillUnmount()
+          endCall()
         }
         else { // audience..
             alert(data.msg)
-            videoCallStatus = 3
-            componentWillUnmount()
+            endCall()
         }
     }
 })
