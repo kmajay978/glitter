@@ -105,6 +105,36 @@ console.log(userData, "userdata..")
         }
     });
 
+    SOCKET.on('end_one_to_one_video_call_no_coin_warning', (data) => {
+      if (data.channel_name == videoCallParams.channel_name) {
+          if (Number(videoCallParams.user_id) === data.user_id) {
+            alert("No coins Left")
+            videoCallStatus = 3
+            componentWillUnmount()
+          }
+          else { // audience..
+              alert("Your friend is left with no coins. Sorry the call is declining.")
+              videoCallStatus = 3
+              componentWillUnmount()
+          }
+      }
+  })
+
+  SOCKET.on('end_one_to_one_video_call_warning', (data) => {
+    if (data.channel_name == videoCallParams.channel_name) {
+        if (Number(videoCallParams.user_id) === data.user_id) {
+          alert(data.msg)
+          videoCallStatus = 3
+          componentWillUnmount()
+        }
+        else { // audience..
+            alert(data.msg)
+            videoCallStatus = 3
+            componentWillUnmount()
+        }
+    }
+})
+
     SOCKET.on('timeCounter_video_call', (data) => {
       if ((data.user_from_id == videoCallParams.user_from_id && data.user_to_id == videoCallParams.user_to_id)
           ||
