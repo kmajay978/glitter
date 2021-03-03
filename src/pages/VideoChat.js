@@ -10,7 +10,8 @@ import {useSelector, useDispatch} from "react-redux";
 import {userProfile, videoCall, videoCallUser} from "../features/userSlice";
 import { changeImageLinkDomain, checkLiveDomain } from "../commonFunctions";
 
-let videoCallStatus = 0, videoCallParams, interval, callType = 0;
+let videoCallStatus = 0, videoCallParams, interval, callType = 0, 
+manageCoinsTimeViewsInterval, manageCoinsTimeViewsCounter = 0, manageTimeInterval
 
 const clearChatState = (dispatch) => {
   dispatch(videoCall(null))
@@ -41,6 +42,9 @@ console.log(userData, "userdata..")
     }
     localStorage.removeItem("videoCallPageRefresh");
     clearChatState(dispatch);
+    // clearInterval(removeGiftInterval);
+    clearInterval(manageCoinsTimeViewsInterval);
+    clearInterval(manageTimeInterval);
     window.location.href = checkLiveDomain() ? "/glitter-web/chat" : "/chat";
   }
   useEffect(() =>{
@@ -137,6 +141,24 @@ console.log(userData, "userdata..")
         }
       }
     })
+
+    const liveVideoManageCoinsTimeViews = () => {
+      SOCKET.emit("one_to_one_video_manage_coins_time_views", {
+          channel_name: videoCallParams.channel_name,
+          user_id: videoCallParams.user_to_id,
+          sender_id: videoCallParams.user_from_id,
+          counter: manageCoinsTimeViewsCounter
+      })
+  }
+
+    const manageLiveAudienceHostDetails = () => {
+      liveVideoManageCoinsTimeViews()
+      manageCoinsTimeViewsInterval = window.setInterval(() => {
+          liveVideoManageCoinsTimeViews()
+          manageCoinsTimeViewsCounter = manageCoinsTimeViewsCounter + 10
+      }, 10000)
+  }
+
           SOCKET.on('authorize_video_call', (data) => {
       if ((data.user_from_id == videoCallParams.user_from_id && data.user_to_id == videoCallParams.user_to_id)
           ||
@@ -146,6 +168,7 @@ console.log(userData, "userdata..")
         // change backend status === 1 if loggedIn user is "user_to"
 
         if (!!userData && (data.user_to_id == userData.user_id)) {
+          manageLiveAudienceHostDetails()
           SOCKET.emit("acknowledged_video_call", {
             sender: {user_from_id: videoCallParams.user_from_id, session_id: localStorage.getItem("session_id")},
             reciever_id: videoCallParams.user_to_id,
@@ -186,6 +209,12 @@ console.log(userData, "userdata..")
         }
         else {
           // initate video call for sender...
+          manageLiveAudienceHostDetails()
+          manageTimeInterval = window.setInterval(() => {
+            SOCKET.emit("one_to_one_video_manage_time", {
+                channel_name: videoCallState.channel_name
+            })
+        }, 1000)
           const option = {
             appID: "52cacdcd9b5e4b418ac2dca58f69670c",
             channel: videoCallState.channel_name,
