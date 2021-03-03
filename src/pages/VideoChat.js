@@ -145,7 +145,7 @@ console.log(userData, "userdata..")
     const liveVideoManageCoinsTimeViews = () => {
       SOCKET.emit("one_to_one_video_manage_coins_time_views", {
           channel_name: videoCallParams.channel_name,
-          user_id: videoCallParams.user_to_id,
+          user_id: userData.user_id,
           sender_id: videoCallParams.user_from_id,
           counter: manageCoinsTimeViewsCounter
       })
