@@ -111,11 +111,11 @@ console.log(userData, "userdata..")
       if (data.channel_name == videoCallParams.channel_name) {
           if (Number(userData.user_id) === data.user_id) {
             alert("No coins Left")
-            endCall()
+            endCall(false)
           }
           else { // audience..
               alert("Your friend is left with no coins. Sorry the call is declining.")
-              endCall()
+              endCall(false)
           }
       }
   })
@@ -124,11 +124,11 @@ console.log(userData, "userdata..")
     if (data.channel_name == videoCallParams.channel_name) {
         if (Number(userData.user_id) === data.user_id) {
           alert(data.msg)
-          endCall()
+          endCall(false)
         }
         else { // audience..
             alert(data.msg)
-            endCall()
+            endCall(false)
         }
     }
 })
@@ -274,12 +274,13 @@ SOCKET.on('one_to_one_video_manage_time', (data) => {
     });
   }, [])
 
-  const endCall = () => {
+  const endCall = (showMsg) => {
     if (params.receiver == "false") {
       SOCKET.emit("sender_decline_video_call", {
         sender: {user_from_id: videoCallParams.user_from_id},
         reciever_id: videoCallParams.user_to_id,
         channel_name: videoCallParams.channel_name,
+        showMsg,
         type: callType,
         status: 2
       });
@@ -289,6 +290,7 @@ SOCKET.on('one_to_one_video_manage_time', (data) => {
         sender: {user_from_id: videoCallParams.user_from_id},
         reciever_id: videoCallParams.user_to_id,
         channel_name: videoCallParams.channel_name,
+        showMsg,
         type: callType,
         status: 2
       });
@@ -362,7 +364,7 @@ SOCKET.on('one_to_one_video_manage_time', (data) => {
               </ul> */}
             </div>
            <NavLinks />
-            <a href="javascript:void(0)" className="end-video bg-grd-clr" onClick={endCall}>End Video</a>
+            <a href="javascript:void(0)" className="end-video bg-grd-clr" onClick={() => endCall(true)}>End Video</a>
           </div>
         </div>
       </div>

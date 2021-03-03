@@ -62,7 +62,9 @@ function App(props) {
       dispatch(videoCall(null))
       const page = checkLiveDomain() ? "/glitter-web/chat" : "/chat"
       if (!!userData && (data.user_from_id == userData.user_id)) { // check one-to-one data sync
-        alert("receiver declined your call...")
+        if (data.showMsg) {
+          alert("receiver declined your call...")
+        }
         history.push(page)
       }
       if (!!userData && (data.user_to_id == userData.user_id)) { // check one-to-one data sync
@@ -75,7 +77,9 @@ function App(props) {
       dispatch(videoCall(null))
       const page = checkLiveDomain() ? "/glitter-web/chat" : "/chat"
       if (!!userData && (data.user_to_id == userData.user_id)) { // check one-to-one data sync
-        alert("sender declined the call...")
+        if (data.showMsg) {
+          alert("sender declined the call...")
+        }
         history.push(page)
       }
       if (!!userData && (data.user_from_id == userData.user_id)) { // check one-to-one data sync
