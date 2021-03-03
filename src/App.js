@@ -16,6 +16,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { profile, userAuth } from './features/userSlice';
 import { SOCKET } from "./components/Config";
 import { checkLiveDomain } from './commonFunctions';
+import NotificationContainer from 'react-notifications/lib/NotificationContainer';
+import 'react-notifications/lib/notifications.css';
 
 let userData;
 const history = createBrowserHistory({ forceRefresh: true });
@@ -174,6 +176,7 @@ function App(props) {
           <ProtectedRoute exact path='/:user_id/:channel_id/:channel_name/live-video-chat' component={LiveVideoChat} />
         </Elements>
       </Switch>
+        <NotificationContainer />
     </Router>
   );
 }

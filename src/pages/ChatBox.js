@@ -10,11 +10,14 @@ import { css } from "@emotion/core";
 import {BarLoader , SyncLoader} from "react-spinners";
 import Logo from '../components/Logo';
 import {selectUser, userProfile, videoCall, audioCall} from "../features/userSlice";
-import {NotificationContainer, NotificationManager} from 'react-notifications';
+import {NotificationManager} from 'react-notifications';
 import useToggle from '../components/CommonFunction';
 import { useHistory } from "react-router-dom";
 import {addDefaultSrc, returnDefaultImage, useForceUpdate} from "../commonFunctions";
 import { setWeekYear } from "date-fns";
+
+
+
 // import stringLimit from '../components/CommonFunction';
 
 const override = css`
@@ -36,6 +39,7 @@ const scrollToBottom = () => {
 
 const ChatBox = (props) =>{
 
+   
     const forceUpdate = useForceUpdate();
     const inputFile = useRef(null);
     const dispatch = useDispatch();
@@ -186,20 +190,14 @@ const ChatBox = (props) =>{
         }
         axios.post(ACCEPT_REQUEST_API , bodyParameters)
             .then((response) => {
-                
-                // if(response.error=="bad_request")
-                //  {
-                //   localStorage.removeItem("session_id");
-                //   history.push('/login');
-                //  }
                 if(response.status==200)
-                {
-                    alert(123);
-                    createNotification('accept');
-                   
-                }
+                    {
+                        NotificationManager.success(response.data.message);
+                        getLikes();
+                    }
             }, (error) => {
                 if (error.toString().match("403")) {
+                    NotificationManager.error("Something went wrong");
                     localStorage.removeItem("session_id");
                     history.push('/login');
                   }
@@ -701,7 +699,7 @@ const ChatBox = (props) =>{
     const createNotification = (type) => {
         return () => {
             switch (type) {
-                case 'accept':
+                case 'accept-request':
                     NotificationManager.success('Like sucessfully', 'Like');
                     break;
                 case 'success':
@@ -800,23 +798,24 @@ const ChatBox = (props) =>{
 
                                             { Likes.map((item, i) => (
                                                 (!!userData && userData.packages.length>0 ?
-                                                    <li className="nav-item">
+                                                    <li className="nav-item  w-100">
                                                     <a className="nav-link" href="#chat-field" data-toggle="tab" data-id={item.like_id} role="tab" onClick = {() =>AcceptUserRequest(item.like_id)}>
-                                                  
+                                                 
                                                    <img alt={item.first_name} className="img-circle medium-image" src={item.profile_images} />
                                                         <div className="contacts_info">
                                                             <div className="user_detail">
                                                                 <span className="message-time">{item.created_at}</span>
-                                                                <h5 className="mb-0 name">{item.first_name}</h5>
+                                                                <h5 className="mb-0 name">{item.first_name } .{" " + item.age}</h5>
                                                                 {/* <div className="message-count">2</div> */}
                                                             </div>
                                                             <div className="vcentered info-combo">
-                                                                <p>Yep, I'm new in town and I wanted</p>
+                                                            <p>{item.liked_at}</p>
                                                             </div>
                                                         </div>
                                                     </a>
-
+                                              
                                                 </li>
+                                                
                                                     : 
                                                     <li className="nav-item w-100">
                                                     <a className="nav-link" href="#chat-field" data-toggle="tab" data-id={item.like_id} role="tab">
@@ -838,12 +837,10 @@ const ChatBox = (props) =>{
                                                 </li>)
                                            
                                             ))}
-                                          
                                         </ul>
                                      
-                                 
                                     </div>
-                                    <NotificationContainer/>
+                                
                                 </div>
                                 <div id="visitors" className="contacts-outter-wrapper tab-pane fade" role="tabpanel" aria-labelledby="tab-visitors">
                                     <div className="contacts-outter">
@@ -868,7 +865,7 @@ const ChatBox = (props) =>{
                                                 </li>
                                                 : 
                                                 <li className="nav-item">
-                                                <a className="nav-link" href="#chat-field" data-toggle="tab" role="tab" >
+                                                <a className="nav-link" href="#chat-field" style={{cursor: "default"}} data-toggle="tab" role="tab" >
                                                 <div className="chat__user__img">
                                                <i className="fas fa-lock"></i>
                                                     <img alt={item.full_name} className="img-circle medium-image" src={item.profile_images}/>
@@ -946,10 +943,10 @@ const ChatBox = (props) =>{
                                         {/* Video call */}
                                         <div className="chat-call-opt d-flex">
                                         <a className="bg-grd-clr mr-3" onClick = {() => handleCall(AllData.profile_images[0])} href="javascript:void(0)">
-                                                <NotificationContainer/>
+                                             
                                                 <i className="fas fa-phone-alt" /></a>
                                             <a className="bg-grd-clr" onClick = {() => handleVideo(AllData.profile_images[0])} href="javascript:void(0)">
-                                                <NotificationContainer/>
+                                          
                                                 <i className="fas fa-video" />
 
                                             </a>
@@ -1018,7 +1015,6 @@ const ChatBox = (props) =>{
                                                     </div>
                                                 ))
                                             }
-                                            <NotificationContainer/>
                                             {
                                                 
                                                     !!threeMessageWarning &&
@@ -1113,7 +1109,6 @@ const ChatBox = (props) =>{
                                                         }
 
                                                     </a>
-                                                    <NotificationContainer/>
                                                 </label>
                                                 <button type="submit" className="send-message-button bg-grd-clr"><i className="fas fa-paper-plane" /></button>
                                                 {

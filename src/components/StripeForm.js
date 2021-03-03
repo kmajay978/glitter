@@ -1,18 +1,37 @@
-import React from "react";
+import React, { useState } from "react";
 import {ElementsConsumer, CardElement} from "@stripe/react-stripe-js";
 
 import CardSection from "./CardSection";
 import {useSelector, useDispatch} from "react-redux";
 import {stripeDataPlanid , stripeCoinDataPlanid ,stripeCoinPlanId , stripePlanId , profile} from "../features/userSlice";
 import {ACTIVATE_STRIPE_PACKAGE , ACTIVATE_COIN_PACKAGE , GET_LOGGEDPROFILE_API} from "./Api";
-import {NotificationContainer, NotificationManager} from 'react-notifications';
+import { NotificationManager} from 'react-notifications';
 import axios from "axios";
 import { useHistory } from "react-router-dom";
+import { ClipLoader} from "react-spinners";
+import { css } from "@emotion/core";
+
+const override = css`
+    
+text-align: center;
+width: 40px;
+height: 40px;
+position: absolute;
+left: 0;
+right: 0;
+margin: 0 auto;
+// padding-top:60px;
+top: 71%;
+-webkit-transform: translateY(-50%);
+-moz-transform: translateY(-50%);
+transform: translateY(-50%);
+`;
 
 const CheckoutForm = (props) => {
     const history = useHistory();
     const Selected_Stripe_planid = useSelector(stripeDataPlanid);
     const Selected_Stripe_coinid = useSelector(stripeCoinDataPlanid);
+    const [isLoading, setIsloading] = useState(false);
 
     const dispatch = useDispatch();
     var sessionId = localStorage.getItem("session_id")
@@ -28,7 +47,7 @@ const CheckoutForm = (props) => {
               })
           );
           } ,(error)=> {
-
+            NotificationManager.error(error.message);
           })
    } 
 
@@ -44,40 +63,50 @@ const CheckoutForm = (props) => {
         
         if (result.error) {
             console.log(result.error.message);
-            createNotification('error',result.error.message);
+            NotificationManager.error(result.error.message);
         } else {
              // Activating VIP Membership here
             if(!!Selected_Stripe_planid){
+                setIsloading(true)
+                
             // console.log(result.token.id);
             const bodyParameters = {
                 session_id: sessionId,
                 plan_id: Selected_Stripe_planid,
                 token: result.token.id
             }
+            const stripeClose = document.getElementById("stripe-close");
             axios
                 .post(ACTIVATE_STRIPE_PACKAGE, bodyParameters)
                 .then((response) => {
+                    setIsloading(false)
                   
                     if(response.status==200)
                     { 
+                 
                     console.log(response);
-                    createNotification('success',response.message);
+                    NotificationManager.success( "You have subscribed the Package");
                     dispatch(stripePlanId({stripePlanId: null}));
                     profileData();
                   }
+                  stripeClose.click();
                 }, (error) => {
+                    setIsloading(false);
+                    NotificationManager.error(error.message);
                     if (error.toString().match("403")) {
                         localStorage.removeItem("session_id");
                         history.push('/login');
                       }
-                    createNotification('error',error.message);
+                   
+                    stripeClose.click();
                 });
-                createNotification('');
+             
         }
 
         // Activating coin package here
         if(!!Selected_Stripe_coinid)
         {
+            setIsloading(true);
             const bodyParameters = {
                 session_id: sessionId,
                 coins_package_id: Selected_Stripe_coinid,
@@ -86,57 +115,45 @@ const CheckoutForm = (props) => {
             axios
                 .post(ACTIVATE_COIN_PACKAGE, bodyParameters)
                 .then((response) => { 
-                    // if(response.error=="bad_request")
-                    // {
-                    //   localStorage.removeItem("session_id");
-                    //   history.push('/login');
-                    // }
+                    setIsloading(false);
                     if(response.status==200)
                     { 
                         console.log(response);
-                        createNotification('sucess-coin',response.message);
+                        NotificationManager.success( "Your coin package activated");
                         dispatch(stripeCoinPlanId({stripeCoinPlanId: null}));
+                      
                         profileData();
                   }
                
                 }, (error) => {
+                    setIsloading(false);
+                    NotificationManager.error(error.message);
                     if (error.toString().match("403")) {
                         localStorage.removeItem("session_id");
                         history.push('/login');
                       }
-                    createNotification('error',error.message);
+                   
                 });
         }
-        createNotification('');
+       
     }
     };
 
-    const createNotification = (type,message) => {
-  
-        switch (type) {
-          case 'success':
-            NotificationManager.success(message, 'You have subscribed the Package', 3000, () => {
-            });
-            break;
-          case 'error':
-            NotificationManager.error(message, 'Please check your card details', 3000, () => {
-            });
-            break; 
-            case 'sucess-coin':
-            NotificationManager.success(message, 'Your coin package activated', 3000, () => {
-            });
-      };
-      };
 
     return (
         <div>
             <form onSubmit={handleSubmit}>
                 <CardSection/>
-                <button disabled={!props.stripe} className="btn-pay">
-                    Buy Now
+                <button disabled={(isLoading || !props.stripe) ? true : false} className="btn-pay">
+                
+                        {
+                            isLoading ? <ClipLoader color={"#fff"} loading={isLoading} css={override} />
+                            :
+                            "Buy Now"
+                        }
+                        
                 </button>
             </form>
-            <NotificationContainer />
         </div>
     );
 

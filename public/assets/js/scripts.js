@@ -195,7 +195,6 @@ $(document).ready(function () {
     
 
     //$('.search-people-row').jScrollPane();
-
     var pane = $('.search-people-row');
     pane.jScrollPane({
 

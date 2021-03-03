@@ -4238,6 +4238,7 @@ div#upload-media-modal {
   }
   
   .btn-pay {
+    height: 45px;
     display: block;
     width: 100%;
     border: none;
@@ -4997,3 +4998,7 @@ span.gift__discount {
     color: #fff !important;
     line-height: 44px !important;
   }
+
+  .unknown-home.btn:hover {
+    opacity: 0.65;
+}

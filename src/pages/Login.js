@@ -534,7 +534,7 @@ const changeDate = (date) => {
             </span>
           </div>
           <a className="btn bg-grd-clr d-block mb-4 btn-countinue-5" href="javascript:void(0)" onClick={registerHandle} >Next</a>
-       <NotificationContainer/>
+
         </div>
         );
       default:

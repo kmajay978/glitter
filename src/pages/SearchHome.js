@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Stories from 'react-insta-stories';
 import $ from 'jquery';
 import {  useHistory } from 'react-router';
@@ -22,6 +22,7 @@ import {friendStatus} from '../features/userSlice'
 import StatusUser from "../pages/StatusUser";
 import { Link } from "react-router-dom";
 
+
 let isMouseClick = false, startingPos = [], glitterUid, friendLists = [], userData= null, checkOnlineFrdsInterval;
 
 const override = css`
@@ -43,7 +44,8 @@ const SearchHome = () =>
 {
     const history = useHistory();
     const dispatch = useDispatch();
-    
+    const inputFile = useRef(null);
+
     const [statusModel, setStatusModel] = useState(false);
     const [randomNumber, setRandomNumber] = useState('');
     const [fetchedProfile, setFilterUser] = useState('');
@@ -276,42 +278,35 @@ const handleUploadStatus =() =>
   bodyParameters.append("status_type", "" + 1);
   axios.post(ADD_STATUS , bodyParameters , config)
   .then((response)=> {
-    // if(response.error=="bad_request")
-    // {
-    //   localStorage.removeItem("session_id");
-    //   history.push('/login');
-    // }
   if(response.status==200){
-   createNotification('sucess');
+   createNotification('sucess' , response.data.message);
    setTimeout(() => {
     setUploadStatus(false);
-  }, 1500);
+  }, 3000);
    setPicture('');
   }
+
  } ,(error) => {
   if (error.toString().match("403")) {
     localStorage.removeItem("session_id");
     history.push('/login');
   }
  });
+ 
   }
-  else if (videoData=='video'){
+  else if (videoData=='video')
+  {
    const bodyParameters =new FormData();
    bodyParameters.append("session_id", "" + localStorage.getItem('session_id'));
    bodyParameters.append("status", picture);
    bodyParameters.append("status_type", "" + 2);
    axios.post(ADD_STATUS , bodyParameters , config)
    .then((response)=> {
-    // if(response.error=="bad_request")
-    // {
-    //   localStorage.removeItem("session_id");
-    //   history.push('/login');
-    // }
      if(response.status==200){
-    createNotification('sucess');
-    setTimeout(() => {
-      setUploadStatus(false);
-    }, 1500);
+    createNotification('sucess' , response.data.message);
+    // setTimeout(() => {
+    //   setUploadStatus(false);
+    // }, 3000);
   }
   } ,(error) => {
     if (error.toString().match("403")) {
@@ -319,8 +314,10 @@ const handleUploadStatus =() =>
       history.push('/login');
     }
  });
+
   }
-  else if (videoData=='text'){
+  else if (videoData=='text')
+  {
 
         //Converting text to image here
        var tCtx = document.getElementById('textCanvas').getContext('2d'),
@@ -397,12 +394,11 @@ document.getElementById("image").remove()
 
    axios.post(ADD_STATUS , bodyParameters , config)
    .then((response)=> {
-   
      if(response.status==200){
-    createNotification('sucess');
-    setTimeout(() => {
-      setUploadStatus(false);
-    }, 1500);
+    createNotification('sucess' , response.data.message);
+    // setTimeout(() => {
+    //   setUploadStatus(false);
+    // }, 2000);
     
     setPencilData('');
     setShowPencil(false);
@@ -414,14 +410,15 @@ document.getElementById("image").remove()
     }
  });
   }
- }
+
+  }
 console.log(picture);
 
-const createNotification = (type) => {
+const createNotification = (type, message) => {
   
   switch (type) {
       case 'sucess':
-        NotificationManager.success('status upload Successfully ', 'status');
+        NotificationManager.success(message);
         break;
     case 'error':
       NotificationManager.error('Error message', 'Click me!', 5000, () => {
@@ -432,17 +429,20 @@ const createNotification = (type) => {
 };
 
 
-const uploadImage = () => {
- // Click event for status uplaod screen
- $(document).on("click", "#upload__media", function () {
-   $('#upload_fle').trigger("click");
- });
+// const uploadImage = () => {
+//  // Click event for status uplaod screen
+//  $(document).on("click", "#upload__media", function () {
+//    $('#upload_fle').trigger("click");
+//  });
 
- $(document).on("click", "#upload_fle", function (e) {
-   e.stopPropagation();
-   //some code
-});
+//  $(document).on("click", "#upload_fle", function (e) {
+//    e.stopPropagation();
+//    //some code
+// });
 
+// }
+const openFileUploder = () =>{
+  inputFile.current.click();
 }
  const componentWillUnmount = () => {
     clearInterval(checkOnlineFrdsInterval)
@@ -483,7 +483,7 @@ const uploadImage = () => {
           SOCKET.emit("authenticate_friend_list_live", {
               session_id: localStorage.getItem("session_id")
           });
-      }, 5000)
+      }, 1000)
  
       SOCKET.on('sendAudienceToLiveVideo', (data) => {
         console.log(userData, data, "kkkkkk")
@@ -537,7 +537,7 @@ const uploadImage = () => {
           }
       });
 
-    uploadImage();
+    // uploadImage();
     return () => componentWillUnmount()
     },[])
 
@@ -788,9 +788,9 @@ console.log(statusId);
                     <div className="upload__status__opt text-center">
                     <h2>Upload Status</h2>
                     <div className="upload-status d-flex justify-content-center mt-5">
-                      <a id="upload__media" className="upload__media bg-grd-clr"  href="javascript:void(0)">
+                      <a id="upload__media" className="upload__media bg-grd-clr"  href="javascript:void(0)"onClick={openFileUploder}>
                       <i className="fas fa-camera"></i>
-                      <input type="file"  name="file" value="" id="upload_fle" className="d-none" onChange={handleFileChange} accept="image/* , video/*"  />
+                      <input type="file"  name="file" value=""  ref={inputFile} id="upload_fle" className="d-none" onChange={handleFileChange} accept="image/* , video/*"  />
                       
                       </a>
                       <a className="upload__text bg-grd-clr" href="javascript:void(0)" onClick={handlePencil}>
@@ -821,7 +821,7 @@ console.log(statusId);
                          
                        
                         <a className="btn bg-grd-clr btn-small mt-4" onClick={handleUploadStatus}>Publish Status</a>
-                        <NotificationContainer/>
+             
                     </div>
                     
                         
