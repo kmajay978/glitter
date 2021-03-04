@@ -173,7 +173,7 @@ const handleButton =() => {
 }
 console.log(path);
 useEffect(()=>{
-  //  filterHandle();
+   filterHandle();
     handleButton();
 },[])
 
@@ -253,7 +253,7 @@ useEffect(()=>{
                       max={100} getAriaValueText={valuetextweight}/>
                     </div>
                     <div className="btns-group d-flex justify-content-between flex-wrap my-5">
-                     {path=="/" ? <> <button className="btn bg-grd-clr" type="submit" onClick={filterHandle}>Done</button>
+                     {path=="/" ? <> <button className="btn bg-grd-clr" id="done-filter" type="submit" onClick={filterHandle}>Done</button>
                       <button className="btn bg-grd-clr" type="reset" onClick={handleReset}>Reset</button></>
                   
                   : path=="/search-home" ? <> <button className="unknown-home btn bg-grd-clr" type="submit" onClick={filterHandle} disabled>Done</button>

@@ -8,6 +8,7 @@ import Logo from '../components/Logo';
 import {GET_ALL_CALL} from '../components/Api';
 
 const RecentCall = () =>{
+  const history = useHistory();
 const[allcalls , setAllCall] =  useState([]);
 
 const handleAllCall = async() => {
@@ -34,7 +35,7 @@ return(
                <Logo />
             </div>
             <div className="back-bar d-flex align-items-center ml-5">
-              <a className="btn-back" href="javascript:void(0)"><i className="fas fa-chevron-left" /></a>
+              <a className="btn-back" href="javascript:void(0)" onClick={()=> history.push("/profile")}><i className="fas fa-chevron-left" /></a>
               <span className="theme-txt">Back</span>
             </div>
           </div>

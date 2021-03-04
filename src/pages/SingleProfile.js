@@ -10,7 +10,7 @@ import useToggle from '../components/CommonFunction';
 import moment from 'moment'
 import {addDefaultSrc, returnDefaultImage} from "../commonFunctions";
 // import NotificationContainer from "react-notifications/lib/NotificationContainer";
-import {NotificationContainer, NotificationManager} from 'react-notifications';
+import { NotificationManager} from 'react-notifications';
 import { useSelector } from "react-redux";
 import {userProfile} from '../features/userSlice';
 
@@ -84,7 +84,7 @@ const SingleProfile = (props) =>{
             console.log(response.data.data, "jjjj")
               }
          }, (error) => {
-        
+          NotificationManager.error(error.message);
         });
         }
 
@@ -114,7 +114,7 @@ const SingleProfile = (props) =>{
       given_to : checkUid
       }
        const {data : {result}} = await axios.post(GIFT_PURCHASE_API , bodyParameters)
-       createNotification('gift-send');
+       NotificationManager.error("gift send successfully");
         }
 
     // block the user 
@@ -130,21 +130,17 @@ const SingleProfile = (props) =>{
               userData.is_blocked = !!response.data.block_status ? 0 : 1
               setUser(userData);
               setRandom(Math.random());
-           createNotification('blocked' , response.data.message );
-           console.log(response);
-            // setTimeout(() => {
-            //   setBlockData(true);
-            // }, 1500);
+              NotificationManager.success(response.data.message);
+             
+             
           }
           else {
             // setBlockData(false);
           }
-          createNotification('');
           }, (error) =>{
            
-            // setBlockData(false);
+            NotificationManager.error(error.message);
           });
-          createNotification('');
         }
 
       const handleReport =() =>{
@@ -155,24 +151,19 @@ const SingleProfile = (props) =>{
          }
          axios.post(REPORT_USER_API , bodyParameters)
          .then((response) => {
-          // if(response.error=="bad_request")
-          // {
-          //   localStorage.removeItem("session_id");
-          //   history.push('/login');
-          // }
-          if(response.status==200)
+        
+          if(response.status==200&& response.data.error == false)
           { 
-            createNotification('report');
-            setTimeout(() => {
+            NotificationManager.success("report send successfully");
               setSmShow(false);
-            }, 1500);
             }
-           
+           else {
+            NotificationManager.error(response.data.error_message);
+           }
          } ,(error) => {
-       
-          createNotification('error' , error.message);
+          NotificationManager.error(error.message);
          });
-         createNotification('');
+
         };
 
         // const handleLike =() => {
@@ -216,24 +207,8 @@ const SingleProfile = (props) =>{
         //   );
         // }
     
-        const createNotification = (type , message ) => {
-  
-          switch (type) {
-              case 'report':
-                NotificationManager.success('report Successfully ', 'report');
-                break;
-                case 'gift-send':
-                NotificationManager.success('gift send successfully' , 'gift');
-                break;
-                case 'blocked':
-              NotificationManager.success(message )
-              break; 
-            case 'error':
-              NotificationManager.error(message);
-              break; 
-        };
-        };
-   useEffect(() =>{
+        
+    useEffect(() =>{
     getUser();
     handleStatus();
     handleGift();
@@ -273,7 +248,6 @@ const SingleProfile = (props) =>{
           <div className="report-tab d-flex flex-wrap align-items-center justify-content-end ml-auto">
             <span className="block-cta">
               <a className="theme-txt" href="javascript:void(0)" onClick={handleblock}>{!!userData && userData.is_blocked==1 ? "unblock" : "block"}</a>
-          <NotificationContainer/>
             </span>
             <span className="report-cta">
               <a className="theme-txt" href="javascript:void(0)" onClick={() => setSmShow(true)}>Report</a>
@@ -299,7 +273,6 @@ const SingleProfile = (props) =>{
           <Carousel id="images_crousal" className="profile-carousel">
           <Carousel.Item interval={900}>
            
-
             <div className="items">
             {userData&& userData.profile_images.map((item , index) => {
             return  <figure>
@@ -515,7 +488,6 @@ const SingleProfile = (props) =>{
                           </div>
                           </div>
                           <a className="btn bg-grd-clr d-block btn-countinue-3 "  id="edit-second-step" href="javascript:void(0)" onClick={handleReport}>Send</a>
-     <NotificationContainer/>
           </form>
            </div>
        
