@@ -67,7 +67,9 @@ const SearchHome = () =>
     const [showUploadStatus,setUploadStatus] = useState(false);
     const [isLoaded, setIsLoaded] = useState(false);
     const [LiveModel , setLiveModel] = useState({modal: false, item: null});
+    const [audLive, setAudLive] = useState(false)
 
+    console.log(audLive, "audLive..")
     userData = useSelector(userProfile).user.profile; //using redux useSelector here
  const options = {
   loop: false,
@@ -443,6 +445,7 @@ const openFileUploder = () =>{
  
       SOCKET.on('sendAudienceToLiveVideo', (data) => {
         console.log(userData, data, "kkkkkk")
+        setAudLive(false)
           if (userData.user_id === data.user_id) {
               // $('#live-modal').hide();
               // setShowLive(false)
@@ -514,34 +517,42 @@ const openFileUploder = () =>{
     }
 
     const watchLive = () => {
-      const audDetails = LiveModel;
-      const bodyParameters ={
-      session_id: localStorage.getItem("session_id"),
-      live_user_id:userData.user_id,
-      channel_name:audDetails.item.channel_name
+      if (!audLive) {
+        const audDetails = LiveModel;
+        console.log(audDetails, "audDetails...")
+        const bodyParameters ={
+        session_id: localStorage.getItem("session_id"),
+        live_user_id: audDetails.item.user_id,
+        channel_name:audDetails.item.channel_name
+        }
+        setAudLive(true)
+        axios.post (DETUCT_THOUSAND_COIN , bodyParameters)
+          .then((response)=> {
+            console.log(response, "hhhh")
+             if (response.data.status_code ==200 && response.data.error == "false"){
+              if (!!audDetails && audDetails.item.is_live) {
+                SOCKET.emit("addAudienceToLiveVideo", {
+                    user_id: userData.user_id,
+                    channel_name: audDetails.item.channel_name,
+                    channel_token: audDetails.item.channel_token,
+                    is_host: false
+                })
+            }
+             }
+             else{
+              NotificationManager.error(response.data.message);
+              setAudLive(false)
+             }
+          }, (err) =>{
+            NotificationManager.error(err.message);
+            setAudLive(false)
+          });
       }
-      axios.post (DETUCT_THOUSAND_COIN , bodyParameters)
-        .then((response)=> {
-           if (response.status==200 && response.data.error == false){
-            if (!!audDetails && audDetails.item.is_live) {
-              SOCKET.emit("addAudienceToLiveVideo", {
-                  user_id: userData.user_id,
-                  channel_name: audDetails.item.channel_name,
-                  channel_token: audDetails.item.channel_token,
-                  is_host: false
-              })
-          }
-           }
-           else{
-
-           }
-        }, (err) =>{
-
-        });
+    
       }
 
        
-    }
+    
 
     const makeMeAudience = ( item ) => {
         setLiveModel({modal: true, item});
@@ -560,6 +571,7 @@ console.log(statusId);
       }, 1000)
       return <video id= {video} src={video} alt="status" />
     }
+
     return(
   <section className="home-wrapper">
   <img className="bg-mask" src="/assets/images/mask-bg.png" alt="Mask" />
@@ -764,8 +776,8 @@ console.log(statusId);
                          <p>Pay 1000 coins to enter , they will also see what he is going to see inside the broadcaster room .</p>
                          
                          <div className="watch-live d-flex">
-                                 <a href="javascript:void(0)" className="btn btn-trsp" onClick={() => setLiveModel({modal: false, item: null})}>Cancel</a>
-                                 <a href="javascript:void(0)" className="btn bg-grd-clr" onClick={watchLive}>Watch</a>
+                                 <a href="javascript:void(0)" style={{cursor: (audLive ? "default" : "pointer")}} className="btn btn-trsp" onClick={() => {if (!audLive) { setLiveModel({modal: false, item: null})}}}>Cancel</a>
+                                 <a href="javascript:void(0)" style={{cursor: (audLive ? "default" : "pointer")}} className="btn bg-grd-clr" onClick={watchLive}>{audLive ? "Wait..." : "Watch"}</a>
                          </div>
                     </div>
                            
@@ -838,5 +850,5 @@ console.log(statusId);
 
 
     )
-
+                        }
 export default SearchHome;

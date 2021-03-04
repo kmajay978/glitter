@@ -392,6 +392,7 @@ const ChatBox = (props) =>{
     }, [randomNumber])
 // console.log(FriendUserId);
     useEffect(()=>{
+        document.getElementById("tab-chat").click()
         // window.setTimeout(() => {
         //     $(document).on('change', '#uploadfile', function(e) {
                
