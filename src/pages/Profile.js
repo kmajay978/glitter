@@ -18,7 +18,7 @@ import { EmailIcon, FacebookIcon,  TelegramIcon, TwitterIcon, WhatsappIcon,Email
 import StripeForm from '../components/StripeForm';
 // import DatePicker from 'react-date-picker';
 import moment from 'moment'
-import SyncLoader from "react-spinners/SyncLoader";
+import {SyncLoader, ClipLoader} from "react-spinners";
 import { css } from "@emotion/core";
 import {addDefaultSrc, returnDefaultImage} from "../commonFunctions";
 import DatePicker from "react-datepicker";
@@ -227,16 +227,17 @@ const handleCheck = (e) => {
    .then((response) => {
    
    if(response.status==200  && !response.status.error){
-   Notification('update');
+    NotificationManager.success("update successfully");
  
    }
-   Notification('');
+   
    }, (error) =>{
+    NotificationManager.error(error.message);
     if (error.toString().match("403")) {
       localStorage.removeItem("session_id");
       history.push('/login');
     }
-   Notification('error');
+   
    });
    }
 
@@ -253,7 +254,7 @@ const handleCheck = (e) => {
       bodyParameters.append("device_type", "" + 0);
       bodyParameters.append("first_name", "" + form.firstName);
       bodyParameters.append("last_name", form.lastName);
-      bodyParameters.append("dob", "" + dates);
+ 
       bodyParameters.append("gender", "" + form.gender);
       bodyParameters.append("aboutMe", "" +  form.aboutMe);
       bodyParameters.append("height",  form.height);
@@ -267,17 +268,13 @@ const handleCheck = (e) => {
    .then((response) => {
    
    if(response.status==200  && !response.status.error){
-    Notification('update');
-    setTimeout(() => {
+    NotificationManager.success("update successfully");
       setShowImage(false);
-    }, 1500);
-   
-    // setShowImage(false);
     ProfileData();
    }
-   Notification('');
+ 
    }, (error) =>{
-
+    NotificationManager.error(error.message);
    });
    }
 
@@ -322,6 +319,7 @@ const handleCheck = (e) => {
     
   }
    catch (err) {
+    NotificationManager.error(err.message);
     if (err.toString().match("403")) {
         localStorage.removeItem("session_id");
         history.push('/login');
@@ -340,21 +338,19 @@ const handleCheck = (e) => {
     axios.post(BLOCK_USER_API , bodyParameters)
     .then((response)=>
     {
-  
     if(response.status==200 && !response.error) {
-      createNoti('unblock');
-      setTimeout(() => {
-        setShowBlock(false);
-        setBlockData('');
-      }, 1500);
+      NotificationManager.success("unblock successfully");
+      handleBlockList();
+      setBlockData('');
+     
     }
     }, (error) =>{
+      NotificationManager.error(error.message);
       if (error.toString().match("403")) {
         localStorage.removeItem("session_id");
         history.push('/login');
       }
     });
-   createNoti('');
   }
   // console.log(blockId);
   // useEffect(() => {
@@ -367,16 +363,12 @@ const handleCheck = (e) => {
      setShowBuyCoins(true);
      axios.get(GET_ALL_COIN_PACKAGE)
      .then((response) => { 
-    //   if(response.error=="bad_request")
-    // {
-    //   localStorage.removeItem("session_id");
-    //   history.push('/login');
-    // }
        if(response.status==200){
       setCoinPackage(response.data.coin_list);
       setLoadedModel(false);
        }
        }, (error) =>{
+        NotificationManager.error(error.message);
         if (error.toString().match("403")) {
           localStorage.removeItem("session_id");
           history.push('/login');
@@ -413,9 +405,10 @@ const handleCheck = (e) => {
       
       }, (error)=> {
         setLoadedModel(false);
+        NotificationManager.error(error.message);
         if (error.toString().match("403")) {
           localStorage.removeItem("session_id");
-          createNoti('error' , error.message);
+        
           history.push('/login');
         }
         
@@ -439,6 +432,7 @@ const handleCheck = (e) => {
   }
   catch (err) {
     setLoadedModel(false);
+    NotificationManager.error(err.message);
       if (err.toString().match("403")) {
           localStorage.removeItem("session_id");
           history.push('/login');
@@ -468,6 +462,7 @@ const handleCheck = (e) => {
     
    
        }, (error) =>{
+        NotificationManager.error(error.message);
         if (error.toString().match("403")) {
           localStorage.removeItem("session_id");
           history.push('/login');
@@ -566,6 +561,7 @@ const handleCheck = (e) => {
     );
     setShowStripe(true);
     setShowBuyCoins(false);
+    
   }
  
   const closeStripeModel = () =>
@@ -584,7 +580,6 @@ const handleCheck = (e) => {
     setShowCoin(false);
     setCoinHistory('');
     setCoinSpend('');
-    createNoti('');
     setWarningMessage('');
 
   }
@@ -592,7 +587,6 @@ const handleCheck = (e) => {
   const closeBlockModel =() => {
     setShowBlock(false);
     setBlockData('');
-    createNoti('');
     setWarningMessage('');
   }
 
@@ -604,30 +598,9 @@ const handleCheck = (e) => {
   //handleBlock();
   },[])
 
-  const Notification = (type) => {
   
-    switch (type) {
-      case 'update':
-        NotificationManager.success('update Successfully ', 'profile');
-        break;
-      case 'error':
-        NotificationManager.error('Error message', 'Click me!', 5000, () => {
-        });
-        break; 
-  };
-  };
 
- const createNoti = (type , message) => {
-  
-    switch (type) {
-        case 'unblock':
-          NotificationManager.success('user is unblock successfully' );
-          break;
-        case 'error':
-        NotificationManager.error(message ,'Error message');
-        break; 
-  };
-  };
+
 
    const tabScreen = () =>{
     switch(step) {
@@ -740,7 +713,7 @@ const handleCheck = (e) => {
 
        
           <a className="btn bg-grd-clr d-block btn-countinue-3" id="edit-second-step" href="javascript:void(0)" onClick={updateProfile}>Update</a>
-          <NotificationContainer/>
+
      
       </div>
   
@@ -801,7 +774,7 @@ const handleCheck = (e) => {
                 {!!userData&&
                             <>
                              {userData.packages.length>0 ? 
-                              <span className="d-block"><img src="/assets/images/level-img.png" alt="profile level" />Premium, vip</span>
+                              <span className="d-block"><img src="/assets/images/level-img.png" alt="profile level" />Premium, VIP</span>
                             : ""}
                             </>
                             }
@@ -837,8 +810,11 @@ const handleCheck = (e) => {
               <li><a href="javascript:void(0)" id="gift-modal" onClick={handleGift}><img src="/assets/images/gift-icon.png" alt="gifts" />
                   <h6>Gifts</h6> <i className="fas fa-chevron-right"/>
                 </a></li>
-              <li><a href="javascript:void(0)" id="edit-profile" onClick={handleShow}><img src="/assets/images/edit-profile.png" alt="Edit Profile" />
+              {/* <li><a href="javascript:void(0)" id="edit-profile" onClick={handleShow}><img src="/assets/images/edit-profile.png" alt="Edit Profile" />
                   <h6>Edit Profile</h6> <i className="fas fa-chevron-right" />
+                </a></li> */}
+                 <li><a href="javascript:void(0)" id="edit-profile" onClick={() => history.push("/recent-call")}><img src="/assets/images/missed-call-icon.png" alt="Edit Profile" />
+                  <h6>Recent Call</h6> <i className="fas fa-chevron-right" />
                 </a></li>
               <li><a href="javascript:void(0)" id="coin-spend" onClick={handleCoinHistory}><img src="/assets/images/diamond-coin.png" alt="Coins" />
                   <h6>Coins</h6> <i className="fas fa-chevron-right" />
@@ -947,7 +923,7 @@ const handleCheck = (e) => {
 
            </div>
        
-           <a href="javascript:void(0)" className="modal-close" onClick={closeStripeModel}><img src="/assets/images/btn_close.png" /></a>
+           <a href="javascript:void(0)" id="stripe-close" className="modal-close" onClick={closeStripeModel}><img src="/assets/images/btn_close.png" /></a>
     </Modal>
 
 <Modal className="Image-model" show={showImage}  onHide= {() => setShowImage(false)}>
@@ -960,7 +936,7 @@ const handleCheck = (e) => {
   <input type="file" id="profile-photo" name="profile-photo" onChange={handleFileChange} className="d-none" accept="image/*" />
 </div>
 <a href="javascript:void(0)" onClick={updateImage} className="btn bg-grd-clr">Publish Photo</a>
-<NotificationContainer/>
+
 </form>
 </Modal>
    {/* <div class="edit-profile-modal modal-wrapper"> */}
@@ -1032,7 +1008,6 @@ const handleCheck = (e) => {
   
    </div>
     })}</>} 
-      <NotificationContainer/> 
      {
        !!warningMessage ?
        <h6 className="text-center">

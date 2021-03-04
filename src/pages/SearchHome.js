@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Stories from 'react-insta-stories';
 import $ from 'jquery';
 import {  useHistory } from 'react-router';
@@ -44,14 +44,13 @@ const SearchHome = () =>
 {
     const history = useHistory();
     const dispatch = useDispatch();
-    
+    const inputFile = useRef(null);
+
     const [statusModel, setStatusModel] = useState(false);
     const [randomNumber, setRandomNumber] = useState('');
     const [fetchedProfile, setFilterUser] = useState('');
     const [ friendList  , setFriendlist] = useState([]);
     const [isOn, toggleIsOn] = useToggle(false);
-    const [Click, setClick] = useState(false);
-    const [StartPosition, setStartPosition] = useState([])
     const [statusData , setStatusData] = useState({});
     const [storyData , setStoryData] = useState([]);
     const [ friendId , setFriendId] = useState('');
@@ -105,7 +104,7 @@ const statusoptions = {
 
 
 const SingleProfileView = (id) =>{
-  console.log(id,"idssss...");
+ 
   history.push({
     pathname: '/'+id+'/single-profile'
   })
@@ -156,11 +155,6 @@ const handleFileChange = e => {
     }
    axios.post(FRIENDLIST_API,bodyParameters)
     .then((response) => {
-      // if(response.error=="bad_request")
-      // {
-      //   localStorage.removeItem("session_id");
-      //   history.push('/login');
-      // }
       if (response.status === 200 ) {
         setIsLoaded(false);
           let friendList = response.data.data;
@@ -222,6 +216,7 @@ const handleFileChange = e => {
       }
 
  }, (error) => {
+ 
     setStatusData({});
     setIsLoaded(false);
     setFriendId('');
@@ -277,51 +272,45 @@ const handleUploadStatus =() =>
   bodyParameters.append("status_type", "" + 1);
   axios.post(ADD_STATUS , bodyParameters , config)
   .then((response)=> {
-    // if(response.error=="bad_request")
-    // {
-    //   localStorage.removeItem("session_id");
-    //   history.push('/login');
-    // }
   if(response.status==200){
-   createNotification('sucess');
-   setTimeout(() => {
+    NotificationManager.success(response.data.message );
     setUploadStatus(false);
-  }, 1500);
    setPicture('');
   }
+
  } ,(error) => {
+  NotificationManager.error( error.message);
   if (error.toString().match("403")) {
     localStorage.removeItem("session_id");
     history.push('/login');
   }
  });
+ 
   }
-  else if (videoData=='video'){
+  else if (videoData=='video')
+  {
    const bodyParameters =new FormData();
    bodyParameters.append("session_id", "" + localStorage.getItem('session_id'));
    bodyParameters.append("status", picture);
    bodyParameters.append("status_type", "" + 2);
    axios.post(ADD_STATUS , bodyParameters , config)
    .then((response)=> {
-    // if(response.error=="bad_request")
-    // {
-    //   localStorage.removeItem("session_id");
-    //   history.push('/login');
-    // }
      if(response.status==200){
-    createNotification('sucess');
-    setTimeout(() => {
+      NotificationManager.success(response.data.message );
       setUploadStatus(false);
-    }, 1500);
+   
   }
   } ,(error) => {
+    NotificationManager.error(error.message );
     if (error.toString().match("403")) {
       localStorage.removeItem("session_id");
       history.push('/login');
     }
  });
+
   }
-  else if (videoData=='text'){
+  else if (videoData=='text')
+  {
 
         //Converting text to image here
        var tCtx = document.getElementById('textCanvas').getContext('2d'),
@@ -398,85 +387,50 @@ document.getElementById("image").remove()
 
    axios.post(ADD_STATUS , bodyParameters , config)
    .then((response)=> {
-   
      if(response.status==200){
-    createNotification('sucess');
-    setTimeout(() => {
-      setUploadStatus(false);
-    }, 1500);
+      NotificationManager.success(response.data.message );
+    
+       setUploadStatus(false);
+  
     
     setPencilData('');
     setShowPencil(false);
   }
   } ,(error) => {
+    NotificationManager.error(error.message );
     if (error.toString().match("403")) {
       localStorage.removeItem("session_id");
       history.push('/login');
     }
  });
   }
- }
+
+  }
 console.log(picture);
 
-const createNotification = (type) => {
-  
-  switch (type) {
-      case 'sucess':
-        NotificationManager.success('status upload Successfully ', 'status');
-        break;
-    case 'error':
-      NotificationManager.error('Error message', 'Click me!', 5000, () => {
-        
-      });
-      break; 
-};
-};
 
 
-const uploadImage = () => {
- // Click event for status uplaod screen
- $(document).on("click", "#upload__media", function () {
-   $('#upload_fle').trigger("click");
- });
 
- $(document).on("click", "#upload_fle", function (e) {
-   e.stopPropagation();
-   //some code
-});
+// const uploadImage = () => {
+//  // Click event for status uplaod screen
+//  $(document).on("click", "#upload__media", function () {
+//    $('#upload_fle').trigger("click");
+//  });
 
+//  $(document).on("click", "#upload_fle", function (e) {
+//    e.stopPropagation();
+//    //some code
+// });
+
+// }
+const openFileUploder = () =>{
+  inputFile.current.click();
 }
  const componentWillUnmount = () => {
     clearInterval(checkOnlineFrdsInterval)
  }
   useEffect (() => {
-    handleFriendList();
-    window.setTimeout(() => {
-      $(".main-status")
-   .mousedown(function (evt) {
-     isMouseClick = true;
-     glitterUid =  $(".main-status")
-
-       startingPos = [evt.pageX, evt.pageY]
-       glitterUid = evt.currentTarget.id
-       // setStartPosition(startingPos);
-
-   })
-   .mousemove(function (evt) {
-       if (!(evt.pageX === startingPos[0] && evt.pageY === startingPos[1])) {
-           isMouseClick = false;
-       }
-   })
-   .mouseup(function () {
-       if (!isMouseClick) {
-          setClick(isMouseClick);
-       } else {
-         isMouseClick = true;
-          setClick(isMouseClick);
-       }
-       startingPos = [];
-       setStartPosition(startingPos)
-   });
-   }, 1000);
+     handleFriendList();
 
     SOCKET.connect();
       checkOnlineFrdsInterval = window.setInterval(() => {
@@ -538,18 +492,10 @@ const uploadImage = () => {
           }
       });
 
-    uploadImage();
+    // uploadImage();
     return () => componentWillUnmount()
     },[])
 
-  useEffect (() => {
-    if (Click) {
-      history.push({
-                    pathname: '/single-profile',
-                    userId: glitterUid // Your userId
-                  })
-  }
-  },[Click])
 
 
 //  console.log(friendList);
@@ -789,9 +735,9 @@ console.log(statusId);
                     <div className="upload__status__opt text-center">
                     <h2>Upload Status</h2>
                     <div className="upload-status d-flex justify-content-center mt-5">
-                      <a id="upload__media" className="upload__media bg-grd-clr"  href="javascript:void(0)">
+                      <a id="upload__media" className="upload__media bg-grd-clr"  href="javascript:void(0)"onClick={openFileUploder}>
                       <i className="fas fa-camera"></i>
-                      <input type="file"  name="file" value="" id="upload_fle" className="d-none" onChange={handleFileChange} accept="image/* , video/*"  />
+                      <input type="file"  name="file" value=""  ref={inputFile} id="upload_fle" className="d-none" onChange={handleFileChange} accept="image/* , video/*"  />
                       
                       </a>
                       <a className="upload__text bg-grd-clr" href="javascript:void(0)" onClick={handlePencil}>
@@ -822,7 +768,7 @@ console.log(statusId);
                          
                        
                         <a className="btn bg-grd-clr btn-small mt-4" onClick={handleUploadStatus}>Publish Status</a>
-                        <NotificationContainer/>
+             
                     </div>
                     
                         

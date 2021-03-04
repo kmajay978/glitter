@@ -16,6 +16,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { profile, userAuth } from './features/userSlice';
 import { SOCKET } from "./components/Config";
 import { checkLiveDomain } from './commonFunctions';
+import NotificationContainer from 'react-notifications/lib/NotificationContainer';
+import 'react-notifications/lib/notifications.css';
 
 let userData;
 const history = createBrowserHistory({ forceRefresh: true });
@@ -164,20 +166,21 @@ function App(props) {
           <Route exact path='/dummy' component={Dummy} />
           {/* Private routes */}
           <ProtectedRoute exact path='/' component={Home} />
-          <ProtectedRoute exact path='/profile' component={Profile} />
-          <ProtectedRoute exact path="/answer-calling" component={AnswerCalling} />
-          <ProtectedRoute exact path='/chat' component={ChatBox} />
-          <ProtectedRoute exact path='/searching-profile' component={SearchProfile} />
-          <ProtectedRoute exact path='/searching-profile-call' component={SearchProfileAudio} />
-          <ProtectedRoute exact path='/search-home' component={SearchHome} />
-          <ProtectedRoute exact path='/:userId/single-profile' component={SingleProfile} />
-          <ProtectedRoute exact path='/recent-call' component={RecentCall} />
-          <ProtectedRoute exact path='/status' component={SearchHomeBkp} />
-          <ProtectedRoute exact path='/:receiver/:user_from_id/:user_to_id/:channel_id/:channel_name/video-chat' component={VideoChat} />
-          <ProtectedRoute exact path='/:receiver/:user_from_id/:user_to_id/:channel_id/:channel_name/audio-chat' component={AudioChat} />
-          <ProtectedRoute exact path='/:user_id/:channel_id/:channel_name/live-video-chat' component={LiveVideoChat} />
+          <ProtectedRoute  path='/profile' component={Profile} />
+          <ProtectedRoute  path="/answer-calling" component={AnswerCalling} />
+          <ProtectedRoute  path='/chat' component={ChatBox} />
+          <ProtectedRoute  path='/searching-profile' component={SearchProfile} />
+          <ProtectedRoute  path='/searching-profile-call' component={SearchProfileAudio} />
+          <ProtectedRoute  path='/search-home' component={SearchHome} />
+          <ProtectedRoute  path='/:userId/single-profile' component={SingleProfile} />
+          <ProtectedRoute  path='/recent-call' component={RecentCall} />
+          <ProtectedRoute  path='/status' component={SearchHomeBkp} />
+          <ProtectedRoute  path='/:receiver/:user_from_id/:user_to_id/:channel_id/:channel_name/video-chat' component={VideoChat} />
+          <ProtectedRoute  path='/:receiver/:user_from_id/:user_to_id/:channel_id/:channel_name/audio-chat' component={AudioChat} />
+          <ProtectedRoute  path='/:user_id/:channel_id/:channel_name/live-video-chat' component={LiveVideoChat} />
         </Elements>
       </Switch>
+        <NotificationContainer />
     </Router>
   );
 }
