@@ -66,6 +66,7 @@ const SearchHome = () =>
     const [video, setVideo] = useState(null);
     const [showUploadStatus,setUploadStatus] = useState(false);
     const [isLoaded, setIsLoaded] = useState(false);
+    const [LiveModel , setLiveModel] = useState({modal: false, item: null});
 
     userData = useSelector(userProfile).user.profile; //using redux useSelector here
  const options = {
@@ -511,22 +512,28 @@ const openFileUploder = () =>{
         generateLiveVideoChatToken(dispatch, history, bodyParameters, call_type, user_id, uuidv4(), SOCKET);
 
     }
-    const makeMeAudience = ( item ) => {
-        setFriendId(item.user_id);
-        // if(!!item.result.status_id){
-        //  item.result.map((item , index)=>{
-        //   setStatusId(item.status_id);
-        //  })
+
+    const watchLive = () => {
+      const audDetails = LiveModel;
+      const bodyParameters ={
+      session_id: localStorage.getItem("session_id"),
+      }
+      // axios.post (bodyParameters)
+
+        // if (!!audDetails && audDetails.item.is_live) {
+        //     SOCKET.emit("addAudienceToLiveVideo", {
+        //         user_id: userData.user_id,
+        //         channel_name: audDetails.item.channel_name,
+        //         channel_token: audDetails.item.channel_token,
+        //         is_host: false
+        //     })
         // }
-        if (item.is_live) {
-            SOCKET.emit("addAudienceToLiveVideo", {
-                user_id: userData.user_id,
-                channel_name: item.channel_name,
-                channel_token: item.channel_token,
-                is_host: false
-            })
-        }
     }
+
+    const makeMeAudience = ( item ) => {
+        setLiveModel({modal: true, item});
+     }
+
 console.log(statusId);
     const convertToHtml = (data) => {
        const convertedHtml =  {__html: data};
@@ -576,9 +583,9 @@ console.log(statusId);
         {friendList.map((item, i) =>(
            (item.statuses.length > 0 ||  item.is_live === true ) ?
           
-         <div className="users-listing__slider__items" onClick={() =>  makeMeAudience(item )} id={item.user_id}  >
+         <div className="users-listing__slider__items" id={item.user_id} >
          
-            <div className="users-listing__slider__items__image" id="modal" data-toggle="modal" >
+            <div className="users-listing__slider__items__image" id="modal" data-toggle="modal" onClick={() =>  setFriendId(item.user_id)}>
            {!!friendList ? <img onError={(e) => addDefaultSrc(e)} src={!!item.profile_images ? item.profile_images : returnDefaultImage()} alt="marlene" /> : ""}
             
               
@@ -587,7 +594,7 @@ console.log(statusId);
             </div>
              {
                  item.is_live === true &&
-                 <span className="live">Live</span>
+                 <span  style={{cursor: "pointer"}} onClick={() =>  makeMeAudience(item )} className="live">Live</span>
              }
           </div>
           :""
@@ -726,6 +733,39 @@ console.log(statusId);
   {/* </div> */}
 
 {/* </div> */}
+<Modal className ="modal fade" id="group-live-modal" show={LiveModel.modal} onHide={() => setLiveModel({modal: false, item: null})} backdrop="static" keyboard={false}>
+
+        <div className="modal-dialog" role="document">
+            <div className="modal-content" style={{border: "none"}}>
+                <div className="modal-body p-0">
+                  <div className="group-live">
+                    <div className="group-live__header">
+                        <img src="/assets/images/diamond-sm.png" alt="balance"/> Balance : {!!userData&& userData.coins}
+                    </div>
+                          
+                    <div className="group-live__content text-center">
+                         <div className="total_coins d-flex align-items-center justify-content-center py-3">
+                             <div className="diamong__icon"><img src="/assets/images/diamond-coin.png" alt="balance"/></div>
+                         <h5>1000 Coins</h5>
+                         </div>
+                         <p>Pay 1000 coins to enter , they will also see what he is going to see inside the broadcaster room .</p>
+                         
+                         <div className="watch-live d-flex">
+                                 <a href="javascript:void(0)" className="btn btn-trsp" onClick={() => setLiveModel({modal: false, item: null})}>Cancel</a>
+                                 <a href="javascript:void(0)" className="btn bg-grd-clr" onClick={watchLive}>Watch</a>
+                         </div>
+                    </div>
+                           
+                      
+                      
+                      
+                  </div> 
+                </div>
+            </div>            
+        </div>
+
+    
+</Modal>
 <Modal className ="theme-modal" id="upload-media-modal" show={showUploadStatus} onHide={() => setUploadStatus(false)} backdrop="static" keyboard={false}>
           {/* Modal start here */}
           {/* <div className="theme-modal" id="live-modal" tabIndex={-1} role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"> */}
