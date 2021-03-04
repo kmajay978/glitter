@@ -74,18 +74,17 @@ const ChatBox = (props) =>{
     const [threeMessageWarning, setWarningMessage] = useState("");
 
     console.log(baseMultipleImage,"baseMultipleImage..........")
-    const createNotificationCustom = (type) => {
+    // const createNotificationCustom = (type) => {
   
-        switch (type) {
-          case 'success':
-            NotificationManager.success('Send successfull', 'Gift');
-            break;
-          case 'error':
-            NotificationManager.error('Please recharge and try again', 'Insufficient Balance!', 5000, () => {
-            });
-            break; 
-      };
-      };
+    //     switch (type) {
+    //       case 'success':
+    //         NotificationManager.success('Send successfull', 'Gift');
+    //         break;
+    //       case 'error':
+    //         NotificationManager.error('Please recharge and try again', 'Insufficient Balance!');
+    //         break; 
+    //   };
+    //   };
 
 
  console.log(previewData,"threeMessageWarning....");
@@ -249,7 +248,7 @@ const ChatBox = (props) =>{
                 else
                 {
                     toggleIsOn(false);
-                    createNotificationCustom('error');       
+                    NotificationManager.error('Please recharge and try again', 'Insufficient Balance!');      
                 }
              }
              
@@ -644,7 +643,10 @@ const ChatBox = (props) =>{
                     // Start recording
                     mediaRecorder.start();
                 }).catch(function (err) {
-                    createNotification('error-message');
+                    NotificationManager.error('err.message', 'Click me!', 5000, () => {
+
+                    });
+                   
                     alert(err.message)
                 })
             }
@@ -696,26 +698,26 @@ const ChatBox = (props) =>{
         history.push("/searching-profile-call");
     }
 
-    const createNotification = (type) => {
-        return () => {
-            switch (type) {
-                case 'accept-request':
-                    NotificationManager.success('Like sucessfully', 'Like');
-                    break;
-                case 'success':
-                    NotificationManager.success('Success message', 'Title here');
-                    break;
-                case 'error-secure':
-                    NotificationManager.error('err.message', 'Click me!', 5000, () => {
-                    });
-                case 'error-message':
-                    NotificationManager.error('err.message', 'Click me!', 5000, () => {
+    // const createNotification = (type) => {
+    //     return () => {
+    //         switch (type) {
+    //             case 'accept-request':
+    //                 NotificationManager.success('Like sucessfully', 'Like');
+    //                 break;
+    //             case 'success':
+    //                 NotificationManager.success('Success message', 'Title here');
+    //                 break;
+    //             case 'error-secure':
+    //                 NotificationManager.error('err.message', 'Click me!', 5000, () => {
+    //                 });
+    //             case 'error-message':
+    //                 NotificationManager.error('err.message', 'Click me!', 5000, () => {
 
-                    });
-                    break;
-            }
-        };
-    };
+    //                 });
+    //                 break;
+    //         }
+    //     };
+    // };
 
     const openFileHandler = () => {
         if(baseMultipleImage.length < 4) {

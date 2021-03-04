@@ -210,12 +210,13 @@ console.log(userData, "userdata..")
     });
   }, [])
 
-  const endCall = () => {
+  const endCall = (showMsg) => {
     if (params.receiver == "false") {
       SOCKET.emit("sender_decline_video_call", {
         sender: {user_from_id: videoCallParams.user_from_id},
         reciever_id: videoCallParams.user_to_id,
         channel_name: videoCallParams.channel_name,
+        showMsg,
         type: 1,
         status: 2
       });
@@ -225,6 +226,7 @@ console.log(userData, "userdata..")
         sender: {user_from_id: videoCallParams.user_from_id},
         reciever_id: videoCallParams.user_to_id,
         channel_name: videoCallParams.channel_name,
+        showMsg,
         type: 1,
         status: 2
       });
@@ -295,7 +297,7 @@ console.log(userData, "userdata..")
               </ul> */}
             </div>
            <NavLinks />
-            <a href="javascript:void(0)" className="end-video bg-grd-clr" onClick={endCall}>End Audio</a>
+            <a href="javascript:void(0)" className="end-video bg-grd-clr" onClick={() => endCall(true)}>End Audio</a>
           </div>
         </div>
       </div>

@@ -60,11 +60,6 @@ const FilterUser = ({ fetchedProfile }) => {
      axios.post(GETALLUSER_API, bodyParameters)
      
      .then((response) => {
-    //   if(response.error=="bad_request")
-    // {
-    //   localStorage.removeItem("session_id");
-    //   history.push('/login');
-    // }
         if (response.status == 200) {
           setUserData(response.data.data);
           setIsLoaded(false);
@@ -156,7 +151,7 @@ console.log(allData);
   };
   const childRefs = userData;
   const swipe = (dir, userId) => {
-    if(allData.length> 0) {
+    // if(allData.length> 0) {
    
     const cardsLeft = allData.filter(
       (currentUser) => !alreadyRemoved.includes(currentUser.user_id)
@@ -173,33 +168,30 @@ console.log(allData);
         console.log("child ref error", childRefs, "childRefs");
       }
     }
-  }
-  else {
-    const cardsLeft = userData.filter(
-      (currentUser) => !alreadyRemoved.includes(currentUser.user_id)
-    );
-    if (cardsLeft.length) {
-      const toBeRemoved = cardsLeft[cardsLeft.length - 1].user_id; // Find the card object to be removed
-      const index = userData
-        .map((person) => person.user_id)
-        .indexOf(toBeRemoved); // Find the index of which to make the reference to
-      alreadyRemoved.push(toBeRemoved); // Make sure the next card gets removed next time if this card do not have time to exit the screen
-      if (!!childRefs && childRefs[index]) {
-        childRefs[index].current.swipe(dir); // Swipe the card!
-      } else {
-        console.log("child ref error", childRefs, "childRefs");
-      }
-    }
-  }
+  // }
+  // else {
+  //   const cardsLeft = userData.filter(
+  //     (currentUser) => !alreadyRemoved.includes(currentUser.user_id)
+  //   );
+  //   if (cardsLeft.length) {
+  //     const toBeRemoved = cardsLeft[cardsLeft.length - 1].user_id; // Find the card object to be removed
+  //     const index = userData
+  //       .map((person) => person.user_id)
+  //       .indexOf(toBeRemoved); // Find the index of which to make the reference to
+  //     alreadyRemoved.push(toBeRemoved); // Make sure the next card gets removed next time if this card do not have time to exit the screen
+  //     if (!!childRefs && childRefs[index]) {
+  //       childRefs[index].current.swipe(dir); // Swipe the card!
+  //     } else {
+  //       console.log("child ref error", childRefs, "childRefs");
+  //     }
+  //   }
+  // }
   };
 
 
  useEffect(() => {
-
-   if (cardClick) {
-      history.push({
-                    pathname:'/'+glitterUid+'/single-profile',          
-                  })
+   if (!!cardClick) {
+      history.push('/'+glitterUid+'/single-profile')
   }
  }, [cardClick])
 
@@ -207,8 +199,7 @@ console.log(allData);
 
 //  }, [fetchedProfile])
 
-  useEffect(() => {
-           
+  useEffect(() => { 
     if(!!fetchedProfile){
       setIsLoaded(false);
       setAllData(fetchedProfile);
@@ -265,7 +256,7 @@ console.log(allData);
     <>
     {/* {allData.length> 0 ?  set: ""} */}
       <div className="cardContainer">  
-      {allData.length> 0 ? <>
+      {/* {allData.length> 0 ? <> */}
         {allData.map((currentUser, index) => (
               <div className="main_wrapper" id={currentUser.user_id}> 
               <GlitterCard ref={childRefs[index]} className="swipe" key={currentUser.user_id} onSwipe={(dir) => swiped(dir, currentUser.user_id)} >
@@ -288,10 +279,10 @@ console.log(allData);
               </GlitterCard>
 
                </div> 
-            ))}  
-      </>: 
+           ))}  
+      {/*   </>: 
       <>
-      {userData.map((currentUser, index) => (
+       {userData.map((currentUser, index) => ( 
               <div className="main_wrapper" id={currentUser.user_id}> 
               <GlitterCard ref={childRefs[index]} className="swipe" key={currentUser.user_id} onSwipe={(dir) => swiped(dir, currentUser.user_id)} >
                 <div className="user__card position-relative">
@@ -313,12 +304,14 @@ console.log(allData);
               </GlitterCard>
 
                </div> 
-            ))} </> }
+            ))} </> } */}
       
         <SyncLoader color={"#fcd46f"} loading={isLoaded} css={override} size={18} />
         
            </div>
    
+    {
+      !isLoaded &&
     
       <div className="action-tray global-actions d-flex flex-wrap justify-content-center align-items-center mt-3">
            
@@ -352,6 +345,7 @@ console.log(allData);
                         </a>
                       </div> */}
       </div>
+}
 
       </>
       

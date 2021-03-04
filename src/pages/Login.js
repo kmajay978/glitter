@@ -21,7 +21,7 @@ import { FacebookProvider, Like , LoginButton} from 'react-facebook';
 import { usePosition } from 'use-position';
 import OtpInput from 'react-otp-input';
 // import NotificationContainer from 'react-notifications/lib/NotificationContainer';
-import {NotificationContainer, NotificationManager} from 'react-notifications';
+import { NotificationManager} from 'react-notifications';
 import { GoogleLogin } from 'react-google-login';
 import TwitterLogin from 'react-twitter-auth';
 
@@ -304,26 +304,27 @@ const registerHandle = (e) =>{
           else
           {
             localStorage.removeItem('session_id');
-            createNotification('error' , response.data.message);
+            NotificationManager.error(response.data.message);
+          
           }
 
         }, (error) => {
           localStorage.removeItem('session_id');
-          
-          createNotification('error' , error.message);
+          NotificationManager.error(error.message);
+         
         });
 }
-const createNotification = (type , message) => {
+// const createNotification = (type , message) => {
   
-  switch (type) {
-      case 'sucess':
-        NotificationManager.success(' create Successfully ', 'status');
-        break;
-    case 'error':
-      NotificationManager.error(message ,'Error message')
-      break; 
-};
-};
+//   switch (type) {
+//       case 'sucess':
+//         NotificationManager.success(' create Successfully ', 'status');
+//         break;
+//     case 'error':
+//       NotificationManager.error(message ,'Error message')
+//       break; 
+// };
+// };
   // End here 
 
   // Testing here

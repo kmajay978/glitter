@@ -51,8 +51,6 @@ const SearchHome = () =>
     const [fetchedProfile, setFilterUser] = useState('');
     const [ friendList  , setFriendlist] = useState([]);
     const [isOn, toggleIsOn] = useToggle(false);
-    const [Click, setClick] = useState(false);
-    const [StartPosition, setStartPosition] = useState([])
     const [statusData , setStatusData] = useState({});
     const [storyData , setStoryData] = useState([]);
     const [ friendId , setFriendId] = useState('');
@@ -106,7 +104,7 @@ const statusoptions = {
 
 
 const SingleProfileView = (id) =>{
-  console.log(id,"idssss...");
+ 
   history.push({
     pathname: '/'+id+'/single-profile'
   })
@@ -157,11 +155,6 @@ const handleFileChange = e => {
     }
    axios.post(FRIENDLIST_API,bodyParameters)
     .then((response) => {
-      // if(response.error=="bad_request")
-      // {
-      //   localStorage.removeItem("session_id");
-      //   history.push('/login');
-      // }
       if (response.status === 200 ) {
         setIsLoaded(false);
           let friendList = response.data.data;
@@ -223,6 +216,7 @@ const handleFileChange = e => {
       }
 
  }, (error) => {
+ 
     setStatusData({});
     setIsLoaded(false);
     setFriendId('');
@@ -279,14 +273,13 @@ const handleUploadStatus =() =>
   axios.post(ADD_STATUS , bodyParameters , config)
   .then((response)=> {
   if(response.status==200){
-   createNotification('sucess' , response.data.message);
-   setTimeout(() => {
+    NotificationManager.success(response.data.message );
     setUploadStatus(false);
-  }, 3000);
    setPicture('');
   }
 
  } ,(error) => {
+  NotificationManager.error( error.message);
   if (error.toString().match("403")) {
     localStorage.removeItem("session_id");
     history.push('/login');
@@ -303,12 +296,12 @@ const handleUploadStatus =() =>
    axios.post(ADD_STATUS , bodyParameters , config)
    .then((response)=> {
      if(response.status==200){
-    createNotification('sucess' , response.data.message);
-    // setTimeout(() => {
-    //   setUploadStatus(false);
-    // }, 3000);
+      NotificationManager.success(response.data.message );
+      setUploadStatus(false);
+   
   }
   } ,(error) => {
+    NotificationManager.error(error.message );
     if (error.toString().match("403")) {
       localStorage.removeItem("session_id");
       history.push('/login');
@@ -395,15 +388,16 @@ document.getElementById("image").remove()
    axios.post(ADD_STATUS , bodyParameters , config)
    .then((response)=> {
      if(response.status==200){
-    createNotification('sucess' , response.data.message);
-    // setTimeout(() => {
-    //   setUploadStatus(false);
-    // }, 2000);
+      NotificationManager.success(response.data.message );
+    
+       setUploadStatus(false);
+  
     
     setPencilData('');
     setShowPencil(false);
   }
   } ,(error) => {
+    NotificationManager.error(error.message );
     if (error.toString().match("403")) {
       localStorage.removeItem("session_id");
       history.push('/login');
@@ -414,19 +408,7 @@ document.getElementById("image").remove()
   }
 console.log(picture);
 
-const createNotification = (type, message) => {
-  
-  switch (type) {
-      case 'sucess':
-        NotificationManager.success(message);
-        break;
-    case 'error':
-      NotificationManager.error('Error message', 'Click me!', 5000, () => {
-        
-      });
-      break; 
-};
-};
+
 
 
 // const uploadImage = () => {
@@ -448,34 +430,7 @@ const openFileUploder = () =>{
     clearInterval(checkOnlineFrdsInterval)
  }
   useEffect (() => {
-    handleFriendList();
-    window.setTimeout(() => {
-      $(".main-status")
-   .mousedown(function (evt) {
-     isMouseClick = true;
-     glitterUid =  $(".main-status")
-
-       startingPos = [evt.pageX, evt.pageY]
-       glitterUid = evt.currentTarget.id
-       // setStartPosition(startingPos);
-
-   })
-   .mousemove(function (evt) {
-       if (!(evt.pageX === startingPos[0] && evt.pageY === startingPos[1])) {
-           isMouseClick = false;
-       }
-   })
-   .mouseup(function () {
-       if (!isMouseClick) {
-          setClick(isMouseClick);
-       } else {
-         isMouseClick = true;
-          setClick(isMouseClick);
-       }
-       startingPos = [];
-       setStartPosition(startingPos)
-   });
-   }, 1000);
+     handleFriendList();
 
     SOCKET.connect();
       checkOnlineFrdsInterval = window.setInterval(() => {
@@ -541,14 +496,6 @@ const openFileUploder = () =>{
     return () => componentWillUnmount()
     },[])
 
-  useEffect (() => {
-    if (Click) {
-      history.push({
-                    pathname: '/single-profile',
-                    userId: glitterUid // Your userId
-                  })
-  }
-  },[Click])
 
 
 //  console.log(friendList);

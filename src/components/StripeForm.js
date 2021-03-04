@@ -112,6 +112,7 @@ const CheckoutForm = (props) => {
                 coins_package_id: Selected_Stripe_coinid,
                 token: result.token.id
             }
+            const stripeClose = document.getElementById("stripe-close")
             axios
                 .post(ACTIVATE_COIN_PACKAGE, bodyParameters)
                 .then((response) => { 
@@ -124,7 +125,7 @@ const CheckoutForm = (props) => {
                       
                         profileData();
                   }
-               
+               stripeClose.click();
                 }, (error) => {
                     setIsloading(false);
                     NotificationManager.error(error.message);
@@ -132,7 +133,7 @@ const CheckoutForm = (props) => {
                         localStorage.removeItem("session_id");
                         history.push('/login');
                       }
-                   
+                   stripeClose.click();
                 });
         }
        
