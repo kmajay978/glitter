@@ -38,7 +38,9 @@ export const ACTIVATE_COIN_PACKAGE = getApiUrl("purchaseCoins");
 export const COIN_HISTORY = getApiUrl("coinsCommonHistory");
 export const RECEIVED_GIFT_LIST = getApiUrl("received-gifts");
 export const VIEW_LIKE_STATUS = getApiUrl("view_like_statuses");
- 
+export const DETUCT_THOUSAND_COIN = getApiUrl("detuct_thousand_coins");
+
+
 // Not done yet
 export const CALL_ACTION_API=getApiUrl("call_action");
 export const CHECK_CALLSTATUS_API=getApiUrl("fetch_action");

@@ -807,7 +807,7 @@ const ChatBox = (props) =>{
                                                         <div className="contacts_info">
                                                             <div className="user_detail">
                                                                 <span className="message-time">{item.created_at}</span>
-                                                                <h5 className="mb-0 name">{item.first_name } .{" " + item.age}</h5>
+                                                                <h6 className="mb-0 name">{item.first_name } .{" " + item.age}</h6>
                                                                 {/* <div className="message-count">2</div> */}
                                                             </div>
                                                             <div className="vcentered info-combo">
@@ -827,7 +827,7 @@ const ChatBox = (props) =>{
                                                         <div className="contacts_info">
                                                             <div className="user_detail">
                                                                 <span className="message-time">{item.created_at}</span>
-                                                                <h5 className="mb-0 name">{stringLimit(item.first_name , 3)  +" "}.{" " + item.age}</h5>
+                                                                <h6 className="mb-0 name">{stringLimit(item.first_name , 3)  +" "}.{" " + item.age}</h6>
                                                                 {/* <div className="message-count">2</div> */}
                                                             </div>
                                                             <div className="vcentered info-combo">
@@ -856,7 +856,7 @@ const ChatBox = (props) =>{
                                                         <div className="contacts_info">
                                                             <div className="user_detail">
                                                                 <span className="message-time">{item.created_at}</span>
-                                                                <h5 className="mb-0 name">{item.full_name}</h5>
+                                                                <h6 className="mb-0 name">{item.full_name}</h6>
                                                                 {/* {/* <div className="message-count">2</div> */}
                                                             </div>
                                                             <div className="vcentered info-combo">
@@ -875,7 +875,7 @@ const ChatBox = (props) =>{
                                                     <div className="contacts_info">
                                                         <div className="user_detail">
                                                             <span className="message-time">{item.created_at}</span>
-                                                            <h5 className="mb-0 name">{item.full_name}</h5>
+                                                            <h6 className="mb-0 name">{item.full_name}</h6>
                                                             {/* {/* <div className="message-count">2</div> */}
                                                         </div>
                                                         <div className="vcentered info-combo">
@@ -901,7 +901,7 @@ const ChatBox = (props) =>{
                                                         <div className="contacts_info">
                                                             <div className="user_detail">
                                                                 <span className="message-time">{item.created_at}</span>
-                                                                <h5 className="mb-0 name">{item.first_name}</h5>
+                                                                <h6 className="mb-0 name">{item.first_name}</h6>
                                                                 {/* <div className="message-count">2</div> */}
                                                             </div>
                                                             <div className="vcentered info-combo">
@@ -1031,7 +1031,7 @@ const ChatBox = (props) =>{
                                         {uploadImage ?                                 
                                         <div className="send-photos-modal">
                                             <a href="javascript:void(0)" className="theme-txt done-media" onClick={convertBlobTobase64}>Done</a>
-                                            <a href="javascript:void(0)"  onClick={(() => clearPhotoState())} className="close-image-btn"><span className="close-image-btn "><img src="/assets/images/btn_close.png" /></span></a>
+                                            <a href="javascript:void(0)"  onClick={(() => clearPhotoState())} className="close-image-btn"><span className="close-image-btn "><img src="/assets/images/btn_msg_close.png" /></span></a>
                                             <h6 className="text-center">Send Photos</h6>
                                             
                                             <div className="send-photos-listing d-flex my-4">
@@ -1088,7 +1088,8 @@ const ChatBox = (props) =>{
                                                     <div>
                                                     <a href="javascript:void(0)" onClick={()=> setUploadImage(!uploadImage)} >
                                                         {/* <input id="uploadfile" type="file" accept=".png, .jpg, .jpeg, .PNG, .JPG, .JPEG" /> */}
-                                                        <i className="far fa-image" />
+                                                        <img src="/assets/images/msg-icon.png" alt="add media" />
+                                                        {/* <i className="far fa-image" /> */}
                                                         </a>
                                                     </div>
                                                 </label>

@@ -195,7 +195,8 @@ $(document).ready(function () {
     
 
     //$('.search-people-row').jScrollPane();
-    var pane = $('.search-people-row');
+
+    var pane = jQuery('.search-people-row');
     pane.jScrollPane({
 
         verticalDragMinHeight: 80,
@@ -262,7 +263,7 @@ function countryDropdown(seletor) {
 countryDropdown('#country');
 
 
-
+/*
 $(function () {
     $("#age-range").slider({
         range: true,
@@ -308,11 +309,15 @@ $(function () {
 
 
 
+
 $('input[type="range"]').rangeslider({
     polyfill: false
 });
 
+*/
+
 $(document).ready(function () {
+    /*
     var output = $(".range-slider .output");
     var range = $('.range-slider input[type="range"]');
 
@@ -348,7 +353,7 @@ $(document).ready(function () {
         }
     });
     
-    
+    */
 /* become member */
     
     // $("#edit-profile").click(function(){
@@ -375,6 +380,8 @@ $(document).ready(function () {
     //     $(".all-gifts-wrapper").addClass("active");
         
     // })
+    
+    
     
     $("#edit-first-step").click(function(){ 
         $(".edit-second-step").addClass("active-second-step");

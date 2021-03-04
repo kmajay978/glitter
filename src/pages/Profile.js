@@ -608,7 +608,8 @@ const handleCheck = (e) => {
         return (
           
           <div className="edit-first-step">
-             <div className="d-flex align-items-center"> <h4 className="theme-txt text-center mb-4 ml-3">Your Information</h4>
+             <div className="position-relative w-100 mb-5">
+                <h4 className="theme-txt text-center">Your Information</h4>
           </div>
               <div className="form-group">
                   <label className="d-block">First Name</label>
@@ -626,7 +627,9 @@ const handleCheck = (e) => {
               </div>
 
              <div className="choose-gender d-flex my-4">
+               
                             <div className="form-group">
+                                <label className="d-block">DOB</label>
                             {form.gender == 1 }
                               <input type="radio" id="female" name="gender" value={1} checked={form.gender == 1 ? "checked" : ""} onChange={ handleChange }  placeholder="Female" />
                               <label htmlFor="female">Female</label>
@@ -654,8 +657,10 @@ const handleCheck = (e) => {
         return (
           
           <div className="edit-second-step">
-              <div className="d-flex align-items-center"> <a href="javascript:void(0)" className="login-back-2 btn-back position-relative mb-4" onClick={() => setStep(step - 1)} ><i className="fas fa-chevron-left" /></a> <h4 className="theme-txt text-center mb-4 ml-3">Your Information</h4>
-          </div>
+              <div className="position-relative w-100 mb-5">
+                 <a href="javascript:void(0)" className="login-back-2 btn-back  mb-4" onClick={() => setStep(step - 1)} ><i className="fas fa-chevron-left" /></a>
+                  <h4 className="theme-txt text-center mb-4 ml-3">Your Information</h4>
+               </div>
           <div className="form-group">
               <label for="">Height</label>
               <input className="form-control bg-trsp" name="height" type="text" value={form.height} onChange ={handleChange}/>
@@ -766,7 +771,7 @@ const handleCheck = (e) => {
         <div className="col-md-4 border-rt">
           <div className="user-profile becomevip-wrapper__innerblock p-0">
             <div className="user-profile__details text-center">
-            < img onError={(e) => addDefaultSrc(e)} src={!!profileData.profile_images ? profileData.profile_images : returnDefaultImage()} alt="user" className="user-profile__image img-circle medium-image" onClick={handleImage}/>
+            < img onError={(e) => addDefaultSrc(e)} src={!!profileData.profile_images ? profileData.profile_images : returnDefaultImage()} alt="user" className="user-profile__image img-circle" onClick={handleImage}/>
            
               <div className="user-profile__details__data">
                 <h5 className="user-profile__name">{!!profileData ?profileData.first_name +' '+ profileData.last_name :"" } </h5>
@@ -783,7 +788,7 @@ const handleCheck = (e) => {
                 </div>
               </div>
             </div>
-            <div className="user-profile__status">
+            <div className="user-profile__status py-3 mt-4">
               <ul className="d-flex flex-wrap justify-content-center">
                 <li><span className="user-profile__status__heading d-block text-uppercase">Liked</span>
                   <span className="user-profile__status__counter d-block">  
@@ -808,7 +813,7 @@ const handleCheck = (e) => {
             <ul>
            
               <li><a href="javascript:void(0)" id="gift-modal" onClick={handleGift}><img src="/assets/images/gift-icon.png" alt="gifts" />
-                  <h6>Gifts</h6> <i className="fas fa-chevron-right"/>
+                  <h6 className="mb-0">Gifts</h6> <i className="fas fa-chevron-right"/>
                 </a></li>
               {/* <li><a href="javascript:void(0)" id="edit-profile" onClick={handleShow}><img src="/assets/images/edit-profile.png" alt="Edit Profile" />
                   <h6>Edit Profile</h6> <i className="fas fa-chevron-right" />
@@ -817,20 +822,20 @@ const handleCheck = (e) => {
                   <h6>Recent Call</h6> <i className="fas fa-chevron-right" />
                 </a></li>
               <li><a href="javascript:void(0)" id="coin-spend" onClick={handleCoinHistory}><img src="/assets/images/diamond-coin.png" alt="Coins" />
-                  <h6>Coins</h6> <i className="fas fa-chevron-right" />
+                  <h6 className="mb-0">Coins</h6> <i className="fas fa-chevron-right" />
                 </a></li>
             </ul>
           </div>
           <div className="user-profile__options becomevip-wrapper__innerblock">
             <ul>
               <li><a href="javascript:void(0)" id="blacklist" onClick={handleBlockList}>
-                  <h6><img src="/assets/images/blacklist-icon.png" alt="Blacklist" />Blacklist</h6> <i className="fas fa-chevron-right" />
+                  <h6 className="mb-0"><img src="/assets/images/blacklist-icon.png" alt="Blacklist" />Blacklist</h6> <i className="fas fa-chevron-right" />
                 </a></li>
               <li><a href="javascript:void(0)" id="setting" onClick={handleSettingShow}>
-                  <h6><img src="/assets/images/setting-icon.png" alt="setting" />Settings</h6> <i className="fas fa-chevron-right" />
+                  <h6 className="mb-0"><img src="/assets/images/setting-icon.png" alt="setting" />Settings</h6> <i className="fas fa-chevron-right" />
                 </a></li>
                 <li><a href="javascript:void(0)" id="coin-spend" onClick={handleBuyCoins}><img src="/assets/images/diamond-coin.png" alt="Coins" />
-                  <h6>Buy Coins</h6> <i className="fas fa-chevron-right" />
+                  <h6 className="mb-0">Buy Coins</h6> <i className="fas fa-chevron-right" />
                 </a></li>
                
             </ul>
@@ -913,12 +918,10 @@ const handleCheck = (e) => {
   </section>
 
   <Modal className =" edit-payment-modal" show={showStripe} onHide={() => setShowStripe(false)} backdrop="static" keyboard={false}>
-        <div className="edit-payment-modal__inner">
-        
-          <div className="d-flex align-items-center">
-            <h4 className="theme-txt text-center mb-4 ml-3">Your Card details</h4>
-          </div>
-        
+        <div className="edit-payment-modal__inner">       
+          
+            <h4 className="theme-txt text-center mb-4">Your Card details</h4>
+           
           <StripeForm />
 
            </div>
@@ -955,7 +958,7 @@ const handleCheck = (e) => {
     <Modal className ="coin-spend-modal" show={showCoins} onHide={() => setShowCoin(false)} backdrop="static" keyboard={false}>
     <div className="edit-profile-modal__inner">
           <h4 className="theme-txt text-center mb-4 ">Coin Spend</h4>
-          <h4 className="total-coins-spend text-center mb-4">{coinSpend}</h4>
+          <h5 className="total-coins-spend text-center mb-4">{coinSpend}</h5>
       {!!coinHistory&& coinHistory.map((item , index)=> {
      return  <div className="coin-spend">
         <div className="coin-spend__host">
@@ -963,7 +966,7 @@ const handleCheck = (e) => {
         </div>
         <div className="coins-spend__hostname">
           <span>{item.receiver_name}</span> <span className="counter">{item.receiver_age}</span>
-          <div className="coin-spend__total"><img src="/assets/images/diamond-sm.png" />{item.coins}</div>
+          <div className="coin-spend__total mt-2"><img src="/assets/images/diamond-sm.png" />{item.coins}</div>
         </div>
         <div className="coin-spend__gift">
           <img src={item.gift_image} alt="gift" />
@@ -1025,10 +1028,10 @@ const handleCheck = (e) => {
 
   <Modal className ="setting-modal" show={showSetting} onHide={() => setShowSetting(false)} backdrop="static" keyboard={false}>
     <div className="edit-profile-modal__inner">
-    <Modal.Header>
-          <Modal.Title> <h4 className="theme-txt text-center mb-4 ">Settings</h4>
-          </Modal.Title>
-      </Modal.Header>
+   
+          <h4 className="theme-txt text-center mb-4 ">Settings</h4>
+         
+     
       <div className="user-profile__options becomevip-wrapper__innerblock">
         <ul>
           <li><a href="javascript:void(0)">
@@ -1136,32 +1139,21 @@ const handleCheck = (e) => {
 </Modal>
 
   <Modal className="about-model" show={showAbout} onHide={() => setShowAbout(false)} >
-  <Modal.Header closeButton >
-    <Modal.Title>
-  <h2>About Glitter</h2>
-  </Modal.Title>
-      </Modal.Header> 
+  <h4 class="theme-txt text-center mb-4 ">About Glitter</h4>
       <AboutGlitter/>
+      <a href="javascript:void(0)" className="modal-close" onClick={() => setShowAbout(false)}><img src="/assets/images/btn_close.png" /></a>
   </Modal>
 
   <Modal className="privacy-model" show={showPrivacy} onHide={() => setShowPrivacy(false)} >
-  <Modal.Header closeButton >
-    <Modal.Title>
-  <h2>Privacy policy</h2>
-  </Modal.Title>
-      </Modal.Header> 
+  <h4 className="theme-txt text-center mb-4 ">Privacy Policy</h4>
       <PrivacyPolicy/>
+         <a href="javascript:void(0)" className="modal-close" onClick={() => setShowPrivacy(false)}><img src="/assets/images/btn_close.png" /></a>
+      
   </Modal>
 
   <Modal className="share-model" show={showShare} onHide={() => setShowShare(false)} >
-  <Modal.Header closeButton >
-    <Modal.Title>
-  <h4 className="theme-txt">Share Glitter</h4>
-  </Modal.Title>
-      </Modal.Header> 
-        <div className="share__icons">
-
-        
+    <h4 class="theme-txt text-center mb-4 ">Share Glitter</h4>
+       <div className="share__icons d-flex justify-content-center">
         <div className="some-network">
           <FacebookShareButton url={shareUrl} quote={title} className="share-button" >
             <FacebookIcon  round />
@@ -1194,6 +1186,8 @@ const handleCheck = (e) => {
         </div>
 
         </div>
+        <a href="javascript:void(0)" className="modal-close" onClick={() => setShowShare(false)}><img src="/assets/images/btn_close.png" /></a>
+      
   </Modal>
 
   <div className={isOn ? 'all-gifts-wrapper active': 'all-gifts-wrapper '} >

@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import axios from "axios";
 import NavLinks from '../components/Nav';
 import FilterSide from '../components/Filter';
-import { ADD_STATUS , FRIENDLIST_API , GET_STATUS , VIEW_LIKE_STATUS} from '../components/Api';
+import { ADD_STATUS , FRIENDLIST_API , GET_STATUS , VIEW_LIKE_STATUS , DETUCT_THOUSAND_COIN} from '../components/Api';
 import {Modal, ModalBody , Dropdown} from 'react-bootstrap';
 import OwlCarousel from 'react-owl-carousel2';
 import {SOCKET} from '../components/Config';
@@ -517,17 +517,30 @@ const openFileUploder = () =>{
       const audDetails = LiveModel;
       const bodyParameters ={
       session_id: localStorage.getItem("session_id"),
+      live_user_id:userData.user_id,
+      channel_name:audDetails.item.channel_name
       }
-      // axios.post (bodyParameters)
+      axios.post (DETUCT_THOUSAND_COIN , bodyParameters)
+        .then((response)=> {
+           if (response.status==200 && response.data.error == false){
+            if (!!audDetails && audDetails.item.is_live) {
+              SOCKET.emit("addAudienceToLiveVideo", {
+                  user_id: userData.user_id,
+                  channel_name: audDetails.item.channel_name,
+                  channel_token: audDetails.item.channel_token,
+                  is_host: false
+              })
+          }
+           }
+           else{
 
-        // if (!!audDetails && audDetails.item.is_live) {
-        //     SOCKET.emit("addAudienceToLiveVideo", {
-        //         user_id: userData.user_id,
-        //         channel_name: audDetails.item.channel_name,
-        //         channel_token: audDetails.item.channel_token,
-        //         is_host: false
-        //     })
-        // }
+           }
+        }, (err) =>{
+
+        });
+      }
+
+       
     }
 
     const makeMeAudience = ( item ) => {
@@ -558,7 +571,7 @@ console.log(statusId);
             <Link to="/">
               <img src="/assets/images/glitters.png" alt="Glitters" />
             </Link>
-            <span className="chat-point">
+            <span className="chat-point position-relative">
               <a href="javascript:void(0)">
                 <i className="fas fa-comment" />
               </a>
@@ -614,7 +627,7 @@ console.log(statusId);
                return <div className=" main col-md-3" id={item.user_id} onClick = {() =>SingleProfileView(item.user_id)}>
                   <div className="sp-singular">
                     <a href="javascript:void(0)">
-                      <figure>
+                      <figure className="mb-0">
                         <img onError={(e) => addDefaultSrc(e)} src={!!item.profile_images ? item.profile_images : returnDefaultImage()} alt="Marlene" />
                       </figure>
                       <div className="sp-singular-content">
@@ -773,7 +786,7 @@ console.log(statusId);
           <form action="" id="glitter_status" >
                   <div className="modal-body p-0">
                     <div className="upload__status__opt text-center">
-                    <h2>Upload Status</h2>
+                    <h4 className="theme-txt">Upload Status</h4>
                     <div className="upload-status d-flex justify-content-center mt-5">
                       <a id="upload__media" className="upload__media bg-grd-clr"  href="javascript:void(0)"onClick={openFileUploder}>
                       <i className="fas fa-camera"></i>
@@ -825,5 +838,5 @@ console.log(statusId);
 
 
     )
-}
+
 export default SearchHome;

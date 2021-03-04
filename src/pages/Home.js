@@ -32,7 +32,7 @@ const Home = (props) =>{
                   <a href="javascript:void(0)">
               <Logo/>      
                   </a>
-                  <span className="chat-point">
+                  <span className="chat-point position-relative">
                     <a href="javascript:void(0)" onClick={handleChat}>
                       <i className="fas fa-comment" /> 
                     </a>    
@@ -45,7 +45,7 @@ const Home = (props) =>{
                 {/* End filter here */}
               </div>
               <div className="col-lg-9 main-bar p-3">
-                <div className="tab-top d-flex flex-wrap-wrap">
+                <div className="tab-top d-flex flex-wrap">
                   {/* <div className="live-icon">
                     <img src="/assets/images/live.png" alt="Live" />
                   </div> */}
