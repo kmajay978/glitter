@@ -10,7 +10,8 @@ import {useSelector, useDispatch} from "react-redux";
 import {userProfile, audioCall, audioCallUser} from "../features/userSlice";
 import {changeImageLinkDomain, checkLiveDomain, returnDefaultImage} from "../commonFunctions";
 
-let videoCallStatus = 0, videoCallParams, interval;
+let videoCallStatus = 0, videoCallParams, interval,
+manageCoinsTimeViewsInterval, manageCoinsTimeViewsCounter = 0, manageTimeInterval;
 
 const clearChatState = (dispatch) => {
   dispatch(audioCall(null))
@@ -24,6 +25,8 @@ const AudioChat = () =>{
   const videoCallState = useSelector(audioCallUser); //using redux useSelector here
 
   const [isExpired, setIsExpired] = useState(false);
+  const [totalCoinsLeft, setTotalCoinsLeft] = useState(null);
+  const [totalTimeLeft, setTotalTimeLeft] = useState(null);
 
   const userData = useSelector(userProfile).user.profile; //using redux useSelector here
 console.log(userData, "userdata..")
@@ -41,6 +44,8 @@ console.log(userData, "userdata..")
     }
     // localStorage.removeItem("videoCallPageRefresh");
     clearChatState(dispatch);
+    clearInterval(manageCoinsTimeViewsInterval);
+    clearInterval(manageTimeInterval);
     window.location.href = checkLiveDomain() ? "/glitter-web/chat" : "/chat";
   }
   useEffect(() =>{
@@ -109,6 +114,49 @@ console.log(userData, "userdata..")
       }
     });
 
+    SOCKET.on('end_one_to_one_audio_call_no_coin_warning', (data) => {
+      if (data.channel_name == videoCallParams.channel_name) {
+        if (Number(userData.user_id) === data.user_id) {
+          alert("No coins Left")
+          endCall(false)
+        }
+        else { // audience..
+          alert("Your friend is left with no coins. Sorry the call is declining.")
+          endCall(false)
+        }
+      }
+    })
+
+    SOCKET.on('end_one_to_one_audio_call_warning', (data) => {
+      if (data.channel_name == videoCallParams.channel_name) {
+        if (Number(userData.user_id) === data.user_id) {
+          alert(data.msg)
+          endCall(false)
+        }
+        else { // audience..
+          alert(data.msg)
+          endCall(false)
+        }
+      }
+    })
+
+    SOCKET.on('one_to_one_audio_manage_coins_time_views', (data) => {
+      if (data.channel_name === videoCallParams.channel_name && userData.user_id == data.user_id) {
+        if (data.msg === "") {
+          setTotalCoinsLeft(data.coins);
+        }
+        else {
+          alert(data.msg)
+        }
+      }
+    })
+
+    SOCKET.on('one_to_one_audio_manage_time', (data) => {
+      if (data.channel_name == videoCallParams.channel_name) {
+        setTotalTimeLeft(data.time)
+      }
+    })
+
     SOCKET.on('sender_show_video_call', (data) => {
       if ((data.user_from_id == videoCallParams.user_from_id && data.user_to_id == videoCallParams.user_to_id)
           ||
@@ -143,6 +191,7 @@ console.log(userData, "userdata..")
         // change backend status === 1 if loggedIn user is "user_to"
         const userDetails = data.users_detail;
         if (!!userData && (data.user_to_id == userData.user_id)) {
+          manageAudienceHostDetails()
           for (let i in userDetails) {
             if (userDetails[i].id != userData.user_id) {
               document.getElementById("audioCallingPic").setAttribute("src", changeImageLinkDomain() +userDetails[i].profilePics)
@@ -157,6 +206,7 @@ console.log(userData, "userdata..")
             status: 1
           });
           // initate video call for receiver...
+          
           const option = {
             appID: "52cacdcd9b5e4b418ac2dca58f69670c",
             channel: data.videoCallState.channel_name,
@@ -194,6 +244,12 @@ console.log(userData, "userdata..")
               break;
             }
           }
+          manageAudienceHostDetails()
+          manageTimeInterval = window.setInterval(() => {
+            SOCKET.emit("one_to_one_audio_manage_time", {
+              channel_name: videoCallState.channel_name
+            })
+          }, 1000)
           
           // initate video call for sender...
           const option = {
@@ -209,6 +265,23 @@ console.log(userData, "userdata..")
       }
     });
   }, [])
+
+  const audioManageCoinsTimeViews = () => {
+    SOCKET.emit("one_to_one_audio_manage_coins_time_views", {
+      channel_name: videoCallParams.channel_name,
+      user_id: userData.user_id,
+      sender_id: videoCallParams.user_from_id,
+      counter: manageCoinsTimeViewsCounter
+    })
+  }
+
+  const manageAudienceHostDetails = () => {
+    audioManageCoinsTimeViews()
+    manageCoinsTimeViewsInterval = window.setInterval(() => {
+      audioManageCoinsTimeViews()
+      manageCoinsTimeViewsCounter = manageCoinsTimeViewsCounter + 10
+    }, 10000)
+  }
 
   const endCall = (showMsg) => {
     if (params.receiver == "false") {
@@ -268,7 +341,9 @@ console.log(userData, "userdata..")
               </div>
               <div className="remaining-coins ml-4">
                 <img src="/assets/images/diamond-coin.png" alt="Coins" />
-                <span>{!!userData&& userData.coins!=0 ?  userData.coins :  "0" }</span>
+                {
+                      <span>{totalCoinsLeft !== null && totalCoinsLeft}</span>
+                    }
               </div>
             </div>
           </div>
@@ -318,14 +393,17 @@ console.log(userData, "userdata..")
          />
 
        </div>
-       {/* <div className="charges-reminder-txt">
-         <p>After 25 Seconds, you will be charged 120 coins per minute</p>
-       </div> */}
+       {
+            (!!userData && !!videoCallParams && userData.user_id == videoCallParams.user_from_id) &&
+            <div className="charges-reminder-txt">
+              <p>After 25 Seconds, you will be charged 120 coins per minute</p>
+            </div>
+          }
        <div className="vc-timer-box text-center">
-         {/* <div className="timer">
+         <div className="timer">
            <i className="far fa-clock"></i>
-           <span>25 Sec</span>
-         </div> */}
+           <span>{totalTimeLeft}</span>
+         </div>
          {/* <div className="vc-sppiner">
            <a className="sppiner bg-grd-clr" href="javascript:void(0)">
              <img src="/assets/images/sppiner.png" alt="Sppiner"/>

@@ -4319,8 +4319,8 @@ div#remote_video_.video_live > div:last-child {
 .end-video.bg-grd-clr{
 
     position: absolute;
-    left: 0;
-    right: 0;
+    /* left: 0; */
+    right: 10px;
     margin: 0 auto;
     top: 28px;
     width: 100px;
