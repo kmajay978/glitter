@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import axios from "axios";
 import NavLinks from '../components/Nav';
 import FilterSide from '../components/Filter';
-import { ADD_STATUS , FRIENDLIST_API , GET_STATUS , VIEW_LIKE_STATUS} from '../components/Api';
+import { ADD_STATUS , FRIENDLIST_API , GET_STATUS , VIEW_LIKE_STATUS , DETUCT_THOUSAND_COIN} from '../components/Api';
 import {Modal, ModalBody , Dropdown} from 'react-bootstrap';
 import OwlCarousel from 'react-owl-carousel2';
 import {SOCKET} from '../components/Config';
@@ -66,7 +66,10 @@ const SearchHome = () =>
     const [video, setVideo] = useState(null);
     const [showUploadStatus,setUploadStatus] = useState(false);
     const [isLoaded, setIsLoaded] = useState(false);
+    const [LiveModel , setLiveModel] = useState({modal: false, item: null});
+    const [audLive, setAudLive] = useState(false)
 
+    console.log(audLive, "audLive..")
     userData = useSelector(userProfile).user.profile; //using redux useSelector here
  const options = {
   loop: false,
@@ -442,6 +445,7 @@ const openFileUploder = () =>{
  
       SOCKET.on('sendAudienceToLiveVideo', (data) => {
         console.log(userData, data, "kkkkkk")
+        setAudLive(false)
           if (userData.user_id === data.user_id) {
               // $('#live-modal').hide();
               // setShowLive(false)
@@ -511,22 +515,49 @@ const openFileUploder = () =>{
         generateLiveVideoChatToken(dispatch, history, bodyParameters, call_type, user_id, uuidv4(), SOCKET);
 
     }
-    const makeMeAudience = ( item ) => {
-        setFriendId(item.user_id);
-        // if(!!item.result.status_id){
-        //  item.result.map((item , index)=>{
-        //   setStatusId(item.status_id);
-        //  })
-        // }
-        if (item.is_live) {
-            SOCKET.emit("addAudienceToLiveVideo", {
-                user_id: userData.user_id,
-                channel_name: item.channel_name,
-                channel_token: item.channel_token,
-                is_host: false
-            })
+
+    const watchLive = () => {
+      if (!audLive) {
+        const audDetails = LiveModel;
+        console.log(audDetails, "audDetails...")
+        const bodyParameters ={
+        session_id: localStorage.getItem("session_id"),
+        live_user_id: audDetails.item.user_id,
+        channel_name:audDetails.item.channel_name
         }
-    }
+        setAudLive(true)
+        axios.post (DETUCT_THOUSAND_COIN , bodyParameters)
+          .then((response)=> {
+            console.log(response, "hhhh")
+             if (response.data.status_code ==200 && response.data.error == "false"){
+              if (!!audDetails && audDetails.item.is_live) {
+                SOCKET.emit("addAudienceToLiveVideo", {
+                    user_id: userData.user_id,
+                    channel_name: audDetails.item.channel_name,
+                    channel_token: audDetails.item.channel_token,
+                    is_host: false
+                })
+            }
+             }
+             else{
+              NotificationManager.error(response.data.message);
+              setAudLive(false)
+             }
+          }, (err) =>{
+            NotificationManager.error(err.message);
+            setAudLive(false)
+          });
+      }
+    
+      }
+
+       
+    
+
+    const makeMeAudience = ( item ) => {
+        setLiveModel({modal: true, item});
+     }
+
 console.log(statusId);
     const convertToHtml = (data) => {
        const convertedHtml =  {__html: data};
@@ -540,6 +571,7 @@ console.log(statusId);
       }, 1000)
       return <video id= {video} src={video} alt="status" />
     }
+
     return(
   <section className="home-wrapper">
   <img className="bg-mask" src="/assets/images/mask-bg.png" alt="Mask" />
@@ -576,9 +608,9 @@ console.log(statusId);
         {friendList.map((item, i) =>(
            (item.statuses.length > 0 ||  item.is_live === true ) ?
           
-         <div className="users-listing__slider__items" onClick={() =>  makeMeAudience(item )} id={item.user_id}  >
+         <div className="users-listing__slider__items" id={item.user_id} >
          
-            <div className="users-listing__slider__items__image" id="modal" data-toggle="modal" >
+            <div className="users-listing__slider__items__image" id="modal" data-toggle="modal" onClick={() =>  setFriendId(item.user_id)}>
            {!!friendList ? <img onError={(e) => addDefaultSrc(e)} src={!!item.profile_images ? item.profile_images : returnDefaultImage()} alt="marlene" /> : ""}
             
               
@@ -587,7 +619,7 @@ console.log(statusId);
             </div>
              {
                  item.is_live === true &&
-                 <span className="live">Live</span>
+                 <span  style={{cursor: "pointer"}} onClick={() =>  makeMeAudience(item )} className="live">Live</span>
              }
           </div>
           :""
@@ -726,6 +758,39 @@ console.log(statusId);
   {/* </div> */}
 
 {/* </div> */}
+<Modal className ="modal fade" id="group-live-modal" show={LiveModel.modal} onHide={() => setLiveModel({modal: false, item: null})} backdrop="static" keyboard={false}>
+
+        <div className="modal-dialog" role="document">
+            <div className="modal-content" style={{border: "none"}}>
+                <div className="modal-body p-0">
+                  <div className="group-live">
+                    <div className="group-live__header">
+                        <img src="/assets/images/diamond-sm.png" alt="balance"/> Balance : {!!userData&& userData.coins}
+                    </div>
+                          
+                    <div className="group-live__content text-center">
+                         <div className="total_coins d-flex align-items-center justify-content-center py-3">
+                             <div className="diamong__icon"><img src="/assets/images/diamond-coin.png" alt="balance"/></div>
+                         <h5>1000 Coins</h5>
+                         </div>
+                         <p>Pay 1000 coins to enter , they will also see what he is going to see inside the broadcaster room .</p>
+                         
+                         <div className="watch-live d-flex">
+                                 <a href="javascript:void(0)" style={{cursor: (audLive ? "default" : "pointer")}} className="btn btn-trsp" onClick={() => {if (!audLive) { setLiveModel({modal: false, item: null})}}}>Cancel</a>
+                                 <a href="javascript:void(0)" style={{cursor: (audLive ? "default" : "pointer")}} className="btn bg-grd-clr" onClick={watchLive}>{audLive ? "Wait..." : "Watch"}</a>
+                         </div>
+                    </div>
+                           
+                      
+                      
+                      
+                  </div> 
+                </div>
+            </div>            
+        </div>
+
+    
+</Modal>
 <Modal className ="theme-modal" id="upload-media-modal" show={showUploadStatus} onHide={() => setUploadStatus(false)} backdrop="static" keyboard={false}>
           {/* Modal start here */}
           {/* <div className="theme-modal" id="live-modal" tabIndex={-1} role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"> */}
@@ -785,5 +850,5 @@ console.log(statusId);
 
 
     )
-}
+                        }
 export default SearchHome;

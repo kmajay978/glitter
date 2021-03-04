@@ -334,7 +334,7 @@ const SingleProfile = (props) =>{
               <h5 className="mb-3">Interests</h5>
               <div className="interest-tags">
                 
-                {!!userData && Object.keys(userData.interest_hobbies).length >0 ?   
+                {!!userData && Object.keys(userData.interest_hobbies).length >1 ?   
                 <>
                  { Object.keys(userData.interest_hobbies).map((key) => (
                    <span> {userData.interest_hobbies[key]} </span>
