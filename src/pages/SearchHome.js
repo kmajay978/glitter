@@ -20,6 +20,8 @@ import { css } from "@emotion/core";
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import {friendStatus} from '../features/userSlice'
 import StatusUser from "../pages/StatusUser";
+import { Link } from "react-router-dom";
+
 
 let isMouseClick = false, startingPos = [], glitterUid, friendLists = [], userData= null, checkOnlineFrdsInterval;
 
@@ -105,8 +107,7 @@ const statusoptions = {
 const SingleProfileView = (id) =>{
   console.log(id,"idssss...");
   history.push({
-    pathname: '/single-profile',
-    userId: id 
+    pathname: '/'+id+'/single-profile'
   })
 }
 
@@ -326,8 +327,68 @@ const handleUploadStatus =() =>
        var tCtx = document.getElementById('textCanvas').getContext('2d'),
           imageElem = document.getElementById('image');
 
-          tCtx.canvas.width = tCtx.measureText(pencilData).width;
-          tCtx.fillText(pencilData, 0, 10);
+          // tCtx.canvas.width = tCtx.measureText(pencilData).width;
+          // tCtx.fillText(pencilData, 10, 50);
+    
+          tCtx.canvas.width = 375;
+          tCtx.canvas.height = 460;
+
+      //     tCtx.fillStyle = "#fff";
+      //     tCtx.font = '20px san-serif';
+      //     tCtx.canvas.setAttribute('style', 'background-color:#fff');
+      //     var textString = pencilData,
+      //         textWidth = tCtx.measureText(textString ).width;
+      // tCtx.fillText(textString , (tCtx.canvas.width/2) - (textWidth / 2), 100);
+
+// here
+// var canvas = document.createElement('canvas');
+// var ctx    = canvas.getContext('2d');
+// canvas.style.border = "1px solid black";
+// document.body.appendChild(canvas);
+
+function todo(ctx, text, fontSize, fontColor) {
+    var max_width  = 375;
+    var fontSize   =  12;
+    var lines      =  new Array();
+    var width = 0, i, j;
+    var result;
+    var color = fontColor || "white";
+
+    // Font and size is required for ctx.measureText()
+    ctx.font   = fontSize + "px Arial";
+
+    
+    // Start calculation
+    while ( text.length ) {
+    	for( i=text.length; ctx.measureText(text.substr(0,i)).width > max_width; i-- );
+    
+    	result = text.substr(0,i);
+    
+    	if ( i !== text.length )
+    		for( j=0; result.indexOf(" ",j) !== -1; j=result.indexOf(" ",j)+1 );
+    	
+    	lines.push( result.substr(0, j|| result.length) );
+    	width = Math.max( width, ctx.measureText(lines[ lines.length-1 ]).width );
+    	text  = text.substr( lines[ lines.length-1 ].length, text.length );
+    }
+    
+    
+    // Calculate canvas size, add margin
+    ctx.canvas.width  = 14 + width;
+    ctx.canvas.height =  8 + ( fontSize + 5 ) * lines.length;
+    ctx.font   = fontSize + "px Arial";
+
+    // Render
+    ctx.fillStyle = color;
+    for ( i=0, j=lines.length; i<j; ++i ) {
+    	ctx.fillText( lines[i], 8, 5 + fontSize + (fontSize+5) * i );
+    }
+}
+
+todo(tCtx, pencilData, 12, "white");
+$('canvas').remove();
+document.getElementById("image").remove()
+// Working here end
           imageElem.src = tCtx.canvas.toDataURL();
 
           const bodyParameters =new FormData();
@@ -423,7 +484,7 @@ const uploadImage = () => {
           SOCKET.emit("authenticate_friend_list_live", {
               session_id: localStorage.getItem("session_id")
           });
-      }, 5000)
+      }, 1000)
  
       SOCKET.on('sendAudienceToLiveVideo', (data) => {
         console.log(userData, data, "kkkkkk")
@@ -541,9 +602,9 @@ console.log(statusId);
       <div className="row no-gutters">
         <div className="col-lg-3 option-bar p-3 vh-100 position-fixed">
           <div className="logo-tab mb-5 d-flex justify-content-between align-items-start">
-            <a href="javascript:void(0)">
+            <Link to="/">
               <img src="/assets/images/glitters.png" alt="Glitters" />
-            </a>
+            </Link>
             <span className="chat-point position-relative">
               <a href="javascript:void(0)">
                 <i className="fas fa-comment" />

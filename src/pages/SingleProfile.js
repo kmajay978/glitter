@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {  useHistory } from 'react-router';
+import {  useHistory, useParams } from 'react-router';
 import axios from "axios";
 import NavLinks from '../components/Nav';
 import {GET_SINGLE_STATUS , GIFT_LIST_API , GIFT_PURCHASE_API , DISLIKE_USER , LIKE_USER, GET_USERPROFILE_API , BLOCK_USER_API , REPORT_USER_API } from '../components/Api';
@@ -15,10 +15,9 @@ import { useSelector } from "react-redux";
 import {userProfile} from '../features/userSlice';
 
 const SingleProfile = (props) =>{
+    const params = useParams();
     const [userData, setUser] = useState(null);
-   
-   
-    const [checkUid, setUserId] = useState(props.location.userId);
+    const [checkUid, setUserId] = useState(params.userId);
     const [blk, setBlock ]= useState(false);
     const [smShow, setSmShow] = useState(false);
     const [showGift , setShowGift] = useState(false);
@@ -28,6 +27,7 @@ const SingleProfile = (props) =>{
     const [statusData , setStatusData] = useState([]);
     const [isOn, toggleIsOn] = useToggle();
     const [ showStatus , setShowStatus] =useState(false);
+    const [ random, setRandom] = useState(0);
     
     const showAllStatus = () => setShowStatus(true);
     const showAllGift =() =>       toggleIsOn(true);
@@ -39,13 +39,13 @@ const SingleProfile = (props) =>{
       history.goBack();
     }
 
-    const handleChat = () => {
-      history.push("/chat");
-    }
+    // const handleChat = () => {
+    //   history.push("/chat");
+    // }
     
-    const handleVideo =() => {
-      history.push("/searching-profile");
-    }
+    // const handleVideo =() => {
+    //   history.push("/searching-profile");
+    // }
       const handleChange = e => { 
       setForm({
         ...form,
@@ -73,7 +73,14 @@ const SingleProfile = (props) =>{
             axios.post(GET_USERPROFILE_API,bodyParameters)
             .then((response) => {
               if (response.status === 200 && !response.status.error) {
+                if ( response.data.data.is_reported_message!=""){
+                form.report= response.data.data.is_reported_message
+                }
+                else {
+                  form.report="more"
+                }
             setUser(response.data.data);
+            
             console.log(response.data.data, "jjjj")
               }
          }, (error) => {
@@ -109,7 +116,8 @@ const SingleProfile = (props) =>{
        const {data : {result}} = await axios.post(GIFT_PURCHASE_API , bodyParameters)
        createNotification('gift-send');
         }
- 
+
+    // block the user 
         const handleblock = async() => {
           const bodyParameters={
             session_id : localStorage.getItem('session_id'),
@@ -118,19 +126,25 @@ const SingleProfile = (props) =>{
           axios.post(BLOCK_USER_API , bodyParameters)
           .then((response)=> {
            
-          if(response.status==200 && !response.error) {
-           createNotification('block');
-            setTimeout(() => {
-              setBlockData(true);
-            }, 1500);
+          if(response.status==200 && !response.error ) {
+              userData.is_blocked = !!response.data.block_status ? 0 : 1
+              setUser(userData);
+              setRandom(Math.random());
+           createNotification('blocked' , response.data.message );
+           console.log(response);
+            // setTimeout(() => {
+            //   setBlockData(true);
+            // }, 1500);
           }
           else {
-            setBlockData(false);
+            // setBlockData(false);
           }
+          createNotification('');
           }, (error) =>{
            
-            setBlockData(false);
+            // setBlockData(false);
           });
+          createNotification('');
         }
 
       const handleReport =() =>{
@@ -153,54 +167,56 @@ const SingleProfile = (props) =>{
               setSmShow(false);
             }, 1500);
             }
+           
          } ,(error) => {
        
-          createNotification('error');
+          createNotification('error' , error.message);
          });
+         createNotification('');
         };
 
-        const handleLike =() => {
-           const bodyParameters ={
-            session_id  : localStorage.getItem('session_id'),
-            user_id : checkUid
-            }
-            axios.post(LIKE_USER, bodyParameters).then(
-              (response) => {   
-                // if(response.error=="bad_request")
-                // {
-                //   localStorage.removeItem("session_id");
-                //   history.push('/login');
-                // }
-              },
-              (error) => {
-                if (error.toString().match("403")) {
-                localStorage.removeItem("session_id");
-                history.push('/login');
-              }
-            }
-            );
-        }
+        // const handleLike =() => {
+        //    const bodyParameters ={
+        //     session_id  : localStorage.getItem('session_id'),
+        //     user_id : checkUid
+        //     }
+        //     axios.post(LIKE_USER, bodyParameters).then(
+        //       (response) => {   
+        //         if(response.error=="bad_request")
+        //         {
+        //           localStorage.removeItem("session_id");
+        //           history.push('/login');
+        //         }
+        //       },
+        //       (error) => {
+        //         if (error.toString().match("403")) {
+        //         localStorage.removeItem("session_id");
+        //         history.push('/login');
+        //       }
+        //     }
+        //     );
+        // }
 
-        const handleDislike = () => {
-          const bodyParameters ={
-            session_id : localStorage.getItem('session_id'),
-            user_id : checkUid
-          }
-          axios.post(DISLIKE_USER, bodyParameters).then(
-            (response) => {
-            //   if(response.error=="bad_request")
-            //    {
-            //   localStorage.removeItem("session_id");
-            //   history.push('/login');
-            //  }
-            },
-            (error) => {
+        // const handleDislike = () => {
+        //   const bodyParameters ={
+        //     session_id : localStorage.getItem('session_id'),
+        //     user_id : checkUid
+        //   }
+        //   axios.post(DISLIKE_USER, bodyParameters).then(
+        //     (response) => {
+        //       if(response.error=="bad_request")
+        //        {
+        //       localStorage.removeItem("session_id");
+        //       history.push('/login');
+        //      }
+        //     },
+        //     (error) => {
          
-          }
-          );
-        }
-
-        const createNotification = (type ) => {
+        //   }
+        //   );
+        // }
+    
+        const createNotification = (type , message ) => {
   
           switch (type) {
               case 'report':
@@ -209,11 +225,11 @@ const SingleProfile = (props) =>{
                 case 'gift-send':
                 NotificationManager.success('gift send successfully' , 'gift');
                 break;
-                case 'block':
-                  NotificationManager.success('block Successfully ', 'block');
-                  break;
+                case 'blocked':
+              NotificationManager.success(message )
+              break; 
             case 'error':
-              NotificationManager.error('This User was already reported.');
+              NotificationManager.error(message);
               break; 
         };
         };
@@ -256,7 +272,7 @@ const SingleProfile = (props) =>{
         <div className="col-md-7">
           <div className="report-tab d-flex flex-wrap align-items-center justify-content-end ml-auto">
             <span className="block-cta">
-              <a className="theme-txt" href="javascript:void(0)" onClick={handleblock}>{blockData ?'unblock':'block'}</a>
+              <a className="theme-txt" href="javascript:void(0)" onClick={handleblock}>{!!userData && userData.is_blocked==1 ? "unblock" : "block"}</a>
           <NotificationContainer/>
             </span>
             <span className="report-cta">
@@ -314,7 +330,7 @@ const SingleProfile = (props) =>{
             </Carousel.Item>
             </Carousel>
           {/* </div> */}
-          <div className="action-tray d-flex flex-wrap justify-content-center align-items-center">
+          {/* <div className="action-tray d-flex flex-wrap justify-content-center align-items-center">
             <div className="close-btn tray-btn-s">
               <a href="javascript:void(0)" onClick={handleDislike}>×</a>
             </div>
@@ -333,7 +349,7 @@ const SingleProfile = (props) =>{
                 <i className="fas fa-heart" />
               </a>
             </div>
-          </div>
+          </div> */}
         </div>
         <div className="col-md-7 pl-5">
           <div className="profile-bio-inner my-3">
@@ -344,13 +360,14 @@ const SingleProfile = (props) =>{
             <div className="bio-interest">
               <h5 className="mb-3">Interests</h5>
               <div className="interest-tags">
-                {!!userData&& 
+                
+                {!!userData && Object.keys(userData.interest_hobbies).length >0 ?   
                 <>
-                 { Object.keys(userData.interest_hobbies).map((key) => {
-                  return <span> {userData.interest_hobbies[key]} </span>
-                })}
+                 { Object.keys(userData.interest_hobbies).map((key) => (
+                   <span> {userData.interest_hobbies[key]} </span>
+                 ))}
                 </>
-                }
+                : ""}
              
               </div>
             </div>
@@ -359,7 +376,7 @@ const SingleProfile = (props) =>{
               <ul>
                 <li>
                   <div className="theme-txt">Height:</div>
-              <div>{!!userData ?   `${userData.height} cm`   : ""}</div>
+              <div>{!!userData && userData.height!="" ?   `${userData.height} cm`   : ""}</div>
                 </li>
                 <li>
                   <div className="theme-txt">Weight:</div>
@@ -374,7 +391,7 @@ const SingleProfile = (props) =>{
                 : userData.relationship_status == '2'  ? "Married" 
                 : "Unmarried"}
                  </>}
-                 { <> </>}</div>
+                 </div>
                 </li>
                 <li>
                   <div className="theme-txt">join date:</div>
@@ -481,18 +498,18 @@ const SingleProfile = (props) =>{
       
         <div className="choose-report d-flex flex-wrap">
                             <div className="form-group">
-                              <input type="radio"  name="report" value="it's spam" id="first-option"  onChange={ handleChange } />
+                              <input type="radio"  name="report" value="it's spam" id="first-option"  onChange={ handleChange }checked={form.report == "it's spam" ? "checked" : ""} />
                               <label for="first-option"></label>
                               <span>it's Spam</span>  
                             </div>
                             <div className="form-group">
-                              <input type="radio"  name="report" value="Fake user"  id="second-option" onChange={ handleChange }  />
+                              <input type="radio"  name="report" value="Fake user"  id="second-option" onChange={ handleChange }  checked={form.report == "Fake user" ? "checked" : ""}  />
                               <label for="second-option"></label>
                               <span>Fake User</span>
                             </div>
                               
                             <div className="form-group">
-                              <input type="radio" name="report" value="more"  id="third-option" onChange={ handleChange }  />
+                              <input type="radio" name="report" value="more"  id="third-option" onChange={ handleChange }  checked={form.report == "more" ? "checked" : ""}  />
                               <label for="third-option"></label>
                               <span>Other</span>  
                           </div>
@@ -531,6 +548,8 @@ const SingleProfile = (props) =>{
             </a>
           </li>
         })}
+          <li>
+          </li>
           <li>
           </li>
           

@@ -7,7 +7,7 @@ import { GIFT_LIST_API , GIFT_PURCHASE_API ,LIKED_LIST, VISITOR_LIST_API ,FRIEND
 import {SOCKET} from '../components/Config';
 import { v4 as uuidv4 } from 'uuid';
 import { css } from "@emotion/core";
-import BarLoader from "react-spinners/BarLoader";
+import {BarLoader , SyncLoader} from "react-spinners";
 import Logo from '../components/Logo';
 import {selectUser, userProfile, videoCall, audioCall} from "../features/userSlice";
 import {NotificationContainer, NotificationManager} from 'react-notifications';
@@ -23,6 +23,8 @@ const override = css`
   border-radius: 50px !important;
   width: 95%;
 `;
+
+
 
 let messageList = [], receiver_id, userData, myInterval;
 let allBaseImages = [];
@@ -127,8 +129,6 @@ const ChatBox = (props) =>{
               }
         }
        
-        
-        
     }
 
     const getVisitors = async () => {  // Visitors here
@@ -179,12 +179,14 @@ const ChatBox = (props) =>{
   
 
     const AcceptUserRequest = (LikedUserId) =>{
+      
         const bodyParameters = {
             session_id : sessionId,
             id : LikedUserId
         }
         axios.post(ACCEPT_REQUEST_API , bodyParameters)
             .then((response) => {
+                
                 // if(response.error=="bad_request")
                 //  {
                 //   localStorage.removeItem("session_id");
@@ -192,7 +194,9 @@ const ChatBox = (props) =>{
                 //  }
                 if(response.status==200)
                 {
+                    alert(123);
                     createNotification('accept');
+                   
                 }
             }, (error) => {
                 if (error.toString().match("403")) {
@@ -202,9 +206,15 @@ const ChatBox = (props) =>{
             });
 
     }
+     // onclick vistior list then open single profile 
+      const handleVistior =(userId) => {
+      history.push({
+      pathname: '/'+userId+'/single-profile',
+     
+      })
+      }
 
-
-    //all gift
+      //all gift
     const handleGift = async() =>{
         toggleIsOn(true);
         const bodyParameters = {
@@ -324,7 +334,7 @@ const ChatBox = (props) =>{
                 // + (text.length > count ? "*********" : "");
                 for(var i=0 ; i<=text.length ; i++){
                     // text.replace(text.substr(1,text.length-3));
-                    var result = text.slice(0, count)+ (text.length > count ? "*********" : "");
+                    var result = text.slice(0, count)+ (text.length > count ? "*******" : "");
                 } 
                 return result;
             }
@@ -606,10 +616,10 @@ const ChatBox = (props) =>{
     };
 
     useEffect(() => {
-        console.log(recording, "record....")
+        console.log(recording, "record....");
     }, [recording])
     const sendVoiceNote = () => {
-        console.log(recording, "recordddddddd")
+        console.log(recording, "recordddddddd");
         if (!dummyMediaRc) {
             var constraints = {audio: true};
             let recordAudio = false;
@@ -636,7 +646,7 @@ const ChatBox = (props) =>{
                     // Start recording
                     mediaRecorder.start();
                 }).catch(function (err) {
-                    createNotification('error-message')
+                    createNotification('error-message');
                     alert(err.message)
                 })
             }
@@ -786,8 +796,6 @@ const ChatBox = (props) =>{
                             <div className="tab-content" role="tablist">
                                 <div id="like" className="contacts-outter-wrapper tab-pane fade show active" role="tabpanel" aria-labelledby="tab-like">
                                     <div className="contacts-outter">
-
-                                        {/* { isLoaded && */}
                                         <ul className="nav contacts" role="tablist">
 
                                             { Likes.map((item, i) => (
@@ -799,7 +807,7 @@ const ChatBox = (props) =>{
                                                         <div className="contacts_info">
                                                             <div className="user_detail">
                                                                 <span className="message-time">{item.created_at}</span>
-                                                                <h5 className="mb-0 name">{item.first_name}</h5>
+                                                                <h6 className="mb-0 name">{item.first_name}</h6>
                                                                 {/* <div className="message-count">2</div> */}
                                                             </div>
                                                             <div className="vcentered info-combo">
@@ -818,7 +826,7 @@ const ChatBox = (props) =>{
                                                         <div className="contacts_info">
                                                             <div className="user_detail">
                                                                 <span className="message-time">{item.created_at}</span>
-                                                                <h5 className="mb-0 name">{stringLimit(item.first_name , 3)  +" "}.{" " + item.age}</h5>
+                                                                <h6 className="mb-0 name">{stringLimit(item.first_name , 3)  +" "}.{" " + item.age}</h6>
                                                                 {/* <div className="message-count">2</div> */}
                                                             </div>
                                                             <div className="vcentered info-combo">
@@ -828,14 +836,14 @@ const ChatBox = (props) =>{
                                                     </a>
 
                                                 </li>)
-                                                 
-
+                                           
                                             ))}
                                           
                                         </ul>
-                                        {/* } */}
-                                        <NotificationContainer/>
+                                     
+                                 
                                     </div>
+                                    <NotificationContainer/>
                                 </div>
                                 <div id="visitors" className="contacts-outter-wrapper tab-pane fade" role="tabpanel" aria-labelledby="tab-visitors">
                                     <div className="contacts-outter">
@@ -844,12 +852,12 @@ const ChatBox = (props) =>{
                                             { Visitors.map((item, i) => (
                                                  (!!userData && userData.packages.length>0 ? 
                                             <li className="nav-item">
-                                                    <a className="nav-link" href="#chat-field" data-toggle="tab" role="tab" >
+                                                    <a className="nav-link" href="#chat-field" data-toggle="tab" role="tab" onClick={() => handleVistior(item.id)} >
                                                         <img alt={item.full_name} className="img-circle medium-image" src={item.profile_images}/>
                                                         <div className="contacts_info">
                                                             <div className="user_detail">
                                                                 <span className="message-time">{item.created_at}</span>
-                                                                <h5 className="mb-0 name">{item.full_name}</h5>
+                                                                <h6 className="mb-0 name">{item.full_name}</h6>
                                                                 {/* {/* <div className="message-count">2</div> */}
                                                             </div>
                                                             <div className="vcentered info-combo">
@@ -860,7 +868,7 @@ const ChatBox = (props) =>{
                                                 </li>
                                                 : 
                                                 <li className="nav-item">
-                                                <a className="nav-link" href="#chat-field" data-toggle="tab" role="tab" >
+                                                <a className="nav-link" href="#chat-field" style={{cursor: "default"}} data-toggle="tab" role="tab" >
                                                 <div className="chat__user__img">
                                                <i className="fas fa-lock"></i>
                                                     <img alt={item.full_name} className="img-circle medium-image" src={item.profile_images}/>
@@ -868,7 +876,7 @@ const ChatBox = (props) =>{
                                                     <div className="contacts_info">
                                                         <div className="user_detail">
                                                             <span className="message-time">{item.created_at}</span>
-                                                            <h5 className="mb-0 name">{item.full_name}</h5>
+                                                            <h6 className="mb-0 name">{item.full_name}</h6>
                                                             {/* {/* <div className="message-count">2</div> */}
                                                         </div>
                                                         <div className="vcentered info-combo">
@@ -894,7 +902,7 @@ const ChatBox = (props) =>{
                                                         <div className="contacts_info">
                                                             <div className="user_detail">
                                                                 <span className="message-time">{item.created_at}</span>
-                                                                <h5 className="mb-0 name">{item.first_name}</h5>
+                                                                <h6 className="mb-0 name">{item.first_name}</h6>
                                                                 {/* <div className="message-count">2</div> */}
                                                             </div>
                                                             <div className="vcentered info-combo">
@@ -908,7 +916,9 @@ const ChatBox = (props) =>{
                                     </div>
                                 </div>
                             </div>
+                           
                         </div>
+                        
                         {/* Chat box here */}
                         {GetActivity === 2 ?
                             <div className="col-md-8 tab-content chat-block" role="tablist">
@@ -1023,7 +1033,7 @@ const ChatBox = (props) =>{
                                         {uploadImage ?                                 
                                         <div className="send-photos-modal">
                                             <a href="javascript:void(0)" className="theme-txt done-media" onClick={convertBlobTobase64}>Done</a>
-                                            <a href="javascript:void(0)"  onClick={(() => clearPhotoState())} className="close-image-btn"><span className="close-image-btn "><img src="/assets/images/btn_close.png" /></span></a>
+                                            <a href="javascript:void(0)"  onClick={(() => clearPhotoState())} className="close-image-btn"><span className="close-image-btn "><img src="/assets/images/btn_msg_close.png" /></span></a>
                                             <h6 className="text-center">Send Photos</h6>
                                             
                                             <div className="send-photos-listing d-flex my-4">
@@ -1080,7 +1090,8 @@ const ChatBox = (props) =>{
                                                     <div>
                                                     <a href="javascript:void(0)" onClick={()=> setUploadImage(!uploadImage)} >
                                                         {/* <input id="uploadfile" type="file" accept=".png, .jpg, .jpeg, .PNG, .JPG, .JPEG" /> */}
-                                                        <i className="far fa-image" />
+                                                        <img src="/assets/images/msg-icon.png" alt="add media" />
+                                                        {/* <i className="far fa-image" /> */}
                                                         </a>
                                                     </div>
                                                 </label>
@@ -1123,7 +1134,7 @@ const ChatBox = (props) =>{
                                     <figcaption>Nothing To See</figcaption>
                                 </figure>
                             </div> }
-
+                       
                         {/* End chat box here */}
 
    

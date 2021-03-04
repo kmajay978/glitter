@@ -16,11 +16,14 @@ import AboutGlitter from '../components/AboutGlitter';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import { EmailIcon, FacebookIcon,  TelegramIcon, TwitterIcon, WhatsappIcon,EmailShareButton,FacebookShareButton,TelegramShareButton,WhatsappShareButton, TwitterShareButton,} from "react-share";
 import StripeForm from '../components/StripeForm';
-import DatePicker from 'react-date-picker';
+// import DatePicker from 'react-date-picker';
 import moment from 'moment'
 import SyncLoader from "react-spinners/SyncLoader";
 import { css } from "@emotion/core";
 import {addDefaultSrc, returnDefaultImage} from "../commonFunctions";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import Notifications from "react-notifications/lib/Notifications";
 
 const override = css`
     
@@ -91,7 +94,7 @@ const Profile = (props) =>{
   
   const userData = useSelector(userProfile).user.profile; //using redux useSelector here
 
-  const dates = moment(Dob).format('YYYY/MM/DD');
+  var dates = moment(Dob).format('YYYY/MM/DD');
   console.log(Dob , "...dob");
   console.log(dates , "date");
   // Getting form value here
@@ -138,22 +141,36 @@ const handleCheck = (e) => {
 
     const shareUrl = 'http://localhost:3000/';
     const title = 'glitter-app';
+    
+  //   useEffect(()=>{
+  //  var date = document.getElementsByName('dob')[0].value +=userData.dob ;
 
+  //  document.getElementsByClassName('react-date-picker__inputGroup__day')[0].value= 1;
 
-  // Fetching profile Data
-  var sessionId = localStorage.getItem("session_id")
-  const ProfileData = async() =>{
+  //  window.setTimeout(() => {
+  //   $("input[name='dob']").attr('value', '1997-05-05');
+  //   $('.react-date-picker__inputGroup__day').val('05');
+  //   $('.react-date-picker__inputGroup__month').val('05');
+  //   $('.react-date-picker__inputGroup__year').val('1997');
+  // }, 2000)
+   
+  //     console.log(date ,"hii");
+  //   },[show])
+    // console.log(userData.dob);
+    // Fetching profile Data
+   var sessionId = localStorage.getItem("session_id")
+   const ProfileData = async() =>{
 
     const bodyParameters = {
       session_id: sessionId,
       };
      const {data:{data}}= await axios.post(GET_LOGGEDPROFILE_API,bodyParameters)
-     console.log(moment(data.dob).format('ddd MMM DD YYYY   h:mm:ss') , "...hhhhh");
+     console.log(moment(data.dob).format('ddd MMM DD YYYY   h:mm:ss' ) , "...hhhhh");
       
     //  Setting data variable to state object 
       form.firstName = data.first_name
       form.lastName = data.last_name
-      form.dob = moment(data.dob).format('ddd MMM DD YYYY   h:mm:ss');
+      var Dob =moment(data.dob).format('ddd MMM DD YYYY   h:mm:ss')
       form.aboutMe = data.about_me
       form.height = data.height
       form.weight = data.weight
@@ -213,6 +230,7 @@ const handleCheck = (e) => {
    Notification('update');
  
    }
+   Notification('');
    }, (error) =>{
     if (error.toString().match("403")) {
       localStorage.removeItem("session_id");
@@ -235,7 +253,7 @@ const handleCheck = (e) => {
       bodyParameters.append("device_type", "" + 0);
       bodyParameters.append("first_name", "" + form.firstName);
       bodyParameters.append("last_name", form.lastName);
-      bodyParameters.append("dob", "" + form.dob);
+      bodyParameters.append("dob", "" + dates);
       bodyParameters.append("gender", "" + form.gender);
       bodyParameters.append("aboutMe", "" +  form.aboutMe);
       bodyParameters.append("height",  form.height);
@@ -257,6 +275,7 @@ const handleCheck = (e) => {
     // setShowImage(false);
     ProfileData();
    }
+   Notification('');
    }, (error) =>{
 
    });
@@ -266,7 +285,7 @@ const handleCheck = (e) => {
 
   const bodyParameters= {
   session_id : sessionId
- };
+  };
  axios.post(LOGOUT_API , bodyParameters)
  .then((response) => { 
    localStorage.removeItem("session_id");
@@ -290,21 +309,29 @@ const handleCheck = (e) => {
     const{data : {data,status_code, error}} = await axios.post(BLOCK_USERLIST_API ,bodyParameters)
   setLoadedModel(false);
     if(status_code==200){
-      setBlockData(data);
-     
-      setLoadedModel(false);
+      if(data.length>0){
+        setBlockData(data);
+        setLoadedModel(false);
+        setWarningMessage('');
+      }
+     else{
+       setWarningMessage('No user blocked');
+       setLoadedModel(false);
+     }
     }
-}
-catch (err) {
+    
+  }
+   catch (err) {
     if (err.toString().match("403")) {
         localStorage.removeItem("session_id");
         history.push('/login');
         setLoadedModel(true);
       }
-}
+  }
+  
    }
-   
-   const handleBlock = async() => {
+   // block user 
+   const handleBlock = (blockId) => {
     const bodyParameters={
       session_id : localStorage.getItem('session_id'),
       blocked_user: blockId,
@@ -313,15 +340,12 @@ catch (err) {
     axios.post(BLOCK_USER_API , bodyParameters)
     .then((response)=>
     {
-    //   if(response.error=="bad_request")
-    // {
-    //   localStorage.removeItem("session_id");
-    //   history.push('/login');
-    // }
+  
     if(response.status==200 && !response.error) {
-      createNotification('unblock');
+      createNoti('unblock');
       setTimeout(() => {
         setShowBlock(false);
+        setBlockData('');
       }, 1500);
     }
     }, (error) =>{
@@ -330,12 +354,12 @@ catch (err) {
         history.push('/login');
       }
     });
-    
+   createNoti('');
   }
-// console.log(blockId);
-  useEffect(() => {
-     handleBlock();
-   }, [blockId])
+  // console.log(blockId);
+  // useEffect(() => {
+  //    handleBlock();
+  //  }, [blockId])
 
    // coin package
    const handleBuyCoins = () => {
@@ -384,18 +408,19 @@ catch (err) {
         {
           setLoadedModel(false);
           setWarningMessage(response.data.message);
-          createNotification('error' , response.data.message);
+         
         }
-
+      
       }, (error)=> {
         setLoadedModel(false);
         if (error.toString().match("403")) {
           localStorage.removeItem("session_id");
-          createNotification('error' , error.message);
+          createNoti('error' , error.message);
           history.push('/login');
         }
         
       });
+ 
     }
     
    //all gift
@@ -559,11 +584,16 @@ catch (err) {
     setShowCoin(false);
     setCoinHistory('');
     setCoinSpend('');
+    createNoti('');
+    setWarningMessage('');
+
   }
 
   const closeBlockModel =() => {
     setShowBlock(false);
     setBlockData('');
+    createNoti('');
+    setWarningMessage('');
   }
 
     useEffect(() =>{
@@ -587,11 +617,11 @@ catch (err) {
   };
   };
 
- const createNotification = (type , message) => {
+ const createNoti = (type , message) => {
   
     switch (type) {
         case 'unblock':
-          NotificationManager.success('unblock Successfully ', 'unblock');
+          NotificationManager.success('user is unblock successfully' );
           break;
         case 'error':
         NotificationManager.error(message ,'Error message');
@@ -605,7 +635,8 @@ catch (err) {
         return (
           
           <div className="edit-first-step">
-             <div className="d-flex align-items-center"> <h4 className="theme-txt text-center mb-4 ml-3">Your Information</h4>
+             <div className="position-relative w-100 mb-5">
+                <h4 className="theme-txt text-center">Your Information</h4>
           </div>
               <div className="form-group">
                   <label className="d-block">First Name</label>
@@ -617,13 +648,15 @@ catch (err) {
               </div>
               <div className="form-group dob-field">
                   <label className="d-block">DOB</label>
-                  <DatePicker  className="bg-trsp" name="dob"  value={Dob} selected={Dob} required={true} onChange={date => setDob(date)} />
-                 
+                  {/* <DatePicker  className="bg-trsp" name="dob"  value={Dob} selected={Dob} required={true} onChange={date => setDob(date)} /> */}
+                  <DatePicker  className="bg-trsp" name ="dates"  dateFormat="dd/MM/yyyy" selected={Dob} onChange={date => setDob(date)}   isClearable /> 
                   {/* <input className="form-control bg-trsp" name="dob" type="text" value={form.dob} onChange={handleChange}  /> */}
               </div>
 
              <div className="choose-gender d-flex my-4">
+               
                             <div className="form-group">
+                                <label className="d-block">DOB</label>
                             {form.gender == 1 }
                               <input type="radio" id="female" name="gender" value={1} checked={form.gender == 1 ? "checked" : ""} onChange={ handleChange }  placeholder="Female" />
                               <label htmlFor="female">Female</label>
@@ -651,8 +684,10 @@ catch (err) {
         return (
           
           <div className="edit-second-step">
-              <div className="d-flex align-items-center"> <a href="javascript:void(0)" className="login-back-2 btn-back position-relative mb-4" onClick={() => setStep(step - 1)} ><i className="fas fa-chevron-left" /></a> <h4 className="theme-txt text-center mb-4 ml-3">Your Information</h4>
-          </div>
+              <div className="position-relative w-100 mb-5">
+                 <a href="javascript:void(0)" className="login-back-2 btn-back  mb-4" onClick={() => setStep(step - 1)} ><i className="fas fa-chevron-left" /></a>
+                  <h4 className="theme-txt text-center mb-4 ml-3">Your Information</h4>
+               </div>
           <div className="form-group">
               <label for="">Height</label>
               <input className="form-control bg-trsp" name="height" type="text" value={form.height} onChange ={handleChange}/>
@@ -698,6 +733,7 @@ catch (err) {
          <div className="tab-title">
          <label>Interest hobbies</label>
            </div>
+           
           {interestData.map((item , i) => (
             // checked={CheckedItem(item.id)}
           <div className="form-group">
@@ -762,7 +798,7 @@ catch (err) {
         <div className="col-md-4 border-rt">
           <div className="user-profile becomevip-wrapper__innerblock p-0">
             <div className="user-profile__details text-center">
-            < img onError={(e) => addDefaultSrc(e)} src={!!profileData.profile_images ? profileData.profile_images : returnDefaultImage()} alt="user" className="user-profile__image img-circle medium-image" onClick={handleImage}/>
+            < img onError={(e) => addDefaultSrc(e)} src={!!profileData.profile_images ? profileData.profile_images : returnDefaultImage()} alt="user" className="user-profile__image img-circle" onClick={handleImage}/>
            
               <div className="user-profile__details__data">
                 <h5 className="user-profile__name">{!!profileData ?profileData.first_name +' '+ profileData.last_name :"" } </h5>
@@ -779,7 +815,7 @@ catch (err) {
                 </div>
               </div>
             </div>
-            <div className="user-profile__status">
+            <div className="user-profile__status py-3 mt-4">
               <ul className="d-flex flex-wrap justify-content-center">
                 <li><span className="user-profile__status__heading d-block text-uppercase">Liked</span>
                   <span className="user-profile__status__counter d-block">  
@@ -804,26 +840,26 @@ catch (err) {
             <ul>
            
               <li><a href="javascript:void(0)" id="gift-modal" onClick={handleGift}><img src="/assets/images/gift-icon.png" alt="gifts" />
-                  <h6>Gifts</h6> <i className="fas fa-chevron-right"/>
+                  <h6 className="mb-0">Gifts</h6> <i className="fas fa-chevron-right"/>
                 </a></li>
               <li><a href="javascript:void(0)" id="edit-profile" onClick={handleShow}><img src="/assets/images/edit-profile.png" alt="Edit Profile" />
-                  <h6>Edit Profile</h6> <i className="fas fa-chevron-right" />
+                  <h6 className="mb-0">Edit Profile</h6> <i className="fas fa-chevron-right" />
                 </a></li>
               <li><a href="javascript:void(0)" id="coin-spend" onClick={handleCoinHistory}><img src="/assets/images/diamond-coin.png" alt="Coins" />
-                  <h6>Coins</h6> <i className="fas fa-chevron-right" />
+                  <h6 className="mb-0">Coins</h6> <i className="fas fa-chevron-right" />
                 </a></li>
             </ul>
           </div>
           <div className="user-profile__options becomevip-wrapper__innerblock">
             <ul>
               <li><a href="javascript:void(0)" id="blacklist" onClick={handleBlockList}>
-                  <h6><img src="/assets/images/blacklist-icon.png" alt="Blacklist" />Blacklist</h6> <i className="fas fa-chevron-right" />
+                  <h6 className="mb-0"><img src="/assets/images/blacklist-icon.png" alt="Blacklist" />Blacklist</h6> <i className="fas fa-chevron-right" />
                 </a></li>
               <li><a href="javascript:void(0)" id="setting" onClick={handleSettingShow}>
-                  <h6><img src="/assets/images/setting-icon.png" alt="setting" />Settings</h6> <i className="fas fa-chevron-right" />
+                  <h6 className="mb-0"><img src="/assets/images/setting-icon.png" alt="setting" />Settings</h6> <i className="fas fa-chevron-right" />
                 </a></li>
                 <li><a href="javascript:void(0)" id="coin-spend" onClick={handleBuyCoins}><img src="/assets/images/diamond-coin.png" alt="Coins" />
-                  <h6>Buy Coins</h6> <i className="fas fa-chevron-right" />
+                  <h6 className="mb-0">Buy Coins</h6> <i className="fas fa-chevron-right" />
                 </a></li>
                
             </ul>
@@ -906,12 +942,10 @@ catch (err) {
   </section>
 
   <Modal className =" edit-payment-modal" show={showStripe} onHide={() => setShowStripe(false)} backdrop="static" keyboard={false}>
-        <div className="edit-payment-modal__inner">
-        
-          <div className="d-flex align-items-center">
-            <h4 className="theme-txt text-center mb-4 ml-3">Your Card details</h4>
-          </div>
-        
+        <div className="edit-payment-modal__inner">       
+          
+            <h4 className="theme-txt text-center mb-4">Your Card details</h4>
+           
           <StripeForm />
 
            </div>
@@ -927,9 +961,6 @@ catch (err) {
    <a href="javascript:void(0)"  className="btn bg-grd-clr">Select Photo</a>
    
   <input type="file" id="profile-photo" name="profile-photo" onChange={handleFileChange} className="d-none" accept="image/*" />
-
-
-{/* <button onClick={updateImage}>Upload</button> */}
 </div>
 <a href="javascript:void(0)" onClick={updateImage} className="btn bg-grd-clr">Publish Photo</a>
 <NotificationContainer/>
@@ -939,8 +970,6 @@ catch (err) {
    <Modal className =" edit-profile-modal" show={show} onHide={() => setShow(false)} backdrop="static" keyboard={false}>
         <div className="edit-profile-modal__inner">
         
-         
-      
         <form>
       
           {tabScreen()}
@@ -953,7 +982,7 @@ catch (err) {
     <Modal className ="coin-spend-modal" show={showCoins} onHide={() => setShowCoin(false)} backdrop="static" keyboard={false}>
     <div className="edit-profile-modal__inner">
           <h4 className="theme-txt text-center mb-4 ">Coin Spend</h4>
-          <h4 className="total-coins-spend text-center mb-4">{coinSpend}</h4>
+          <h5 className="total-coins-spend text-center mb-4">{coinSpend}</h5>
       {!!coinHistory&& coinHistory.map((item , index)=> {
      return  <div className="coin-spend">
         <div className="coin-spend__host">
@@ -961,7 +990,7 @@ catch (err) {
         </div>
         <div className="coins-spend__hostname">
           <span>{item.receiver_name}</span> <span className="counter">{item.receiver_age}</span>
-          <div className="coin-spend__total"><img src="/assets/images/diamond-sm.png" />{item.coins}</div>
+          <div className="coin-spend__total mt-2"><img src="/assets/images/diamond-sm.png" />{item.coins}</div>
         </div>
         <div className="coin-spend__gift">
           <img src={item.gift_image} alt="gift" />
@@ -998,14 +1027,23 @@ catch (err) {
      <div className="coins-spend__hostname">
        <span>{item.first_name}</span> <span className="counter">{item.age}</span>
        <div className="coin-spend__total" > 
-           <a className="theme-txt" href="javascript:void(0)" onClick={() => setBlockId(item.user_id)}>Unblock</a>
-           <NotificationContainer/>
+           <a className="theme-txt" href="javascript:void(0)" onClick={() => handleBlock(item.user_id)}>Unblock</a>
+         
          </div>
          
      </div>
   
    </div>
     })}</>} 
+      <NotificationContainer/> 
+     {
+       !!warningMessage ?
+       <h6 className="text-center">
+         {warningMessage}
+       </h6>
+       :
+       ""
+     }
   <SyncLoader color={"#fcd46f"} loading={loadedModel} css={override} size={18} />
     </div>
    
@@ -1015,10 +1053,10 @@ catch (err) {
 
   <Modal className ="setting-modal" show={showSetting} onHide={() => setShowSetting(false)} backdrop="static" keyboard={false}>
     <div className="edit-profile-modal__inner">
-    <Modal.Header>
-          <Modal.Title> <h4 className="theme-txt text-center mb-4 ">Settings</h4>
-          </Modal.Title>
-      </Modal.Header>
+   
+          <h4 className="theme-txt text-center mb-4 ">Settings</h4>
+         
+     
       <div className="user-profile__options becomevip-wrapper__innerblock">
         <ul>
           <li><a href="javascript:void(0)">
@@ -1126,32 +1164,21 @@ catch (err) {
 </Modal>
 
   <Modal className="about-model" show={showAbout} onHide={() => setShowAbout(false)} >
-  <Modal.Header closeButton >
-    <Modal.Title>
-  <h2>About Glitter</h2>
-  </Modal.Title>
-      </Modal.Header> 
+  <h4 class="theme-txt text-center mb-4 ">About Glitter</h4>
       <AboutGlitter/>
+      <a href="javascript:void(0)" className="modal-close" onClick={() => setShowAbout(false)}><img src="/assets/images/btn_close.png" /></a>
   </Modal>
 
   <Modal className="privacy-model" show={showPrivacy} onHide={() => setShowPrivacy(false)} >
-  <Modal.Header closeButton >
-    <Modal.Title>
-  <h2>Privacy policy</h2>
-  </Modal.Title>
-      </Modal.Header> 
+  <h4 className="theme-txt text-center mb-4 ">Privacy Policy</h4>
       <PrivacyPolicy/>
+         <a href="javascript:void(0)" className="modal-close" onClick={() => setShowPrivacy(false)}><img src="/assets/images/btn_close.png" /></a>
+      
   </Modal>
 
   <Modal className="share-model" show={showShare} onHide={() => setShowShare(false)} >
-  <Modal.Header closeButton >
-    <Modal.Title>
-  <h4 className="theme-txt">Share Glitter</h4>
-  </Modal.Title>
-      </Modal.Header> 
-        <div className="share__icons">
-
-        
+    <h4 class="theme-txt text-center mb-4 ">Share Glitter</h4>
+       <div className="share__icons d-flex justify-content-center">
         <div className="some-network">
           <FacebookShareButton url={shareUrl} quote={title} className="share-button" >
             <FacebookIcon  round />
@@ -1184,6 +1211,8 @@ catch (err) {
         </div>
 
         </div>
+        <a href="javascript:void(0)" className="modal-close" onClick={() => setShowShare(false)}><img src="/assets/images/btn_close.png" /></a>
+      
   </Modal>
 
   <div className={isOn ? 'all-gifts-wrapper active': 'all-gifts-wrapper '} >

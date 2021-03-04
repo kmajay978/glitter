@@ -80,6 +80,7 @@ const FilterUser = ({ fetchedProfile }) => {
      
       }
     );
+   
   };
 
 
@@ -197,8 +198,7 @@ console.log(allData);
 
    if (cardClick) {
       history.push({
-                    pathname: '/single-profile',
-                    userId: glitterUid // Your userId
+                    pathname:'/'+glitterUid+'/single-profile',          
                   })
   }
  }, [cardClick])
@@ -314,13 +314,12 @@ console.log(allData);
            </div>
    
     
-     
       <div className="action-tray global-actions d-flex flex-wrap justify-content-center align-items-center mt-3">
            
         <div className="close-btn tray-btn-s">
             <a className="left-action" href="javascript:void(0)" onClick={() => swipe("left")}>×</a>
         </div>
-        <div className="chat tray-btn-l">
+        {/* <div className="chat tray-btn-l">
             <a href="javascript:void(0)" onClick={handleComment}>
                 <i className="fas fa-comment"></i>
             </a>
@@ -329,7 +328,7 @@ console.log(allData);
             <a href="javascript:void(0)" onClick={handleVideo}>
                 <i className="fas fa-video"></i>
             </a>
-        </div>
+        </div> */}
         <div className="like-profile tray-btn-s">
             <a className="right-action" href="javascript:void(0)" onClick={() => swipe("right")}>
                 <i className="fas fa-heart"></i>

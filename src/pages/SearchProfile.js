@@ -18,6 +18,7 @@ const SearchProfile = () =>{
   const [user_to, setUserTo] = useState({image: ""});
   let videoCallState = useSelector(videoCallUser); //using redux useSelector here
   const userData = useSelector(userProfile).user.profile; //using redux useSelector here
+  console.log(userData, "userData....")
 
   useEffect(() => {
     document.getElementById("stacked-cards-block").classList.remove("init");
@@ -85,7 +86,7 @@ const SearchProfile = () =>{
                 <div id="stacked-cards-block" className="stackedcards stackedcards--animatable init">
                   <div className="pulse">
                     <span className="searching-label">
-                      Searching
+                      Connecting
                     </span>
                     <div className="one" />
                     <div className="two" />
