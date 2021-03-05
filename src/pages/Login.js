@@ -21,7 +21,7 @@ import { FacebookProvider, Like , LoginButton} from 'react-facebook';
 import { usePosition } from 'use-position';
 import OtpInput from 'react-otp-input';
 // import NotificationContainer from 'react-notifications/lib/NotificationContainer';
-import {NotificationContainer, NotificationManager} from 'react-notifications';
+import { NotificationManager} from 'react-notifications';
 import { GoogleLogin } from 'react-google-login';
 import TwitterLogin from 'react-twitter-auth';
 
@@ -304,26 +304,27 @@ const registerHandle = (e) =>{
           else
           {
             localStorage.removeItem('session_id');
-            createNotification('error' , response.data.message);
+            NotificationManager.error(response.data.message);
+          
           }
 
         }, (error) => {
           localStorage.removeItem('session_id');
-          
-          createNotification('error' , error.message);
+          NotificationManager.error(error.message);
+         
         });
 }
-const createNotification = (type , message) => {
+// const createNotification = (type , message) => {
   
-  switch (type) {
-      case 'sucess':
-        NotificationManager.success(' create Successfully ', 'status');
-        break;
-    case 'error':
-      NotificationManager.error(message ,'Error message')
-      break; 
-};
-};
+//   switch (type) {
+//       case 'sucess':
+//         NotificationManager.success(' create Successfully ', 'status');
+//         break;
+//     case 'error':
+//       NotificationManager.error(message ,'Error message')
+//       break; 
+// };
+// };
   // End here 
 
   // Testing here
@@ -488,11 +489,11 @@ const changeDate = (date) => {
                 
                     <div className="choose-gender d-flex my-4">
                       <div className="form-group">
-                        <input type="radio" id="female" name="gender" value={1}  onChange={ handleChange }  placeholder="Female" />
+                        <input type="radio" id="female" name="gender" value={2}  onChange={ handleChange }  placeholder="Female" />
                         <label htmlFor="female">Female</label>
                       </div>
                       <div className="form-group">
-                        <input type="radio" id="male" name="gender" value={2} onChange={ handleChange } placeholder="Male" />
+                        <input type="radio" id="male" name="gender" value={1} onChange={ handleChange } placeholder="Male" />
                         <label htmlFor="male">Male</label>
                       </div>
                         
@@ -526,7 +527,7 @@ const changeDate = (date) => {
             <a href="javascript:void(0)" className="login-back-4 btn-back" onClick={() => setStep(step - 1)}><i className="fas fa-chevron-left" /></a>
           <h4 class="theme-txt">Upload Profile Photo</h4>
           </div>
-          <div className="form-group upload-field mb-5">
+          <div className="form-group upload-field position-relative mb-5">
             <img id="PreviewPicture" src={imgData} />
             <input type="file" id="profile-photo" name="profile-photo" onChange={handleFileChange} accept="image/*" />
             <span className="camera-icon" >
@@ -534,7 +535,7 @@ const changeDate = (date) => {
             </span>
           </div>
           <a className="btn bg-grd-clr d-block mb-4 btn-countinue-5" href="javascript:void(0)" onClick={registerHandle} >Next</a>
-       <NotificationContainer/>
+
         </div>
         );
       default:

@@ -1,6 +1,7 @@
 import './App.css';
 import './components/jqueryfile.js';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import $ from 'jquery';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import { BrowserRouter as Router, Switch, Route, withRouter, useParams, useHistory } from 'react-router-dom';
@@ -15,6 +16,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { profile, userAuth } from './features/userSlice';
 import { SOCKET } from "./components/Config";
 import { checkLiveDomain } from './commonFunctions';
+import NotificationContainer from 'react-notifications/lib/NotificationContainer';
+import 'react-notifications/lib/notifications.css';
+
 let userData;
 const history = createBrowserHistory({ forceRefresh: true });
 const ProfileData = async (dispatch, sessionId) => {
@@ -29,10 +33,13 @@ const ProfileData = async (dispatch, sessionId) => {
   );
 }
 const stripePromise = loadStripe('pk_test_51HYm96CCuLYI2aV0fK3RrIAT8wXVzKScEtomL2gzY9XCMrgBa4KMPmhWmsCorW2cqL2MLSJ45GKAAZW7WxEmytDs009WzuDby2');
-function App() {
+function App(props) {
   //  const {latitude, longitude, error} = usePosition();
   const new_history = useHistory();
-  console.log(new_history, "new_history...")
+  const [currentPathname, setCurrentPathname] = useState(null);
+  const [currentSearch, setCurrentSearch] = useState(null);
+  
+
   const dispatch = useDispatch();
   const is_auth = useSelector(userAuth); //using redux useSelector here
   // console.log(is_auth, "is_auth....")0000000000
@@ -44,7 +51,7 @@ function App() {
       ProfileData(dispatch, sessionId)
     }
     SOCKET.on('pick_video_call', (data) => {
-      console.log(data.user_to_id, userData.user_id, "checkkkkkkkkkkkkkkkk")
+      // console.log(data.user_to_id, userData.user_id, "checkkkkkkkkkkkkkkkk")
       if (!!userData && (data.user_to_id == userData.user_id)) { // check one-to-one data sync
         localStorage.setItem("receiverDetails", JSON.stringify(data))
         const page = checkLiveDomain() ? "/glitter-web/answer-calling" : "/answer-calling"
@@ -57,7 +64,9 @@ function App() {
       dispatch(videoCall(null))
       const page = checkLiveDomain() ? "/glitter-web/chat" : "/chat"
       if (!!userData && (data.user_from_id == userData.user_id)) { // check one-to-one data sync
-        alert("receiver declined your call...")
+        if (data.showMsg) {
+          alert("receiver declined your call...")
+        }
         history.push(page)
       }
       if (!!userData && (data.user_to_id == userData.user_id)) { // check one-to-one data sync
@@ -70,7 +79,9 @@ function App() {
       dispatch(videoCall(null))
       const page = checkLiveDomain() ? "/glitter-web/chat" : "/chat"
       if (!!userData && (data.user_to_id == userData.user_id)) { // check one-to-one data sync
-        alert("sender declined the call...")
+        if (data.showMsg) {
+          alert("sender declined the call...")
+        }
         history.push(page)
       }
       if (!!userData && (data.user_from_id == userData.user_id)) { // check one-to-one data sync
@@ -112,6 +123,40 @@ function App() {
       //  }, 600000);
     }
   }, [is_auth])
+
+ 
+  useEffect(() => {
+
+    $(document).ready(function() {
+      function disableBack() { window.history.forward() }
+
+      window.onload = disableBack();
+      window.onpageshow = function(evt) { if (evt.persisted) disableBack() }
+  });
+    // // Anything in here is fired on component mount. Component did mount
+    // const { history } = props;
+    // history.listen((newLocation, action) => {
+    //   if (action === "PUSH") {
+    //     if (
+    //       newLocation.pathname !== currentPathname ||
+    //       newLocation.search !== currentSearch
+    //     ) {
+    //       currentPathname = newLocation.pathname;
+    //       currentSearch = newLocation.search;
+    //       history.push({
+    //         pathname: newLocation.pathname,
+    //         search: newLocation.search
+    //       });
+    //     }
+    //   } else {
+    //     history.go(1);
+    //   }
+    // });
+    // return () => {
+    //     // Anything in here is fired on component unmount. component will mount 
+    //     window.onpopstate = null;
+    // }
+}, [])
   return (
     <Router>
       <Switch>
@@ -121,21 +166,21 @@ function App() {
           <Route exact path='/dummy' component={Dummy} />
           {/* Private routes */}
           <ProtectedRoute exact path='/' component={Home} />
-          <ProtectedRoute exact path='/profile' component={Profile} />
-          <ProtectedRoute exact path="/answer-calling" component={AnswerCalling} />
-          <ProtectedRoute exact path='/chat' component={ChatBox} />
-          <ProtectedRoute exact path='/searching-profile' component={SearchProfile} />
-          <ProtectedRoute exact path='/searching-profile-call' component={SearchProfileAudio} />
-          <ProtectedRoute exact path='/search-home' component={SearchHome} />
-          <ProtectedRoute exact path='/single-profile' component={SingleProfile} />
-          <ProtectedRoute exact path='/recent-call' component={RecentCall} />
-         
-          <ProtectedRoute exact path='/status' component={SearchHomeBkp} />
-          <ProtectedRoute exact path='/:receiver/:user_from_id/:user_to_id/:channel_id/:channel_name/video-chat' component={VideoChat} />
-          <ProtectedRoute exact path='/:receiver/:user_from_id/:user_to_id/:channel_id/:channel_name/audio-chat' component={AudioChat} />
-          <ProtectedRoute exact path='/:user_id/:channel_id/:channel_name/live-video-chat' component={LiveVideoChat} />
+          <ProtectedRoute  path='/profile' component={Profile} />
+          <ProtectedRoute  path="/answer-calling" component={AnswerCalling} />
+          <ProtectedRoute  path='/chat' component={ChatBox} />
+          <ProtectedRoute  path='/searching-profile' component={SearchProfile} />
+          <ProtectedRoute  path='/searching-profile-call' component={SearchProfileAudio} />
+          <ProtectedRoute  path='/search-home' component={SearchHome} />
+          <ProtectedRoute  path='/:userId/single-profile' component={SingleProfile} />
+          <ProtectedRoute  path='/recent-call' component={RecentCall} />
+          <ProtectedRoute  path='/status' component={SearchHomeBkp} />
+          <ProtectedRoute  path='/:receiver/:user_from_id/:user_to_id/:channel_id/:channel_name/video-chat' component={VideoChat} />
+          <ProtectedRoute  path='/:receiver/:user_from_id/:user_to_id/:channel_id/:channel_name/audio-chat' component={AudioChat} />
+          <ProtectedRoute  path='/:user_id/:channel_id/:channel_name/live-video-chat' component={LiveVideoChat} />
         </Elements>
       </Switch>
+        <NotificationContainer />
     </Router>
   );
 }

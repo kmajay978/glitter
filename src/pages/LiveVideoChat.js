@@ -33,7 +33,6 @@ const override = css`
 const clearChatState = (dispatch) => {
     dispatch(liveVideoCall(null))
 }
-
 const LiveVideoChat = () => {
     const params = useParams();
     const [user, setUserData] = useState(null);

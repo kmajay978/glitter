@@ -60,11 +60,6 @@ const FilterUser = ({ fetchedProfile }) => {
      axios.post(GETALLUSER_API, bodyParameters)
      
      .then((response) => {
-    //   if(response.error=="bad_request")
-    // {
-    //   localStorage.removeItem("session_id");
-    //   history.push('/login');
-    // }
         if (response.status == 200) {
           setUserData(response.data.data);
           setIsLoaded(false);
@@ -80,6 +75,7 @@ const FilterUser = ({ fetchedProfile }) => {
      
       }
     );
+   
   };
 
 
@@ -106,11 +102,11 @@ console.log(allData);
         (response) => {
          
             setDislike(false);
-            if(response.error=="bad_request")
-            {
-              localStorage.removeItem("session_id");
-              history.push('/login');
-            }
+            // if(response.error=="bad_request")
+            // {
+            //   localStorage.removeItem("session_id");
+            //   history.push('/login');
+            // }
           if (response.status == 200) {
           
             console.log(direction);
@@ -133,14 +129,14 @@ console.log(allData);
       axios.post(LIKE_USER, bodyParameters).then(
         (response) => {
             setLiked(false)
-            if(response.error=="bad_request")
-            {
-              localStorage.removeItem("session_id");
-              history.push('/login');
-            }
+            // if(response.error=="bad_request")
+            // {
+            //   localStorage.removeItem("session_id");
+            //   history.push('/login');
+            // }
             if(response.status==200) {
-            console.log(direction);
-            console.log("removing: " + userId);
+            // console.log(direction);
+            // console.log("removing: " + userId);
             alreadyRemoved.push(userId);
             setTimeout(() => {
               setLiked(false)
@@ -194,26 +190,20 @@ console.log(allData);
 
 
  useEffect(() => {
-
-   if (cardClick) {
-      history.push({
-                    pathname: '/single-profile',
-                    userId: glitterUid // Your userId
-                  })
+   if (!!cardClick) {
+      history.push('/'+glitterUid+'/single-profile')
   }
  }, [cardClick])
 
-//  useEffect (() => {
+ useEffect (() => {
+  handleUserData();
+ }, [])
 
-//  }, [fetchedProfile])
-
-  useEffect(() => {
-           
+  useEffect(() => { 
     if(!!fetchedProfile){
       setIsLoaded(false);
       setAllData(fetchedProfile);
     }
-    handleUserData();
     window.setTimeout(() => {
        $(".main_wrapper")
     .mousedown(function (evt) {
@@ -242,17 +232,13 @@ console.log(allData);
     }, 1000); 
   }, [ fetchedProfile ]);
 
-  const handleComment =() => {
-    history.push ({
-      pathname: '/chat',
-     })
-  }
-  
-  const handleVideo =() => {
-    history.push ({
-      pathname: '/searching-profile',
-     })
-  }
+  // useEffect(() => {
+   
+  //     document.getElementById("done-filter").click()
+    
+    
+  // }, []) 
+
 
 
   return (
@@ -282,10 +268,10 @@ console.log(allData);
               </GlitterCard>
 
                </div> 
-            ))}  
-      </>: 
+           ))}  
+        </>: 
       <>
-      {userData.map((currentUser, index) => (
+       {userData.map((currentUser, index) => ( 
               <div className="main_wrapper" id={currentUser.user_id}> 
               <GlitterCard ref={childRefs[index]} className="swipe" key={currentUser.user_id} onSwipe={(dir) => swiped(dir, currentUser.user_id)} >
                 <div className="user__card position-relative">
@@ -313,14 +299,15 @@ console.log(allData);
         
            </div>
    
+    {
+      !isLoaded &&
     
-     
       <div className="action-tray global-actions d-flex flex-wrap justify-content-center align-items-center mt-3">
            
         <div className="close-btn tray-btn-s">
             <a className="left-action" href="javascript:void(0)" onClick={() => swipe("left")}>×</a>
         </div>
-        <div className="chat tray-btn-l">
+        {/* <div className="chat tray-btn-l">
             <a href="javascript:void(0)" onClick={handleComment}>
                 <i className="fas fa-comment"></i>
             </a>
@@ -329,7 +316,7 @@ console.log(allData);
             <a href="javascript:void(0)" onClick={handleVideo}>
                 <i className="fas fa-video"></i>
             </a>
-        </div>
+        </div> */}
         <div className="like-profile tray-btn-s">
             <a className="right-action" href="javascript:void(0)" onClick={() => swipe("right")}>
                 <i className="fas fa-heart"></i>
@@ -347,6 +334,7 @@ console.log(allData);
                         </a>
                       </div> */}
       </div>
+}
 
       </>
       

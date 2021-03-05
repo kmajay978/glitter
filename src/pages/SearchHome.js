@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Stories from 'react-insta-stories';
 import $ from 'jquery';
 import {  useHistory } from 'react-router';
@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import axios from "axios";
 import NavLinks from '../components/Nav';
 import FilterSide from '../components/Filter';
-import { ADD_STATUS , FRIENDLIST_API , GET_STATUS , VIEW_LIKE_STATUS} from '../components/Api';
+import { ADD_STATUS , FRIENDLIST_API , GET_STATUS , VIEW_LIKE_STATUS , DETUCT_THOUSAND_COIN} from '../components/Api';
 import {Modal, ModalBody , Dropdown} from 'react-bootstrap';
 import OwlCarousel from 'react-owl-carousel2';
 import {SOCKET} from '../components/Config';
@@ -21,6 +21,7 @@ import {NotificationContainer, NotificationManager} from 'react-notifications';
 import {friendStatus} from '../features/userSlice'
 import StatusUser from "../pages/StatusUser";
 import { Link } from "react-router-dom";
+
 
 let isMouseClick = false, startingPos = [], glitterUid, friendLists = [], userData= null, checkOnlineFrdsInterval;
 
@@ -43,14 +44,13 @@ const SearchHome = () =>
 {
     const history = useHistory();
     const dispatch = useDispatch();
-    
+    const inputFile = useRef(null);
+
     const [statusModel, setStatusModel] = useState(false);
     const [randomNumber, setRandomNumber] = useState('');
     const [fetchedProfile, setFilterUser] = useState('');
     const [ friendList  , setFriendlist] = useState([]);
     const [isOn, toggleIsOn] = useToggle(false);
-    const [Click, setClick] = useState(false);
-    const [StartPosition, setStartPosition] = useState([])
     const [statusData , setStatusData] = useState({});
     const [storyData , setStoryData] = useState([]);
     const [ friendId , setFriendId] = useState('');
@@ -66,7 +66,10 @@ const SearchHome = () =>
     const [video, setVideo] = useState(null);
     const [showUploadStatus,setUploadStatus] = useState(false);
     const [isLoaded, setIsLoaded] = useState(false);
+    const [LiveModel , setLiveModel] = useState({modal: false, item: null});
+    const [audLive, setAudLive] = useState(false)
 
+    console.log(audLive, "audLive..")
     userData = useSelector(userProfile).user.profile; //using redux useSelector here
  const options = {
   loop: false,
@@ -104,10 +107,9 @@ const statusoptions = {
 
 
 const SingleProfileView = (id) =>{
-  console.log(id,"idssss...");
+ 
   history.push({
-    pathname: '/single-profile',
-    userId: id 
+    pathname: '/'+id+'/single-profile'
   })
 }
 
@@ -156,11 +158,6 @@ const handleFileChange = e => {
     }
    axios.post(FRIENDLIST_API,bodyParameters)
     .then((response) => {
-      // if(response.error=="bad_request")
-      // {
-      //   localStorage.removeItem("session_id");
-      //   history.push('/login');
-      // }
       if (response.status === 200 ) {
         setIsLoaded(false);
           let friendList = response.data.data;
@@ -222,6 +219,7 @@ const handleFileChange = e => {
       }
 
  }, (error) => {
+ 
     setStatusData({});
     setIsLoaded(false);
     setFriendId('');
@@ -277,51 +275,45 @@ const handleUploadStatus =() =>
   bodyParameters.append("status_type", "" + 1);
   axios.post(ADD_STATUS , bodyParameters , config)
   .then((response)=> {
-    // if(response.error=="bad_request")
-    // {
-    //   localStorage.removeItem("session_id");
-    //   history.push('/login');
-    // }
   if(response.status==200){
-   createNotification('sucess');
-   setTimeout(() => {
+    NotificationManager.success(response.data.message );
     setUploadStatus(false);
-  }, 1500);
    setPicture('');
   }
+
  } ,(error) => {
+  NotificationManager.error( error.message);
   if (error.toString().match("403")) {
     localStorage.removeItem("session_id");
     history.push('/login');
   }
  });
+ 
   }
-  else if (videoData=='video'){
+  else if (videoData=='video')
+  {
    const bodyParameters =new FormData();
    bodyParameters.append("session_id", "" + localStorage.getItem('session_id'));
    bodyParameters.append("status", picture);
    bodyParameters.append("status_type", "" + 2);
    axios.post(ADD_STATUS , bodyParameters , config)
    .then((response)=> {
-    // if(response.error=="bad_request")
-    // {
-    //   localStorage.removeItem("session_id");
-    //   history.push('/login');
-    // }
      if(response.status==200){
-    createNotification('sucess');
-    setTimeout(() => {
+      NotificationManager.success(response.data.message );
       setUploadStatus(false);
-    }, 1500);
+   
   }
   } ,(error) => {
+    NotificationManager.error(error.message );
     if (error.toString().match("403")) {
       localStorage.removeItem("session_id");
       history.push('/login');
     }
  });
+
   }
-  else if (videoData=='text'){
+  else if (videoData=='text')
+  {
 
         //Converting text to image here
        var tCtx = document.getElementById('textCanvas').getContext('2d'),
@@ -398,85 +390,54 @@ document.getElementById("image").remove()
 
    axios.post(ADD_STATUS , bodyParameters , config)
    .then((response)=> {
-   
      if(response.status==200){
-    createNotification('sucess');
-    setTimeout(() => {
-      setUploadStatus(false);
-    }, 1500);
+      NotificationManager.success(response.data.message );
+    
+       setUploadStatus(false);
+  
     
     setPencilData('');
     setShowPencil(false);
   }
   } ,(error) => {
+    NotificationManager.error(error.message );
     if (error.toString().match("403")) {
       localStorage.removeItem("session_id");
       history.push('/login');
     }
  });
   }
- }
+
+  }
 console.log(picture);
 
-const createNotification = (type) => {
-  
-  switch (type) {
-      case 'sucess':
-        NotificationManager.success('status upload Successfully ', 'status');
-        break;
-    case 'error':
-      NotificationManager.error('Error message', 'Click me!', 5000, () => {
-        
-      });
-      break; 
-};
-};
-
-
-const uploadImage = () => {
- // Click event for status uplaod screen
- $(document).on("click", "#upload__media", function () {
-   $('#upload_fle').trigger("click");
- });
-
- $(document).on("click", "#upload_fle", function (e) {
-   e.stopPropagation();
-   //some code
+useEffect(() => {
+  $(".show-filter").click(function(){
+  $(".option-bar").toggleClass("filter-active"); 
 });
+},[])
 
+
+// const uploadImage = () => {
+//  // Click event for status uplaod screen
+//  $(document).on("click", "#upload__media", function () {
+//    $('#upload_fle').trigger("click");
+//  });
+
+//  $(document).on("click", "#upload_fle", function (e) {
+//    e.stopPropagation();
+//    //some code
+// });
+
+// }
+const openFileUploder = () =>{
+  inputFile.current.click();
 }
  const componentWillUnmount = () => {
     clearInterval(checkOnlineFrdsInterval)
  }
   useEffect (() => {
-    handleFriendList();
-    window.setTimeout(() => {
-      $(".main-status")
-   .mousedown(function (evt) {
-     isMouseClick = true;
-     glitterUid =  $(".main-status")
-
-       startingPos = [evt.pageX, evt.pageY]
-       glitterUid = evt.currentTarget.id
-       // setStartPosition(startingPos);
-
-   })
-   .mousemove(function (evt) {
-       if (!(evt.pageX === startingPos[0] && evt.pageY === startingPos[1])) {
-           isMouseClick = false;
-       }
-   })
-   .mouseup(function () {
-       if (!isMouseClick) {
-          setClick(isMouseClick);
-       } else {
-         isMouseClick = true;
-          setClick(isMouseClick);
-       }
-       startingPos = [];
-       setStartPosition(startingPos)
-   });
-   }, 1000);
+     handleFriendList();
 
     SOCKET.connect();
       checkOnlineFrdsInterval = window.setInterval(() => {
@@ -484,10 +445,11 @@ const uploadImage = () => {
           SOCKET.emit("authenticate_friend_list_live", {
               session_id: localStorage.getItem("session_id")
           });
-      }, 5000)
+      }, 1000)
  
       SOCKET.on('sendAudienceToLiveVideo', (data) => {
         console.log(userData, data, "kkkkkk")
+        setAudLive(false)
           if (userData.user_id === data.user_id) {
               // $('#live-modal').hide();
               // setShowLive(false)
@@ -538,18 +500,10 @@ const uploadImage = () => {
           }
       });
 
-    uploadImage();
+    // uploadImage();
     return () => componentWillUnmount()
     },[])
 
-  useEffect (() => {
-    if (Click) {
-      history.push({
-                    pathname: '/single-profile',
-                    userId: glitterUid // Your userId
-                  })
-  }
-  },[Click])
 
 
 //  console.log(friendList);
@@ -565,35 +519,65 @@ const uploadImage = () => {
         generateLiveVideoChatToken(dispatch, history, bodyParameters, call_type, user_id, uuidv4(), SOCKET);
 
     }
-    const makeMeAudience = ( item ) => {
-        setFriendId(item.user_id);
-        // if(!!item.result.status_id){
-        //  item.result.map((item , index)=>{
-        //   setStatusId(item.status_id);
-        //  })
-        // }
-        if (item.is_live) {
-            SOCKET.emit("addAudienceToLiveVideo", {
-                user_id: userData.user_id,
-                channel_name: item.channel_name,
-                channel_token: item.channel_token,
-                is_host: false
-            })
+
+    const watchLive = () => {
+      if (!audLive) {
+        const audDetails = LiveModel;
+        console.log(audDetails, "audDetails...")
+        const bodyParameters ={
+        session_id: localStorage.getItem("session_id"),
+        live_user_id: audDetails.item.user_id,
+        channel_name:audDetails.item.channel_name
         }
-    }
-console.log(statusId);
-    const convertToHtml = (data) => {
-       const convertedHtml =  {__html: data};
-      return <div dangerouslySetInnerHTML={convertedHtml} />
-    }
+        setAudLive(true)
+        axios.post (DETUCT_THOUSAND_COIN , bodyParameters)
+          .then((response)=> {
+            console.log(response, "hhhh")
+             if (response.data.status_code ==200 && response.data.error == "false"){
+              if (!!audDetails && audDetails.item.is_live) {
+                SOCKET.emit("addAudienceToLiveVideo", {
+                    user_id: userData.user_id,
+                    channel_name: audDetails.item.channel_name,
+                    channel_token: audDetails.item.channel_token,
+                    is_host: false
+                })
+            }
+             }
+             else{
+              NotificationManager.error(response.data.message);
+              setAudLive(false)
+             }
+          }, (err) =>{
+            NotificationManager.error(err.message);
+            setAudLive(false)
+          });
+      }
     
-    const playVideo = (video) => {
-      window.setTimeout(() => {
-        console.log(document.getElementById(video), "kkkkk")
-          document.getElementById(video).play();
-      }, 1000)
-      return <video id= {video} src={video} alt="status" />
-    }
+      }
+
+       
+    
+
+    const makeMeAudience = ( item ) => {
+        setLiveModel({modal: true, item});
+     }
+
+console.log(statusId);
+    // const convertToHtml = (data) => {
+    //    const convertedHtml =  {__html: data};
+    //   return <div dangerouslySetInnerHTML={convertedHtml} />
+    // }
+    
+    // const playVideo = (video) => {
+    //   window.setTimeout(() => {
+    //     console.log(document.getElementById(video), "kkkkk")
+    //       document.getElementById(video).play();
+    //   }, 1000)
+    //   return <video id= {video} src={video} alt="status" />
+    // }
+
+ 
+
     return(
   <section className="home-wrapper">
   <img className="bg-mask" src="/assets/images/mask-bg.png" alt="Mask" />
@@ -605,7 +589,8 @@ console.log(statusId);
             <Link to="/">
               <img src="/assets/images/glitters.png" alt="Glitters" />
             </Link>
-            <span className="chat-point">
+            <a className="show-filter" href="javascript:void(0)"><img src="/assets/images/Filter.png" alt="filter" /></a>
+            <span className="chat-point position-relative">
               <a href="javascript:void(0)">
                 <i className="fas fa-comment" />
               </a>
@@ -630,9 +615,9 @@ console.log(statusId);
         {friendList.map((item, i) =>(
            (item.statuses.length > 0 ||  item.is_live === true ) ?
           
-         <div className="users-listing__slider__items" onClick={() =>  makeMeAudience(item )} id={item.user_id}  >
+         <div className="users-listing__slider__items" id={item.user_id} >
          
-            <div className="users-listing__slider__items__image" id="modal" data-toggle="modal" >
+            <div className="users-listing__slider__items__image" id="modal" data-toggle="modal" onClick={() =>  setFriendId(item.user_id)}>
            {!!friendList ? <img onError={(e) => addDefaultSrc(e)} src={!!item.profile_images ? item.profile_images : returnDefaultImage()} alt="marlene" /> : ""}
             
               
@@ -641,7 +626,7 @@ console.log(statusId);
             </div>
              {
                  item.is_live === true &&
-                 <span className="live">Live</span>
+                 <span  style={{cursor: "pointer"}} onClick={() =>  makeMeAudience(item )} className="live">Live</span>
              }
           </div>
           :""
@@ -661,7 +646,7 @@ console.log(statusId);
                return <div className=" main col-md-3" id={item.user_id} onClick = {() =>SingleProfileView(item.user_id)}>
                   <div className="sp-singular">
                     <a href="javascript:void(0)">
-                      <figure>
+                      <figure className="mb-0">
                         <img onError={(e) => addDefaultSrc(e)} src={!!item.profile_images ? item.profile_images : returnDefaultImage()} alt="Marlene" />
                       </figure>
                       <div className="sp-singular-content">
@@ -780,6 +765,39 @@ console.log(statusId);
   {/* </div> */}
 
 {/* </div> */}
+<Modal className ="modal fade" id="group-live-modal" show={LiveModel.modal} onHide={() => setLiveModel({modal: false, item: null})} backdrop="static" keyboard={false}>
+
+        <div className="modal-dialog" role="document">
+            <div className="modal-content" style={{border: "none"}}>
+                <div className="modal-body p-0">
+                  <div className="group-live">
+                    <div className="group-live__header">
+                        <img src="/assets/images/diamond-sm.png" alt="balance"/> Balance : {!!userData&& userData.coins}
+                    </div>
+                          
+                    <div className="group-live__content text-center">
+                         <div className="total_coins d-flex align-items-center justify-content-center py-3">
+                             <div className="diamong__icon"><img src="/assets/images/diamond-coin.png" alt="balance"/></div>
+                         <h5>1000 Coins</h5>
+                         </div>
+                         <p>Pay 1000 coins to enter , they will also see what he is going to see inside the broadcaster room .</p>
+                         
+                         <div className="watch-live d-flex">
+                                 <a href="javascript:void(0)" style={{cursor: (audLive ? "default" : "pointer")}} className="btn btn-trsp" onClick={() => {if (!audLive) { setLiveModel({modal: false, item: null})}}}>Cancel</a>
+                                 <a href="javascript:void(0)" style={{cursor: (audLive ? "default" : "pointer")}} className="btn bg-grd-clr" onClick={watchLive}>{audLive ? "Wait..." : "Watch"}</a>
+                         </div>
+                    </div>
+                           
+                      
+                      
+                      
+                  </div> 
+                </div>
+            </div>            
+        </div>
+
+    
+</Modal>
 <Modal className ="theme-modal" id="upload-media-modal" show={showUploadStatus} onHide={() => setUploadStatus(false)} backdrop="static" keyboard={false}>
           {/* Modal start here */}
           {/* <div className="theme-modal" id="live-modal" tabIndex={-1} role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"> */}
@@ -787,11 +805,11 @@ console.log(statusId);
           <form action="" id="glitter_status" >
                   <div className="modal-body p-0">
                     <div className="upload__status__opt text-center">
-                    <h2>Upload Status</h2>
+                    <h4 className="theme-txt">Upload Status</h4>
                     <div className="upload-status d-flex justify-content-center mt-5">
-                      <a id="upload__media" className="upload__media bg-grd-clr"  href="javascript:void(0)">
+                      <a id="upload__media" className="upload__media bg-grd-clr"  href="javascript:void(0)"onClick={openFileUploder}>
                       <i className="fas fa-camera"></i>
-                      <input type="file"  name="file" value="" id="upload_fle" className="d-none" onChange={handleFileChange} accept="image/* , video/*"  />
+                      <input type="file"  name="file" value=""  ref={inputFile} id="upload_fle" className="d-none" onChange={handleFileChange} accept="image/* , video/*"  />
                       
                       </a>
                       <a className="upload__text bg-grd-clr" href="javascript:void(0)" onClick={handlePencil}>
@@ -822,7 +840,7 @@ console.log(statusId);
                          
                        
                         <a className="btn bg-grd-clr btn-small mt-4" onClick={handleUploadStatus}>Publish Status</a>
-                        <NotificationContainer/>
+             
                     </div>
                     
                         
@@ -839,5 +857,5 @@ console.log(statusId);
 
 
     )
-}
+                        }
 export default SearchHome;

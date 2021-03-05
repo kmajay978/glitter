@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {  useHistory } from 'react-router';
+import {  useHistory, useParams } from 'react-router';
 import axios from "axios";
 import NavLinks from '../components/Nav';
 import {GET_SINGLE_STATUS , GIFT_LIST_API , GIFT_PURCHASE_API , DISLIKE_USER , LIKE_USER, GET_USERPROFILE_API , BLOCK_USER_API , REPORT_USER_API } from '../components/Api';
@@ -10,15 +10,14 @@ import useToggle from '../components/CommonFunction';
 import moment from 'moment'
 import {addDefaultSrc, returnDefaultImage} from "../commonFunctions";
 // import NotificationContainer from "react-notifications/lib/NotificationContainer";
-import {NotificationContainer, NotificationManager} from 'react-notifications';
+import { NotificationManager} from 'react-notifications';
 import { useSelector } from "react-redux";
 import {userProfile} from '../features/userSlice';
 
 const SingleProfile = (props) =>{
+    const params = useParams();
     const [userData, setUser] = useState(null);
-   
-   
-    const [checkUid, setUserId] = useState(props.location.userId);
+    const [checkUid, setUserId] = useState(params.userId);
     const [blk, setBlock ]= useState(false);
     const [smShow, setSmShow] = useState(false);
     const [showGift , setShowGift] = useState(false);
@@ -28,6 +27,7 @@ const SingleProfile = (props) =>{
     const [statusData , setStatusData] = useState([]);
     const [isOn, toggleIsOn] = useToggle();
     const [ showStatus , setShowStatus] =useState(false);
+    const [ random, setRandom] = useState(0);
     
     const showAllStatus = () => setShowStatus(true);
     const showAllGift =() =>       toggleIsOn(true);
@@ -39,13 +39,13 @@ const SingleProfile = (props) =>{
       history.goBack();
     }
 
-    const handleChat = () => {
-      history.push("/chat");
-    }
+    // const handleChat = () => {
+    //   history.push("/chat");
+    // }
     
-    const handleVideo =() => {
-      history.push("/searching-profile");
-    }
+    // const handleVideo =() => {
+    //   history.push("/searching-profile");
+    // }
       const handleChange = e => { 
       setForm({
         ...form,
@@ -73,11 +73,18 @@ const SingleProfile = (props) =>{
             axios.post(GET_USERPROFILE_API,bodyParameters)
             .then((response) => {
               if (response.status === 200 && !response.status.error) {
+                if ( response.data.data.is_reported_message!=""){
+                form.report= response.data.data.is_reported_message
+                }
+                else {
+                  form.report="more"
+                }
             setUser(response.data.data);
+            
             console.log(response.data.data, "jjjj")
               }
          }, (error) => {
-        
+          NotificationManager.error(error.message);
         });
         }
 
@@ -107,9 +114,10 @@ const SingleProfile = (props) =>{
       given_to : checkUid
       }
        const {data : {result}} = await axios.post(GIFT_PURCHASE_API , bodyParameters)
-       createNotification('gift-send');
+       NotificationManager.error("gift send successfully");
         }
- 
+
+    // block the user 
         const handleblock = async() => {
           const bodyParameters={
             session_id : localStorage.getItem('session_id'),
@@ -118,18 +126,20 @@ const SingleProfile = (props) =>{
           axios.post(BLOCK_USER_API , bodyParameters)
           .then((response)=> {
            
-          if(response.status==200 && !response.error) {
-           createNotification('block');
-            setTimeout(() => {
-              setBlockData(true);
-            }, 1500);
+          if(response.status==200 && !response.error ) {
+              userData.is_blocked = !!response.data.block_status ? 0 : 1
+              setUser(userData);
+              setRandom(Math.random());
+              NotificationManager.success(response.data.message);
+             
+             
           }
           else {
-            setBlockData(false);
+            // setBlockData(false);
           }
           }, (error) =>{
            
-            setBlockData(false);
+            NotificationManager.error(error.message);
           });
         }
 
@@ -141,83 +151,64 @@ const SingleProfile = (props) =>{
          }
          axios.post(REPORT_USER_API , bodyParameters)
          .then((response) => {
-          // if(response.error=="bad_request")
-          // {
-          //   localStorage.removeItem("session_id");
-          //   history.push('/login');
-          // }
-          if(response.status==200)
+        
+          if(response.status==200&& response.data.error == false)
           { 
-            createNotification('report');
-            setTimeout(() => {
+            NotificationManager.success("report send successfully");
               setSmShow(false);
-            }, 1500);
             }
+           else {
+            NotificationManager.error(response.data.error_message);
+           }
          } ,(error) => {
-       
-          createNotification('error');
+          NotificationManager.error(error.message);
          });
+
         };
 
-        const handleLike =() => {
-           const bodyParameters ={
-            session_id  : localStorage.getItem('session_id'),
-            user_id : checkUid
-            }
-            axios.post(LIKE_USER, bodyParameters).then(
-              (response) => {   
-                // if(response.error=="bad_request")
-                // {
-                //   localStorage.removeItem("session_id");
-                //   history.push('/login');
-                // }
-              },
-              (error) => {
-                if (error.toString().match("403")) {
-                localStorage.removeItem("session_id");
-                history.push('/login');
-              }
-            }
-            );
-        }
+        // const handleLike =() => {
+        //    const bodyParameters ={
+        //     session_id  : localStorage.getItem('session_id'),
+        //     user_id : checkUid
+        //     }
+        //     axios.post(LIKE_USER, bodyParameters).then(
+        //       (response) => {   
+        //         if(response.error=="bad_request")
+        //         {
+        //           localStorage.removeItem("session_id");
+        //           history.push('/login');
+        //         }
+        //       },
+        //       (error) => {
+        //         if (error.toString().match("403")) {
+        //         localStorage.removeItem("session_id");
+        //         history.push('/login');
+        //       }
+        //     }
+        //     );
+        // }
 
-        const handleDislike = () => {
-          const bodyParameters ={
-            session_id : localStorage.getItem('session_id'),
-            user_id : checkUid
-          }
-          axios.post(DISLIKE_USER, bodyParameters).then(
-            (response) => {
-            //   if(response.error=="bad_request")
-            //    {
-            //   localStorage.removeItem("session_id");
-            //   history.push('/login');
-            //  }
-            },
-            (error) => {
+        // const handleDislike = () => {
+        //   const bodyParameters ={
+        //     session_id : localStorage.getItem('session_id'),
+        //     user_id : checkUid
+        //   }
+        //   axios.post(DISLIKE_USER, bodyParameters).then(
+        //     (response) => {
+        //       if(response.error=="bad_request")
+        //        {
+        //       localStorage.removeItem("session_id");
+        //       history.push('/login');
+        //      }
+        //     },
+        //     (error) => {
          
-          }
-          );
-        }
-
-        const createNotification = (type ) => {
-  
-          switch (type) {
-              case 'report':
-                NotificationManager.success('report Successfully ', 'report');
-                break;
-                case 'gift-send':
-                NotificationManager.success('gift send successfully' , 'gift');
-                break;
-                case 'block':
-                  NotificationManager.success('block Successfully ', 'block');
-                  break;
-            case 'error':
-              NotificationManager.error('This User was already reported.');
-              break; 
-        };
-        };
-   useEffect(() =>{
+        //   }
+        //   );
+        // }
+    
+        
+    useEffect(() =>{
     getUser();
     handleStatus();
     handleGift();
@@ -256,8 +247,7 @@ const SingleProfile = (props) =>{
         <div className="col-md-7">
           <div className="report-tab d-flex flex-wrap align-items-center justify-content-end ml-auto">
             <span className="block-cta">
-              <a className="theme-txt" href="javascript:void(0)" onClick={handleblock}>{blockData ?'unblock':'block'}</a>
-          <NotificationContainer/>
+              <a className="theme-txt" href="javascript:void(0)" onClick={handleblock}>{!!userData && userData.is_blocked==1 ? "unblock" : "block"}</a>
             </span>
             <span className="report-cta">
               <a className="theme-txt" href="javascript:void(0)" onClick={() => setSmShow(true)}>Report</a>
@@ -273,17 +263,16 @@ const SingleProfile = (props) =>{
               <span className="d-inline-block">ID:2837289739</span>
             </div>
             <div className="photo-count">
-              <i className="far fa-image" />
+              <i className="far fa-image mr-1" />
               <span className="d-inline-block"> 
-               {!!userData&& userData.profile_images.length}
+               {!!userData&& userData.profile_images.length} Photos
               </span>
             </div>
           </div>
           {/* <div className="owl-carousel owl-theme profile-carousel"> */}
-          <Carousel id="images_crousal" >
+          <Carousel id="images_crousal" className="profile-carousel">
           <Carousel.Item interval={900}>
            
-
             <div className="items">
             {userData&& userData.profile_images.map((item , index) => {
             return  <figure>
@@ -295,7 +284,7 @@ const SingleProfile = (props) =>{
                   {
                     !!userData &&
                     <>
-                      <h4>{userData.first_name}, {userData.age}</h4>
+                      <h5>{userData.first_name}, {userData.age}</h5>
                       <span>{userData.distance}, {userData.occupation}</span>
                     </>
                   }
@@ -314,7 +303,7 @@ const SingleProfile = (props) =>{
             </Carousel.Item>
             </Carousel>
           {/* </div> */}
-          <div className="action-tray d-flex flex-wrap justify-content-center align-items-center">
+          {/* <div className="action-tray d-flex flex-wrap justify-content-center align-items-center">
             <div className="close-btn tray-btn-s">
               <a href="javascript:void(0)" onClick={handleDislike}>×</a>
             </div>
@@ -333,7 +322,7 @@ const SingleProfile = (props) =>{
                 <i className="fas fa-heart" />
               </a>
             </div>
-          </div>
+          </div> */}
         </div>
         <div className="col-md-7 pl-5">
           <div className="profile-bio-inner my-3">
@@ -344,13 +333,14 @@ const SingleProfile = (props) =>{
             <div className="bio-interest">
               <h5 className="mb-3">Interests</h5>
               <div className="interest-tags">
-                {!!userData&& 
+                
+                {!!userData && Object.keys(userData.interest_hobbies).length >1 ?   
                 <>
-                 { Object.keys(userData.interest_hobbies).map((key) => {
-                  return <span> {userData.interest_hobbies[key]} </span>
-                })}
+                 { Object.keys(userData.interest_hobbies).map((key) => (
+                   <span> {userData.interest_hobbies[key]} </span>
+                 ))}
                 </>
-                }
+                : ""}
              
               </div>
             </div>
@@ -359,7 +349,7 @@ const SingleProfile = (props) =>{
               <ul>
                 <li>
                   <div className="theme-txt">Height:</div>
-              <div>{!!userData ?   `${userData.height} cm`   : ""}</div>
+              <div>{!!userData && userData.height!="" ?   `${userData.height} cm`   : ""}</div>
                 </li>
                 <li>
                   <div className="theme-txt">Weight:</div>
@@ -374,7 +364,7 @@ const SingleProfile = (props) =>{
                 : userData.relationship_status == '2'  ? "Married" 
                 : "Unmarried"}
                  </>}
-                 { <> </>}</div>
+                 </div>
                 </li>
                 <li>
                   <div className="theme-txt">join date:</div>
@@ -481,24 +471,23 @@ const SingleProfile = (props) =>{
       
         <div className="choose-report d-flex flex-wrap">
                             <div className="form-group">
-                              <input type="radio"  name="report" value="it's spam" id="first-option"  onChange={ handleChange } />
+                              <input type="radio"  name="report" value="it's spam" id="first-option"  onChange={ handleChange }checked={form.report == "it's spam" ? "checked" : ""} />
                               <label for="first-option"></label>
                               <span>it's Spam</span>  
                             </div>
                             <div className="form-group">
-                              <input type="radio"  name="report" value="Fake user"  id="second-option" onChange={ handleChange }  />
+                              <input type="radio"  name="report" value="Fake user"  id="second-option" onChange={ handleChange }  checked={form.report == "Fake user" ? "checked" : ""}  />
                               <label for="second-option"></label>
                               <span>Fake User</span>
                             </div>
                               
                             <div className="form-group">
-                              <input type="radio" name="report" value="more"  id="third-option" onChange={ handleChange }  />
+                              <input type="radio" name="report" value="more"  id="third-option" onChange={ handleChange }  checked={form.report == "more" ? "checked" : ""}  />
                               <label for="third-option"></label>
                               <span>Other</span>  
                           </div>
                           </div>
                           <a className="btn bg-grd-clr d-block btn-countinue-3 "  id="edit-second-step" href="javascript:void(0)" onClick={handleReport}>Send</a>
-     <NotificationContainer/>
           </form>
            </div>
        
@@ -531,6 +520,8 @@ const SingleProfile = (props) =>{
             </a>
           </li>
         })}
+          <li>
+          </li>
           <li>
           </li>
           

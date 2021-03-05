@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
-import $ from "jquery";
 import {  useDispatch } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
-import * as path from "path";
 import {videoCall} from "../features/userSlice";
 
 const NavLinks = () => {
@@ -13,6 +11,7 @@ const NavLinks = () => {
 
     let pathname = window.location.pathname;
 
+ 
     useEffect(() => {
       // alert(window.location.href)
         pathname = window.location.pathname;
@@ -32,7 +31,7 @@ const NavLinks = () => {
       !path.match("/live-video-chat") && !path.match("/searching-profile") &&
       !path.match("/audio-chat") && !path.match("/video-chat") &&
          <ul className="feature-menu ml-auto">
-              <li className={`${pathname.match('/home') ? 'active' : ''}`}>
+              <li className={`${pathname === '/' ? 'active' : ''}`}>
                    <Link to="/">
                     <i className="fas fa-compass" />
                     <span>Discover</span>
@@ -44,13 +43,13 @@ const NavLinks = () => {
                     <span>Video Chat</span>
                   </Link>
                 </li> */}
-                <li className={`${pathname.match('/chat') ? 'active' : ''}`}>
+                <li className={`${pathname === '/chat' ? 'active' : ''}`}>
                    <Link to="/chat">
                      <i className="fas fa-layer-group" />
                     <span>Activity</span>
                 </Link>
                 </li>
-                <li className={`${pathname.match('/profile') ? 'active' : ''}`}>
+                <li className={`${pathname === '/profile' ? 'active' : ''}`}>
                 <Link to="/profile">
                     <i className="fas fa-user" />
                     <span>Profile</span>
