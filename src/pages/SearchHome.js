@@ -559,18 +559,18 @@ const openFileUploder = () =>{
      }
 
 console.log(statusId);
-    const convertToHtml = (data) => {
-       const convertedHtml =  {__html: data};
-      return <div dangerouslySetInnerHTML={convertedHtml} />
-    }
+    // const convertToHtml = (data) => {
+    //    const convertedHtml =  {__html: data};
+    //   return <div dangerouslySetInnerHTML={convertedHtml} />
+    // }
     
-    const playVideo = (video) => {
-      window.setTimeout(() => {
-        console.log(document.getElementById(video), "kkkkk")
-          document.getElementById(video).play();
-      }, 1000)
-      return <video id= {video} src={video} alt="status" />
-    }
+    // const playVideo = (video) => {
+    //   window.setTimeout(() => {
+    //     console.log(document.getElementById(video), "kkkkk")
+    //       document.getElementById(video).play();
+    //   }, 1000)
+    //   return <video id= {video} src={video} alt="status" />
+    // }
 
     return(
   <section className="home-wrapper">
