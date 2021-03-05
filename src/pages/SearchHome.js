@@ -411,7 +411,11 @@ document.getElementById("image").remove()
   }
 console.log(picture);
 
-
+useEffect(() => {
+  $(".show-filter").click(function(){
+  $(".option-bar").toggleClass("filter-active"); 
+});
+},[])
 
 
 // const uploadImage = () => {
@@ -572,6 +576,8 @@ console.log(statusId);
     //   return <video id= {video} src={video} alt="status" />
     // }
 
+ 
+
     return(
   <section className="home-wrapper">
   <img className="bg-mask" src="/assets/images/mask-bg.png" alt="Mask" />
@@ -583,6 +589,7 @@ console.log(statusId);
             <Link to="/">
               <img src="/assets/images/glitters.png" alt="Glitters" />
             </Link>
+            <a className="show-filter" href="javascript:void(0)"><img src="/assets/images/Filter.png" alt="filter" /></a>
             <span className="chat-point position-relative">
               <a href="javascript:void(0)">
                 <i className="fas fa-comment" />

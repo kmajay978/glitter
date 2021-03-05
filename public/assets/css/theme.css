@@ -537,6 +537,7 @@ ul.social-login button {
 
 .option-bar {
     background-color: var(--bar-bg-color);
+    position: fixed;
 }
 
 .chat-point::after {
@@ -2331,6 +2332,7 @@ label.custom-file-upload + a {
 
 .contacts-list .inbox-categories {
     width: 305px;
+    max-width: 100%;
 }
 
 .rcall-tabs li a,
@@ -4987,7 +4989,7 @@ div.heart i {
     .signup-page .col-md-4{
         flex:0 0 100%;
         max-width:100%;
-    }
+    }   
     .signup-wrapper__form {      
         margin: 100px auto 0px auto;
     }
@@ -5003,6 +5005,13 @@ div.heart i {
         -moz-transition:all 1s linear;
         transition:all 1s linear;
         overflow: hidden;
+        z-index: 9;
+        position: static;
+    }
+    .col-lg-9.main-bar, .option-bar{
+        flex: 0 0 100%;
+        max-width:100%;
+        margin-left: 0 !important;
     }
 
     .logo-tab img {
@@ -5038,9 +5047,30 @@ div.heart i {
         border-radius: 16px 16px 0px 0px;
     }
     .profile-swipe-wrapper{
-        padding:50px 0px 80px 0px;
+        padding:100px 0px 80px 0px;
     }
 
+    /*  SEARCH PAGE */
+
+    .search-section-wrapper {
+        padding: 100px 0px 80px 0px !important;
+    }
+    .tab-top .live-icon{
+        position: fixed;
+        top: 18px;
+        right: 100px;
+    }
+
+}
+
+@media (max-width:768px){
+    
+    /* SEARCH PAGE */
+    .search-people-row .row > .col-md-3 {
+        -webkit-flex: 0 0 33.33%;
+        flex: 0 0 33.33%;
+        max-width: 100%;
+    }
 
 }
 
@@ -5098,5 +5128,23 @@ div.heart i {
         font-size: 13px;
     }
 
+
+}
+
+@media (max-width:568px){
+
+ /* SEARCH PAGE */
+ .search-people-row .row > .col-md-3 {
+    -webkit-flex: 0 0 50%;
+    flex: 0 0 50%;
+    max-width: 100%;
+}
+.sp-singular-content h4 {
+	font-size: 13px;
+	line-height: 15px;
+}
+.sp-singular-content .status{
+    font-size: 11px;
+}
 
 }
