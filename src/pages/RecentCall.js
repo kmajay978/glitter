@@ -6,10 +6,14 @@ import axios from "axios";
 import NavLinks from '../components/Nav';
 import Logo from '../components/Logo';
 import {GET_ALL_CALL} from '../components/Api';
+import { useSelector } from "react-redux";
+import {userProfile} from '../features/userSlice'
 
 const RecentCall = () =>{
   const history = useHistory();
 const[allcalls , setAllCall] =  useState([]);
+
+const userData = useSelector(userProfile).user.profile; // using redux
 
 const handleAllCall = async() => {
   const bodyParameters ={
@@ -35,7 +39,7 @@ return(
                <Logo />
             </div>
             <div className="back-bar d-flex align-items-center ml-5">
-              <a className="btn-back" href="javascript:void(0)" onClick={()=> history.push("/profile")}><i className="fas fa-chevron-left" /></a>
+              <a className="btn-back" href="javascript:void(0)" onClick={()=> history.goBack()}><i className="fas fa-chevron-left" /></a>
               <span className="theme-txt">Back</span>
             </div>
           </div>
@@ -49,7 +53,7 @@ return(
           <div className="tab-top d-flex flex-wrap-wrap align-items-center">
             <div className="remaining-coins ml-auto">
               <img src="/assets/images/diamond-coin.png" alt="Coins" />
-              <span>152</span>
+              <span>{!!userData&& userData.coins}</span>
             </div>
           </div>
         </div>

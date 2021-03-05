@@ -4588,13 +4588,13 @@ span.gift__discount {
 /* Go live balance */
 
 #group-live-modal .modal-dialog {
-    max-width: 341px;
-    background-color: rgba(255, 255, 255, .50);
+	max-width: 341px;
+	/* background-color: rgba(255,255,255,.50); */
 }
 
-#group-live-modal .modal-content {
+/* #group-live-modal .modal-content{
     background-color: transparent;
-}
+} */
 
 .group-live__header {
     font-size: 16px;

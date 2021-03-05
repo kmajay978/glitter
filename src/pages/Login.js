@@ -489,11 +489,11 @@ const changeDate = (date) => {
                 
                     <div className="choose-gender d-flex my-4">
                       <div className="form-group">
-                        <input type="radio" id="female" name="gender" value={1}  onChange={ handleChange }  placeholder="Female" />
+                        <input type="radio" id="female" name="gender" value={2}  onChange={ handleChange }  placeholder="Female" />
                         <label htmlFor="female">Female</label>
                       </div>
                       <div className="form-group">
-                        <input type="radio" id="male" name="gender" value={2} onChange={ handleChange } placeholder="Male" />
+                        <input type="radio" id="male" name="gender" value={1} onChange={ handleChange } placeholder="Male" />
                         <label htmlFor="male">Male</label>
                       </div>
                         

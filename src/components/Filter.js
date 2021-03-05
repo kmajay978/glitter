@@ -122,7 +122,7 @@ function valuetextweight(value) {
   const bodyParameters = {
      session_id: localStorage.getItem('session_id'),
      age_from: valueAge[0],
-     show:valueGender,
+     show:valueGender.toString(),
      age_to: valueAge[1],
      distance: valueDistance,
      height_from:valueHeight[0],

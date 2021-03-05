@@ -151,7 +151,7 @@ console.log(allData);
   };
   const childRefs = userData;
   const swipe = (dir, userId) => {
-    // if(allData.length> 0) {
+    if(allData.length> 0) {
    
     const cardsLeft = allData.filter(
       (currentUser) => !alreadyRemoved.includes(currentUser.user_id)
@@ -168,24 +168,24 @@ console.log(allData);
         console.log("child ref error", childRefs, "childRefs");
       }
     }
-  // }
-  // else {
-  //   const cardsLeft = userData.filter(
-  //     (currentUser) => !alreadyRemoved.includes(currentUser.user_id)
-  //   );
-  //   if (cardsLeft.length) {
-  //     const toBeRemoved = cardsLeft[cardsLeft.length - 1].user_id; // Find the card object to be removed
-  //     const index = userData
-  //       .map((person) => person.user_id)
-  //       .indexOf(toBeRemoved); // Find the index of which to make the reference to
-  //     alreadyRemoved.push(toBeRemoved); // Make sure the next card gets removed next time if this card do not have time to exit the screen
-  //     if (!!childRefs && childRefs[index]) {
-  //       childRefs[index].current.swipe(dir); // Swipe the card!
-  //     } else {
-  //       console.log("child ref error", childRefs, "childRefs");
-  //     }
-  //   }
-  // }
+  }
+  else {
+    const cardsLeft = userData.filter(
+      (currentUser) => !alreadyRemoved.includes(currentUser.user_id)
+    );
+    if (cardsLeft.length) {
+      const toBeRemoved = cardsLeft[cardsLeft.length - 1].user_id; // Find the card object to be removed
+      const index = userData
+        .map((person) => person.user_id)
+        .indexOf(toBeRemoved); // Find the index of which to make the reference to
+      alreadyRemoved.push(toBeRemoved); // Make sure the next card gets removed next time if this card do not have time to exit the screen
+      if (!!childRefs && childRefs[index]) {
+        childRefs[index].current.swipe(dir); // Swipe the card!
+      } else {
+        console.log("child ref error", childRefs, "childRefs");
+      }
+    }
+  }
   };
 
 
@@ -195,16 +195,15 @@ console.log(allData);
   }
  }, [cardClick])
 
-//  useEffect (() => {
-
-//  }, [fetchedProfile])
+ useEffect (() => {
+  handleUserData();
+ }, [])
 
   useEffect(() => { 
     if(!!fetchedProfile){
       setIsLoaded(false);
       setAllData(fetchedProfile);
     }
-    handleUserData();
     window.setTimeout(() => {
        $(".main_wrapper")
     .mousedown(function (evt) {
@@ -239,24 +238,14 @@ console.log(allData);
     
     
   // }, []) 
-  const handleComment =() => {
-    history.push ({
-      pathname: '/chat',
-     })
-  }
-  
-  const handleVideo =() => {
-    history.push ({
-      pathname: '/searching-profile',
-     })
-  }
+
 
 
   return (
     <>
     {/* {allData.length> 0 ?  set: ""} */}
       <div className="cardContainer">  
-      {/* {allData.length> 0 ? <> */}
+      {allData.length> 0 ? <>
         {allData.map((currentUser, index) => (
               <div className="main_wrapper" id={currentUser.user_id}> 
               <GlitterCard ref={childRefs[index]} className="swipe" key={currentUser.user_id} onSwipe={(dir) => swiped(dir, currentUser.user_id)} >
@@ -280,7 +269,7 @@ console.log(allData);
 
                </div> 
            ))}  
-      {/*   </>: 
+        </>: 
       <>
        {userData.map((currentUser, index) => ( 
               <div className="main_wrapper" id={currentUser.user_id}> 
@@ -304,7 +293,7 @@ console.log(allData);
               </GlitterCard>
 
                </div> 
-            ))} </> } */}
+            ))} </> }
       
         <SyncLoader color={"#fcd46f"} loading={isLoaded} css={override} size={18} />
         
