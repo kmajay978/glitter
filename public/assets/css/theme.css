@@ -240,11 +240,6 @@ body {
     position: relative;
 }
 
-.signup-header .theme-txt {
-    padding-left: 52px;
-    text-align: left;
-}
-
 #login-tab-1 .form-group {
     display: flex;
     width: 100%;
@@ -542,6 +537,7 @@ ul.social-login button {
 
 .option-bar {
     background-color: var(--bar-bg-color);
+    position: fixed;
 }
 
 .chat-point::after {
@@ -563,6 +559,16 @@ ul.social-login button {
 
 .logo-tab img {
     width: 120px;
+}
+
+a.show-filter {
+    margin-left: auto;
+    margin-right: 15px;
+    display: none;
+}
+
+a.show-filter img {
+    width: 24px;
 }
 
 .filter-tab h4 {
@@ -729,6 +735,7 @@ ul.social-login button {
 	-webkit-transform: translateY(-50%);
 	-moz-transform: translateY(-50%);
 	transform: translateY(-50%);
+    padding-bottom: 40px;
 }
 
 .cardContainer {
@@ -2325,6 +2332,7 @@ label.custom-file-upload + a {
 
 .contacts-list .inbox-categories {
     width: 305px;
+    max-width: 100%;
 }
 
 .rcall-tabs li a,
@@ -4966,10 +4974,10 @@ div.heart i {
 
     /* LOGIN SCREEN */
     
-    html, body {
+    html, body, .signup-completed-body {
         height: auto;
     }
-    .login-body{
+    .login-body, .signup-completed-body{
         overflow: visible;
     }
     .signup-wrapper {
@@ -4981,25 +4989,162 @@ div.heart i {
     .signup-page .col-md-4{
         flex:0 0 100%;
         max-width:100%;
-    }
+    }   
     .signup-wrapper__form {      
         margin: 100px auto 0px auto;
     }
     .signup-wrapper__form{
         max-width:100%;
     }
+
+    /* HOMEPAGE  */
+
+    .option-bar{
+        height: 70px !important;
+        -webkit-transition:all 1s linear;
+        -moz-transition:all 1s linear;
+        transition:all 1s linear;
+        overflow: hidden;
+        z-index: 9;
+        position: static;
+    }
+    .col-lg-9.main-bar, .option-bar{
+        flex: 0 0 100%;
+        max-width:100%;
+        margin-left: 0 !important;
+    }
+
+    .logo-tab img {
+        width: 90px;
+    }
+
+    a.show-filter{
+        display: block;
+    }
+
+    .filter-active{
+        -webkit-transition:all 1s linear;
+        -moz-transition:all 1s linear;
+        transition:all 1s linear;
+        overflow: hidden;
+        height: auto !important;
+
+    }
+
+    .tab-top {        
+        position: fixed;
+        bottom: 0;
+        z-index: 9;
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+        height: auto;
+    }
+    .feature-menu{
+        width: 100%;
+        -webkit-border-radius: 16px 16px 0px 0px;
+        -moz-border-radius: 16px 16px 0px 0px;
+        border-radius: 16px 16px 0px 0px;
+    }
+    .profile-swipe-wrapper{
+        padding:100px 0px 80px 0px;
+    }
+
+    /*  SEARCH PAGE */
+
+    .search-section-wrapper {
+        padding: 100px 0px 80px 0px !important;
+    }
+    .tab-top .live-icon{
+        position: fixed;
+        top: 18px;
+        right: 100px;
+    }
+
+}
+
+@media (max-width:768px){
+    
+    /* SEARCH PAGE */
+    .search-people-row .row > .col-md-3 {
+        -webkit-flex: 0 0 33.33%;
+        flex: 0 0 33.33%;
+        max-width: 100%;
+    }
+
 }
 
 @media (max-width:667px){
     
     /* LOGIN PAGE */
-  
-      #login-tab-1 .form-group .country, #login-tab-1 .form-group .form-control{
-      max-width: 100%;
-      flex: 0 0 100%;
-      }
-  
-      #login-tab-1 .form-group .country{
-          margin-bottom:15PX;
+
+    .signup-inner{
+        padding: 20px;
+    }  
+
+    #login-tab-1 .form-group .country, #login-tab-1 .form-group .form-control{
+    max-width: 100%;
+    flex: 0 0 100%;
+    }  
+
+    #login-tab-1 .form-group .country{
+        margin-bottom:15PX;
     }
+
+    .choose-gender .form-group {
+        margin-bottom: 0;
+        width: 31%;
+    }
+
+    .choose-gender input[type="radio"] + label {
+        width: 100%;
+    }
+    
+    h4{
+        font-size: 20px;;
+    }
+    .btn-back {
+        width: 35px;
+        height: 35px;
+        line-height: 35px;
+    }
+    .btn-back i {
+        font-size: 18px;
+    }
+    .signup-wrapper__form .react-date-picker__calendar{
+        top:50px !important;
+        bottom: unset !important;
+    }
+
+    /* HOMEPAGE */
+    .show-gender input[type="checkbox"]:checked + label, .show-gender input[type="checkbox"]:not(:checked) + label, .show-gender input[type="radio"]:checked + label, .show-gender input[type="radio"]:not(:checked) + label{
+        width: 90px;
+    }
+
+    .feature-menu li.active a span{
+        font-size: 11px;
+    }
+    .feature-menu li a i{
+        font-size: 13px;
+    }
+
+
+}
+
+@media (max-width:568px){
+
+ /* SEARCH PAGE */
+ .search-people-row .row > .col-md-3 {
+    -webkit-flex: 0 0 50%;
+    flex: 0 0 50%;
+    max-width: 100%;
+}
+.sp-singular-content h4 {
+	font-size: 13px;
+	line-height: 15px;
+}
+.sp-singular-content .status{
+    font-size: 11px;
+}
+
 }

@@ -102,11 +102,11 @@ console.log(allData);
         (response) => {
          
             setDislike(false);
-            if(response.error=="bad_request")
-            {
-              localStorage.removeItem("session_id");
-              history.push('/login');
-            }
+            // if(response.error=="bad_request")
+            // {
+            //   localStorage.removeItem("session_id");
+            //   history.push('/login');
+            // }
           if (response.status == 200) {
           
             console.log(direction);
@@ -129,14 +129,14 @@ console.log(allData);
       axios.post(LIKE_USER, bodyParameters).then(
         (response) => {
             setLiked(false)
-            if(response.error=="bad_request")
-            {
-              localStorage.removeItem("session_id");
-              history.push('/login');
-            }
+            // if(response.error=="bad_request")
+            // {
+            //   localStorage.removeItem("session_id");
+            //   history.push('/login');
+            // }
             if(response.status==200) {
-            console.log(direction);
-            console.log("removing: " + userId);
+            // console.log(direction);
+            // console.log("removing: " + userId);
             alreadyRemoved.push(userId);
             setTimeout(() => {
               setLiked(false)

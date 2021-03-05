@@ -9,6 +9,7 @@ import FilterUser from '../components/FilterUser';
 import axios from 'axios';
 import Dummy from '../pages/Dummy'
 import Logo from '../components/Logo';
+import $ from 'jquery';
 
 const Home = (props) =>{
     
@@ -19,7 +20,11 @@ const Home = (props) =>{
     const handleChat = () => {
        history.push("/search-home");
     }
-
+useEffect(() => {
+  $(".show-filter").click(function(){
+  $(".option-bar").toggleClass("filter-active"); 
+});
+},[])
   return(
           <section className="home-wrapper">
            {/* <Loader isLoading={isLoading} />  */}
@@ -28,10 +33,9 @@ const Home = (props) =>{
           <div className="container-fluid p-0">
             <div className="row no-gutters">
               <div className="col-lg-3 option-bar p-3 vh-100">
-                <div className="logo-tab mb-5 d-flex justify-content-between align-items-start">
-                  <a href="javascript:void(0)">
-              <Logo/>      
-                  </a>
+                <div className="logo-tab mb-5 d-flex justify-content-between align-items-start">                  
+              <Logo/>     
+                  <a className="show-filter" href="javascript:void(0)"><img src="/assets/images/Filter.png" alt="filter" /></a>
                   <span className="chat-point position-relative">
                     <a href="javascript:void(0)" onClick={handleChat}>
                       <i className="fas fa-comment" /> 
