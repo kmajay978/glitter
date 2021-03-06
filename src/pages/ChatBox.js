@@ -48,7 +48,6 @@ const ChatBox = (props) =>{
     const[Likes, setLikes] = useState([]);
     const[Visitors, setVisitors] = useState([]);
     const[FriendList, setFriendlist] = useState([]);
-    const[isLoaded, setIsLoaded] = useState(false);
     const[FriendUserId, setFriendId] = useState('');
     const[AllData, setData] = useState('');
     const[CompleteMessageList, setMessages] = useState([]);
@@ -57,8 +56,6 @@ const ChatBox = (props) =>{
     const [isOn, toggleIsOn] = useToggle();
     const [uploadImage , setUploadImage] = useState('');
     const [GiftData , setGiftData] =useState([]);
-    const [picture, setPicture] = useState(null);
-    const [imgData, setImgData] = useState(null);
     const [previewData, setPreviewData] = useState([]);
     const [files, setFiles] = useState([]);
     const [previews, setPreviews] = useState([]);

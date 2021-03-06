@@ -268,7 +268,7 @@ const handleCheck = (e) => {
    .then((response) => {
    
    if(response.status==200  && !response.status.error){
-    NotificationManager.success("update successfully");
+    NotificationManager.success(" profile picture update successfully");
       setShowImage(false);
     ProfileData();
    }
@@ -426,9 +426,13 @@ const handleCheck = (e) => {
      try {
       const {data:{result, status_code}} = await axios.post(RECEIVED_GIFT_LIST , bodyParameters)
       setLoadedModel(false);
-      if(status_code==200){
+      if(status_code==200 && result.length>0){
         setGiftData(result);
+        setWarningMessage('');
         }
+      else {
+        setWarningMessage("No recieved gifts found");
+      }
   }
   catch (err) {
     setLoadedModel(false);
@@ -1204,7 +1208,7 @@ const handleCheck = (e) => {
         
         <ul className="d-flex flex-wrap text-center ">
         {!!GiftData && GiftData.map((items , i) => {
-        return<li onClick={() => getGiftItem(items.id)}>
+        return<li >
             <a href="javascript:void(0)" >
               <div>
                 <figure>

@@ -428,10 +428,14 @@ console.log(picture);
 // }
 const openFileUploder = () =>{
   inputFile.current.click();
+  setPencilData('');
+ setShowPencil(false);
 }
+
  const componentWillUnmount = () => {
     clearInterval(checkOnlineFrdsInterval)
  }
+
   useEffect (() => {
      handleFriendList();
 
@@ -844,8 +848,10 @@ console.log(statusId);
           {/* End Modal start here */}
           <a href="javascript:void(0)" className="modal-close" onClick={modelClose}><img src="/assets/images/btn_close.png" /></a>
       </Modal>
+      {videoData=="text"? <>
       <canvas id='textCanvas' height={465} width={380} />
             <img id='image' />
+            </>:""}
 </section>
 
 
