@@ -116,14 +116,7 @@ function App(props) {
       }
     })
   }, [])
-  useEffect(() => {
-    if (is_auth) {
-      // logic to handle 10 min location time interval....
-      //  window.setInterval(() => {
-      //  }, 600000);
-    }
-  }, [is_auth])
-
+ 
  
   useEffect(() => {
 

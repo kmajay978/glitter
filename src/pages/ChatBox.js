@@ -358,6 +358,22 @@ const ChatBox = (props) =>{
     }
 
 
+// const CheckBase64Type = (media) =>{
+//     const body = {profilepic:media};
+//     let mimeType = body.profilepic.match(/[^:]\w+\/[\w-+\d.]+(?=;|,)/)[0];
+
+//     if(mimeType == "image/png")
+//     {
+//         return <img onError={(e) => addDefaultSrc(e)} src={!!media ? media : returnDefaultImage()}/>
+//     }
+//     else
+//     {
+//         return <video id="video_preview" onError={(e) => addDefaultSrc(e)} src={!!media ? media : returnDefaultImage()} width="300" height="300" controls></video>
+//     }
+     
+//     // return mimeType;
+// }
+
     // Authenicating user here
     const DetermineUser = () => {
         var secondUserDataId = FriendUserId;
@@ -968,11 +984,12 @@ const ChatBox = (props) =>{
                                                                 <div className="message info">
                                                                     <div className="message-body">
                                                                         {
-                                                                            !!data.media &&
+                                                                            !!data.media &&   
                                                                             <div className="media-socket">
                                                                                 <img onError={(e) => addDefaultSrc(e)} src={!!data.media ? data.media : returnDefaultImage()}/>
                                                                             </div>
                                                                         }
+
 
                                                                         {
                                                                             !!data.message &&
@@ -998,6 +1015,7 @@ const ChatBox = (props) =>{
                                                                                 <img onError={(e) => addDefaultSrc(e)} src={!!data.media ? data.media : returnDefaultImage()}/>
                                                                             </div>
                                                                         }
+                                                                        
 
                                                                         {
                                                                             !!data.message &&
