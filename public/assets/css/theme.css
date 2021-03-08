@@ -4259,6 +4259,10 @@ object-fit: cover;
 
 /* one to one video */
 
+#remote_video_{
+    max-width:100%;
+    height:auto;
+}
 div#video-sender div#remote_video_ > div:last-child {
     width: 100% !important;
     height: -webkit-calc(100vh - 105px) !important;
@@ -4639,9 +4643,9 @@ span.gift__discount {
 }
 
 .live__comments {
-    height: -webkit-calc(100vh - 100px);
-    height: -moz-calc(100vh - 100px);
-    height: calc(100vh - 200px);
+    height: -webkit-calc(100vh - 242px);
+    height: -moz-calc(100vh - 242px);
+    height: calc(100vh - 242px);
     overflow-y: scroll;
     overflow-x: hidden;
 }
@@ -4951,11 +4955,11 @@ div.heart i {
     }
 }
 
-.send-heart .fa-heart {
+/* .send-heart .fa-heart {
     color: #F4C862 !important;
     font-size: 35px !important;
 }
-
+*/
 .send-heart a i {
     font-size: 19px !important;
     color: #fff !important;
@@ -5061,6 +5065,100 @@ div.heart i {
         right: 100px;
     }
 
+    /* Live call*/
+    
+    .vc-screen.d-flex.h-100 {
+	flex-wrap: wrap;
+	position: relative;
+   }
+
+    .vc-screen .col-md-9{
+     flex: 0 0 100%;
+     max-width:100%;
+
+    }
+
+    .charges-reminder-txt {
+    right: 15px;
+    top: 15px;
+    left: inherit;
+    bottom: inherit;
+    }
+    .charges-reminder-txt p{
+        font-size: 10px;
+        line-height: 14px;
+        margin-bottom: 0;
+    }
+
+    .live__comments_bg {
+        background-color: transparent;
+        position: absolute;
+        bottom: 0;
+        max-width: 100%;
+        width:100%;
+    }
+
+    .vc-screen-wrapper.image-auto #chat-body form{
+     max-width:300px;
+    }
+
+    .vc-screen-wrapper.image-auto .vc-option-block {
+    position: fixed;
+    bottom: 15px;
+    right: 15px;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    -moz-transform: translateY(-50%);
+    transform: translateY(-50%);
+    width: 42px;
+    z-index:999;
+   }
+
+   .vc-options ul li:not(:last-child){
+       margin-bottom:5px;
+   }
+
+   .vc-screen-wrapper .write-comments input{
+       height:60px !important;
+   }
+
+   .live__comments{
+       height: -webkit-calc(100vh - 400px);
+       height: -moz-calc(100vh - 400px);
+       height: calc(100vh - 400px);
+   }
+   .write-comments {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 999;
+    width:100%;
+}
+
+    /* BECOME VIP PAGE  */
+    .becomevip-wrapper{
+        padding-bottom: 80px;
+    }
+   
+    /* MODAL */
+    .modal-content{
+        padding:30px;
+    }  
+
+    /* ONE TO ONE VIDEO CALL */
+
+    div#video-receiver div#local_stream > div:first-child {
+	width: 80px !important;
+	height: 80px !important;
+	top: 50%;
+    transform: translateY(-50%);
+    -webkit--transform: translateY(-50%);
+    -moz-transform: translateY(-50%);
+	border: 1px solid var(--theme-primary-color);
+	z-index: 1;
+    }
+
 }
 
 @media (max-width:768px){
@@ -5070,6 +5168,12 @@ div.heart i {
         -webkit-flex: 0 0 33.33%;
         flex: 0 0 33.33%;
         max-width: 100%;
+    }
+    .vc-user-name .name {
+	font-size: 12px;
+    }
+    .remaining-coins  img{
+        width:15px;
     }
 
 }
@@ -5128,6 +5232,36 @@ div.heart i {
         font-size: 13px;
     }
 
+<<<<<<< HEAD
+     /* BECOME VIP PAGE  */
+     
+     /* GIFT MODAL */
+     
+     .all-gift-inner{
+         top:20px;
+         -moz-transform:translateY(-20px);
+         -webkit-transform:translateY(-20px);
+         transform:translateY(-20px);
+     }
+     
+     .all-gift-body ul li{
+         width: -webkit-calc(100% / 4);
+         width: -moz-calc(100% / 4);
+         width: calc(100% / 4);
+     }
+   
+     /* LIVE CALL */
+    .live__comments__items {
+	font-size: 12px;
+	position: fixed;
+	max-width: 300px;
+	left: 15px;
+	right: 15px;
+	bottom: 60px;
+    height:200px;
+    }
+=======
+>>>>>>> cf53aed9fc597c3b5ca0322820c1b4621188ac6c
 
 }
 
