@@ -69,6 +69,7 @@ const SearchHome = () =>
     const [isLoaded, setIsLoaded] = useState(false);
     const [LiveModel , setLiveModel] = useState({modal: false, item: null});
     const [audLive, setAudLive] = useState(false)
+    const [liveMe, setLiveMe] = useState(false)
 
     console.log(audLive, "audLive..")
     userData = useSelector(userProfile).user.profile; //using redux useSelector here
@@ -512,6 +513,7 @@ const openFileUploder = () =>{
 //   console.log(fetchedProfile);
 
     const makeMeLive = () => {
+      setLiveMe(true)
         const bodyParameters ={
             session_id: localStorage.getItem("session_id"),
             user_id: userData.user_id,
@@ -519,7 +521,6 @@ const openFileUploder = () =>{
         }
         const call_type = 1, user_id = userData.user_id;
         generateLiveVideoChatToken(dispatch, history, bodyParameters, call_type, user_id, uuidv4(), SOCKET);
-
     }
 
     const watchLive = () => {
@@ -812,10 +813,10 @@ console.log(statusId);
                     <div className="upload-status d-flex justify-content-center mt-5">
                       <a id="upload__media" className="upload__media bg-grd-clr"  href="javascript:void(0)"onClick={openFileUploder}>
                       <i className="fas fa-camera"></i>
-                      <input type="file"  name="file" value=""  ref={inputFile} id="upload_fle" className="d-none" onChange={handleFileChange} accept="image/* , video/*"  />
+                      <input type="file"  name="file" value=""  ref={inputFile} id="upload_fle" className="d-none" onChange={handleFileChange} accept="image/*"  />
                       
                       </a>
-                      <a className="upload__text bg-grd-clr" href="javascript:void(0)" onClick={handlePencil}>
+                      <a className=" upload__text bg-grd-clr" href="javascript:void(0)" onClick={handlePencil}>
                         <i className="fas fa-video"></i>
                         </a>
                       
