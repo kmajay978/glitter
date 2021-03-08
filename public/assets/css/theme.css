@@ -4640,9 +4640,9 @@ span.gift__discount {
 }
 
 .live__comments {
-    height: -webkit-calc(100vh - 100px);
-    height: -moz-calc(100vh - 100px);
-    height: calc(100vh - 200px);
+    height: -webkit-calc(100vh - 242px);
+    height: -moz-calc(100vh - 242px);
+    height: calc(100vh - 242px);
     overflow-y: scroll;
     overflow-x: hidden;
 }
@@ -4952,11 +4952,11 @@ div.heart i {
     }
 }
 
-.send-heart .fa-heart {
+/* .send-heart .fa-heart {
     color: #F4C862 !important;
     font-size: 35px !important;
 }
-
+*/
 .send-heart a i {
     font-size: 19px !important;
     color: #fff !important;
@@ -5094,7 +5094,47 @@ div.heart i {
         background-color: transparent;
         position: absolute;
         bottom: 0;
+        max-width: 100%;
+        width:100%;
     }
+
+    .vc-screen-wrapper.image-auto #chat-body form{
+     max-width:300px;
+    }
+
+    .vc-screen-wrapper.image-auto .vc-option-block {
+    position: fixed;
+    bottom: 15px;
+    right: 15px;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    -moz-transform: translateY(-50%);
+    transform: translateY(-50%);
+    width: 42px;
+    z-index:999;
+   }
+
+   .vc-options ul li:not(:last-child){
+       margin-bottom:5px;
+   }
+
+   .vc-screen-wrapper .write-comments input{
+       height:60px !important;
+   }
+
+   .live__comments{
+       height: -webkit-calc(100vh - 400px);
+       height: -moz-calc(100vh - 400px);
+       height: calc(100vh - 400px);
+   }
+   .write-comments {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 999;
+    width:100%;
+}
 
     /* BECOME VIP PAGE  */
     .becomevip-wrapper{
@@ -5105,9 +5145,20 @@ div.heart i {
     .modal-content{
         padding:30px;
     }
-    
 
+    /* ONE TO ONE VIDEO CALL */
 
+    div#video-receiver div#local_stream > div:first-child {
+	width: 80px !important;
+	height: 80px !important;
+	top: 50%;
+    transform: translateY(-50%);
+    -webkit--transform: translateY(-50%);
+    -moz-transform: translateY(-50%);
+	border: 1px solid var(--theme-primary-color);
+	z-index: 1;
+    }
+ 
 }
 
 @media (max-width:768px){
@@ -5117,6 +5168,12 @@ div.heart i {
         -webkit-flex: 0 0 33.33%;
         flex: 0 0 33.33%;
         max-width: 100%;
+    }
+    .vc-user-name .name {
+	font-size: 12px;
+    }
+    .remaining-coins  img{
+        width:15px;
     }
 
 }
@@ -5205,7 +5262,16 @@ div.heart i {
          width: calc(100% / 4);
      }
    
-
+     /* LIVE CALL */
+    .live__comments__items {
+	font-size: 12px;
+	position: fixed;
+	max-width: 300px;
+	left: 15px;
+	right: 15px;
+	bottom: 60px;
+    height:200px;
+    }
 
 }
 

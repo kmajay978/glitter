@@ -658,7 +658,7 @@ const getGiftItem = async (giftId) => {
         </div>
        
         <div class="col-md-3 live__comments_bg p-4">
-                        <div class="live__comments" id="chat-body">
+                         <div class="live__comments__wrap">
                             <form onSubmit={CheckTextInputIsEmptyOrNot}>
                                 {
                                     !loading && CompleteMessageList.length === 0 &&
@@ -669,7 +669,7 @@ const getGiftItem = async (giftId) => {
                                         </figure>
                                     </div>
                                 }
-                                <div class="live__comments__items">
+                                <div class="live__comments__items live__comments" id="chat-body">
                                     {
                                         CompleteMessageList.map((data, i) => (
                                             <>
