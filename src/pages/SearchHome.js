@@ -65,6 +65,7 @@ const SearchHome = () =>
     const [videoData, setVideoData] = useState(null);
     const [video, setVideo] = useState(null);
     const [showUploadStatus,setUploadStatus] = useState(false);
+    const [showLivePopup,setLivePopup] = useState(false);
     const [isLoaded, setIsLoaded] = useState(false);
     const [LiveModel , setLiveModel] = useState({modal: false, item: null});
     const [audLive, setAudLive] = useState(false)
@@ -244,6 +245,7 @@ const handleFileChange = e => {
  
  const modelClose= () => {
    setUploadStatus(false);
+   setLivePopup(false)
    setShowPencil(false);
    setPicture(null);
    setVideoData(null);
@@ -601,7 +603,8 @@ console.log(statusId);
         <div className="col-lg-9 main-bar p-3" style={{marginLeft: '25%'}}>
           <div className="tab-top d-flex flex-wrap-wrap">
             <div className="live-icon">
-              <img src="/assets/images/live.png" style={{cursor: "pointer"}} onClick={makeMeLive} alt="Live" />
+              <img src="/assets/images/live.png" style={{cursor: "pointer"}}  onClick={() =>setLivePopup(true)}  alt="Live" />
+              {/* makeMeLive */}
             </div>
             <NavLinks />
           </div>
@@ -813,7 +816,7 @@ console.log(statusId);
                       
                       </a>
                       <a className="upload__text bg-grd-clr" href="javascript:void(0)" onClick={handlePencil}>
-                        <i className="fas fa-pencil-alt"></i>
+                        <i className="fas fa-video"></i>
                         </a>
                       
                         </div>
@@ -851,6 +854,116 @@ console.log(statusId);
           {/* End Modal start here */}
           <a href="javascript:void(0)" className="modal-close" onClick={modelClose}><img src="/assets/images/btn_close.png" /></a>
       </Modal>
+
+      {/* Live video screen Pop up */}
+<Modal className ="theme-modal" id="upload-media-modal" id="live-modal" show={showLivePopup} onHide={() => setLivePopup(false)} backdrop="static" keyboard={false} style={{display: 'block', paddingLeft: '17px'}}>
+  {/* <div className="modal-dialog" role="document"> 
+    <div className="modal-content">
+      <div className="modal-body p-0">*/}
+        <div className="live-wrapper">
+          <div className="live__leftblk">
+            <div className="live_info d-flex">
+              <div className="live_img">
+                <img src={!!userData ? userData.user_image : ""} alt="live user" />
+                <span>change cover</span>
+              </div>
+              <div className="live_title">
+                <h5>Add a title to chat</h5>
+                {/* <input type="text" name="live_title" className="live-title" id="live-title" /> */}
+              </div>
+            </div>
+            <div className="live_share">
+              <span>Share to</span>
+              <ul>
+                <li><a href="javascript:void(0)"><i className="fab fa-facebook-f" /></a></li>
+                <li><a href><i className="fab fa-instagram" /></a></li>
+              </ul>
+            </div>
+            <div className="block_countries">
+              <div className="block_countries__list">
+                <img src="/assets/images/add-countries.svg" alt="add countries" />
+              </div>
+              <div className="block_countries__list">
+                <img src="/assets/images/india-flag.svg" alt="india" />
+                <div className="block_countries__info">
+                  <span>India</span>
+                  <a href="javascript:void(0)" className="del-country"><img src="/assets/images/country-close.svg" alt="close" /></a>
+                </div>                                    
+              </div>
+              <div className="block_countries__list">
+                <img src="/assets/images/nigeria.svg" alt="nigeria" />
+                <div className="block_countries__info">
+                  <span>India</span>
+                  <a href="javascript:void(0)" className="del-country"><img src="/assets/images/country-close.svg" alt="close" /></a>
+                </div>                                    
+              </div>
+            </div>
+          </div>
+          <div className="live_rightblk  text-center">
+            <h5 className="mb-4">Select Tag</h5>
+            <div className="tags">   
+              <div className="live-tags">
+                <input type="checkbox" defaultValue id="tag-1" />
+                <label htmlFor="tag-1">Make friends</label>
+              </div>
+              <div className="live-tags">
+                <input type="checkbox" defaultValue id="tag-2" />
+                <label htmlFor="tag-2">Meet People</label>
+              </div>
+              <div className="live-tags">
+                <input type="checkbox" defaultValue id="tag-3" />
+                <label htmlFor="tag-3">Enjoy</label>
+              </div>
+              <div className="live-tags">
+                <input type="checkbox" defaultValue id="tag-4" />
+                <label htmlFor="tag-4">Naughty</label>
+              </div>
+              <div className="live-tags">
+                <input type="checkbox" defaultValue id="tag-5" />
+                <label htmlFor="tag-5">Lovense Lush On</label>
+              </div>
+              <div className="live-tags">
+                <input type="checkbox" defaultValue id="tag-6" />
+                <label htmlFor="tag-6">Wet Show</label>
+              </div>
+              <div className="live-tags">
+                <input type="checkbox" defaultValue id="tag-7" />
+                <label htmlFor="tag-7">Sing Show</label>
+              </div>
+              <div className="live-tags">
+                <input type="checkbox" defaultValue id="tag-8" />
+                <label htmlFor="tag-8">Modeling</label>
+              </div>
+              <div className="live-tags">
+                <input type="checkbox" defaultValue id="tag-9" />
+                <label htmlFor="tag-9">Talk About Cultures</label>
+              </div>
+              <div className="live-tags">
+                <input type="checkbox" defaultValue id="tag-10" />
+                <label htmlFor="tag-10">Spin Wheel</label>
+              </div>
+            </div>
+          </div>
+          <div className="live-option w-100 text-center">
+            <button className="btn bg-grd-clr" onClick={makeMeLive}>Go live</button>
+            <div className="live-type mt-4">
+              <span className="active">Group Chat Live</span>
+              <span>Live</span>
+            </div>
+          </div>
+           <a href="javascript:void(0)" className="modal-close" onClick={modelClose}><img src="/assets/images/btn_close.png" /></a>
+        </div>
+
+    {/*  </div>
+     </div> */}
+    {/* <div className="modal-close">
+      <img src="/assets/images/btn_close.png" alt="close popup" onClick={() => setLivePopup(false)} />
+    </div> */}
+  {/* </div> */}
+
+
+</Modal>
+      {/* End live video screen */}
       <canvas id='textCanvas' height={465} width={380} />
             <img id='image' />
 </section>
