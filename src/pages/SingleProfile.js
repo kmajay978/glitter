@@ -99,7 +99,7 @@ const SingleProfile = (props) =>{
        }
        }
 
-   //get single  gift item
+   //send single  gift item
       const getGiftItem = async(Uid) => {
       const bodyParameters ={
       session_id :  localStorage.getItem('session_id') ,
@@ -107,7 +107,7 @@ const SingleProfile = (props) =>{
       given_to : checkUid
       }
        const {data : {result}} = await axios.post(GIFT_PURCHASE_API , bodyParameters)
-       NotificationManager.error("gift send successfully");
+       NotificationManager.success("gift send successfully");
         }
 
     // block the user 

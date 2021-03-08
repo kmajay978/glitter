@@ -696,27 +696,7 @@ const ChatBox = (props) =>{
         history.push("/searching-profile-call");
     }
 
-    // const createNotification = (type) => {
-    //     return () => {
-    //         switch (type) {
-    //             case 'accept-request':
-    //                 NotificationManager.success('Like sucessfully', 'Like');
-    //                 break;
-    //             case 'success':
-    //                 NotificationManager.success('Success message', 'Title here');
-    //                 break;
-    //             case 'error-secure':
-    //                 NotificationManager.error('err.message', 'Click me!', 5000, () => {
-    //                 });
-    //             case 'error-message':
-    //                 NotificationManager.error('err.message', 'Click me!', 5000, () => {
-
-    //                 });
-    //                 break;
-    //         }
-    //     };
-    // };
-
+ 
     const openFileHandler = () => {
         if(baseMultipleImage.length < 4) {
             inputFile.current.click();
@@ -818,7 +798,7 @@ const ChatBox = (props) =>{
                                                 
                                                     : 
                                                     <li className="nav-item w-100">
-                                                    <a className="nav-link" href="#chat-field" data-toggle="tab" data-id={item.like_id} role="tab">
+                                                    <a className="nav-link" href="#chat-field" style={{cursor: "default"}} data-toggle="tab" data-id={item.like_id} role="tab">
                                                    <div className="chat__user__img">
                                                    <i className="fas fa-lock"></i>
                                                    <img alt={item.first_name} className="img-circle medium-image" src={item.profile_images} /></div> 

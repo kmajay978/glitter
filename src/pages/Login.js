@@ -85,7 +85,7 @@ addBodyClass('login-body')('')
   
   const handleFileChange = e => {
     if (e.target.files[0]) {
-      // console.log("picture: ", e.target.files);
+   
       setPicture(e.target.files[0]);
       const reader = new FileReader();
       reader.addEventListener("load", () => {
@@ -288,11 +288,11 @@ const registerHandle = (e) =>{
         bodyParameters.append("latitude", "" + "30.704649");
         bodyParameters.append("longitude", "" + "76.717873");
         bodyParameters.append('profile_photo', picture);
-        console.log(picture,"picture......");
+       
         
         axios.post(SIGNUP_API,bodyParameters, config)
         .then((response) => { 
-          console.log(response, "kkk")
+          
           if(response.data.status_code == 200 && response.data.error == false)
           {
             localStorage.setItem('session_id', response.data.data.session_id);
@@ -330,14 +330,14 @@ const registerHandle = (e) =>{
   // Testing here
   //login with google here
  const responseGoogle = (response) => {
-    console.log(response, ".....response");
+    // console.log(response, ".....response");
   
   }
 //End here
  
 //login with twitter code
  const onSuccess = (response)=> {
-   console.log(response);
+  //  console.log(response);
     // response.json().then(body => {
     //   console.log(JSON.stringify(body));
     // });
