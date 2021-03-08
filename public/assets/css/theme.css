@@ -1410,7 +1410,6 @@ label.custom-file-upload + a {
     background-color: rgba(0, 0, 0, 0.7);
     display: none;
     opacity: 0;
-    overflow-y:auto;
 }
 
 .all-gifts-wrapper.active {
@@ -5042,9 +5041,6 @@ div.heart i {
         height: auto;
     }
     .feature-menu{
-        display: flex;
-        align-items: center;
-        justify-content: center;
         width: 100%;
         -webkit-border-radius: 16px 16px 0px 0px;
         -moz-border-radius: 16px 16px 0px 0px;
@@ -5065,6 +5061,7 @@ div.heart i {
         right: 100px;
     }
 
+<<<<<<< HEAD
     /* Live call*/
     
     .vc-screen.d-flex.h-100 {
@@ -5159,6 +5156,8 @@ div.heart i {
 	z-index: 1;
     }
  
+=======
+>>>>>>> cf53aed9fc597c3b5ca0322820c1b4621188ac6c
 }
 
 @media (max-width:768px){
@@ -5174,19 +5173,6 @@ div.heart i {
     }
     .remaining-coins  img{
         width:15px;
-    }
-
-}
-
-@media (max-width:767px){
-
-    /* BECOME MEMBER PAGE */
-
-    .border-rt {
-        padding-right: 15px;
-    }
-    .membership-plans, .user-actions{
-        padding:0px;  
     }
 
 }
@@ -5245,6 +5231,7 @@ div.heart i {
         font-size: 13px;
     }
 
+<<<<<<< HEAD
      /* BECOME VIP PAGE  */
      
      /* GIFT MODAL */
@@ -5272,6 +5259,8 @@ div.heart i {
 	bottom: 60px;
     height:200px;
     }
+=======
+>>>>>>> cf53aed9fc597c3b5ca0322820c1b4621188ac6c
 
 }
 
@@ -5289,6 +5278,4 @@ div.heart i {
 }
 .sp-singular-content .status{
     font-size: 11px;
-}
-
-}
+}}
