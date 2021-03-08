@@ -4259,6 +4259,10 @@ object-fit: cover;
 
 /* one to one video */
 
+#remote_video_{
+    max-width:100%;
+    height:auto;
+}
 div#video-sender div#remote_video_ > div:last-child {
     width: 100% !important;
     height: -webkit-calc(100vh - 105px) !important;
@@ -5061,7 +5065,6 @@ div.heart i {
         right: 100px;
     }
 
-<<<<<<< HEAD
     /* Live call*/
     
     .vc-screen.d-flex.h-100 {
@@ -5141,7 +5144,7 @@ div.heart i {
     /* MODAL */
     .modal-content{
         padding:30px;
-    }
+    }  
 
     /* ONE TO ONE VIDEO CALL */
 
@@ -5155,9 +5158,7 @@ div.heart i {
 	border: 1px solid var(--theme-primary-color);
 	z-index: 1;
     }
- 
-=======
->>>>>>> cf53aed9fc597c3b5ca0322820c1b4621188ac6c
+
 }
 
 @media (max-width:768px){

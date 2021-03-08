@@ -593,7 +593,7 @@ const changeDate = (date) => {
 
 countryDropdown('#country');
 uploadImage();
-  }, []);
+  }, [step]);
   
 const changeOtp = (value) => {
   setOtp(value)
