@@ -48,6 +48,8 @@ const Profile = (props) =>{
  
   const history = useHistory();
   const dispatch = useDispatch();
+  const openFile = useRef();
+
   const [packageList,setPackage] = useState([]);
   const [profileData, setProfile] = useState('');  
   const [blockData, setBlockData] = useState([]);
@@ -112,7 +114,7 @@ const Profile = (props) =>{
     interests_hobbie :""
   });
 
-  // console.log(form, "form...");
+  
   
   const handleChange = e => { 
     setForm({
@@ -154,9 +156,9 @@ const handleCheck = (e) => {
   //   $('.react-date-picker__inputGroup__year').val('1997');
   // }, 2000)
    
-  //     console.log(date ,"hii");
+  
   //   },[show])
-    // console.log(userData.dob);
+
     // Fetching profile Data
    var sessionId = localStorage.getItem("session_id")
    const ProfileData = async() =>{
@@ -193,9 +195,9 @@ const handleCheck = (e) => {
        }
     
 
-    // console.log(hobbies);
+   
       
-  // console.log(hobbies,"hobbies......")
+ 
      //update profile data
       
      const updateProfile = (e) =>{
@@ -223,23 +225,24 @@ const handleCheck = (e) => {
         bodyParameters.append('interests_hobbies[]', selectedCheck.join(","));
         
 
-   axios.post(EDITPROFILE_API , bodyParameters, config) 
-   .then((response) => {
+  //  axios.post(EDITPROFILE_API , bodyParameters, config) 
+  //  .then((response) => {
    
-   if(response.status==200  && !response.status.error){
-    NotificationManager.success("update successfully");
+  //  if(response.status==200  && !response.status.error){
+  //   NotificationManager.success("update successfully");
  
-   }
+  //  }
    
-   }, (error) =>{
-    NotificationManager.error(error.message);
-    if (error.toString().match("403")) {
-      localStorage.removeItem("session_id");
-      history.push('/login');
-    }
+  //  }, (error) =>{
+  //   NotificationManager.error(error.message);
+  //   if (error.toString().match("403")) {
+  //     localStorage.removeItem("session_id");
+  //     history.push('/login');
+  //   }
    
-   });
+  //  });
    }
+
 
    const config = {
     headers : {
@@ -247,35 +250,86 @@ const handleCheck = (e) => {
               "Content-Type": "multipart/form-data",
           }
     }
+
+  //   useEffect(() => {
+  //     document.addEventListener("keydown", handleKeyDown);
+  //   }, [])
+
+  //   var ESCAPE_KEY = 27;
+
+  //  const handleKeyDown = (event) => {
+  //       switch( event.keyCode ) {
+  //           case ESCAPE_KEY:
+  //               setPicture(null);
+  //                setShowImage(true);
+  //               break;
+  //           default: 
+  //               break;
+  //       }
+  //   }
+ 
+
+    const formValidation = () =>{
+      let isValid = true;
+ 
+      if(picture == null)
+      {
+        // phoneErr.phoneShort = "Phone number is Empty";
+        NotificationManager.error(" please, add the  picture ");
+        setShowImage(true);
+        isValid = false;
+      }
+ 
+     
+      return isValid;
+    }
+
    const updateImage = (e) => {
+    const isValid = formValidation();
+    if(isValid){
+      var data = picture
+      if (!!data) {
+        const fileName = data.name.split(".");
+        const imageFormat = fileName[fileName.length - 1];
+        if (imageFormat === "png" || imageFormat === "jpg" || imageFormat === "jpeg" ||
+            imageFormat === "PNG" || imageFormat === "JPG" || imageFormat === "JPEG") {  
+        
     const bodyParameters = new FormData();
       bodyParameters.append("session_id", "" + sessionId);
       bodyParameters.append("device_token", "" + "uhydfdfghdertyt445t6y78755t5jhyhyy" );
       bodyParameters.append("device_type", "" + 0);
       bodyParameters.append("first_name", "" + form.firstName);
       bodyParameters.append("last_name", form.lastName);
- 
       bodyParameters.append("gender", "" + form.gender);
       bodyParameters.append("aboutMe", "" +  form.aboutMe);
       bodyParameters.append("height",  form.height);
       bodyParameters.append("weight",  form.weight);
       bodyParameters.append("interest", "" + form.interest);
       bodyParameters.append('profile_photo[]', picture);
-      console.log(picture,"picture.....");
+     
       bodyParameters.append("relationship_status", form.relationStatus);
     
     axios.post(EDITPROFILE_API , bodyParameters , config) 
    .then((response) => {
    
-   if(response.status==200  && !response.status.error){
-    NotificationManager.success("update successfully");
+   if(response.status==200  && !response.status.error ){
+    NotificationManager.success(" profile picture update successfully");
       setShowImage(false);
     ProfileData();
    }
- 
+  setPicture(null);
    }, (error) =>{
     NotificationManager.error(error.message);
    });
+  }
+  else {
+    NotificationManager.error("Only .png, .jpg, .jpeg image formats supported.");  
+  }
+}
+else {
+  NotificationManager.error("Only .png, .jpg, .jpeg image formats supported.");  
+}
+    }
    }
 
   const handleLogout = () =>{
@@ -352,7 +406,7 @@ const handleCheck = (e) => {
       }
     });
   }
-  // console.log(blockId);
+  
   // useEffect(() => {
   //    handleBlock();
   //  }, [blockId])
@@ -377,7 +431,7 @@ const handleCheck = (e) => {
        }); 
     }
  
-    // console.log(coinPackage , "packages...");
+    
 
     //coin history 
     const handleCoinHistory = () => {
@@ -426,9 +480,13 @@ const handleCheck = (e) => {
      try {
       const {data:{result, status_code}} = await axios.post(RECEIVED_GIFT_LIST , bodyParameters)
       setLoadedModel(false);
-      if(status_code==200){
+      if(status_code==200 && result.length>0){
         setGiftData(result);
+        setWarningMessage('');
         }
+      else {
+        setWarningMessage("No recieved gifts found");
+      }
   }
   catch (err) {
     setLoadedModel(false);
@@ -447,7 +505,7 @@ const handleCheck = (e) => {
       gift_id : Uid
     }
     const {data : {result}} = await axios.post(GET_GIFT_API , bodyParameters)
-   console.log(result);
+
    }
  
    //get interest hobbies
@@ -474,7 +532,7 @@ const handleCheck = (e) => {
    const handleFileChange = e => {
     if (e.target.files[0]) 
     {
-      console.log("picture: ", e.target.files[0]);
+     
       setPicture(e.target.files[0]);
       const reader = new FileReader();
       reader.addEventListener("load", () => {
@@ -487,22 +545,22 @@ const handleCheck = (e) => {
 
   const uploadImage = () => {
     // Click event for status uplaod screen
-    $(document).on("click", ".image-uploader  a", function () {
-     // var image_name = $('#profile-photo').val().replace("C:\\fakepath\\", "");
-     // $(".custom-file-upload").html(image_name);
+    // $(document).on("click", ".image-uploader  a", function () {
+    //  // var image_name = $('#profile-photo').val().replace("C:\\fakepath\\", "");
+    //  // $(".custom-file-upload").html(image_name);
       
-      $('#profile-photo').trigger("click");
-    });
+    //   $('#profile-photo').trigger("click");
+    // });
 
     $(document).on("change", "#profile-photo", function () {
       var image_name1 = $(this).val().replace("C:\\fakepath\\", "");
       $(".custom-file-upload").html(image_name1);
     });
    
-    $(document).on("click", "#profile-photo", function (e) {
-      e.stopPropagation();
-      //some code
-   });
+  //   $(document).on("click", "#profile-photo", function (e) {
+  //     e.stopPropagation();
+  //     //some code
+  //  });
    
    }
 
@@ -599,8 +657,15 @@ const handleCheck = (e) => {
   },[])
 
   
+const closedOnClick = () =>
+{
+  setShowImage(false);
+  setPicture(null);
+}
 
-
+const openFileUploader = () => {
+  openFile.current.click();
+}
 
    const tabScreen = () =>{
     switch(step) {
@@ -629,7 +694,7 @@ const handleCheck = (e) => {
              <div className="choose-gender d-flex my-4">
                
                             <div className="form-group">
-                                <label className="d-block">DOB</label>
+                             
                             {form.gender == 1 }
                               <input type="radio" id="female" name="gender" value={1} checked={form.gender == 1 ? "checked" : ""} onChange={ handleChange }  placeholder="Female" />
                               <label htmlFor="female">Female</label>
@@ -648,6 +713,15 @@ const handleCheck = (e) => {
               <label htmlFor="">About Me</label>
               <input className="form-control bg-trsp" name="aboutMe" type="text" value={form.aboutMe} onChange={handleChange} />
               </div>
+ 
+              <div className="form-group">
+              <label for="">Relationship status</label>
+              <select name="relationStatus" id="" value={form.relationStatus} onChange ={handleChange}>
+                  <option value={1}>Single</option>
+                  <option value={2}>Married</option>
+                  <option value={3}>UnMarried</option>
+              </select>
+          </div>
 
               <a className="btn bg-grd-clr d-block btn-countinue-3" id="edit-first-step" href="javascript:void(0)" onClick={() => setStep(step + 1)}>Next</a>
              </div>
@@ -669,15 +743,6 @@ const handleCheck = (e) => {
           <div className="form-group">
               <label for="">Weight</label>
               <input className="form-control bg-trsp" name="weight" type="text" value={form.weight} onChange ={handleChange}/>
-          </div>
-
-          <div className="form-group">
-              <label for="">Relationship status</label>
-              <select name="relationStatus" id="" value={form.relationStatus} onChange ={handleChange}>
-                  <option value={1}>Single</option>
-                  <option value={2}>Married</option>
-                  <option value={3}>UnMarried</option>
-              </select>
           </div>
          
 
@@ -728,7 +793,7 @@ const handleCheck = (e) => {
     }
 
   }
-// console.log(profileData);
+
   return(
    <div>
   <section className="home-wrapper">
@@ -815,9 +880,9 @@ const handleCheck = (e) => {
               <li><a href="javascript:void(0)" id="gift-modal" onClick={handleGift}><img src="/assets/images/gift-icon.png" alt="gifts" />
                   <h6 className="mb-0">Gifts</h6> <i className="fas fa-chevron-right"/>
                 </a></li>
-              {/* <li><a href="javascript:void(0)" id="edit-profile" onClick={handleShow}><img src="/assets/images/edit-profile.png" alt="Edit Profile" />
+              <li><a href="javascript:void(0)" id="edit-profile" onClick={handleShow}><img src="/assets/images/edit-profile.png" alt="Edit Profile" />
                   <h6>Edit Profile</h6> <i className="fas fa-chevron-right" />
-                </a></li> */}
+                </a></li>
                  <li><a href="javascript:void(0)" id="edit-profile" onClick={() => history.push("/recent-call")}><img src="/assets/images/edit-profile.png" alt="Edit Profile" />
                   <h6>Recent Call</h6> <i className="fas fa-chevron-right" />
                 </a></li>
@@ -929,14 +994,14 @@ const handleCheck = (e) => {
            <a href="javascript:void(0)" id="stripe-close" className="modal-close" onClick={closeStripeModel}><img src="/assets/images/btn_close.png" /></a>
     </Modal>
 
-<Modal className="Image-model" show={showImage}  onHide= {() => setShowImage(false)}>
+<Modal className="Image-model" show={showImage}  onHide= {closedOnClick}>
 <form>
 <h6>Upload File</h6>
   <div className="image-uploader position-relative">
    <label className="custom-file-upload"></label>
-   <a href="javascript:void(0)"  className="btn bg-grd-clr">Select Photo</a>
+   <a href="javascript:void(0)"  className="btn bg-grd-clr" onClick={openFileUploader}>Select Photo</a>
    
-  <input type="file" id="profile-photo" name="profile-photo" onChange={handleFileChange} className="d-none" accept="image/*" />
+  <input type="file" id="profile-photo"  ref ={openFile} name="profile-photo" onChange={handleFileChange} className="d-none" accept=".png, .jpg, .jpeg, .PNG, .JPG, .JPEG" />
 </div>
 <a href="javascript:void(0)" onClick={updateImage} className="btn bg-grd-clr">Publish Photo</a>
 
@@ -1204,7 +1269,7 @@ const handleCheck = (e) => {
         
         <ul className="d-flex flex-wrap text-center ">
         {!!GiftData && GiftData.map((items , i) => {
-        return<li onClick={() => getGiftItem(items.id)}>
+        return<li >
             <a href="javascript:void(0)" >
               <div>
                 <figure>

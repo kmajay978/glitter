@@ -3,13 +3,12 @@ import {  useHistory, useParams } from 'react-router';
 import axios from "axios";
 import NavLinks from '../components/Nav';
 import {GET_SINGLE_STATUS , GIFT_LIST_API , GIFT_PURCHASE_API , DISLIKE_USER , LIKE_USER, GET_USERPROFILE_API , BLOCK_USER_API , REPORT_USER_API } from '../components/Api';
-import {Modal, ModalBody , Dropdown} from 'react-bootstrap';
+import {Modal} from 'react-bootstrap';
 import Carousel from 'react-bootstrap/Carousel';
 import Logo from '../components/Logo';
 import useToggle from '../components/CommonFunction';
 import moment from 'moment'
 import {addDefaultSrc, returnDefaultImage} from "../commonFunctions";
-// import NotificationContainer from "react-notifications/lib/NotificationContainer";
 import { NotificationManager} from 'react-notifications';
 import { useSelector } from "react-redux";
 import {userProfile} from '../features/userSlice';
@@ -39,13 +38,7 @@ const SingleProfile = (props) =>{
       history.goBack();
     }
 
-    // const handleChat = () => {
-    //   history.push("/chat");
-    // }
-    
-    // const handleVideo =() => {
-    //   history.push("/searching-profile");
-    // }
+   
       const handleChange = e => { 
       setForm({
         ...form,
@@ -106,7 +99,7 @@ const SingleProfile = (props) =>{
        }
        }
 
-   //get single  gift item
+   //send single  gift item
       const getGiftItem = async(Uid) => {
       const bodyParameters ={
       session_id :  localStorage.getItem('session_id') ,
@@ -114,7 +107,7 @@ const SingleProfile = (props) =>{
       given_to : checkUid
       }
        const {data : {result}} = await axios.post(GIFT_PURCHASE_API , bodyParameters)
-       NotificationManager.error("gift send successfully");
+       NotificationManager.success("gift send successfully");
         }
 
     // block the user 
@@ -362,7 +355,8 @@ const SingleProfile = (props) =>{
                   <>
                  {userData.relationship_status == '1' ? "Single" 
                 : userData.relationship_status == '2'  ? "Married" 
-                : "Unmarried"}
+                : userData.relationship_status == '2' ? "Unmarried"
+              : ""}
                  </>}
                  </div>
                 </li>
@@ -421,15 +415,14 @@ const SingleProfile = (props) =>{
             <div className="bio-looking">
               <h5 className="mb-3">Looking For</h5>
               <div className="looking-for">
+              {!!userData && userData.looking_for.length != "" ?
                 <span className="d-inline-block">
-                 {!!userData &&
-                 <>
                 {userData.looking_for == '1' ? "Men" 
                 : userData.looking_for == '2'  ? "Women" 
-                : "Both"}
-                 </>}
-                 { <> </>}
+                : userData.looking_for == '2' ?"Both"
+                : ""}
                 </span>
+              :""}
               </div>
             </div>
           </div>
