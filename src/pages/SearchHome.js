@@ -235,6 +235,7 @@ const handleFileChange = e => {
 //  console.log(storyData);
 
  const handlePencil = () => {
+   
   setShowPencil(true);
   setPicture(null);
  }
