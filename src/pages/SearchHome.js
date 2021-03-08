@@ -45,6 +45,7 @@ const SearchHome = () =>
     const history = useHistory();
     const dispatch = useDispatch();
     const inputFile = useRef(null);
+    const inputVideoFile = useRef(null);
 
     const [statusModel, setStatusModel] = useState(false);
     const [randomNumber, setRandomNumber] = useState('');
@@ -61,9 +62,11 @@ const SearchHome = () =>
     const [pencilData , setPencilData] = useState('')
     const [picture, setPicture] = useState(null);
     const [imgData, setImgData] = useState(null);
+    const [video, setVideo] = useState('');
+    const [videoFile, setVideoFile] = useState(null);
     const [FileName , setFileName] = useState(null);
     const [videoData, setVideoData] = useState(null);
-    const [video, setVideo] = useState(null);
+    // const [video, setVideo] = useState(null);
     const [showUploadStatus,setUploadStatus] = useState(false);
     const [isLoaded, setIsLoaded] = useState(false);
     const [LiveModel , setLiveModel] = useState({modal: false, item: null});
@@ -115,7 +118,7 @@ const SingleProfileView = (id) =>{
 
 const handleFileChange = e => {
   var data = e.target.files[0];
-  const filename =  e.target.files[0];
+  // const filename =  e.target.files[0];
   const fileName = data.name.split(".");
   const imageFormat = fileName[fileName.length - 1];
    if (e.target.files[0]) { 
@@ -123,7 +126,6 @@ const handleFileChange = e => {
      if (imageFormat === "png" || imageFormat === "jpg" || imageFormat === "jpeg" ||
      imageFormat==="SVG"||imageFormat==="svg"||imageFormat === "PNG" || imageFormat === "JPG" || imageFormat === "JPEG") 
      {
-       console.log("picture: ", e.target.files[0]);
        setPicture(e.target.files[0]);
        const reader = new FileReader();
        reader.addEventListener("load", () => {
@@ -133,23 +135,55 @@ const handleFileChange = e => {
        });
        reader.readAsDataURL(e.target.files[0]);
      }
-     else if(imageFormat === "mp4" || imageFormat === "MP4")
+     else
+     {
+      NotificationManager.error( " Only .png, .jpg, .jpeg image formats supported.");
+     }
+    }
+ };
+
+ const handleVideoChange = e => {
+  var data = e.target.files[0];
+  const fileName = data.name.split(".");
+  const imageFormat = fileName[fileName.length - 1];
+  if(imageFormat === "mp4" || imageFormat === "MP4")
      {
        console.log("video_file: ", e.target.files[0]);
-       setPicture(e.target.files[0]);
+       setVideo(e.target.files[0]);
        const reader = new FileReader();
        reader.addEventListener("load", () => {
-         setImgData(reader.result); 
+         setVideoFile(reader.result); 
          setVideoData('video');
+       
        });
        reader.readAsDataURL(e.target.files[0]);
      }
      else
      {
-       console.log("Invlid format");
+      NotificationManager.error( "please , Select the video");
      }
-    }
- };
+ }
+ console.log(video);
+  // const handleVideoChange = e => {
+  //   var data = e.target.files[0];
+  //   const fileName = data.name.split(".");
+  //   const imageFormat = fileName[fileName.length - 1];
+  //   if(imageFormat === "mp4" || imageFormat === "MP4")
+  //    {
+  //      console.log("video_file: ", e.target.files[0]);
+  //      setPicture(e.target.files[0]);
+  //      const reader = new FileReader();
+  //      reader.addEventListener("load", () => {
+  //        setImgData(reader.result); 
+  //        setVideoData('video');
+  //      });
+  //      reader.readAsDataURL(e.target.files[0]);
+  //    }
+  //    else
+  //    {
+  //     alert("invadi format")
+  //    }
+  // } 
 
   const handleFriendList = () => {
     setIsLoaded(true);
@@ -234,8 +268,8 @@ const handleFileChange = e => {
 // console.log(statusData);
 //  console.log(storyData);
 
- const handlePencil = () => {
-   
+ const handleVideo = () => {
+   inputVideoFile.current.click();
   setShowPencil(true);
   setPicture(null);
  }
@@ -244,10 +278,10 @@ const handleFileChange = e => {
  
  const modelClose= () => {
    setUploadStatus(false);
-   setShowPencil(false);
+  
    setPicture(null);
    setVideoData(null);
-   setPencilData('');
+   
    dispatch(friendStatus({friendStatus: []}));
    setStatusModel(false);
    setFriendId('');
@@ -294,14 +328,14 @@ const handleUploadStatus =() =>
   {
    const bodyParameters =new FormData();
    bodyParameters.append("session_id", "" + localStorage.getItem('session_id'));
-   bodyParameters.append("status", picture);
+   bodyParameters.append("status", video);
    bodyParameters.append("status_type", "" + 2);
    axios.post(ADD_STATUS , bodyParameters , config)
    .then((response)=> {
      if(response.status==200){
       NotificationManager.success(response.data.message );
       setUploadStatus(false);
-   
+      setVideoData('');
   }
   } ,(error) => {
     NotificationManager.error(error.message );
@@ -396,7 +430,7 @@ document.getElementById("image").remove()
        setUploadStatus(false);
   
     
-    setPencilData('');
+  
     setShowPencil(false);
   }
   } ,(error) => {
@@ -432,8 +466,7 @@ useEffect(() => {
 // }
 const openFileUploder = () =>{
   inputFile.current.click();
-  setPencilData('');
- setShowPencil(false);
+  setVideoData('');
 }
 
  const componentWillUnmount = () => {
@@ -563,7 +596,7 @@ const openFileUploder = () =>{
         setLiveModel({modal: true, item});
      }
 
-console.log(statusId);
+
     // const convertToHtml = (data) => {
     //    const convertedHtml =  {__html: data};
     //   return <div dangerouslySetInnerHTML={convertedHtml} />
@@ -809,12 +842,12 @@ console.log(statusId);
                     <div className="upload-status d-flex justify-content-center mt-5">
                       <a id="upload__media" className="upload__media bg-grd-clr"  href="javascript:void(0)"onClick={openFileUploder}>
                       <i className="fas fa-camera"></i>
-                      <input type="file"  name="file" value=""  ref={inputFile} id="upload_fle" className="d-none" onChange={handleFileChange} accept="image/* "  />
+                      <input type="file"  name="file" value=""  ref={inputFile} id="upload_fle" className="d-none" onChange={handleFileChange} accept="image/* video/* "  />
                       
                       </a>
-                      <a className="upload__text bg-grd-clr" href="javascript:void(0)" onClick={handlePencil}>
-                        <i className="fas fa-pencil-alt"></i>
-                        <input type="file"  name="file" value=""  ref={inputFile} id="upload_fle" className="d-none"  accept=" video/*"  />
+                      <a className="upload__text bg-grd-clr" href="javascript:void(0)" onClick={handleVideo}>
+                        <i className="fas fa-video"></i>
+                        <input type="file"  name="file" value=""  ref={inputVideoFile} id="upload_fle" onChange={handleVideoChange} className="d-none"  accept=" video/*"  />
                         </a>
                       
                         </div>
@@ -828,14 +861,9 @@ console.log(statusId);
                         : videoData == 'video' ?
                         <div className="preview">
                              
-                           <video id="video_preview" src={imgData} width="300" height="300" controls></video>
+                           <video id="video_preview" src={videoFile} width="300" height="300" controls></video>
                             
                            </div>
-                           : videoData == 'text' ?
-                           <div className="text__status">
-                           {!!showPencil ?<textarea className="form-control" name="upload_text"  value={pencilData} onChange={e => setPencilData(e.target.value)} placeholder="write text" /> : ""} 
-                            </div>
-    
                            :""
                           }
                          

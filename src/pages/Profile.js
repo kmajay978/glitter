@@ -225,22 +225,22 @@ const handleCheck = (e) => {
         bodyParameters.append('interests_hobbies[]', selectedCheck.join(","));
         
 
-   axios.post(EDITPROFILE_API , bodyParameters, config) 
-   .then((response) => {
+  //  axios.post(EDITPROFILE_API , bodyParameters, config) 
+  //  .then((response) => {
    
-   if(response.status==200  && !response.status.error){
-    NotificationManager.success("update successfully");
+  //  if(response.status==200  && !response.status.error){
+  //   NotificationManager.success("update successfully");
  
-   }
+  //  }
    
-   }, (error) =>{
-    NotificationManager.error(error.message);
-    if (error.toString().match("403")) {
-      localStorage.removeItem("session_id");
-      history.push('/login');
-    }
+  //  }, (error) =>{
+  //   NotificationManager.error(error.message);
+  //   if (error.toString().match("403")) {
+  //     localStorage.removeItem("session_id");
+  //     history.push('/login');
+  //   }
    
-   });
+  //  });
    }
 
 
