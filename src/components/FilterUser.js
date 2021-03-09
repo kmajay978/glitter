@@ -14,7 +14,7 @@ import { GETALLUSER_API } from "../components/Api";
 import GlitterCard from "react-tinder-card";
 import Swipe from "./Swipe";
 import TinderCardTest from "./TinderCard";
-import useToggle from '../components/CommonFunction';
+import useToggle, { removeDublicateFrds }from '../components/CommonFunction';
 import SyncLoader from "react-spinners/SyncLoader";
 import { css } from "@emotion/core";
 const alreadyRemoved = [];
@@ -61,7 +61,7 @@ const FilterUser = ({ fetchedProfile }) => {
      
      .then((response) => {
         if (response.status == 200) {
-          setUserData(response.data.data);
+          setUserData(removeDublicateFrds(response.data.data));
           setIsLoaded(false);
           
         }

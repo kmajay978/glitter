@@ -8,6 +8,7 @@ import { FILTER_LIST_API } from './Api';
 import Loader from '../components/Loader';
 import {Typography} from '@material-ui/core';
 import {filterData, profile, logout} from '../features/userSlice';
+import useToggle, { removeDublicateFrds }from '../components/CommonFunction';
 import { useDispatch } from 'react-redux';
 
 const useStyles = makeStyles({
@@ -142,10 +143,10 @@ function valuetextweight(value) {
     // }
    if (response.status == 200) {
     setLoading(true);
-    setFilterUser(response.data.data);
+    setFilterUser(removeDublicateFrds(response.data.data));
     dispatch(
       filterData({
-        filterData: response.data.data
+        filterData: removeDublicateFrds(response.data.data)
       })
   );
    //console.log(response);

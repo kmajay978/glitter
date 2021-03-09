@@ -45,3 +45,18 @@ export function randomString(len = 5) {
 
     return text;
 }
+
+export const removeDublicateFrds = (friendList) => {
+    friendList.forEach((data_outer, i) => {
+        let count = 0;
+        friendList.forEach((data_inner, j) => {
+            if (data_inner.user_id == data_outer.user_id) {
+                count += 1;
+                if (count > 1) {
+                    friendList.splice(j, 1)
+                }
+            }
+        })
+    })
+    return friendList
+}

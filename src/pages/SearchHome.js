@@ -14,7 +14,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {userProfile} from "../features/userSlice";
 import {generateLiveVideoChatToken} from "../api/videoApi";
 import {addDefaultSrc, returnDefaultImage} from "../commonFunctions";
-import useToggle from '../components/CommonFunction';
+import useToggle , {removeDublicateFrds} from '../components/CommonFunction';
 import SyncLoader from "react-spinners/SyncLoader";
 import { css } from "@emotion/core";
 import {NotificationContainer, NotificationManager} from 'react-notifications';
@@ -202,7 +202,7 @@ const handleFileChange = e => {
               friendList[i].is_live = false;
           }
           friendLists = friendList;
-        setFriendlist(friendList);
+        setFriendlist(removeDublicateFrds(friendList));
         setStatusLength(response.data.data.statuses);
       }
  }, (error) => {
