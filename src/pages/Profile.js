@@ -880,9 +880,9 @@ const openFileUploader = () => {
               <li><a href="javascript:void(0)" id="gift-modal" onClick={handleGift}><img src="/assets/images/gift-icon.png" alt="gifts" />
                   <h6 className="mb-0">Gifts</h6> <i className="fas fa-chevron-right"/>
                 </a></li>
-              <li><a href="javascript:void(0)" id="edit-profile" onClick={handleShow}><img src="/assets/images/edit-profile.png" alt="Edit Profile" />
+              {/* <li><a href="javascript:void(0)" id="edit-profile" onClick={handleShow}><img src="/assets/images/edit-profile.png" alt="Edit Profile" />
                   <h6>Edit Profile</h6> <i className="fas fa-chevron-right" />
-                </a></li>
+                </a></li> */}
                  <li><a href="javascript:void(0)" id="edit-profile" onClick={() => history.push("/recent-call")}><img src="/assets/images/edit-profile.png" alt="Edit Profile" />
                   <h6>Recent Call</h6> <i className="fas fa-chevron-right" />
                 </a></li>
@@ -1286,9 +1286,9 @@ const openFileUploader = () => {
          
         </ul>
       </div>
-     
+      <SyncLoader color={"#fcd46f"} loading={loadedModel} css={override} size={18} />
     </div>
-    <SyncLoader color={"#fcd46f"} loading={loadedModel} css={override} size={18} />
+    
   </div>
 </div>
 

@@ -106,8 +106,13 @@ const SingleProfile = (props) =>{
       gift_id : Uid ,
       given_to : checkUid
       }
-       const {data : {result}} = await axios.post(GIFT_PURCHASE_API , bodyParameters)
-       NotificationManager.success("gift send successfully");
+       const {data : {message, error}} = await axios.post(GIFT_PURCHASE_API , bodyParameters)
+       if (error=="false"){
+       NotificationManager.success(message);
+       }
+       else{
+        NotificationManager.error(message);
+       }
         }
 
     // block the user 
@@ -252,7 +257,7 @@ const SingleProfile = (props) =>{
         <div className="col-md-5">
           <div className="p-title-info d-flex flex-wrap align-items-center justify-content-between my-3">
             <div className="profile-id">
-              <span className="d-inline-block">maerineiw</span>
+              <span className="d-inline-block">{!!userData ? userData.first_name : ""}</span>
               <span className="d-inline-block">ID:2837289739</span>
             </div>
             <div className="photo-count">
@@ -277,7 +282,7 @@ const SingleProfile = (props) =>{
                   {
                     !!userData &&
                     <>
-                      <h5>{userData.first_name}, {userData.age}</h5>
+                      <h5>{userData.first_name+" " + userData.last_name}, {userData.age}</h5>
                       <span>{userData.distance}, {userData.occupation}</span>
                     </>
                   }
