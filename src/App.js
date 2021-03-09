@@ -18,6 +18,7 @@ import { SOCKET } from "./components/Config";
 import { checkLiveDomain } from './commonFunctions';
 import NotificationContainer from 'react-notifications/lib/NotificationContainer';
 import 'react-notifications/lib/notifications.css';
+import { NotificationManager } from 'react-notifications';
 
 let userData;
 const history = createBrowserHistory({ forceRefresh: true });
@@ -119,13 +120,17 @@ function App(props) {
  
  
   useEffect(() => {
+   
+    // window.location.hash = "no-back-button";
 
-    $(document).ready(function() {
-      function disableBack() { window.history.forward() }
+    // // Again because Google Chrome doesn't insert
+    // // the first hash into the history
+    // window.location.hash = "Again-No-back-button"; 
 
-      window.onload = disableBack();
-      window.onpageshow = function(evt) { if (evt.persisted) disableBack() }
-  });
+    // window.onhashchange = function(){
+    //     window.location.hash = "no-back-button";
+    // }
+
     // // Anything in here is fired on component mount. Component did mount
     // const { history } = props;
     // history.listen((newLocation, action) => {
@@ -136,7 +141,7 @@ function App(props) {
     //     ) {
     //       currentPathname = newLocation.pathname;
     //       currentSearch = newLocation.search;
-    //       history.push({
+    //       history.pushState({
     //         pathname: newLocation.pathname,
     //         search: newLocation.search
     //       });
@@ -150,6 +155,7 @@ function App(props) {
     //     window.onpopstate = null;
     // }
 }, [])
+
   return (
     <Router>
       <Switch>
@@ -174,6 +180,7 @@ function App(props) {
         </Elements>
       </Switch>
         <NotificationContainer />
+        
     </Router>
   );
 }

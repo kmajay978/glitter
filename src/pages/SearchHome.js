@@ -15,7 +15,8 @@ import {userProfile} from "../features/userSlice";
 import {generateLiveVideoChatToken} from "../api/videoApi";
 import {addDefaultSrc, returnDefaultImage} from "../commonFunctions";
 import useToggle , {removeDublicateFrds} from '../components/CommonFunction';
-import SyncLoader from "react-spinners/SyncLoader";
+
+import {SyncLoader , ClipLoader} from "react-spinners";
 import { css } from "@emotion/core";
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import {friendStatus} from '../features/userSlice'
@@ -40,6 +41,20 @@ transform: translateY(-50%);
 
 `;
 
+const storyOverride = css`
+    
+text-align: center;
+width: 40px;
+height: 40px;
+position: absolute;
+left: 0;
+right: 0;
+margin: 0 auto;
+top: 90%;
+-webkit-transform: translateY(-50%);
+-moz-transform: translateY(-50%);
+transform: translateY(-50%);
+`;
 const SearchHome = () =>
 {
     const history = useHistory();
@@ -66,13 +81,14 @@ const SearchHome = () =>
     const [videoFile, setVideoFile] = useState(null);
     const [FileName , setFileName] = useState(null);
     const [videoData, setVideoData] = useState(null);
+    const [isLoading , setIsLoading] = useState(false);
     // const [video, setVideo] = useState(null);
-       const [showLivePopup,setLivePopup] = useState(false);
+    const [showLivePopup,setLivePopup] = useState(false);
     const [showUploadStatus,setUploadStatus] = useState(false);
     const [isLoaded, setIsLoaded] = useState(false);
     const [LiveModel , setLiveModel] = useState({modal: false, item: null});
     const [audLive, setAudLive] = useState(false)
-
+    console.log(setVideo);
     console.log(audLive, "audLive..")
     userData = useSelector(userProfile).user.profile; //using redux useSelector here
  const options = {
@@ -149,8 +165,8 @@ const handleFileChange = e => {
   const imageFormat = fileName[fileName.length - 1];
   if(imageFormat === "mp4" || imageFormat === "MP4")
      {
-       console.log("video_file: ", e.target.files[0]);
-       setVideo(e.target.files[0]);
+       if(data.size< 5000024){
+       setVideo(data);
        const reader = new FileReader();
        reader.addEventListener("load", () => {
          setVideoFile(reader.result); 
@@ -158,13 +174,19 @@ const handleFileChange = e => {
        
        });
        reader.readAsDataURL(e.target.files[0]);
+      }
+      else {
+
+        NotificationManager.error( "maximum upload video limit is 5 mb");
+        setVideoData('');
+      }
      }
      else
      {
       NotificationManager.error( "please , Select the video");
      }
  }
- console.log(video);
+
   // const handleVideoChange = e => {
   //   var data = e.target.files[0];
   //   const fileName = data.name.split(".");
@@ -235,8 +257,6 @@ const handleFileChange = e => {
         if (!!response.data && !!response.data.result && response.data.result.length > 0 ) {
           // $('#modal').show(); 
           setStatusData(response.data);
-
-
           setStoryData(response.data.result);
           toggleIsOn(true)
         }
@@ -271,8 +291,7 @@ const handleFileChange = e => {
 
  const handleVideo = () => {
    inputVideoFile.current.click();
-  setShowPencil(true);
-  setPicture(null);
+   setVideoData('');
  }
  
  
@@ -300,10 +319,14 @@ const config = {
   setIsLoaded(false);
   setFriendId("")
  }
-const handleUploadStatus =() => 
+const handleUploadStatus =(e) => 
 {
+  e.preventDefault();
+  if(videoData=="image" || videoData=="video" || videoData =="text")
+  {
   if (videoData=='image')
   {
+    setIsLoading(true);
   const bodyParameters =new FormData();
   bodyParameters.append("session_id", "" + localStorage.getItem('session_id'));
   bodyParameters.append("status", picture);
@@ -312,12 +335,14 @@ const handleUploadStatus =() =>
   .then((response)=> {
   if(response.status==200){
     NotificationManager.success(response.data.message );
+    setIsLoading(false);
     setUploadStatus(false);
-   setPicture('');
+     setVideoData('');
   }
 
  } ,(error) => {
   NotificationManager.error( error.message);
+  setIsLoading(false);
   if (error.toString().match("403")) {
     localStorage.removeItem("session_id");
     history.push('/login');
@@ -327,6 +352,7 @@ const handleUploadStatus =() =>
   }
   else if (videoData=='video')
   {
+    setIsLoading(true);
    const bodyParameters =new FormData();
    bodyParameters.append("session_id", "" + localStorage.getItem('session_id'));
    bodyParameters.append("status", video);
@@ -335,14 +361,17 @@ const handleUploadStatus =() =>
    .then((response)=> {
      if(response.status==200){
       NotificationManager.success(response.data.message );
+      setIsLoading(false);
       setUploadStatus(false);
-      setVideoData('');
+       setVideoData('');
   }
   } ,(error) => {
     NotificationManager.error(error.message );
+    setIsLoading(false);
     if (error.toString().match("403")) {
       localStorage.removeItem("session_id");
       history.push('/login');
+      setIsLoading(false);
     }
  });
 
@@ -442,7 +471,10 @@ document.getElementById("image").remove()
     }
  });
   }
-
+  }
+  else{
+    NotificationManager.error("please select image or video");
+  }
   }
 console.log(picture);
 
@@ -837,7 +869,7 @@ const openFileUploder = () =>{
           {/* Modal start here */}
           {/* <div className="theme-modal" id="live-modal" tabIndex={-1} role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"> */}
          
-          <form action="" id="glitter_status" >
+          <form  id="glitter_status" >
                   <div className="modal-body p-0">
                     <div className="upload__status__opt text-center">
                     <h4 className="theme-txt">Upload Status</h4>
@@ -870,11 +902,11 @@ const openFileUploder = () =>{
                           }
                          
                        
-                        <a className="btn bg-grd-clr btn-small mt-4" onClick={handleUploadStatus}>Publish Status</a>
+                        <button className="status-upload" disabled={(isLoading ) ? true : false} className="btn bg-grd-clr btn-small mt-4" onClick={handleUploadStatus}>{!!isLoading ?  <ClipLoader color={"#fff"} loading={isLoading} css={storyOverride} /> : " Publish Status"}</button>
              
                     </div>
                     
-                        
+                   
                     </div>
              </form>
            
@@ -992,8 +1024,8 @@ const openFileUploder = () =>{
 
 </Modal>
       {/* End live video screen */}
-      <canvas id='textCanvas' height={465} width={380} />
-            <img id='image' />
+      {/* <canvas id='textCanvas' height={465} width={380} />
+            <img id='image' /> */}
 </section>
 
 
