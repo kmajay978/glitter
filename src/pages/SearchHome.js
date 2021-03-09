@@ -875,7 +875,7 @@ const openFileUploder = () =>{
                     <div className="upload-status d-flex justify-content-center mt-5">
                       <a id="upload__media" className="upload__media bg-grd-clr"  href="javascript:void(0)"onClick={openFileUploder}>
                       <i className="fas fa-camera"></i>
-                      <input type="file"  name="file" value=""  ref={inputFile} id="upload_fle" className="d-none" onChange={handleFileChange} accept="image/* video/* "  />
+                      <input type="file"  name="file" value=""  ref={inputFile} id="upload_fle" className="d-none" onChange={handleFileChange} accept="image/* "  />
                       
                       </a>
                       <a className="upload__text bg-grd-clr" href="javascript:void(0)" onClick={handleVideo}>
