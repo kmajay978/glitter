@@ -312,7 +312,7 @@ const ChatBox = (props) =>{
                 }, 2000)
             }
             else {
-                alert("select atlease one image..")
+                NotificationManager.warning("select atlease one image..")
             }
               }
               
@@ -663,12 +663,12 @@ const ChatBox = (props) =>{
                     NotificationManager.error('err.message', 'Click me!', 5000, () => {
 
                     });
-                   
-                    alert(err.message)
+                   NotificationManager.error(err.message);
                 })
             }
             else {
-                alert("You need a secure https connection in order to record voice")
+                NotificationManager.info("You need a secure https connection in order to record voice");
+                
             }
         }
         else {
@@ -721,7 +721,7 @@ const ChatBox = (props) =>{
             inputFile.current.click();
         }
         else {
-            alert("You can upload max 4 images at a time..")
+            NotificationManager.error("You can upload max 4 images at a time..");
         }
       };
 

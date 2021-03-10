@@ -841,7 +841,7 @@ const openFileUploader = () => {
         <div className="col-md-4 border-rt">
           <div className="user-profile becomevip-wrapper__innerblock p-0">
             <div className="user-profile__details text-center">
-            < img onError={(e) => addDefaultSrc(e)} src={!!profileData.profile_images ? profileData.profile_images : returnDefaultImage()} alt="user" className="user-profile__image img-circle" onClick={handleImage}/>
+            < img style={{cursor: "pointer"}} onError={(e) => addDefaultSrc(e)} src={!!profileData.profile_images ? profileData.profile_images : returnDefaultImage()} alt="user" className="user-profile__image img-circle" onClick={handleImage}/>
            
               <div className="user-profile__details__data">
                 <h5 className="user-profile__name">{!!profileData ?profileData.first_name +' '+ profileData.last_name :"" } </h5>

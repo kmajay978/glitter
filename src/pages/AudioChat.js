@@ -9,6 +9,7 @@ import { joinChannelAudio, leaveEventAudience, leaveEventHost } from "../compone
 import {useSelector, useDispatch} from "react-redux";
 import {userProfile, audioCall, audioCallUser} from "../features/userSlice";
 import {changeImageLinkDomain, checkLiveDomain, returnDefaultImage} from "../commonFunctions";
+import NotificationManager from "react-notifications/lib/NotificationManager";
 
 let videoCallStatus = 0, videoCallParams, interval,
 manageCoinsTimeViewsInterval, manageCoinsTimeViewsCounter = 0, manageTimeInterval;
@@ -117,11 +118,11 @@ console.log(userData, "userdata..")
     SOCKET.on('end_one_to_one_audio_call_no_coin_warning', (data) => {
       if (data.channel_name == videoCallParams.channel_name) {
         if (Number(userData.user_id) === data.user_id) {
-          alert("No coins Left")
+          NotificationManager.warning("No coins Left");
           endCall(false)
         }
         else { // audience..
-          alert("Your friend is left with no coins. Sorry the call is declining.")
+          NotificationManager.info("Your friend is left with no coins. Sorry the call is declining.");
           endCall(false)
         }
       }

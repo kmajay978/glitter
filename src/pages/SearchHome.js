@@ -74,6 +74,7 @@ const SearchHome = () =>
     const [isLoaded, setIsLoaded] = useState(false);
     const [LiveModel , setLiveModel] = useState({modal: false, item: null});
     const [audLive, setAudLive] = useState(false)
+    const[viewStory , setViewStory] = useState(false);
     console.log(setVideo);
     console.log(audLive, "audLive..")
     userData = useSelector(userProfile).user.profile; //using redux useSelector here
@@ -231,7 +232,7 @@ const handleFileChange = e => {
 
   const handleStatus = () =>
   {
-    setIsLoaded(true);
+    // setIsLoaded(true);
     const bodyParameters = {
       user_id: friendId,
     };
@@ -239,30 +240,31 @@ const handleFileChange = e => {
     .then((response) => {
       setIsLoaded(false);
       if (response.status === 200 && !response.status.error) {
-      
+        setViewStory(true);
         if (!!response.data && !!response.data.result && response.data.result.length > 0 ) {
           // $('#modal').show(); 
           setStatusData(response.data);
           setStoryData(response.data.result);
-          toggleIsOn(true)
+          // toggleIsOn(true)
+          
         }
         else {
           setStatusData({});
-        setStoryData([]);
-        toggleIsOn(false)
-        setFriendId('');
+          setStoryData([]);
+          // toggleIsOn(false)
+          setFriendId('');
       }
     }
       else {
         setStatusData({});
-        setIsLoaded(false);
+        // setIsLoaded(false);
         setFriendId('');
       }
 
  }, (error) => {
  
     setStatusData({});
-    setIsLoaded(false);
+    // setIsLoaded(false);
     setFriendId('');
 });
   }
@@ -301,7 +303,7 @@ const config = {
  }
 
  const closeDialog = () => {
-  toggleIsOn(false);
+  setViewStory(false);
   setIsLoaded(false);
   setFriendId("")
  }
@@ -724,7 +726,29 @@ const openFileUploder = () =>{
     
     </div>
   </div>
-  <div className={isOn ? 'all-gifts-wrapper active': 'all-gifts-wrapper'} >
+
+  <Modal className ="story-modal" id="status-modal" show={viewStory} onHide={() => setViewStory(false)} backdrop="static" keyboard={false}>
+  {/* <div className="status-modal"> */}
+    <a href="javascript:void(0)" className="close-gift-btn modal-close" onClick={closeDialog}><img src="/assets/images/btn_close.png" /></a>
+      <div className="all-gift-body">
+      {
+    stories.length > 0 &&
+  
+  <Stories
+       stories={stories}
+      defaultInterval={3000}
+      storyStyles={storyContent}
+      width={377}
+      height={468}
+
+  />      
+  }
+        
+      {/* </div> */}
+    </div>
+</Modal>
+  
+  {/* <div className={isOn ? 'all-gifts-wrapper active': 'all-gifts-wrapper'} >
     <div className="status-modal">
     <a href="javascript:void(0)" className="close-gift-btn modal-close" onClick={closeDialog}><img src="/assets/images/btn_close.png" /></a>
       <div className="all-gift-body">
@@ -745,27 +769,8 @@ const openFileUploder = () =>{
       </div>
       
     </div>
-  </div>
-  {/* <div className={isOn ? 'all-gifts-wrapper active': 'all-gifts-wrapper '} >
-    <div className="all-gift-inner">
-    <a href="javascript:void(0)" className="close-gift-btn modal-close" onClick={closeDialog}><img src="/assets/images/btn_close.png" /></a>
-      <div className="all-gift-body">
-      
-      {
-  stories.length > 0 &&
-  
-  <Stories
-      stories={stories}
-      defaultInterval={3000}
-      width={332}
-      height={468}
-     
-  />      
-}
-      </div>
-      
-    </div>
   </div> */}
+  
        
 
 {/* <div className="modal fade" id="status-modal" tabIndex={-1} role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

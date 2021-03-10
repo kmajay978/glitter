@@ -3640,8 +3640,8 @@ screen and (max-height: 768px) {
 
 
 
-/* Notification css*/
-.notification-container {
+/* Notification css */
+/* .notification-container {
     box-sizing: border-box;
     position: fixed;
     top: 0;
@@ -3731,13 +3731,13 @@ screen and (max-height: 768px) {
 
 .notification-success:before {
     content: "";
-}
+} */
 
-/*end here*/
+/*end here
 
 /* status screen */
 
-.status-modal {
+#status-modal {
     position: relative;
     max-width: 377px;
     margin: 0 auto;
@@ -3747,13 +3747,13 @@ screen and (max-height: 768px) {
     transform: translateY(-50%);
 }
 
-.status-modal .modal-close {
+#status-modal .modal-close {
     right: 30px;
     top: 30px;
     z-index: 9999;
 }
 
-.status-modal .modal-close img {
+#status-modal .modal-close img {
     width: 25px;
     cursor: pointer;
 }
@@ -3766,7 +3766,7 @@ object-fit: cover;
 */
 
 
-.status-modal .all-gift-body div {
+#status-modal .all-gift-body div {
     width: 100%;
 }
 
