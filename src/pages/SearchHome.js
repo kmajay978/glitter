@@ -653,7 +653,7 @@ const openFileUploder = () =>{
         <div className="col-lg-9 main-bar p-3" style={{marginLeft: '25%'}}>
           <div className="tab-top d-flex flex-wrap-wrap">
             <div className="live-icon">
-              <img src="/assets/images/live.png" style={{cursor: "pointer"}}  onClick={() =>setLivePopup(true)}  alt="Live" />
+              <img src="/assets/images/live.png" style={{cursor: "pointer"}}  onClick={makeMeLive} alt="Live" />
               {/* makeMeLive */}
             </div>
             <NavLinks />
