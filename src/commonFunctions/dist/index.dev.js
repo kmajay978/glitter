@@ -29,7 +29,7 @@ var returnDefaultImage = function returnDefaultImage(ev) {
 exports.returnDefaultImage = returnDefaultImage;
 
 var checkLiveDomain = function checkLiveDomain() {
-  if (window.location.hostname === "rrmr.co.in") {
+  if (window.location.hostname === "glittersapp.com") {
     return true;
   }
 
@@ -39,8 +39,8 @@ var checkLiveDomain = function checkLiveDomain() {
 exports.checkLiveDomain = checkLiveDomain;
 
 var changeImageLinkDomain = function changeImageLinkDomain() {
-  if (window.location.hostname === "rrmr.co.in") {
-    return "https://rrmr.co.in/glitter-101/public/profile_images/";
+  if (window.location.hostname === "glittersapp.com") {
+    return "https://glittersapp.com/glitter-101/public/profile_images/";
   }
 
   return "http://167.172.209.57/glitter-101/public/profile_images/";
@@ -49,8 +49,8 @@ var changeImageLinkDomain = function changeImageLinkDomain() {
 exports.changeImageLinkDomain = changeImageLinkDomain;
 
 var changeGiftLinkDomain = function changeGiftLinkDomain() {
-  if (window.location.hostname === "rrmr.co.in") {
-    return "https://rrmr.co.in/glitter-101/public/gifts_icons/";
+  if (window.location.hostname === "glittersapp.com") {
+    return "https://glittersapp.com/glitter-101/public/gifts_icons/";
   }
 
   return "http://167.172.209.57/glitter-101/public/gifts_icons/";

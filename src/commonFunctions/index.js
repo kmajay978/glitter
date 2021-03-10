@@ -9,22 +9,22 @@ export const returnDefaultImage = (ev) => {
 }
 
 export const checkLiveDomain = () => {
-    if (window.location.hostname === "rrmr.co.in") {
+    if (window.location.hostname === "glittersapp.com") {
         return true
     }
     return false
 }
 
 export const changeImageLinkDomain = () => {
-    if (window.location.hostname === "rrmr.co.in") {
-        return "https://rrmr.co.in/glitter-101/public/profile_images/"
+    if (window.location.hostname === "glittersapp.com") {
+        return "https://glittersapp.com/glitter-101/public/profile_images/"
     }
     return "http://167.172.209.57/glitter-101/public/profile_images/"
 }
 
 export const changeGiftLinkDomain = () => {
-    if (window.location.hostname === "rrmr.co.in") {
-        return "https://rrmr.co.in/glitter-101/public/gifts_icons/"
+    if (window.location.hostname === "glittersapp.com") {
+        return "https://glittersapp.com/glitter-101/public/gifts_icons/"
     }
     return "http://167.172.209.57/glitter-101/public/gifts_icons/"
 }

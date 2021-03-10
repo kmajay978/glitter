@@ -499,7 +499,7 @@ const getGiftItem = async (giftId) => {
       "user_id": Number(userData.user_id),
       "text_message": "",
       "channel_name": videoCallParams.channel_name,
-      "sender_id": Number(videoCallParams.user_from_id),
+      "sender_id": Number(userData.user_id) === Number(videoCallParams.user_from_id) ? Number(videoCallParams.user_to_id) : Number(videoCallParams.user_from_id),
       "type": 1,
       "gift_id": giftId,
       "is_send_heart": 0,
