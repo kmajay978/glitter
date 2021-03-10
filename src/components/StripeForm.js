@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {ElementsConsumer, CardElement} from "@stripe/react-stripe-js";
-
 import CardSection from "./CardSection";
 import {useSelector, useDispatch} from "react-redux";
 import {stripeDataPlanid , stripeCoinDataPlanid ,stripeCoinPlanId , stripePlanId , profile} from "../features/userSlice";
@@ -122,7 +121,6 @@ const CheckoutForm = (props) => {
                         console.log(response);
                         NotificationManager.success( "Your coin package activated");
                         dispatch(stripeCoinPlanId({stripeCoinPlanId: null}));
-                      
                         profileData();
                   }
                stripeClose.click();

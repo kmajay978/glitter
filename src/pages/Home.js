@@ -58,7 +58,6 @@ useEffect(() => {
                 <div className="profile-swipe-wrapper">
                   <FilterUser fetchedProfile={fetchedProfile} />
                
-                 
                 </div>
               
               </div>

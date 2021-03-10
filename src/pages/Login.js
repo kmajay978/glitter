@@ -42,7 +42,7 @@ addBodyClass('login-body')('')
 //   };
 
    const [phoneNumber, setPhone] = useState('');   //For past users
-  const [cntCode, setCntCode] = useState('93');   //For past users
+  const [cntCode, setCntCode] = useState('1');   //For past users
 
 
 
@@ -374,7 +374,7 @@ const changeDate = (date) => {
                         </div>
                         <div className="form-group">
                           <div className="country text-left">
-                           <div id="country" className="select" ><img src="https://flagcdn.com/16x12/af.png" />+93</div>
+                           <div id="country" className="select" ><img src="https://flagcdn.com/16x12/us.png" />+1</div>
                             <div id="country-drop" className="dropdown">
                               <ul>
                                  {getCountries().map((country, index) => (

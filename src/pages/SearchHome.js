@@ -14,8 +14,8 @@ import {useDispatch, useSelector} from "react-redux";
 import {userProfile} from "../features/userSlice";
 import {generateLiveVideoChatToken} from "../api/videoApi";
 import {addDefaultSrc, returnDefaultImage} from "../commonFunctions";
-import useToggle from '../components/CommonFunction';
-import {SyncLoader , ClipLoader} from "react-spinners";
+import useToggle , {removeDublicateFrds} from '../components/CommonFunction';
+import {SyncLoader } from "react-spinners";
 import { css } from "@emotion/core";
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import {friendStatus} from '../features/userSlice'
@@ -40,20 +40,7 @@ transform: translateY(-50%);
 
 `;
 
-const storyOverride = css`
-    
-text-align: center;
-width: 40px;
-height: 40px;
-position: absolute;
-left: 0;
-right: 0;
-margin: 0 auto;
-top: 90%;
--webkit-transform: translateY(-50%);
--moz-transform: translateY(-50%);
-transform: translateY(-50%);
-`;
+
 const SearchHome = () =>
 {
     const history = useHistory();
@@ -223,7 +210,7 @@ const handleFileChange = e => {
               friendList[i].is_live = false;
           }
           friendLists = friendList;
-        setFriendlist(friendList);
+        setFriendlist(removeDublicateFrds(friendList));
         setStatusLength(response.data.data.statuses);
       }
  }, (error) => {
@@ -457,9 +444,7 @@ document.getElementById("image").remove()
       NotificationManager.success(response.data.message );
     
        setUploadStatus(false);
-  
-    
-  
+
     setShowPencil(false);
   }
   } ,(error) => {
@@ -853,10 +838,7 @@ const openFileUploder = () =>{
                                  <a href="javascript:void(0)" style={{cursor: (audLive ? "default" : "pointer")}} className="btn bg-grd-clr" onClick={watchLive}>{audLive ? "Wait..." : "Watch"}</a>
                          </div>
                     </div>
-                           
-                      
-                      
-                      
+
                   </div> 
                 </div>
             </div>            
@@ -901,7 +883,7 @@ const openFileUploder = () =>{
                           }
                          
                        
-                        <button className="status-upload" disabled={(isLoading ) ? true : false} className="btn bg-grd-clr btn-small mt-4" onClick={handleUploadStatus}>{!!isLoading ?  <ClipLoader color={"#fff"} loading={isLoading} css={storyOverride} /> : " Publish Status"}</button>
+                        <a className="status-upload"  className={!!isLoading ?"btn bg-grd-clr btn-small mt-4 disabled" : "btn bg-grd-clr btn-small mt-4" } onClick={handleUploadStatus}>{!!isLoading ?  "Processing..." : " Publish Status"}</a>
              
                     </div>
                     

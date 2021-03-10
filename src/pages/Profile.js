@@ -76,6 +76,7 @@ const Profile = (props) =>{
   const [coinSpend , setCoinSpend] = useState('');
   const [Dob, setDob] = useState(''); 
   const [isLoaded, setIsLoaded] = useState(false);
+  const[isLoading , setIsLoading] = useState(false);
   const [warningMessage, setWarningMessage] = useState('');
   const [loadedModel , setLoadedModel] = useState(false);
 
@@ -287,8 +288,10 @@ const handleCheck = (e) => {
    const updateImage = (e) => {
     const isValid = formValidation();
     if(isValid){
+      
       var data = picture
       if (!!data) {
+        setIsLoading(true);
         const fileName = data.name.split(".");
         const imageFormat = fileName[fileName.length - 1];
         if (imageFormat === "png" || imageFormat === "jpg" || imageFormat === "jpeg" ||
@@ -316,9 +319,11 @@ const handleCheck = (e) => {
     NotificationManager.success(" profile picture update successfully");
       setShowImage(false);
     ProfileData();
+    setIsLoading(false);
    }
   setPicture(null);
    }, (error) =>{
+     setIsLoading(false);
     NotificationManager.error(error.message);
    });
   }
@@ -1003,7 +1008,7 @@ const openFileUploader = () => {
    
   <input type="file" id="profile-photo"  ref ={openFile} name="profile-photo" onChange={handleFileChange} className="d-none" accept=".png, .jpg, .jpeg, .PNG, .JPG, .JPEG" />
 </div>
-<a href="javascript:void(0)" onClick={updateImage} className="btn bg-grd-clr">Publish Photo</a>
+<a   href="javascript:void(0)" onClick={updateImage} className={!!isLoading? "btn bg-grd-clr disabled" : "btn bg-grd-clr"}>{!!isLoading ? "Processing..." : "Publish Photo"}</a>
 
 </form>
 </Modal>

@@ -11,7 +11,7 @@ import {BarLoader , SyncLoader} from "react-spinners";
 import Logo from '../components/Logo';
 import {selectUser, userProfile, videoCall, audioCall} from "../features/userSlice";
 import {NotificationManager} from 'react-notifications';
-import useToggle from '../components/CommonFunction';
+import useToggle, { removeDublicateFrds } from '../components/CommonFunction';
 import { useHistory } from "react-router-dom";
 import {addDefaultSrc, returnDefaultImage, useForceUpdate} from "../commonFunctions";
 import { setWeekYear } from "date-fns";
@@ -100,16 +100,16 @@ const ChatBox = (props) =>{
     // Fetching details of user initial time
     const getAllDetails = async () => {
         const likes = await axios.post(LIKED_LIST,bodyParameters)
-        setLikes(likes.data.data);
+        setLikes(removeDublicateFrds(likes.data.data));
 
         // Destructing response and getting data part
         const visitor = await axios.post(VISITOR_LIST_API,bodyParameters)
-        setVisitors(visitor.data.result);
+        setVisitors(removeDublicateFrds(visitor.data.result));
 
         const friend= await axios.post(FRIENDLIST_API,bodyParameters)
-        console.log(friend.data, "friend")
         const data = friend.data.data;
-        setFriendlist(!!friend ? friend.data.data : []);
+         let friendList = !!data ? data : [];
+         setFriendlist(removeDublicateFrds(friendList));
     }
 
 // Onclick button, getting LIkes, Visitor and friends list
@@ -119,7 +119,7 @@ const ChatBox = (props) =>{
         try {
             const { data: {data , status_code,error } } = await axios.post(LIKED_LIST,bodyParameters)
             if(status_code==200){
-                setLikes(data);
+                setLikes(removeDublicateFrds(data));
             }
         }
         catch (err) {
@@ -137,7 +137,7 @@ const ChatBox = (props) =>{
             const { data: {result, error , status_code} } = await axios.post(VISITOR_LIST_API,bodyParameters)
            
             if(status_code==200){
-            setVisitors(result);
+            setVisitors(removeDublicateFrds(result));
             }
         }
         catch (err) {
@@ -153,9 +153,12 @@ const ChatBox = (props) =>{
         try {
             const {data:{data ,status_code, error}}= await axios.post(FRIENDLIST_API,bodyParameters)
            
-            if(status_code==200){
-                setFriendlist(!!data ? data : []);
-                }
+            if(status_code==200){     
+                let friendList = !!data ? data : [];
+              
+                setFriendlist(removeDublicateFrds(friendList));
+
+            }
         }
         catch (err) {
             if (err.toString().match("403")) {
