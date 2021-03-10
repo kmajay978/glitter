@@ -1846,6 +1846,7 @@ label.custom-file-upload + a {
     background: linear-gradient(to right, rgba(189, 125, 13, 1) 0%, rgba(252, 212, 111, 1) 100%);
     color: var(--theme-primary-color);
     padding: 10px;
+    height: 47px;
     font-size: 18px;
     cursor: pointer;
 }
@@ -3777,6 +3778,7 @@ object-fit: cover;
 #status-modal .modal-content {
     background-color: transparent;
     border: none;
+    padding: 0;
 
 }
 

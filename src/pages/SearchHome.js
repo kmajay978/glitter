@@ -116,7 +116,7 @@ const statusoptions = {
 const SingleProfileView = (id) =>{
  
   history.push({
-    pathname: '/'+id+'/single-profile'
+    pathname:  `/${id}/single-profile`
   })
 }
 
@@ -727,13 +727,14 @@ const openFileUploder = () =>{
     </div>
   </div>
 
-  <Modal className ="story-modal" id="status-modal" show={viewStory} onHide={() => setViewStory(false)} backdrop="static" keyboard={false}>
+  <Modal id="status-modal" show={viewStory} onHide={() => setViewStory(false)} backdrop="static" keyboard={false}>
   {/* <div className="status-modal"> */}
-    <a href="javascript:void(0)" className="close-gift-btn modal-close" onClick={closeDialog}><img src="/assets/images/btn_close.png" /></a>
-      <div className="all-gift-body">
+   
+    
+      <div className="story-modal">
+      <a href="javascript:void(0)" className="close-gift-btn modal-close" onClick={closeDialog}><img src="/assets/images/btn_close.png" /></a>
       {
     stories.length > 0 &&
-  
   <Stories
        stories={stories}
       defaultInterval={3000}
