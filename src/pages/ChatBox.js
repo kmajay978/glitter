@@ -402,7 +402,7 @@ const ChatBox = (props) =>{
 
     }
 
-    useEffect(() => {
+    useEffect(() => {   
         scrollToBottom();
         forceUpdate(); // force re-render
     }, [randomNumber])
