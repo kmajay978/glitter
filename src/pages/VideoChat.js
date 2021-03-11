@@ -17,7 +17,7 @@ import { GIFT_LIST_API } from "../components/Api";
 
 let videoCallStatus = 0, videoCallParams, interval, callType = 0,
   messageList = [], allGifts = [], removeGiftInterval,
-  manageCoinsTimeViewsInterval, manageCoinsTimeViewsCounter = 0, manageTimeInterval
+  manageCoinsTimeViewsInterval, manageCoinsTimeViewsCounter = 0, manageTimeInterval, hostCallCheck = true
 
 const clearChatState = (dispatch) => {
   dispatch(videoCall(null))
@@ -371,21 +371,24 @@ const SearchProfile = () => {
         }
         else {
           // initate video call for sender...
-          manageLiveAudienceHostDetails()
-          manageTimeInterval = window.setInterval(() => {
-            SOCKET.emit("one_to_one_video_manage_time", {
-              channel_name: videoCallState.channel_name
-            })
-          }, 1000)
-          const option = {
-            appID: "52cacdcd9b5e4b418ac2dca58f69670c",
-            channel: videoCallState.channel_name,
-            uid: 0,
-            token: videoCallState.channel_token,
-            key: '',
-            secret: ''
+          if (hostCallCheck) {
+            manageLiveAudienceHostDetails()
+            manageTimeInterval = window.setInterval(() => {
+              SOCKET.emit("one_to_one_video_manage_time", {
+                channel_name: videoCallState.channel_name
+              })
+            }, 1000)
+            const option = {
+              appID: "52cacdcd9b5e4b418ac2dca58f69670c",
+              channel: videoCallState.channel_name,
+              uid: 0,
+              token: videoCallState.channel_token,
+              key: '',
+              secret: ''
+            }
+            joinChannel('host', option);
+            hostCallCheck = false;
           }
-          joinChannel('host', option)
         }
       }
     });
