@@ -265,6 +265,7 @@ console.log(userData, "userdata..")
             secret: ''
           }
           joinChannelAudio('host', option)
+          hostCallCheck = false
         }
       }
       }
