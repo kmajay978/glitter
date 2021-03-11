@@ -47,7 +47,7 @@ console.log(userData, "userdata..")
     clearChatState(dispatch);
     clearInterval(manageCoinsTimeViewsInterval);
     clearInterval(manageTimeInterval);
-    window.location.href = checkLiveDomain() ? "/glitter-web/chat" : "/chat";
+    window.location.href = "/chat";
   }
   useEffect(() =>{
     if (!!userData) {

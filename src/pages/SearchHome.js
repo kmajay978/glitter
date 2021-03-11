@@ -116,7 +116,7 @@ const statusoptions = {
 const SingleProfileView = (id) =>{
  
   history.push({
-    pathname: '/'+id+'/single-profile'
+    pathname:  `/${id}/single-profile`
   })
 }
 
@@ -653,7 +653,7 @@ const openFileUploder = () =>{
         <div className="col-lg-9 main-bar p-3" style={{marginLeft: '25%'}}>
           <div className="tab-top d-flex flex-wrap-wrap">
             <div className="live-icon">
-              <img src="/assets/images/live.png" style={{cursor: "pointer"}}  onClick={() =>setLivePopup(true)}  alt="Live" />
+              <img src="/assets/images/live.png" style={{cursor: "pointer"}}  onClick={makeMeLive} alt="Live" />
               {/* makeMeLive */}
             </div>
             <NavLinks />
@@ -727,13 +727,14 @@ const openFileUploder = () =>{
     </div>
   </div>
 
-  <Modal className ="story-modal" id="status-modal" show={viewStory} onHide={() => setViewStory(false)} backdrop="static" keyboard={false}>
+  <Modal id="status-modal" show={viewStory} onHide={() => setViewStory(false)} backdrop="static" keyboard={false}>
   {/* <div className="status-modal"> */}
-    <a href="javascript:void(0)" className="close-gift-btn modal-close" onClick={closeDialog}><img src="/assets/images/btn_close.png" /></a>
-      <div className="all-gift-body">
+   
+    
+      <div className="story-modal">
+      <a href="javascript:void(0)" className="close-gift-btn modal-close" onClick={closeDialog}><img src="/assets/images/btn_close.png" /></a>
       {
     stories.length > 0 &&
-  
   <Stories
        stories={stories}
       defaultInterval={3000}

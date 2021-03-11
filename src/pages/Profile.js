@@ -844,7 +844,7 @@ const openFileUploader = () => {
             < img style={{cursor: "pointer"}} onError={(e) => addDefaultSrc(e)} src={!!profileData.profile_images ? profileData.profile_images : returnDefaultImage()} alt="user" className="user-profile__image img-circle" onClick={handleImage}/>
            
               <div className="user-profile__details__data">
-                <h5 className="user-profile__name">{!!profileData ?profileData.first_name +' '+ profileData.last_name :"" } </h5>
+                <h5 className="user-profile__name">{!!profileData ?`${profileData.first_name} ${profileData.last_name}` :"" } </h5>
                 <div className="user-profile__level d-inline-block">
                 {!!userData&&
                             <>
@@ -1030,7 +1030,7 @@ const openFileUploader = () => {
           <h4 className="theme-txt text-center mb-4 ">Coin Spend</h4>
           <h5 className="total-coins-spend text-center mb-4">{coinSpend}</h5>
       {!!coinHistory&& coinHistory.map((item , index)=> {
-     return  <div className="coin-spend">
+       return  <div className="coin-spend">
         <div className="coin-spend__host">
           <img src={item.receiver_image} alt="host" />
         </div>
@@ -1039,7 +1039,7 @@ const openFileUploader = () => {
           <div className="coin-spend__total mt-2"><img src="/assets/images/diamond-sm.png" />{item.coins}</div>
         </div>
         <div className="coin-spend__gift">
-          <img src={item.gift_image} alt="gift" />
+        {!!item.gift_image!="" ? <img src={!!item.gift_image!="" ? item.gift_image: ""}  alt="gift" />: ""} 
         </div>
       </div>
      })} 
@@ -1068,7 +1068,7 @@ const openFileUploader = () => {
   
     return <div className="coin-spend">
      <div className="coin-spend__host">
-       <img src={item.profile_images} alt="host" />
+       <img onError={(e) => addDefaultSrc(e)} src={!!item.profile_images ? item.profile_images: returnDefaultImage()}  alt="host" />
      </div>
      <div className="coins-spend__hostname">
        <span>{item.first_name}</span> <span className="counter">{item.age}</span>

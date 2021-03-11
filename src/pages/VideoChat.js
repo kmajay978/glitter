@@ -74,7 +74,7 @@ const SearchProfile = () => {
     clearInterval(removeGiftInterval);
     clearInterval(manageCoinsTimeViewsInterval);
     clearInterval(manageTimeInterval);
-    window.location.href = checkLiveDomain() ? "/glitter-web/chat" : "/chat";
+    window.location.href = "/chat";
   }
   useEffect(() => {
     if (!!userData) {

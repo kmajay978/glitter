@@ -82,7 +82,7 @@ const LiveVideoChat = () => {
         clearInterval(manageCoinsTimeViewsInterval);
         clearInterval(manageTimeInterval);
         clearInterval(manageViewsInterval);
-        window.location.href = checkLiveDomain() ? "/glitter-web/search-home" : "/search-home";
+        window.location.href = "/search-home";
     }
     useEffect(() => {
         if (!!userData) {
