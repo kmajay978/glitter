@@ -339,8 +339,6 @@ $(document).ready(function () {
     range.on("input", function () {
 
         output.text(parseFloat(range.val()).toFixed(3));
-        console.log("Current step: " + +range.attr("step"));
-        console.log("Current value: " + +range.val());
 
         if (+range.val() > 5 && +range.attr("step") === 3) {
             range.attr("step", "5");

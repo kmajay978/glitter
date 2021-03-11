@@ -12,7 +12,6 @@ const StatusUser = () => {
   useEffect(() => {
     //   if (friendStatus.length > 0) {
     //       let friendStatusDetails = friendStatus;
-    //       console.log(friendStatusDetails, "friendStatusDetails...")
     //       let timeCount = 0;
         //   for (let elm of friendStatusDetails) {
         //     if (elm.type === "text") {

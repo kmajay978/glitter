@@ -66,7 +66,6 @@ const LiveVideoChat = () => {
     userData = useSelector(userProfile).user.profile; //using redux useSelector here
     const componentWillUnmount = () => {
         if (videoCallStatus == 4) {
-            console.log(videoCallParams, "videoCallParams... test")
             SOCKET.emit("unauthorize_live_video_call", {
                 user_id: Number(videoCallParams.user_id),
                 channel_name: videoCallParams.channel_name,
@@ -90,7 +89,6 @@ const LiveVideoChat = () => {
         }
     }, [userData])
     useEffect(() => {
-        console.log(videoCallState, "check..")
         if (!params.channel_name) {
             // componentWillUnmount()
         } else {
@@ -120,11 +118,6 @@ const LiveVideoChat = () => {
                 is_host: Number(videoCallParams.user_id) === videoCallState.user_id,
                 // videoCallProps: Number(videoCallParams.user_id) === userData.user_id ?
             });
-            console.log({
-                sender_id: videoCallParams.user_id,
-                user_id: videoCallState.user_id,
-                channel_name: videoCallParams.channel_name
-            }, "test...")
             SOCKET.emit("authenticate_live_video_message", {
                 sender_id: Number(videoCallParams.user_id),
                 user_id: Number(videoCallState.user_id),
@@ -259,7 +252,6 @@ const LiveVideoChat = () => {
                             key: '',
                             secret: ''
                         }
-                        console.log(videoCallState, "videoCallState...")
                         joinChannel('host', option)
                     }
                     else { // audience..
@@ -273,7 +265,6 @@ const LiveVideoChat = () => {
                             key: '',
                             secret: ''
                         }
-                        console.log(option, "jkjk...")
                         joinChannel('audience', option)
                     }
                 }
@@ -307,7 +298,6 @@ const LiveVideoChat = () => {
 
             SOCKET.on('send_live_video_item', (message) => {
                 let messagesList = messageList;
-                console.log(message, "messages...test")
 
                 if (
                     // message.sender_id == videoCallParams.user_id &&
@@ -329,7 +319,6 @@ const LiveVideoChat = () => {
                             }
                             messagesList.push(new_message);
                             messageList = messagesList;
-                            console.log(messagesList, "messageList...")
                             setMessages(messagesList);
                             setRandomNumber(Math.random());
                             scrollToBottom()
@@ -345,7 +334,6 @@ const LiveVideoChat = () => {
                             }
                             let newGift = friendGift;
                             newGift.unshift(gift);
-                            console.log(newGift, "hiiiiiiiiiiiii")
                             setFriendGift(newGift);
                             allGifts = newGift;
                             setRandomNumberGift(Math.random());
@@ -354,7 +342,7 @@ const LiveVideoChat = () => {
                             let count = 0;
                             let heartInterval = window.setInterval(() => {
                                 if (count < 5) {
-                                    console.log(document.getElementById("next"), "test...")
+                                    
                                     document.getElementById("next").click();
                                     count++;
                                 }
@@ -375,8 +363,6 @@ const LiveVideoChat = () => {
                     messages.user_id == videoCallState.user_id &&
                     videoCallParams.channel_name == messages.channel_name) {
                     setLoading(false);
-                    console.log(messages, "messages..")
-                    console.log(messages, "hahahaha")
                     let all_messages = [];
                     const socket_messages = messages.messages;
                     for (let i in socket_messages) {
@@ -512,7 +498,6 @@ const LiveVideoChat = () => {
             SOCKET.emit("send_live_video_item", message);
             setuserMessage(''); //Empty user input here
         } else {
-            console.log("Please enter message")
         }
     }
 
@@ -576,13 +561,11 @@ const LiveVideoChat = () => {
     useEffect(() => {
         //   Listing gift here
         SOCKET.on('gift_send', (messages) => {
-            console.log(messages, "message_gift....");
             setGivenGift(messages.obj.media)
         });
     }, [])
 
     if (!!givenGift) {
-        console.log(givenGift, "givenGif....");
     }
     return (
         <section className="home-wrapper">

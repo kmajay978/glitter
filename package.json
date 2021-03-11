@@ -100,12 +100,6 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
   "browserslist": {
     "production": [
       ">0.2%",
@@ -124,7 +118,7 @@
     "type": "git",
     "url": "git+https://github.com/kmajay978/glitter.git"
   },
-  "author": "",
+  "author": "Dupinder",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/kmajay978/glitter/issues"

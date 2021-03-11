@@ -61,14 +61,11 @@ const CheckoutForm = (props) => {
         const result = await stripe.createToken(card);
         
         if (result.error) {
-            console.log(result.error.message);
             NotificationManager.error(result.error.message);
         } else {
              // Activating VIP Membership here
             if(!!Selected_Stripe_planid){
                 setIsloading(true)
-                
-            // console.log(result.token.id);
             const bodyParameters = {
                 session_id: sessionId,
                 plan_id: Selected_Stripe_planid,
@@ -82,8 +79,6 @@ const CheckoutForm = (props) => {
                   
                     if(response.status==200)
                     { 
-                 
-                    console.log(response);
                     NotificationManager.success( "You have subscribed the Package");
                     dispatch(stripePlanId({stripePlanId: null}));
                     profileData();
@@ -118,7 +113,6 @@ const CheckoutForm = (props) => {
                     setIsloading(false);
                     if(response.status==200)
                     { 
-                        console.log(response);
                         NotificationManager.success( "Your coin package activated");
                         dispatch(stripeCoinPlanId({stripeCoinPlanId: null}));
                         profileData();

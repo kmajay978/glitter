@@ -23,20 +23,17 @@ function Swipe () {
   setAllData(data);
 
    }
-    console.log(allData);
     useEffect(()=> {
     handleUserData();
      },[])
   const childRefs = useMemo(() => Array(allData.length).fill(0).map(i => React.createRef()), [])
 
   const swiped = (direction, nameToDelete) => {
-    console.log('removing: ' + nameToDelete)
     setLastDirection(direction)
     alreadyRemoved.push(nameToDelete)
   }
 
   const outOfFrame = (name) => {
-    console.log(name + ' left the screen!')
    
   }
 

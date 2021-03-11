@@ -70,7 +70,6 @@ const ChatBox = (props) =>{
     const [chatTyping, setChatTyping] = useState("");
     const [threeMessageWarning, setWarningMessage] = useState("");
 
-    console.log(baseMultipleImage,"baseMultipleImage..........")
     // const createNotificationCustom = (type) => {
   
     //     switch (type) {
@@ -83,14 +82,10 @@ const ChatBox = (props) =>{
     //   };
     //   };
 
-
- console.log(previewData,"threeMessageWarning....");
     const[GetActivity, setActivity] = useState(0);
 
     userData = useSelector(userProfile).user.profile; //using redux useSelector here
 
-    // console.log(userData);
-    // console.log(CompleteMessageList, "nowwww")
     const sessionId = localStorage.getItem('session_id');
 
     const bodyParameters = {
@@ -251,7 +246,6 @@ const ChatBox = (props) =>{
                     NotificationManager.error('Please recharge and try again', 'Insufficient Balance!');      
                 }
              }
-             console.log(CompleteMessageList);
             
             //  On change getting image files 
              const handleFileChange = e => {
@@ -290,7 +284,6 @@ const ChatBox = (props) =>{
                
             if(!!baseMultipleImage && 
             baseMultipleImage.length > 0) {
-                console.log(baseMultipleImage, "check........")
                 const imageMedia = document.getElementById("image-media");
                 let count = 0;
                 let photoInterval = window.setInterval(() => {
@@ -347,7 +340,6 @@ const ChatBox = (props) =>{
         //     msg.fileName = data.name;
         //     msg.sessionId = sessionId;
         //     msg.reciever_id = receiver_id;
-        //     console.log(msg, "msg...")
         //     SOCKET.emit('media_file', msg);
         //     setLoading(true);
 
@@ -389,16 +381,14 @@ const ChatBox = (props) =>{
         if ( UserMessage != '') {
             var secondUserDataId = FriendUserId;
             var message = { "session_id": sessionId, "reciever_id": secondUserDataId, "message": UserMessage }
-            console.log('sent>>>> Data', message);
+          
             SOCKET.emit("send_message", message);
             setuserMessage(''); //Empty user input here
         } else {
-            console.log("Please enter message")
         }
     }
     // Get all messages here
     const GetAllMessages = (messages) => {
-        console.log(messages.message_list,"messages.message_list....");
 
     }
 
@@ -406,7 +396,6 @@ const ChatBox = (props) =>{
         scrollToBottom();
         forceUpdate(); // force re-render
     }, [randomNumber])
-// console.log(FriendUserId);
     useEffect(()=>{
         document.getElementById("tab-chat").click()
         // window.setTimeout(() => {
@@ -449,8 +438,6 @@ const ChatBox = (props) =>{
         })
 
         SOCKET.on('message_data', (messages) => {
-            // console.log(messages, "test..");
-            // console.log(messageList, "CompleteMessageList")
             let messagesList = messageList;
             if (!!messages) {
 
@@ -468,7 +455,6 @@ const ChatBox = (props) =>{
                         setWarningMessage('');
                     messagesList.push(messages.obj);
                     messageList = messagesList;
-                    console.log(messagesList, "messageList...")
                     setMessages(messagesList);
                     setRandomNumber(Math.random());
                     forceUpdate();
@@ -478,7 +464,6 @@ const ChatBox = (props) =>{
             }
         });
         SOCKET.on('media_file', (messages) => {
-            console.log(messageList, "CompleteMessageList")
             let messagesList = messageList;
             if (!!messages) {
                 if ((messages.obj.user_from_id === userData.user_id && messages.obj.user_to_id === receiver_id)
@@ -495,7 +480,6 @@ const ChatBox = (props) =>{
                         setWarningMessage('');
                     messagesList.push(messages.obj);
                     messageList = messagesList;
-                    console.log(messagesList, "messageList... pic")
                     setMessages(messagesList);
                     setuserMessage(''); //Empty user input here
                     setLoading(false);
@@ -507,7 +491,6 @@ const ChatBox = (props) =>{
         });
 
         SOCKET.on('gift_send',(messages) =>{
-            console.log(messages,"message_gift....");
            let messagesList = messageList;
             if(!!messages)
             {
@@ -526,7 +509,7 @@ const ChatBox = (props) =>{
                         setWarningMessage('');
                     messagesList.push(messages.obj);
                     messageList = messagesList;
-                    console.log(messagesList,"messageList_gift_send ........ ");
+                    
                     setMessages(messagesList);
                     setLoading(false);
                     setRandomNumber(Math.random());
@@ -538,7 +521,6 @@ const ChatBox = (props) =>{
 
         SOCKET.on('voice', function(arrayBuffer) {
             let messagesList = messageList;
-            console.log(messageList, "CompleteMessageList")
             if (!!arrayBuffer) {
                 if ((arrayBuffer.obj.user_from_id === userData.user_id && arrayBuffer.obj.user_to_id === receiver_id)
                     ||
@@ -553,7 +535,6 @@ const ChatBox = (props) =>{
                         setWarningMessage('');
                     messagesList.push(arrayBuffer.obj);
                     messageList = messagesList;
-                    console.log(messagesList, "messageList... pic")
                     setMessages(messagesList);
                     setuserMessage(''); //Empty user input here
                     setRandomNumber(Math.random());
@@ -580,7 +561,6 @@ const ChatBox = (props) =>{
 
     useEffect(()=>{
         if (GetActivity === 2) {
-            console.log("connect socket")
 
             SOCKET.connect();
         }
@@ -597,8 +577,6 @@ const ChatBox = (props) =>{
             getFriendDetails();
             SOCKET.on('getMessage', (messages) => { // only one time
                 setLoading(false);
-                console.log(messages, "messages..")
-                console.log(messages, "hahahaha")
               
                     setMessages(messages.message_list);
                     messageList = messages.message_list;
@@ -630,10 +608,8 @@ const ChatBox = (props) =>{
     };
 
     useEffect(() => {
-        console.log(recording, "record....");
     }, [recording])
     const sendVoiceNote = () => {
-        console.log(recording, "recordddddddd");
         if (!dummyMediaRc) {
             var constraints = {audio: true};
             let recordAudio = false;
@@ -651,7 +627,6 @@ const ChatBox = (props) =>{
                     };
                     mediaRecorder.onstop = function (e) {
                         var blob = new Blob(this.chunks,);
-                        console.log(blob, "blob.....")
                         blobToBase64(blob, (output) => {
                             SOCKET.emit('radio', {blob: 'data:audio/mp3;base64,' + output, sessionId, reciever_id: FriendUserId});
                         })
@@ -672,13 +647,12 @@ const ChatBox = (props) =>{
             }
         }
         else {
-            console.log(dummyMediaRc, "media rec...")
             dummyMediaRc.stop();
             setDummyMediaRc(null);
         }
     }
     useEffect( () => {
-        console.log(CompleteMessageList.length, "CompleteMessageList length...")
+        
         scrollToBottom()
     }, [CompleteMessageList])
 

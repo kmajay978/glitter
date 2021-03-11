@@ -98,8 +98,6 @@ const Profile = (props) =>{
   const userData = useSelector(userProfile).user.profile; //using redux useSelector here
 
   var dates = moment(Dob).format('YYYY/MM/DD');
-  console.log(Dob , "...dob");
-  console.log(dates , "date");
   // Getting form value here
   const [form , setForm] = useState({
     
@@ -168,7 +166,7 @@ const handleCheck = (e) => {
       session_id: sessionId,
       };
      const {data:{data}}= await axios.post(GET_LOGGEDPROFILE_API,bodyParameters)
-     console.log(moment(data.dob).format('ddd MMM DD YYYY   h:mm:ss' ) , "...hhhhh");
+     
       
     //  Setting data variable to state object 
       form.firstName = data.first_name

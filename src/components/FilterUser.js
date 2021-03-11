@@ -78,17 +78,11 @@ const FilterUser = ({ fetchedProfile }) => {
    
   };
 
-
-// var myprofile = !!fetchedProfile ? fetchedProfile.data.data:"yo";
-
-//   console.log(myprofile,"myprofile.....");
-
   // Click here
 const handleUserId = (e, userId) =>{
 
 }
 
-// console.log(allData);
 
   const swiped = (direction, userId) => {
     if (direction == "left") {
@@ -108,9 +102,6 @@ const handleUserId = (e, userId) =>{
             //   history.push('/login');
             // }
           if (response.status == 200) {
-          
-            console.log(direction);
-            console.log("removing: " + userId);
             alreadyRemoved.push(userId); 
           }
         },
@@ -135,8 +126,6 @@ const handleUserId = (e, userId) =>{
             //   history.push('/login');
             // }
             if(response.status==200) {
-            // console.log(direction);
-            // console.log("removing: " + userId);
             alreadyRemoved.push(userId);
             setTimeout(() => {
               setLiked(false)
@@ -165,7 +154,6 @@ const handleUserId = (e, userId) =>{
       if (!!childRefs && childRefs[index]) {
         childRefs[index].current.swipe(dir); // Swipe the card!
       } else {
-        console.log("child ref error", childRefs, "childRefs");
       }
     }
   }
@@ -182,7 +170,6 @@ const handleUserId = (e, userId) =>{
       if (!!childRefs && childRefs[index]) {
         childRefs[index].current.swipe(dir); // Swipe the card!
       } else {
-        console.log("child ref error", childRefs, "childRefs");
       }
     }
   }

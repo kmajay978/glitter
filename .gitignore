@@ -22,6 +22,11 @@
 .eslintcache
 
 /dist
+/src/api/dist
+/src/commonFunctions/dist
+/src/components/dist
+/src/features/dist
+/src/pages/dist
 
 npm-debug.log*
 yarn-debug.log*
