@@ -351,7 +351,9 @@ const SearchProfile = () => {
           joinChannel('host', option);
           interval = window.setInterval(() => {
             var list = document.getElementById("remote_video_");
+            console.log("host video attached1")
             if (!!list) {
+              console.log("host video attached2", list)
               if (list.childNodes.length > 1) {
                 list.removeChild(list.childNodes[0]);
               }
@@ -389,6 +391,26 @@ const SearchProfile = () => {
             joinChannel('host', option);
             hostCallCheck = false;
           }
+
+          interval = window.setInterval(() => {
+            var list = document.getElementById("remote_video_");
+            var list_local = document.getElementById("local_stream");   // Get the <ul> element with id="myList"
+            console.log("host video attached3")
+            if (!!list) {
+              console.log("host video attached4", list)
+              if (list.childNodes.length === 3) {
+                list.removeChild(list.childNodes[1]);
+              }
+              // clearInterval(interval)// Remove <ul>'s first child node (index 0)
+            }
+            if (!!list_local) {
+              if (list_local.childNodes.length > 1) {
+                list_local.removeChild(list_local.childNodes[1]);
+              }
+              // Remove <ul>'s first child node (index 0)
+              // clearInterval(interval)
+            }
+          }, 1000)
         }
       }
     });

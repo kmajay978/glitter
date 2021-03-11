@@ -12,7 +12,7 @@ import {changeImageLinkDomain, checkLiveDomain, returnDefaultImage} from "../com
 import NotificationManager from "react-notifications/lib/NotificationManager";
 
 let videoCallStatus = 0, videoCallParams, interval,
-manageCoinsTimeViewsInterval, manageCoinsTimeViewsCounter = 0, manageTimeInterval, goHost = false, goAud = false;
+manageCoinsTimeViewsInterval, manageCoinsTimeViewsCounter = 0, manageTimeInterval, goHost = false, goAud = false, hostCallCheck = true;
 
 const clearChatState = (dispatch) => {
   dispatch(audioCall(null))
@@ -240,6 +240,7 @@ console.log(userData, "userdata..")
           });
         }
         if (!!userData && (data.user_from_id == userData.user_id)) {
+          if (hostCallCheck) {
           for (let i in userDetails) {
             if (userDetails[i].id != userData.user_id) {
               document.getElementById("audioCallingPic").setAttribute("src", changeImageLinkDomain() +userDetails[i].profilePics)
@@ -265,6 +266,27 @@ console.log(userData, "userdata..")
           }
           joinChannelAudio('host', option)
         }
+
+        interval = window.setInterval(() => {
+          var list = document.getElementById("remote_video_");
+          var list_local = document.getElementById("local_stream");   // Get the <ul> element with id="myList"
+          console.log("host video attached3")
+          if (!!list) {
+            console.log("host video attached4", list)
+            if (list.childNodes.length === 3) {
+              list.removeChild(list.childNodes[1]);
+            }
+            // clearInterval(interval)// Remove <ul>'s first child node (index 0)
+          }
+          if (!!list_local) {
+            if (list_local.childNodes.length > 1) {
+              list_local.removeChild(list_local.childNodes[1]);
+            }
+            // Remove <ul>'s first child node (index 0)
+            // clearInterval(interval)
+          }
+        }, 1000)
+      }
       }
     });
   }, [])

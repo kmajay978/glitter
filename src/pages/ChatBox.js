@@ -251,7 +251,7 @@ const ChatBox = (props) =>{
                     NotificationManager.error('Please recharge and try again', 'Insufficient Balance!');      
                 }
              }
-             
+             console.log(CompleteMessageList);
             
             //  On change getting image files 
              const handleFileChange = e => {
