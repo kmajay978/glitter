@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 
 
-export const API_BASE_URL="http://167.172.209.57/glitter-101/api/";
+export const API_BASE_URL="https://rrmr.co.in/glitter-101/api/";
 export const getApiUrl=(endpoint)=>API_BASE_URL+endpoint;
 export const LOGIN_API=getApiUrl("/api/login");
 export const SIGNUP_API=getApiUrl("register");

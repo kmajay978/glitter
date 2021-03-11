@@ -12,7 +12,7 @@ import {changeImageLinkDomain, checkLiveDomain, returnDefaultImage} from "../com
 import NotificationManager from "react-notifications/lib/NotificationManager";
 
 let videoCallStatus = 0, videoCallParams, interval,
-manageCoinsTimeViewsInterval, manageCoinsTimeViewsCounter = 0, manageTimeInterval;
+manageCoinsTimeViewsInterval, manageCoinsTimeViewsCounter = 0, manageTimeInterval, goHost = false, goAud = false;
 
 const clearChatState = (dispatch) => {
   dispatch(audioCall(null))
@@ -47,7 +47,7 @@ console.log(userData, "userdata..")
     clearChatState(dispatch);
     clearInterval(manageCoinsTimeViewsInterval);
     clearInterval(manageTimeInterval);
-    window.location.href = checkLiveDomain() ? "/glitter-web/chat" : "/chat";
+    window.location.href = "/chat";
   }
   useEffect(() =>{
     if (!!userData) {
@@ -192,6 +192,7 @@ console.log(userData, "userdata..")
         // change backend status === 1 if loggedIn user is "user_to"
         const userDetails = data.users_detail;
         if (!!userData && (data.user_to_id == userData.user_id)) {
+          
           manageAudienceHostDetails()
           for (let i in userDetails) {
             if (userDetails[i].id != userData.user_id) {
@@ -238,13 +239,14 @@ console.log(userData, "userdata..")
             status: 1
           });
         }
-        else {
+        if (!!userData && (data.user_from_id == userData.user_id)) {
           for (let i in userDetails) {
             if (userDetails[i].id != userData.user_id) {
               document.getElementById("audioCallingPic").setAttribute("src", changeImageLinkDomain() +userDetails[i].profilePics)
               break;
             }
           }
+          
           manageAudienceHostDetails()
           manageTimeInterval = window.setInterval(() => {
             SOCKET.emit("one_to_one_audio_manage_time", {
@@ -279,6 +281,7 @@ console.log(userData, "userdata..")
   const manageAudienceHostDetails = () => {
     audioManageCoinsTimeViews()
     manageCoinsTimeViewsInterval = window.setInterval(() => {
+      console.log("10 secods")
       audioManageCoinsTimeViews()
       manageCoinsTimeViewsCounter = manageCoinsTimeViewsCounter + 10
     }, 10000)

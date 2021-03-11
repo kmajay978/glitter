@@ -55,7 +55,7 @@ function App(props) {
       // console.log(data.user_to_id, userData.user_id, "checkkkkkkkkkkkkkkkk")
       if (!!userData && (data.user_to_id == userData.user_id)) { // check one-to-one data sync
         localStorage.setItem("receiverDetails", JSON.stringify(data))
-        const page = checkLiveDomain() ? "/glitter-web/answer-calling" : "/answer-calling"
+        const page = "/answer-calling"
         history.push(page)
       }
     })
@@ -63,7 +63,7 @@ function App(props) {
       localStorage.removeItem("videoCallPageRefresh");
       // SOCKET.disconnect();
       dispatch(videoCall(null))
-      const page = checkLiveDomain() ? "/glitter-web/chat" : "/chat"
+      const page = "/chat"
       if (!!userData && (data.user_from_id == userData.user_id)) { // check one-to-one data sync
         if (data.showMsg) {
           alert("receiver declined your call...")
@@ -78,7 +78,7 @@ function App(props) {
       localStorage.removeItem("videoCallPageRefresh");
       // SOCKET.disconnect();
       dispatch(videoCall(null))
-      const page = checkLiveDomain() ? "/glitter-web/chat" : "/chat"
+      const page = "/chat"
       if (!!userData && (data.user_to_id == userData.user_id)) { // check one-to-one data sync
         if (data.showMsg) {
           alert("sender declined the call...")
@@ -95,12 +95,12 @@ function App(props) {
       dispatch(videoCall(null))
       if (!!userData && (data.user_from_id == userData.user_id)) { // check one-to-one data sync
         alert("receiver not accepted your call... maybe the user is offline. We have send the notification..")
-        const page = checkLiveDomain() ? "/glitter-web/chat" : "/chat"
+        const page = "/chat"
         history.push(page)
       }
       if (!!userData && (data.user_to_id == userData.user_id)) { // check one-to-one data sync
         if (window.location.pathname === "/answer-calling") {
-          const page = checkLiveDomain() ? "/glitter-web" : "/"
+          const page = "/"
           history.push(page)
         }
       }
@@ -111,7 +111,7 @@ function App(props) {
       dispatch(videoCall(null))
       if (!!userData && (data.user_to_id == userData.user_id)) { // check one-to-one data sync
         if (window.location.pathname === "/answer-calling") {
-          const page = checkLiveDomain() ? "/glitter-web" : "/"
+          const page = "/"
           history.push(page)
         }
       }

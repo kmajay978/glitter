@@ -74,7 +74,7 @@ const SearchProfile = () => {
     clearInterval(removeGiftInterval);
     clearInterval(manageCoinsTimeViewsInterval);
     clearInterval(manageTimeInterval);
-    window.location.href = checkLiveDomain() ? "/glitter-web/chat" : "/chat";
+    window.location.href = "/chat";
   }
   useEffect(() => {
     if (!!userData) {
@@ -351,7 +351,9 @@ const SearchProfile = () => {
           joinChannel('host', option);
           interval = window.setInterval(() => {
             var list = document.getElementById("remote_video_");
+            console.log("host video attached1")
             if (!!list) {
+              console.log("host video attached2", list)
               if (list.childNodes.length > 1) {
                 list.removeChild(list.childNodes[0]);
               }
@@ -386,6 +388,26 @@ const SearchProfile = () => {
             secret: ''
           }
           joinChannel('host', option)
+
+          interval = window.setInterval(() => {
+            var list = document.getElementById("remote_video_");
+            var list_local = document.getElementById("local_stream");   // Get the <ul> element with id="myList"
+            console.log("host video attached3")
+            if (!!list) {
+              console.log("host video attached4", list)
+              if (list.childNodes.length === 3) {
+                list.removeChild(list.childNodes[1]);
+              }
+              // clearInterval(interval)// Remove <ul>'s first child node (index 0)
+            }
+            if (!!list_local) {
+              if (list_local.childNodes.length > 1) {
+                list_local.removeChild(list_local.childNodes[1]);
+              }
+              // Remove <ul>'s first child node (index 0)
+              // clearInterval(interval)
+            }
+          }, 1000)
         }
       }
     });
@@ -499,7 +521,7 @@ const getGiftItem = async (giftId) => {
       "user_id": Number(userData.user_id),
       "text_message": "",
       "channel_name": videoCallParams.channel_name,
-      "sender_id": Number(videoCallParams.user_from_id),
+      "sender_id": Number(userData.user_id) === Number(videoCallParams.user_from_id) ? Number(videoCallParams.user_to_id) : Number(videoCallParams.user_from_id),
       "type": 1,
       "gift_id": giftId,
       "is_send_heart": 0,
