@@ -342,10 +342,12 @@ const handleCheck = (e) => {
    });
   }
   else {
+     setIsLoading(false);
     NotificationManager.error("Only .png, .jpg, .jpeg image formats supported.");  
   }
 }
 else {
+  setIsLoading(false);
   NotificationManager.error("Only .png, .jpg, .jpeg image formats supported.");  
 }
     }
