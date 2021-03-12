@@ -176,7 +176,8 @@ function App(props) {
           <ProtectedRoute  path='/:user_id/:channel_id/:channel_name/live-video-chat' component={LiveVideoChat} />
         </Elements>
       </Switch>
-        <NotificationContainer />
+        <NotificationContainer 
+        />
         
     </Router>
   );

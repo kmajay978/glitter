@@ -268,13 +268,17 @@ const handleCheck = (e) => {
   //   }
  
 
+  function isElement(element) {
+    return element instanceof Element || element instanceof HTMLDocument;  
+}
+
     const formValidation = () =>{
       let isValid = true;
  
       if(picture == null)
       {
-        // phoneErr.phoneShort = "Phone number is Empty";
-        NotificationManager.error(" please, add the  picture ");
+        NotificationManager.error(" please, add the  picture ", "", 2000, () => {return 0}, true );
+
         setShowImage(true);
         isValid = false;
       }
@@ -326,11 +330,11 @@ const handleCheck = (e) => {
    });
   }
   else {
-    NotificationManager.error("Only .png, .jpg, .jpeg image formats supported.");  
+    NotificationManager.error("Only .png, .jpg, .jpeg image formats supported.", "", 2000, () => {return 0}, true);  
   }
 }
 else {
-  NotificationManager.error("Only .png, .jpg, .jpeg image formats supported.");  
+  NotificationManager.error("Only .png, .jpg, .jpeg image formats supported.", "", 2000, () => {return 0}, true);
 }
     }
    }
@@ -603,6 +607,7 @@ else {
   }
   // Get id of current plan 
 
+  
   const Stripehandler = (id) =>{
     dispatch(
       stripePlanId({
