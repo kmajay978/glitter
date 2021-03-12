@@ -604,7 +604,7 @@ a.show-filter img {
     position: relative;
     cursor: pointer;
     border-radius: 50px;
-    width: 97px;
+    width: 100%;
     height: 32px;
     line-height: 32px;
     text-transform: uppercase;
@@ -623,13 +623,14 @@ a.show-filter img {
 }
 
 .btns-group .btn {
-    padding: 0 40px;
     height: 38px;
     line-height: 38px;
+    width: 40%;
 }
 
 .show-gender .form-group {
     margin-bottom: 0;
+    width: 31%;
 }
 
 .ft-block {
@@ -5252,3 +5253,4 @@ div.heart i {
 .sp-singular-content .status{
     font-size: 11px;
 }}
+

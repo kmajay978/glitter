@@ -181,10 +181,10 @@ useEffect(()=>{
          {/* <Loader isLoading={isLoading} /> */}
                   <h4 className="mb-4">Filter</h4>
                   <form action="#" method="post"  className="form">
-                    <div className="show-gender ft-block d-flex flex-wrap" onChange={radioHandle}>
-                      <div className="tab-title">
+                  <div className="tab-title">
                         <h5>Show Me</h5>
                       </div>
+                    <div className="show-gender ft-block d-flex flex-wrap justify-content-between" onChange={radioHandle}>                      
                       <div className="form-group">
                         <input type="radio" name="gender" value={1} id="man" />
                         <label htmlFor="man">Man</label>
