@@ -46,7 +46,7 @@ const CheckoutForm = (props) => {
               })
           );
           } ,(error)=> {
-            NotificationManager.error(error.message);
+            NotificationManager.error(error.message, "", 2000, () => {return 0}, true);
           })
    } 
 
@@ -61,7 +61,7 @@ const CheckoutForm = (props) => {
         const result = await stripe.createToken(card);
         
         if (result.error) {
-            NotificationManager.error(result.error.message);
+            NotificationManager.error(result.error.message, "", 2000, () => {return 0}, true);
         } else {
              // Activating VIP Membership here
             if(!!Selected_Stripe_planid){
@@ -79,14 +79,14 @@ const CheckoutForm = (props) => {
                   
                     if(response.status==200)
                     { 
-                    NotificationManager.success( "You have subscribed the Package");
+                    NotificationManager.success( "You have subscribed the Package", "", 2000, () => {return 0}, true);
                     dispatch(stripePlanId({stripePlanId: null}));
                     profileData();
                   }
                   stripeClose.click();
                 }, (error) => {
                     setIsloading(false);
-                    NotificationManager.error(error.message);
+                    NotificationManager.error(error.message, "", 2000, () => {return 0}, true);
                     if (error.toString().match("403")) {
                         localStorage.removeItem("session_id");
                         history.push('/login');
@@ -113,14 +113,14 @@ const CheckoutForm = (props) => {
                     setIsloading(false);
                     if(response.status==200)
                     { 
-                        NotificationManager.success( "Your coin package activated");
+                        NotificationManager.success( "Your coin package activated", "", 2000, () => {return 0}, true);
                         dispatch(stripeCoinPlanId({stripeCoinPlanId: null}));
                         profileData();
                   }
                stripeClose.click();
                 }, (error) => {
                     setIsloading(false);
-                    NotificationManager.error(error.message);
+                    NotificationManager.error(error.message, "", 2000, () => {return 0}, true);
                     if (error.toString().match("403")) {
                         localStorage.removeItem("session_id");
                         history.push('/login');
