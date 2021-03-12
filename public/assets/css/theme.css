@@ -3759,6 +3759,11 @@ screen and (max-height: 768px) {
     cursor: pointer;
 }
 
+.story-modal > a + div > div:nth-child(1) + div {
+    align-items: center;
+    justify-content: center;
+}
+
 /* .status-modal .all-gift-body img{
 width: 100% !important;
 height: 468px;

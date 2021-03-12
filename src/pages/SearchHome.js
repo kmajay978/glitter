@@ -15,7 +15,7 @@ import {userProfile} from "../features/userSlice";
 import {generateLiveVideoChatToken} from "../api/videoApi";
 import {addDefaultSrc, returnDefaultImage} from "../commonFunctions";
 import useToggle , {removeDublicateFrds} from '../components/CommonFunction';
-import {SyncLoader } from "react-spinners";
+import {SyncLoader , ClipLoader } from "react-spinners";
 import { css } from "@emotion/core";
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import {friendStatus} from '../features/userSlice'
@@ -40,6 +40,21 @@ transform: translateY(-50%);
 
 `;
 
+const statusOverride = css`
+    
+text-align: center;
+width: 20px;
+height:20px;
+position: absolute;
+left: 0;
+right: 0;
+margin: 0 auto;
+top: 30%;
+-webkit-transform: translateY(-30%);
+-moz-transform: translateY(-30%);
+transform: translateY(-30%);
+
+`;
 
 const SearchHome = () =>
 {
@@ -75,7 +90,7 @@ const SearchHome = () =>
     const [LiveModel , setLiveModel] = useState({modal: false, item: null});
     const [audLive, setAudLive] = useState(false)
     const[viewStory , setViewStory] = useState(false);
-
+    const[statusLoading , setStatusLoading] =useState(false);
     userData = useSelector(userProfile).user.profile; //using redux useSelector here
  const options = {
   loop: false,
@@ -136,7 +151,7 @@ const handleFileChange = e => {
      }
      else
      {
-      NotificationManager.error( " Only .png, .jpg, .jpeg image formats supported.");
+      NotificationManager.error( " Only .png, .jpg, .jpeg image formats supported." , "", 2000, () => {return 0}, true);
      }
     }
  };
@@ -159,13 +174,13 @@ const handleFileChange = e => {
       }
       else {
 
-        NotificationManager.error( "maximum upload video limit is 5 mb");
+        NotificationManager.error( "maximum upload video limit is 5 mb", "", 2000, () => {return 0}, true);
         setVideoData('');
       }
      }
      else
      {
-      NotificationManager.error( "please , Select the video");
+      NotificationManager.error( "please , Select the video", "", 2000, () => {return 0}, true);
      }
  }
 
@@ -223,15 +238,15 @@ const handleFileChange = e => {
 
   }
 
-  const handleStatus = () =>
+  const handleStatus = (user_id) =>
   {
-    // setIsLoaded(true);
+    setStatusLoading(true);
     const bodyParameters = {
-      user_id: friendId,
+      user_id
     };
     axios.post(GET_STATUS,bodyParameters)
     .then((response) => {
-      setIsLoaded(false);
+    
       if (response.status === 200 && !response.status.error) {
         setViewStory(true);
         if (!!response.data && !!response.data.result && response.data.result.length > 0 ) {
@@ -239,31 +254,33 @@ const handleFileChange = e => {
           setStatusData(response.data);
           setStoryData(response.data.result);
           // toggleIsOn(true)
-          
+              
         }
         else {
           setStatusData({});
           setStoryData([]);
           // toggleIsOn(false)
           setFriendId('');
+        
       }
+      setStatusLoading(false);
     }
       else {
         setStatusData({});
-        // setIsLoaded(false);
+        setStatusLoading(false);
         setFriendId('');
       }
 
  }, (error) => {
  
     setStatusData({});
-    // setIsLoaded(false);
+   setStatusLoading(false);
     setFriendId('');
 });
   }
 
   useEffect  (() => {
-    handleStatus();
+    handleStatus(friendId);
    },[friendId])
 
  const handleVideo = () => {
@@ -311,14 +328,14 @@ const handleUploadStatus =(e) =>
   axios.post(ADD_STATUS , bodyParameters , config)
   .then((response)=> {
   if(response.status==200){
-    NotificationManager.success(response.data.message );
+    NotificationManager.success(response.data.message , "", 2000, () => {return 0}, true);
     setIsLoading(false);
     setUploadStatus(false);
      setVideoData('');
   }
 
  } ,(error) => {
-  NotificationManager.error( error.message);
+  NotificationManager.error( error.message , "", 2000, () => {return 0}, true);
   setIsLoading(false);
   if (error.toString().match("403")) {
     localStorage.removeItem("session_id");
@@ -337,13 +354,13 @@ const handleUploadStatus =(e) =>
    axios.post(ADD_STATUS , bodyParameters , config)
    .then((response)=> {
      if(response.status==200){
-      NotificationManager.success(response.data.message );
+      NotificationManager.success(response.data.message , "", 2000, () => {return 0}, true );
       setIsLoading(false);
       setUploadStatus(false);
        setVideoData('');
   }
   } ,(error) => {
-    NotificationManager.error(error.message );
+    NotificationManager.error(error.message , "", 2000, () => {return 0}, true);
     setIsLoading(false);
     if (error.toString().match("403")) {
       localStorage.removeItem("session_id");
@@ -432,14 +449,14 @@ document.getElementById("image").remove()
    axios.post(ADD_STATUS , bodyParameters , config)
    .then((response)=> {
      if(response.status==200){
-      NotificationManager.success(response.data.message );
+      NotificationManager.success(response.data.message , "", 2000, () => {return 0}, true );
     
        setUploadStatus(false);
 
     setShowPencil(false);
   }
   } ,(error) => {
-    NotificationManager.error(error.message );
+    NotificationManager.error(error.message , "", 2000, () => {return 0}, true );
     if (error.toString().match("403")) {
       localStorage.removeItem("session_id");
       history.push('/login');
@@ -448,7 +465,7 @@ document.getElementById("image").remove()
   }
   }
   else{
-    NotificationManager.error("please select image or video");
+    NotificationManager.error("please select image or video" , "", 2000, () => {return 0}, true);
   }
   }
 
@@ -579,11 +596,11 @@ const openFileUploder = () =>{
             }
              }
              else{
-              NotificationManager.error(response.data.message);
+              NotificationManager.error(response.data.message , "", 2000, () => {return 0}, true);
               setAudLive(false)
              }
           }, (err) =>{
-            NotificationManager.error(err.message);
+            NotificationManager.error(err.message , "", 2000, () => {return 0}, true);
             setAudLive(false)
           });
       }
@@ -648,14 +665,14 @@ const openFileUploder = () =>{
         {friendList.map((item, i) =>(
            (item.statuses.length > 0 ||  item.is_live === true ) ?
           
-         <div className="users-listing__slider__items" id={item.user_id} >
-         
+         <div className="users-listing__slider__items" id={item.user_id}>
+       
             <div className="users-listing__slider__items__image" id="modal" data-toggle="modal" onClick={() =>  setFriendId(item.user_id)}>
            {!!friendList ? <img onError={(e) => addDefaultSrc(e)} src={!!item.profile_images ? item.profile_images : returnDefaultImage()} alt="marlene" /> : ""}
-            
-              
+           <ClipLoader color={"#fff"} loading={friendId == item.user_id ? true : false} css={statusOverride} />
+          
                  <span className="circle-shape" style={{background: item.online ? '#00FF31' : '#f5473bec'}}  />
-             
+               
             </div>
              {
                  item.is_live === true &&
@@ -664,10 +681,11 @@ const openFileUploder = () =>{
           </div>
           :""
          ))}
-
+         
         </OwlCarousel>
+       
                 </div>
-
+              
 
 
       </div>
@@ -697,8 +715,9 @@ const openFileUploder = () =>{
                 }
 
               </div>
-              <SyncLoader color={"#fcd46f"} loading={isLoaded} css={override} size={20} />
+            
             </div>
+            <SyncLoader color={"#fcd46f"} loading={isLoaded} css={override} size={20} />
           </div>
         </div>
 

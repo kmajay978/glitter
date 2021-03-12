@@ -277,20 +277,8 @@ const handleCheck = (e) => {
  
       if(picture == null)
       {
-        NotificationManager.error(" please, add the  picture ");
-        let notifications = $(".notification-container").children("div").children("div");
-        console.log(notifications, "hahahaha")
-        if (notifications.length > 0) {
-            for (let i in notifications) {
-                if (isElement(notifications[i])) {
-                    notifications[i].style.display = "none"
-                    notifications[i].style.opacity = 0
-                }       
-              }
-        }
+        NotificationManager.error(" please, add the  picture ", "", 2000, () => {return 0}, true );
 
-        // phoneErr.phoneShort = "Phone number is Empty";
-        
         setShowImage(true);
         isValid = false;
       }
@@ -330,7 +318,7 @@ const handleCheck = (e) => {
    .then((response) => {
    
    if(response.status==200  && !response.status.error ){
-    NotificationManager.success(" profile picture update successfully");
+    NotificationManager.success(" profile picture update successfully", "", 2000, () => {return 0}, true);
       setShowImage(false);
     ProfileData();
     setIsLoading(false);
@@ -338,17 +326,17 @@ const handleCheck = (e) => {
   setPicture(null);
    }, (error) =>{
      setIsLoading(false);
-    NotificationManager.error(error.message);
+    NotificationManager.error(error.message, "", 2000, () => {return 0}, true);
    });
   }
   else {
-     setIsLoading(false);
-    NotificationManager.error("Only .png, .jpg, .jpeg image formats supported.");  
+    setIsLoading(false);
+    NotificationManager.error("Only .png, .jpg, .jpeg image formats supported.", "", 2000, () => {return 0}, true);  
   }
 }
 else {
-  setIsLoading(false);
-  NotificationManager.error("Only .png, .jpg, .jpeg image formats supported.");  
+    setIsLoading(false);
+  NotificationManager.error("Only .png, .jpg, .jpeg image formats supported.", "", 2000, () => {return 0}, true);
 }
     }
    }
@@ -394,7 +382,7 @@ else {
     
   }
    catch (err) {
-    NotificationManager.error(err.message);
+    NotificationManager.error(err.message , "", 2000, () => {return 0}, true);
     if (err.toString().match("403")) {
         localStorage.removeItem("session_id");
         history.push('/login');
@@ -414,13 +402,13 @@ else {
     .then((response)=>
     {
     if(response.status==200 && !response.error) {
-      NotificationManager.success("unblock successfully");
+      NotificationManager.success("unblock successfully", "", 2000, () => {return 0}, true);
       handleBlockList();
       setBlockData('');
      
     }
     }, (error) =>{
-      NotificationManager.error(error.message);
+      NotificationManager.error(error.message , "", 2000, () => {return 0}, true);
       if (error.toString().match("403")) {
         localStorage.removeItem("session_id");
         history.push('/login');
@@ -443,7 +431,7 @@ else {
       setLoadedModel(false);
        }
        }, (error) =>{
-        NotificationManager.error(error.message);
+        NotificationManager.error(error.message, "", 2000, () => {return 0}, true);
         if (error.toString().match("403")) {
           localStorage.removeItem("session_id");
           history.push('/login');
