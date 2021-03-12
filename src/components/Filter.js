@@ -149,14 +149,11 @@ function valuetextweight(value) {
         filterData: removeDublicateFrds(response.data.data)
       })
   );
-   //console.log(response);
    setTimeout(() => {
    
     setLoading(false);
         }, 600);
 } else {
-
-    // console.log(response);
 }
  
  }, (error) => {
@@ -172,7 +169,6 @@ const handleButton =() => {
   const pathname = window.location.pathname;
    setPath(pathname);
 }
-// console.log(path);
 useEffect(()=>{
    filterHandle();
     handleButton();

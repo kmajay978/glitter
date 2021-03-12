@@ -30,10 +30,8 @@ const AudioChat = () =>{
   const [totalTimeLeft, setTotalTimeLeft] = useState(null);
 
   const userData = useSelector(userProfile).user.profile; //using redux useSelector here
-console.log(userData, "userdata..")
   const componentWillUnmount = () => {
     if (videoCallStatus == 3) {
-      console.log(videoCallParams, "videoCallParams... test")
       SOCKET.emit("unauthorize_video_call", {
         sender: {user_from_id: videoCallParams.user_from_id, session_id: localStorage.getItem("session_id")},
         reciever_id: videoCallParams.user_to_id,
@@ -73,7 +71,6 @@ console.log(userData, "userdata..")
       if (!getPageRefresh) {
         // SOCKET.connect();
         // if (params.receiver == "true") {
-        console.log(params, "params...");
           dispatch(audioCall(videoCallParams))
         // }
         localStorage.setItem("videoCallPageRefresh", "1");
@@ -84,9 +81,7 @@ console.log(userData, "userdata..")
       }
       // check with backend + socket if this channel exist...
       if (params.receiver == "false") {
-        console.log(videoCallState, "test..")
       }
-      console.log(videoCallParams, "videoCallParams...")
       SOCKET.emit("authenticate_video_call", {
         sender: {user_from_id: videoCallParams.user_from_id, session_id: localStorage.getItem("session_id")},
         reciever_id: videoCallParams.user_to_id,
@@ -284,7 +279,6 @@ console.log(userData, "userdata..")
   const manageAudienceHostDetails = () => {
     audioManageCoinsTimeViews()
     manageCoinsTimeViewsInterval = window.setInterval(() => {
-      console.log("10 secods")
       audioManageCoinsTimeViews()
       manageCoinsTimeViewsCounter = manageCoinsTimeViewsCounter + 10
     }, 10000)

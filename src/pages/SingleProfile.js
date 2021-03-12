@@ -56,7 +56,6 @@ const SingleProfile = (props) =>{
         setStatusData(result);
     }
     }
-    console.log(statusData);
 
       const getUser=()=> {
         const bodyParameters = {
@@ -73,8 +72,6 @@ const SingleProfile = (props) =>{
                   form.report="more"
                 }
             setUser(response.data.data);
-            
-            console.log(response.data.data, "jjjj")
               }
          }, (error) => {
           NotificationManager.error(error.message);

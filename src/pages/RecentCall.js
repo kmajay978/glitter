@@ -22,7 +22,6 @@ const handleAllCall = async() => {
 const {data :{result}} = await axios.post(GET_ALL_CALL , bodyParameters)
 setAllCall(result);
 }
-console.log(allcalls,"allcalls....");
 useEffect(() => {
 handleAllCall();
 } , [])

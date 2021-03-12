@@ -56,10 +56,9 @@ const SearchProfile = () => {
 
 
   const userData = useSelector(userProfile).user.profile; //using redux useSelector here
-  console.log(userData, "userdata..")
+
   const componentWillUnmount = () => {
     if (videoCallStatus == 3) {
-      console.log(videoCallParams, "videoCallParams... test")
       SOCKET.emit("unauthorize_video_call", {
         sender: { user_from_id: videoCallParams.user_from_id, session_id: localStorage.getItem("session_id") },
         reciever_id: videoCallParams.user_to_id,
@@ -103,7 +102,6 @@ const SearchProfile = () => {
       if (!getPageRefresh) {
         // SOCKET.connect();
         // if (params.receiver == "true") {
-        console.log(params, "params...");
         dispatch(videoCall(videoCallParams))
         // }
         localStorage.setItem("videoCallPageRefresh", "1");
@@ -114,9 +112,7 @@ const SearchProfile = () => {
       }
       // check with backend + socket if this channel exist...
       if (params.receiver == "false") {
-        console.log(videoCallState, "test..")
       }
-      console.log(videoCallParams, "videoCallParams...")
       setLoading(true);
       SOCKET.emit("authenticate_video_call", {
         sender: { user_from_id: videoCallParams.user_from_id, session_id: localStorage.getItem("session_id") },
@@ -168,7 +164,6 @@ const SearchProfile = () => {
 
     SOCKET.on('send_one_to_one_video_item', (message) => {
       let messagesList = messageList;
-      console.log(message, "messages...test")
 
       if (
           // message.sender_id == videoCallParams.user_id &&
@@ -190,7 +185,6 @@ const SearchProfile = () => {
                   }
                   messagesList.push(new_message);
                   messageList = messagesList;
-                  console.log(messagesList, "messageList...")
                   setMessages(messagesList);
                   setRandomNumber(Math.random());
                   scrollToBottom()
@@ -206,7 +200,6 @@ const SearchProfile = () => {
                   }
                   let newGift = friendGift;
                   newGift.unshift(gift);
-                  console.log(newGift, "hiiiiiiiiiiiii")
                   setFriendGift(newGift);
                   allGifts = newGift;
                   setRandomNumberGift(Math.random());
@@ -222,8 +215,6 @@ const SearchProfile = () => {
           messages.user_id == userData.user_id &&
           videoCallParams.channel_name == messages.channel_name) {
           setLoading(false);
-          console.log(messages, "messages..")
-          console.log(messages, "hahahaha")
           let all_messages = [];
           const socket_messages = messages.messages;
           for (let i in socket_messages) {
@@ -351,9 +342,7 @@ const SearchProfile = () => {
           joinChannel('host', option);
           interval = window.setInterval(() => {
             var list = document.getElementById("remote_video_");
-            console.log("host video attached1")
             if (!!list) {
-              console.log("host video attached2", list)
               if (list.childNodes.length > 1) {
                 list.removeChild(list.childNodes[0]);
               }
@@ -395,9 +384,8 @@ const SearchProfile = () => {
           interval = window.setInterval(() => {
             var list = document.getElementById("remote_video_");
             var list_local = document.getElementById("local_stream");   // Get the <ul> element with id="myList"
-            console.log("host video attached3")
+
             if (!!list) {
-              console.log("host video attached4", list)
               if (list.childNodes.length === 3) {
                 list.removeChild(list.childNodes[1]);
               }
@@ -485,7 +473,6 @@ const scrollToTop = () => {
         SOCKET.emit("send_one_to_one_video_item", message);
         setuserMessage(''); //Empty user input here
     } else {
-        console.log("Please enter message")
     }
 }
 const changeInput = (e) => {

@@ -75,8 +75,7 @@ const SearchHome = () =>
     const [LiveModel , setLiveModel] = useState({modal: false, item: null});
     const [audLive, setAudLive] = useState(false)
     const[viewStory , setViewStory] = useState(false);
-    console.log(setVideo);
-    console.log(audLive, "audLive..")
+
     userData = useSelector(userProfile).user.profile; //using redux useSelector here
  const options = {
   loop: false,
@@ -94,9 +93,6 @@ const storyContent = {
 }
 
 const stories = !!storyData ? storyData : [];
-console.log(stories, "stories...")
-
-// console.log(storyData, "yuyuyuyu")
   
 const statusoptions = {
   loop: false,
@@ -135,7 +131,6 @@ const handleFileChange = e => {
        reader.addEventListener("load", () => {
          setImgData(reader.result); 
          setVideoData('image');
-        console.log(fileName ,"fileName...");
        });
        reader.readAsDataURL(e.target.files[0]);
      }
@@ -180,7 +175,6 @@ const handleFileChange = e => {
   //   const imageFormat = fileName[fileName.length - 1];
   //   if(imageFormat === "mp4" || imageFormat === "MP4")
   //    {
-  //      console.log("video_file: ", e.target.files[0]);
   //      setPicture(e.target.files[0]);
   //      const reader = new FileReader();
   //      reader.addEventListener("load", () => {
@@ -205,7 +199,6 @@ const handleFileChange = e => {
       if (response.status === 200 ) {
         setIsLoaded(false);
           let friendList = response.data.data;
-          console.log(friendList, "friendList...")
 
           for (let i in friendList) {
               friendList[i].is_live = false;
@@ -271,11 +264,7 @@ const handleFileChange = e => {
 
   useEffect  (() => {
     handleStatus();
-    console.log(friendId,"hhhhhfriendId....")
    },[friendId])
- 
-// console.log(statusData);
-//  console.log(storyData);
 
  const handleVideo = () => {
    inputVideoFile.current.click();
@@ -462,7 +451,6 @@ document.getElementById("image").remove()
     NotificationManager.error("please select image or video");
   }
   }
-console.log(picture);
 
 useEffect(() => {
   $(".show-filter").click(function(){
@@ -497,7 +485,6 @@ const openFileUploder = () =>{
 
     SOCKET.connect();
       checkOnlineFrdsInterval = window.setInterval(() => {
-          console.log("interval started....")
           SOCKET.emit("authenticate_friend_list_live", {
               session_id: localStorage.getItem("session_id")
           });
@@ -522,10 +509,8 @@ const openFileUploder = () =>{
 
     SOCKET.on('live_friends', (data) => {
         let frdList = friendLists;
-        console.log(frdList, "mmmm")
         const totalLiveFrds = data.live;
         const onlineUsers = data.online;
-        console.log(totalLiveFrds, "totalLiveFrds...")
         for (let i in frdList) {
             frdList[i].is_live = false;
             frdList[i].online = false;
@@ -545,10 +530,8 @@ const openFileUploder = () =>{
         }
         setFriendlist(frdList);
         setRandomNumber(Math.random());
-        console.log(frdList, "data test")
     });
       SOCKET.on('start_your_live_video_now', (data) => {
-          console.log(data, userData, "start live video link...");
           if ((data.user_id == userData.user_id) && data.channel_id && data.channel_name) {
               // $('#live-modal').hide();
               // setShowLive(false)
@@ -577,7 +560,6 @@ const openFileUploder = () =>{
     const watchLive = () => {
       if (!audLive) {
         const audDetails = LiveModel;
-        console.log(audDetails, "audDetails...")
         const bodyParameters ={
         session_id: localStorage.getItem("session_id"),
         live_user_id: audDetails.item.user_id,
@@ -586,7 +568,6 @@ const openFileUploder = () =>{
         setAudLive(true)
         axios.post (DETUCT_THOUSAND_COIN , bodyParameters)
           .then((response)=> {
-            console.log(response, "hhhh")
              if (response.data.status_code ==200 && response.data.error == "false"){
               if (!!audDetails && audDetails.item.is_live) {
                 SOCKET.emit("addAudienceToLiveVideo", {
@@ -623,7 +604,6 @@ const openFileUploder = () =>{
     
     // const playVideo = (video) => {
     //   window.setTimeout(() => {
-    //     console.log(document.getElementById(video), "kkkkk")
     //       document.getElementById(video).play();
     //   }, 1000)
     //   return <video id= {video} src={video} alt="status" />

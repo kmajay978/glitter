@@ -15,7 +15,6 @@ const MessageBox = (props) =>{
  const userProfile = async () => {
   const {data: {data}} = await axios.post(GET_USERPROFILE_API,bodyParameters)
      setUserData(data);
-    //console.log(data);
     }
 
     useEffect(() =>{

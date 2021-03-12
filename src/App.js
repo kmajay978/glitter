@@ -6,7 +6,7 @@ import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import { BrowserRouter as Router, Switch, Route, withRouter, useParams, useHistory } from 'react-router-dom';
 // Importing all pages from index.js 
-import { Home, Login, ChatBox, SearchHome, AnswerCalling, SignupCompleted, Profile, SingleProfile, RecentCall, VideoChat, LiveVideoChat, SearchProfile, Dummy, SearchHomeBkp, SearchProfileAudio, AudioChat } from './pages'
+import { Home, Login, ChatBox, SearchHome, AnswerCalling, SignupCompleted, Profile, SingleProfile, RecentCall, VideoChat, LiveVideoChat, SearchProfile, SearchProfileAudio, AudioChat } from './pages'
 import ProtectedRoute from "./protected.route";
 import axios from "axios";
 import createBrowserHistory from 'history/createBrowserHistory';
@@ -43,7 +43,6 @@ function App(props) {
 
   const dispatch = useDispatch();
   const is_auth = useSelector(userAuth); //using redux useSelector here
-  // console.log(is_auth, "is_auth....")0000000000
   userData = useSelector(userProfile).user.profile; //using redux useSelector here
   useEffect(() => {
     SOCKET.connect();
@@ -52,7 +51,6 @@ function App(props) {
       ProfileData(dispatch, sessionId)
     }
     SOCKET.on('pick_video_call', (data) => {
-      // console.log(data.user_to_id, userData.user_id, "checkkkkkkkkkkkkkkkk")
       if (!!userData && (data.user_to_id == userData.user_id)) { // check one-to-one data sync
         localStorage.setItem("receiverDetails", JSON.stringify(data))
         const page = "/answer-calling"
@@ -162,7 +160,6 @@ function App(props) {
         <Elements stripe={stripePromise}>
           <Route exact path="/login" component={Login} />
           <Route exact path='/signup-completed' component={SignupCompleted} />
-          <Route exact path='/dummy' component={Dummy} />
           {/* Private routes */}
           <ProtectedRoute exact path='/' component={Home} />
           <ProtectedRoute  path='/profile' component={Profile} />
@@ -173,13 +170,13 @@ function App(props) {
           <ProtectedRoute  path='/search-home' component={SearchHome} />
           <ProtectedRoute  path='/:userId/single-profile' component={SingleProfile} />
           <ProtectedRoute  path='/recent-call' component={RecentCall} />
-          <ProtectedRoute  path='/status' component={SearchHomeBkp} />
           <ProtectedRoute  path='/:receiver/:user_from_id/:user_to_id/:channel_id/:channel_name/video-chat' component={VideoChat} />
           <ProtectedRoute  path='/:receiver/:user_from_id/:user_to_id/:channel_id/:channel_name/audio-chat' component={AudioChat} />
           <ProtectedRoute  path='/:user_id/:channel_id/:channel_name/live-video-chat' component={LiveVideoChat} />
         </Elements>
       </Switch>
-        <NotificationContainer />
+        <NotificationContainer 
+        />
         
     </Router>
   );

@@ -98,8 +98,6 @@ const Profile = (props) =>{
   const userData = useSelector(userProfile).user.profile; //using redux useSelector here
 
   var dates = moment(Dob).format('YYYY/MM/DD');
-  console.log(Dob , "...dob");
-  console.log(dates , "date");
   // Getting form value here
   const [form , setForm] = useState({
     
@@ -168,7 +166,7 @@ const handleCheck = (e) => {
       session_id: sessionId,
       };
      const {data:{data}}= await axios.post(GET_LOGGEDPROFILE_API,bodyParameters)
-     console.log(moment(data.dob).format('ddd MMM DD YYYY   h:mm:ss' ) , "...hhhhh");
+     
       
     //  Setting data variable to state object 
       form.firstName = data.first_name
@@ -270,13 +268,29 @@ const handleCheck = (e) => {
   //   }
  
 
+  function isElement(element) {
+    return element instanceof Element || element instanceof HTMLDocument;  
+}
+
     const formValidation = () =>{
       let isValid = true;
  
       if(picture == null)
       {
-        // phoneErr.phoneShort = "Phone number is Empty";
         NotificationManager.error(" please, add the  picture ");
+        let notifications = $(".notification-container").children("div").children("div");
+        console.log(notifications, "hahahaha")
+        if (notifications.length > 0) {
+            for (let i in notifications) {
+                if (isElement(notifications[i])) {
+                    notifications[i].style.display = "none"
+                    notifications[i].style.opacity = 0
+                }       
+              }
+        }
+
+        // phoneErr.phoneShort = "Phone number is Empty";
+        
         setShowImage(true);
         isValid = false;
       }

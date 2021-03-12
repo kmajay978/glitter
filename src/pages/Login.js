@@ -30,7 +30,6 @@ const Login = () => {
 
   const {latitude,longitude,speed,timestamp,accuracy,error} = usePosition();
 
-console.log(latitude , "latitute");
   // Adding class to body with custom function
 addBodyClass('login-body')('')
   const [step, setStep] = useState(1);
@@ -52,7 +51,6 @@ addBodyClass('login-body')('')
     setPhone(value);
   };
 
-//console.log(phoneNumber);
   // OTP fields in state
   const [otp_1,setOtp1] = useState('');
   const [otp_2,setOtp2] = useState('');
@@ -330,16 +328,13 @@ const registerHandle = (e) =>{
   // Testing here
   //login with google here
  const responseGoogle = (response) => {
-    // console.log(response, ".....response");
   
   }
 //End here
  
 //login with twitter code
  const onSuccess = (response)=> {
-  //  console.log(response);
     // response.json().then(body => {
-    //   console.log(JSON.stringify(body));
     // });
   }
 
@@ -349,11 +344,9 @@ const registerHandle = (e) =>{
 // End here
 
 const handleResponse = (data) => {
-  console.log(data);
 }
 
 const handleError = (error) => {
-  console.log({ error });
 }
 const changeDate = (date) => {
   $('.react-date-picker').find(':input[type="number"]').each(function() {
@@ -597,7 +590,6 @@ uploadImage();
   
 const changeOtp = (value) => {
   setOtp(value)
-  console.log(value, "check.....sss ")
 }
 
         return(
