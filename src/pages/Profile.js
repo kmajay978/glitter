@@ -34,7 +34,7 @@ left: 0;
 right: 0;
 margin: 0 auto;
 padding-top:60px;
-top: 50%;
+top: 66%;
 -webkit-transform: translateY(-50%);
 -moz-transform: translateY(-50%);
 transform: translateY(-50%);
@@ -96,7 +96,8 @@ const Profile = (props) =>{
   const handleShare =() => {setShowSetting(false); setShowShare(true);} // show share glitter model
   
   const userData = useSelector(userProfile).user.profile; //using redux useSelector here
-
+  
+  
   var dates = moment(Dob).format('YYYY/MM/DD');
   // Getting form value here
   const [form , setForm] = useState({
@@ -140,7 +141,7 @@ const handleCheck = (e) => {
   
 }
 
-    const shareUrl = 'http://localhost:3000/';
+    const shareUrl = 'https://glittersapp.com/';
     const title = 'glitter-app';
     
   //   useEffect(()=>{
@@ -1037,14 +1038,14 @@ const openFileUploader = () => {
       {!!coinHistory&& coinHistory.map((item , index)=> {
        return  <div className="coin-spend">
         <div className="coin-spend__host">
-          <img src={item.receiver_image} alt="host" />
+       {item.receiver_image!=""?<img src={item.receiver_image} alt="host" /> :<img onError={(e) => addDefaultSrc(e)} src={returnDefaultImage()}  alt="host" /> }   
         </div>
         <div className="coins-spend__hostname">
           <span>{item.receiver_name}</span> <span className="counter">{item.receiver_age}</span>
           <div className="coin-spend__total mt-2"><img src="/assets/images/diamond-sm.png" />{item.coins}</div>
         </div>
         <div className="coin-spend__gift">
-        {!!item.gift_image!="" ? <img src={!!item.gift_image!="" ? item.gift_image: ""}  alt="gift" />: ""} 
+        {item.gift_image!="" ? <img src={item.gift_image}  alt="gift" />: ""} 
         </div>
       </div>
      })} 
@@ -1207,7 +1208,7 @@ const openFileUploader = () => {
           ))} 
         <SyncLoader color={"#fcd46f"} loading={loadedModel} css={override} size={18} />
        </div>
-       <a href="javascript:void(0)" className="modal-close" onClick={() => setShowBuyCoins(false)}><img src="/assets/images/btn_close.png" /></a>
+       <a href="javascript:void(0)" className="modal-close" onClick={() => {setShowBuyCoins(false); setCoinPackage([])}}><img src="/assets/images/btn_close.png" /></a>
       
            </div>
           

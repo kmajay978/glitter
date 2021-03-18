@@ -106,7 +106,7 @@ const handleUserId = (e, userId) =>{
           }
         },
         (error) => {
-          
+          NotificationManager.error(error.message, "", 2000, () => {return 0}, true);
             setDislike(false);
         
         }
@@ -133,7 +133,7 @@ const handleUserId = (e, userId) =>{
           }
         },
         (error) => {
-          
+          NotificationManager.error(error.message, "", 2000, () => {return 0}, true);
           setLiked(false)}
       );
     }
@@ -245,7 +245,7 @@ const handleUserId = (e, userId) =>{
                     {currentUser.first_name}, {currentUser.age}
                   </h3>
                   <span>
-                    {currentUser.distance},{currentUser.occupation}
+                    {currentUser.distance}{ currentUser.occupation!=""  ? " , " : "" }{currentUser.occupation}
                   </span>
                   </div>
 

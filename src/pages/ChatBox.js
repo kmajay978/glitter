@@ -906,7 +906,7 @@ const ChatBox = (props) =>{
                                                 {!!AllData ? <h5 className="mb-0 name">{AllData.first_name}</h5> : <h5>  </h5> }
                                                 <div className="info">
                                                     {!!AllData &&
-                                                    <>{AllData.occupation},  {AllData.age} </>
+                                                    <>{AllData.occupation}{AllData.occupation!="" && AllData.age !="" ? " ," : ""} {AllData.age} </>
                                                     }
                                                     {<>  </>}
                                                 </div>

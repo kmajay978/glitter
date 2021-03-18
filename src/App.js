@@ -116,10 +116,30 @@ function App(props) {
       }
     })
   }, [])
- 
- 
+  
+  var ctrlKeyDown = false;
+ const handleRefresh = (e) =>{
+  document.addEventListener('keydown', (e) => {
+    e = e || window.event;
+    if( ((e.which || e.keyCode) == 116)|| ((e.which || e.keyCode) == 82  && ctrlKeyDown) ){
+        e.preventDefault();
+    }
+   else if ((e.which || e.keyCode) == 17) {
+        // Pressing  only Ctrl
+        ctrlKeyDown = true;
+    }
+});
+
+ }
+
+
   useEffect(() => {
-   
+  
+    handleRefresh();
+    
+    window.onbeforeunload = function(e) {
+      return confirm("confirm refresh")
+    };
     // window.location.hash = "no-back-button";
 
     // // Again because Google Chrome doesn't insert

@@ -1085,6 +1085,7 @@ div#upload-media-modal {
     width: 400px;
     overflow: hidden;
     margin: 0 auto;
+    max-width: 100%;
 }
 
 .preview img {
@@ -1486,6 +1487,30 @@ label.custom-file-upload + a {
 }
 
 /* END GIFT POPUP */
+
+
+.stories-grid{
+    display: grid !important;
+    /* grid-template-columns: auto auto auto auto; */
+    grid-template-columns: repeat(5, 1fr);
+    grid-gap: 10px;
+}
+
+.stories-grid.archived-stories > div{
+    width: auto;
+    margin:0;
+}
+small.story__time {
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+}
+
+.stories-grid img {
+    height: 126px;
+    width: 100%;
+    object-fit: cover;
+}
 
 /* END SINGLE PROFILE PAGE */
 
@@ -5257,3 +5282,9 @@ div.heart i {
 .sp-singular-content .status{
     font-size: 11px;
 }}
+
+.video-archieve {
+    width: 100%;
+    position: absolute;
+    bottom: 25%;
+}

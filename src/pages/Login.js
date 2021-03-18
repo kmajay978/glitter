@@ -69,6 +69,7 @@ addBodyClass('login-body')('')
   const [firstErr, setFirstErr] = useState({});
   const [lastErr, setLastErr] = useState({});
   const [dobErr, setDobErr] = useState({});
+  const [genderErr , setGenderErr] = useState({});
   const [ termPolicyErr , setTermPolicyErr] =useState({});
   const [ clickTerm , setClickTerm] = useState(true);
   const dates = moment(Dob).format('YYYY/MM/DD');
@@ -159,6 +160,7 @@ const tokencheck = () =>{
     const firstErr = {};
     const lastErr = {} ;
     const dobErr = {};
+    const genderErr ={};
     let Valid = true;
     if(FirstName.length == "")
      {
@@ -177,13 +179,15 @@ const tokencheck = () =>{
       dobErr.dobShort="date of birth is empty"
        Valid = false;
      }
-     if(genderName.length == "")
+     if(genderName == "")
     {
+      genderErr.genderShort = "select the gender"
       Valid = false;
     }
     setFirstErr(firstErr);
     setLastErr(lastErr);
     setDobErr(dobErr);
+    setGenderErr(genderErr);
       return Valid;
    }
 
@@ -328,7 +332,7 @@ const registerHandle = (e) =>{
   // Testing here
   //login with google here
  const responseGoogle = (response) => {
-  
+  console.log(response);
   }
 //End here
  
@@ -482,20 +486,23 @@ const changeDate = (date) => {
                 
                     <div className="choose-gender d-flex my-4">
                       <div className="form-group">
-                        <input type="radio" id="female" name="gender" value={2}  onChange={ handleChange }  placeholder="Female" />
+                        <input type="radio" id="female" name="gender" value={2}  onChange={ handleChange }  checked={genderName == 2 ? "checked" : ""}  placeholder="Female" />
                         <label htmlFor="female">Female</label>
                       </div>
                       <div className="form-group">
-                        <input type="radio" id="male" name="gender" value={1} onChange={ handleChange } placeholder="Male" />
+                        <input type="radio" id="male" name="gender" value={1} onChange={ handleChange } checked={genderName == 1 ? "checked" : ""} placeholder="Male" />
                         <label htmlFor="male">Male</label>
                       </div>
                         
                       <div className="form-group">
-                        <input type="radio" id="more" value={3} onChange={ handleChange }  name="gender" />
+                        <input type="radio" id="more" value={3} onChange={ handleChange } checked={genderName == 3 ? "checked" : ""} name="gender" />
                         <label htmlFor="more">More</label>
                     </div>
-                 
+                   
             </div>
+            { Object.keys(genderErr).map((key) => {
+                          return <div style={{color : "red"}}>{genderErr[key]}</div>
+                        }) }
             <a className="btn bg-grd-clr d-block mb-4 btn-countinue-3" href="javascript:void(0)" onClick={handleNextClick}>Next</a>
           </div>
           </div>
@@ -536,6 +543,7 @@ const changeDate = (date) => {
     }
 
   }
+
 
   
 

@@ -157,10 +157,7 @@ function valuetextweight(value) {
 }
  
  }, (error) => {
-  if (error.toString().match("403")) {
-    localStorage.removeItem("session_id");
-    history.push('/login');
-  }
+  NotificationManager.error(error.message, "", 2000, () => {return 0}, true);
     localStorage.clear();
  });
 }
