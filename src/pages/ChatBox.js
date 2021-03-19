@@ -16,9 +16,10 @@ import { useHistory } from "react-router-dom";
 import {addDefaultSrc, returnDefaultImage, useForceUpdate} from "../commonFunctions";
 import { setWeekYear } from "date-fns";
 
-
+let checkLastFrdsMsgInterval, my_friends_list = [];
 
 // import stringLimit from '../components/CommonFunction';
+let count = 0;
 
 const override = css`
   display: block;
@@ -38,8 +39,6 @@ const scrollToBottom = () => {
 }
 
 const ChatBox = (props) =>{
-
-   
     const forceUpdate = useForceUpdate();
     const inputFile = useRef(null);
     const dispatch = useDispatch();
@@ -53,6 +52,7 @@ const ChatBox = (props) =>{
     const[CompleteMessageList, setMessages] = useState([]);
     const[UserMessage, setuserMessage] = useState('');
     const[randomNumber, setRandomNumber] = useState('');
+    const[lastMessageRandomNumber, setLastMessageRandomNumberRandomNumber] = useState('');
     const [isOn, toggleIsOn] = useToggle();
     const [uploadImage , setUploadImage] = useState('');
     const [GiftData , setGiftData] =useState([]);
@@ -70,6 +70,7 @@ const ChatBox = (props) =>{
     const [chatTyping, setChatTyping] = useState("");
     const [threeMessageWarning, setWarningMessage] = useState("");
 
+    console.log(FriendList, "FriendList.....")
     // const createNotificationCustom = (type) => {
   
     //     switch (type) {
@@ -150,8 +151,22 @@ const ChatBox = (props) =>{
            
             if(status_code==200){     
                 let friendList = !!data ? data : [];
-              
-                setFriendlist(removeDublicateFrds(friendList));
+                let friends_list = [];
+                my_friends_list = removeDublicateFrds(friendList)
+                for (let i in friendList) {
+                    friends_list.push({user_id: friendList[i].user_id})
+                }
+                checkLastFrdsMsgInterval = window.setInterval(() => {
+                    console.log(friends_list, "friends_list..")
+                    if (!!userData && userData.user_id !== null && userData.user_id !== undefined && friendList.length > 0) {
+            
+                        SOCKET.emit("get_frds_last_messages", {
+                            user_id: userData.user_id,
+                            friends_list
+                        })
+                    }
+            }, 1000)
+                setFriendlist(my_friends_list);
 
             }
         }
@@ -287,7 +302,7 @@ const ChatBox = (props) =>{
             if(!!baseMultipleImage && 
             baseMultipleImage.length > 0) {
                 const imageMedia = document.getElementById("image-media");
-                let count = 0;
+                
                 let photoInterval = window.setInterval(() => {
                     if (count > baseMultipleImage.length - 1) {
                         clearPhotoState()
@@ -394,10 +409,15 @@ const ChatBox = (props) =>{
 
     }
 
+    const componentWillUnmount = () => {
+        clearInterval(checkLastFrdsMsgInterval)
+     }
+
     useEffect(() => {   
         scrollToBottom();
         forceUpdate(); // force re-render
     }, [randomNumber])
+    
     useEffect(()=>{
         document.getElementById("tab-chat").click()
         // window.setTimeout(() => {
@@ -409,8 +429,9 @@ const ChatBox = (props) =>{
         //         const imageFormat = fileName[fileName.length - 1];
         //         if (imageFormat === "png" || imageFormat === "jpg" || imageFormat === "jpeg" ||
         //             imageFormat === "PNG" || imageFormat === "JPG" || imageFormat === "JPEG") {  
-        //             readThenSendFile(imageData);
+        //             readThenSendFile(imageData); 
         //         }
+        
         //         else {
         //             alert("Only .png, .jpg, .jpeg image formats supported.")
         //         }
@@ -420,6 +441,22 @@ const ChatBox = (props) =>{
              
 
         getAllDetails();
+
+        SOCKET.on('get_frds_last_messages', (data) => {
+            const last_messages = data.friends_list;
+            if (data.user_id == userData.user_id) {
+                console.log(my_friends_list, data, "here....")
+                for (let i in my_friends_list) {
+                    if (my_friends_list[i].user_id == last_messages[i].user_id) {
+                        my_friends_list[i].last_message = last_messages[i].message;
+                        my_friends_list[i].last_message_type = last_messages[i].type
+                    }
+                }
+                console.log(my_friends_list, "test...")
+                setFriendlist(my_friends_list)
+                setLastMessageRandomNumberRandomNumber(Math.random())
+            }
+        })
 
         // Checking the typing user
         SOCKET.on('typing', (typing) => {
@@ -465,6 +502,7 @@ const ChatBox = (props) =>{
                 }
             }
         });
+        
         SOCKET.on('media_file', (messages) => {
             let messagesList = messageList;
             if (!!messages) {
@@ -548,6 +586,7 @@ const ChatBox = (props) =>{
 
         });
 
+        return () => componentWillUnmount()
 
     },[])
 
@@ -563,10 +602,16 @@ const ChatBox = (props) =>{
 
     useEffect(()=>{
         if (GetActivity === 2) {
-
             SOCKET.connect();
+            // checkLastFrdsMsgInterval = window.setInterval(() => {
+            //     SOCKET.emit("get_frds_last_messages", {
+            //         user_id: userData.user_id,
+            //         friends_list: 
+            //     });
+            // }, 1000)
         }
         else {
+            componentWillUnmount()
             // SOCKET.disconnect();
         }
     },[GetActivity])
@@ -823,7 +868,7 @@ const ChatBox = (props) =>{
 
                                             { Visitors.map((item, i) => (
                                                  (!!userData && userData.packages.length>0 ? 
-                                            <li className="nav-item">
+                                            <li className="nav-item w-100">
                                                     <a className="nav-link" href="#chat-field" data-toggle="tab" role="tab" onClick={() => handleVistior(item.id)} >
                                                         <img alt={item.full_name} className="img-circle medium-image" src={item.profile_images}/>
                                                         <div className="contacts_info">
@@ -839,7 +884,7 @@ const ChatBox = (props) =>{
                                                     </a>
                                                 </li>
                                                 : 
-                                                <li className="nav-item">
+                                                <li className="nav-item w-100">
                                                 <a className="nav-link" href="#chat-field" style={{cursor: "default"}} data-toggle="tab" role="tab" >
                                                 <div className="chat__user__img">
                                                <i className="fas fa-lock"></i>
@@ -867,7 +912,7 @@ const ChatBox = (props) =>{
                                         <ul className="nav contacts" role="tablist">
 
                                             { FriendList.map((item, i) => {
-                                                return <li className="nav-item">
+                                                return <li className="nav-item w-100">
                                                     <a className="nav-link" href="#chat-field" data-toggle="tab" data-id={item.user_id} role="tab" onClick={() =>  setFriendId(item.user_id)}>
 
                                                         <img alt="Mia" className="img-circle medium-image" src={item.profile_images} />
@@ -878,7 +923,25 @@ const ChatBox = (props) =>{
                                                                 {/* <div className="message-count">2</div> */}
                                                             </div>
                                                             <div className="vcentered info-combo">
-                                                                <p>Yep, I'm new in town and I wanted</p>
+                                                                {
+                                                                    item.last_message_type === 0 &&
+                                                                        <div className="chat-text">
+                                                                            <p>{item.last_message}</p>
+                                                                        </div>
+                                                                }
+                                                                {
+                                                                    (item.last_message_type === 1 ||  item.last_message_type === 3) &&
+                                                                        <div className="chat-media">
+                                                                           <i class="fas fa-image"></i>
+                                                                        </div>
+                                                                }
+                                                                {
+                                                                    item.last_message_type === 2 &&
+                                                                        <div className="chat-audio">
+                                                                            <i class="fas fa-music"></i>
+                                                                        </div>
+                                                                }
+                                                                
                                                             </div>
                                                         </div>
                                                     </a>
@@ -1069,7 +1132,7 @@ const ChatBox = (props) =>{
                                                     </div>
                                                 </label>
                                                 {/* <textarea className="send-message-text" placeholder="Message..." defaultValue={UserMessage} /> */}
-                                                <input className="send-message-text" name="Message" id="Message" type="text" placeholder="Message..." value={UserMessage} onChange={e => changeInput(e)} />
+                                                <input className="send-message-text" autoComplete={false} name="Message" id="Message" type="text" placeholder="Message..." value={UserMessage} onChange={e => changeInput(e)} />
                                                 <label className="gift-message bg-grd-clr">
                                                     <a href="javascript:void(0)" onClick={handleGift} >
                                                         <i className="fas fa-gift" />
@@ -1089,11 +1152,12 @@ const ChatBox = (props) =>{
                                                     </a>
                                                 </label>
                                                 <button type="submit" className="send-message-button bg-grd-clr"><i className="fas fa-paper-plane" /></button>
-                                                {
+                                                
+                                            </div>
+                                            {
                                                     !!chatTyping &&
                                                     <div>{chatTyping} is typing...</div>
                                                 }
-                                            </div>
                                         </form>
                                     </div>
 

@@ -608,7 +608,7 @@ a.show-filter img {
     position: relative;
     cursor: pointer;
     border-radius: 50px;
-    width: 97px;
+    width: 100%;
     height: 32px;
     line-height: 32px;
     text-transform: uppercase;
@@ -627,13 +627,14 @@ a.show-filter img {
 }
 
 .btns-group .btn {
-    padding: 0 40px;
     height: 38px;
     line-height: 38px;
+    width: 40%;
 }
 
 .show-gender .form-group {
     margin-bottom: 0;
+    width: 31%;
 }
 
 .ft-block {
@@ -2793,6 +2794,11 @@ body {
     border-bottom: 2px solid rgba(255, 255, 255, 0.10);
     padding:25px 15px 25px 0px;
     margin-left: 15px;
+    min-height: 90px;
+}
+
+.contacts_info i{
+    font-size: 12px;
 }
 
 .chat__user__img {
@@ -2823,6 +2829,12 @@ body {
     content: "";
     opacity: 0.5;
     left: 0;
+}
+
+.chat-text p {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .user_detail {
@@ -3032,7 +3044,7 @@ body {
 }
 
 .message.my-message .message-text {
-    text-align: right;
+    text-align: center;
 }
 
 .message-text p {
@@ -5294,8 +5306,11 @@ div.heart i {
     font-size: 11px;
 }}
 
+<<<<<<< HEAD
 .video-archieve {
     width: 100%;
     position: absolute;
     bottom: 25%;
 }
+=======
+>>>>>>> cfc1a14bb575ef745c16d3783069041b9dc3384a
