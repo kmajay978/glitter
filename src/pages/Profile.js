@@ -1041,7 +1041,7 @@ const openFileUploader = () => {
       {!!coinHistory&& coinHistory.map((item , index)=> {
        return  <div className="coin-spend">
         <div className="coin-spend__host">
-       {item.receiver_image!=""?<img src={item.receiver_image} alt="host"  /> :<img onError={(e) => addDefaultSrc(e)} src={returnDefaultImage()}  alt="host" /> }   
+       {item.receiver_image!=""?<img src={item.receiver_image} style={{cursor:"pointer"}} onClick={() =>  history.push(`/${item.receiver_id}/single-profile`)} alt="host"  /> :<img onError={(e) => addDefaultSrc(e)} src={returnDefaultImage()}  alt="host" /> }   
         </div>
         <div className="coins-spend__hostname">
           <span>{item.receiver_name}</span> <span className="counter">{item.receiver_age}</span>
