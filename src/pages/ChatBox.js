@@ -15,6 +15,7 @@ import useToggle, { removeDublicateFrds } from '../components/CommonFunction';
 import { useHistory } from "react-router-dom";
 import {addDefaultSrc, returnDefaultImage, useForceUpdate} from "../commonFunctions";
 import { setWeekYear } from "date-fns";
+import {Modal} from 'react-bootstrap';
 
 let checkLastFrdsMsgInterval, my_friends_list = [];
 
@@ -69,6 +70,7 @@ const ChatBox = (props) =>{
     const [dummyMediaRc, setDummyMediaRc] = useState(null)
     const [chatTyping, setChatTyping] = useState("");
     const [threeMessageWarning, setWarningMessage] = useState("");
+    const [ imageFullSize , setImageFull] = useState({open: false, media: null});
 
     console.log(FriendList, "FriendList.....")
     // const createNotificationCustom = (type) => {
@@ -1005,7 +1007,7 @@ const ChatBox = (props) =>{
                                                                         {
                                                                             !!data.media &&   
                                                                             <div className="media-socket">
-                                                                                <img onError={(e) => addDefaultSrc(e)} src={!!data.media ? data.media : returnDefaultImage()}/>
+                                                                                <img  onClick={() => setImageFull({open: true, media: (!!data.media ? data.media : returnDefaultImage())})} onError={(e) => addDefaultSrc(e)} src={!!data.media ? data.media : returnDefaultImage()}/>
                                                                             </div>
                                                                         }
 
@@ -1031,7 +1033,7 @@ const ChatBox = (props) =>{
                                                                         {
                                                                             !!data.media &&
                                                                             <div className="media-socket">
-                                                                                <img onError={(e) => addDefaultSrc(e)} src={!!data.media ? data.media : returnDefaultImage()}/>
+                                                                                <img onClick={() => setImageFull({open: true, media: (!!data.media ? data.media : returnDefaultImage())})} onError={(e) => addDefaultSrc(e)} src={!!data.media ? data.media : returnDefaultImage()}/>
                                                                             </div>
                                                                         }
                                                                         
@@ -1173,7 +1175,12 @@ const ChatBox = (props) =>{
                        
                         {/* End chat box here */}
 
-   
+            <Modal className =" fullSize-image-modal" show={imageFullSize.open} onHide={() => setImageFull({open: false, media: null})} backdrop="static" keyboard={false}>
+            
+            <img onError={(e) => addDefaultSrc(e)} src={ imageFullSize.media}/>
+         
+           <a href="javascript:void(0)" className="modal-close" onClick={() => setImageFull({open: false, media: null})}><img src="/assets/images/btn_close.png" /></a>
+        </Modal>
              
               
                             
