@@ -2761,6 +2761,11 @@ body {
     border-bottom: 2px solid rgba(255, 255, 255, 0.10);
     padding:25px 15px 25px 0px;
     margin-left: 15px;
+    min-height: 90px;
+}
+
+.contacts_info i{
+    font-size: 12px;
 }
 
 .chat__user__img {
@@ -2791,6 +2796,12 @@ body {
     content: "";
     opacity: 0.5;
     left: 0;
+}
+
+.chat-text p {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .user_detail {
@@ -3000,7 +3011,7 @@ body {
 }
 
 .message.my-message .message-text {
-    text-align: right;
+    text-align: center;
 }
 
 .message-text p {
