@@ -5306,11 +5306,14 @@ div.heart i {
     font-size: 11px;
 }}
 
-<<<<<<< HEAD
 .video-archieve {
     width: 100%;
     position: absolute;
     bottom: 25%;
 }
-=======
->>>>>>> cfc1a14bb575ef745c16d3783069041b9dc3384a
+
+.fullSize-image-modal .modal-content {
+    max-width: 600px !important;
+    max-height: 600px !important;
+    overflow: hidden;
+}
