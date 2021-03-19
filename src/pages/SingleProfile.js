@@ -196,7 +196,7 @@ const SingleProfile = (props) =>{
               setSmShow(false);
             }
            else {
-            NotificationManager.error(response.data.error_message , "", 2000, () => {return 0}, true);
+            NotificationManager.error(response.data.error_message , "", 1500, () => {return 0}, true);
            }
          } ,(error) => {
           NotificationManager.error(error.message , "", 2000, () => {return 0}, true);
@@ -524,7 +524,7 @@ const SingleProfile = (props) =>{
             <a href="javascript:void(0)" className="modal-close" onClick={()=> setShowStatus(false)}><img src="/assets/images/btn_close.png" /></a>
   </Modal>
  
-  <Modal className ="report-modal"   show={smShow} onHide={() => setSmShow(false)}   aria-labelledby="example-modal-sizes-title-sm">
+  <Modal className ="report-modal"   show={smShow} onHide={() => setSmShow(false)}  backdrop="static" keyboard={false}  aria-labelledby="example-modal-sizes-title-sm">
         <div className="edit-profile-modal__inner">
      
        <h4 className="theme-txt text-center mb-4 ">Report a problem</h4>
@@ -552,7 +552,7 @@ const SingleProfile = (props) =>{
                           <a className="btn bg-grd-clr d-block btn-countinue-3 "  id="edit-second-step" href="javascript:void(0)" onClick={handleReport}>Send</a>
           </form>
            </div>
-       
+           <a href="javascript:void(0)" className="modal-close" onClick={()=> setSmShow(false)}><img src="/assets/images/btn_close.png" /></a>
     </Modal>
   
     <div className={isOn ? 'all-gifts-wrapper active': 'all-gifts-wrapper '} >

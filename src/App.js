@@ -137,9 +137,9 @@ function App(props) {
   
     handleRefresh();
     
-    window.onbeforeunload = function(e) {
-      return confirm("confirm refresh")
-    };
+    // window.onbeforeunload = function(e) {
+    //   return confirm("confirm refresh")
+    // };
     // window.location.hash = "no-back-button";
 
     // // Again because Google Chrome doesn't insert

@@ -473,6 +473,10 @@ ul.social-login button {
     color: #fff !important;
 }
 
+.upload-txt-spacer{
+padding-left: 44px;
+}
+
 .upload-field #profile-photo {
     position: absolute;
     left: 0;
@@ -1510,6 +1514,10 @@ small.story__time {
     height: 126px;
     width: 100%;
     object-fit: cover;
+}
+
+.react-date-picker__inputGroup__input{
+    cursor: pointer;
 }
 
 /* END SINGLE PROFILE PAGE */
@@ -4263,6 +4271,9 @@ object-fit: cover;
     background-color: transparent !important;
 }
 
+.react-date-picker__clear-button {
+    cursor: default !important;
+}
 .signup-inner .react-date-picker__inputGroup input,
 .dob-field .react-date-picker__inputGroup input {
     border: none !important;

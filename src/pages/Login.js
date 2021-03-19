@@ -84,13 +84,12 @@ addBodyClass('login-body')('')
   
   const handleFileChange = e => {
     if (e.target.files[0]) {
-   
       setPicture(e.target.files[0]);
       const reader = new FileReader();
       reader.addEventListener("load", () => {
         setImgData(reader.result);
-      });
-      reader.readAsDataURL(e.target.files[0]);
+       });
+       reader.readAsDataURL(e.target.files[0]);
     }
   };
 
@@ -484,7 +483,7 @@ const changeDate = (date) => {
                         }) }
                 </div>
                 
-                    <div className="choose-gender d-flex my-4">
+                    <div className="choose-gender d-flex my-4 position-relative">
                       <div className="form-group">
                         <input type="radio" id="female" name="gender" value={2}  onChange={ handleChange }  checked={genderName == 2 ? "checked" : ""}  placeholder="Female" />
                         <label htmlFor="female">Female</label>
@@ -498,11 +497,11 @@ const changeDate = (date) => {
                         <input type="radio" id="more" value={3} onChange={ handleChange } checked={genderName == 3 ? "checked" : ""} name="gender" />
                         <label htmlFor="more">More</label>
                     </div>
-                   
-            </div>
-            { Object.keys(genderErr).map((key) => {
-                          return <div style={{color : "red"}}>{genderErr[key]}</div>
+                    { Object.keys(genderErr).map((key) => {
+                          return <div style={{color : "red" , position: "absolute", bottom: "-20px",width:"100%"}} className="text-center">{genderErr[key]}</div>
                         }) }
+            </div>
+            
             <a className="btn bg-grd-clr d-block mb-4 btn-countinue-3" href="javascript:void(0)" onClick={handleNextClick}>Next</a>
           </div>
           </div>
@@ -525,7 +524,7 @@ const changeDate = (date) => {
           <div className="signup-inner" id="login-tab-5">
           <div className="signup-header">
             <a href="javascript:void(0)" className="login-back-4 btn-back" onClick={() => setStep(step - 1)}><i className="fas fa-chevron-left" /></a>
-          <h4 class="theme-txt">Upload Profile Photo</h4>
+          <h4 class="theme-txt upload-txt-spacer">Upload Profile Photo</h4>
           </div>
           <div className="form-group upload-field position-relative mb-5">
             <img id="PreviewPicture" src={imgData} />
