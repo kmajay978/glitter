@@ -187,7 +187,10 @@ const ChatBox = (props) => {
         const { data: { data } } = await axios.post(GET_USERPROFILE_API, bodyParameters)
         setData(data);
     }
-
+// onclick profile image open single profile
+  const handleOpenImage =() =>{
+   history.push(`/${FriendUserId}/single-profile`)
+   }
 
 
     const AcceptUserRequest = (LikedUserId) => {
@@ -979,12 +982,12 @@ const ChatBox = (props) => {
 
                                             !loading &&
                                         <div className="chat-header-info d-flex align-items-center">
-                                            {!!AllData ? <img alt="Mia" className="img-circle medium-image" src={AllData.profile_images} /> : ""}
+                                            {!!AllData ? <img alt="Mia" style={{cursor:"pointer"}} className="img-circle medium-image" onClick={handleOpenImage} src={AllData.profile_images}/> : ""}
                                             <div className="chat-user-info ml-2">
                                                 {!!AllData ? <h5 className="mb-0 name">{AllData.first_name}</h5> : <h5>  </h5>}
                                                 <div className="info">
                                                     {!!AllData &&
-                                                        <>{AllData.occupation},  {AllData.age} </>
+                                                    <>{AllData.occupation}{AllData.occupation!="" && AllData.age !="" ? " ," : ""} {AllData.age} </>
                                                     }
                                                     {<>  </>}
                                                 </div>

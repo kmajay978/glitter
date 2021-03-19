@@ -18,7 +18,6 @@ import { SOCKET } from "./components/Config";
 import { checkLiveDomain } from './commonFunctions';
 import NotificationContainer from 'react-notifications/lib/NotificationContainer';
 import 'react-notifications/lib/notifications.css';
-import { NotificationManager } from 'react-notifications';
 
 let userData;
 const history = createBrowserHistory({ forceRefresh: true });
@@ -116,10 +115,30 @@ function App(props) {
       }
     })
   }, [])
- 
- 
+  
+//   var ctrlKeyDown = false;
+//  const handleRefresh = (e) =>{
+//   document.addEventListener('keydown', (e) => {
+//     e = e || window.event;
+//     if( ((e.which || e.keyCode) == 116)|| ((e.which || e.keyCode) == 82  && ctrlKeyDown) ){
+//         e.preventDefault();
+//     }
+//    else if ((e.which || e.keyCode) == 17) {
+//         // Pressing  only Ctrl
+//         ctrlKeyDown = true;
+//     }
+// });
+
+//  }
+
+
   useEffect(() => {
-   
+  
+    // handleRefresh();
+    
+    // window.onbeforeunload = function(e) {
+    //   return confirm("confirm refresh")
+    // };
     // window.location.hash = "no-back-button";
 
     // // Again because Google Chrome doesn't insert

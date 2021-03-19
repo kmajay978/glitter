@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import {  useHistory, useParams } from 'react-router';
 import axios from "axios";
 import NavLinks from '../components/Nav';
-import {GET_SINGLE_STATUS , GIFT_LIST_API , GIFT_PURCHASE_API , DISLIKE_USER , LIKE_USER, GET_USERPROFILE_API , BLOCK_USER_API , REPORT_USER_API } from '../components/Api';
+import {ARCHIVE_STORIES , GIFT_LIST_API , GIFT_PURCHASE_API , DISLIKE_USER , LIKE_USER, GET_USERPROFILE_API , BLOCK_USER_API , REPORT_USER_API } from '../components/Api';
 import {Modal} from 'react-bootstrap';
 import Carousel from 'react-bootstrap/Carousel';
 import Logo from '../components/Logo';
@@ -12,6 +12,7 @@ import {addDefaultSrc, returnDefaultImage} from "../commonFunctions";
 import { NotificationManager} from 'react-notifications';
 import { useSelector } from "react-redux";
 import {userProfile} from '../features/userSlice';
+import { store } from "react-notifications-component";
 
 const SingleProfile = (props) =>{
     const params = useParams();
@@ -23,12 +24,18 @@ const SingleProfile = (props) =>{
     const[ form, setForm] =useState({ report :""})
     const [GiftData , setGiftData] =useState([]);
     const [blockData , setBlockData] = useState(false);
-    const [statusData , setStatusData] = useState([]);
     const [isOn, toggleIsOn] = useToggle();
     const [ showStatus , setShowStatus] =useState(false);
     const [ random, setRandom] = useState(0);
-    
-    const showAllStatus = () => setShowStatus(true);
+
+    const [archiveStory ,setArchiveStory ] = useState([]);
+    const [ archieveStoryCount, setArchiveStoryCount] = useState(0);
+    const [ demoArchieves, setDemoArchieves] = useState([]);
+    const [warningMessage , setWarningMessage]= useState('');
+
+    const showAllStatus = () => {setShowStatus(true);
+    // handleStatus();
+  }
     const showAllGift =() =>       toggleIsOn(true);
     const history = useHistory()
    
@@ -47,16 +54,52 @@ const SingleProfile = (props) =>{
      }
   
     const handleStatus = async() =>{
+      
       const bodyParameters = {
-        user_id: checkUid,
+        session_id : localStorage.getItem('session_id'),
+        second_user_id: checkUid,
       };
-     const {data :{result,status}} = await  axios.post(GET_SINGLE_STATUS,bodyParameters)
+      axios.post(ARCHIVE_STORIES,bodyParameters)
+      .then((response) => {
+       
+        if (response.status == 200  && response.data.success == true) {
+          let stories = response.data.result;
+          let storiesCount = 0;
+          let demoStoties = [];
+          stories.forEach((data) => {
+            const dataStories = data.status_list; 
+            storiesCount += dataStories.length;
+            dataStories.forEach((data_second) => {
+              demoStoties.push(data_second)
+            })
+          })
+          setArchiveStoryCount(storiesCount);
+          setDemoArchieves(demoStoties);
+          setArchiveStory(stories);
+          setWarningMessage("");
+        }
+        else{
+          setWarningMessage(response.data.message)
+          setArchiveStory([]);
+          setArchiveStoryCount(0)
+        }
+      
+      },
+     
+      (error) => {
+ 
+        setArchiveStory([]);
+        setArchiveStoryCount(0)
+        if (error.toString().match("403")) {
+          localStorage.removeItem("session_id");
+          history.push('/login');
+        }
     
-     if(status==200){
-        setStatusData(result);
+     
+      }
+    );
     }
-    }
-
+   
       const getUser=()=> {
         const bodyParameters = {
             user_id: checkUid,
@@ -74,7 +117,7 @@ const SingleProfile = (props) =>{
             setUser(response.data.data);
               }
          }, (error) => {
-          NotificationManager.error(error.message);
+          NotificationManager.error(error.message, "", 2000, () => {return 0}, true);
         });
         }
 
@@ -105,10 +148,10 @@ const SingleProfile = (props) =>{
       }
        const {data : {message, error}} = await axios.post(GIFT_PURCHASE_API , bodyParameters)
        if (error=="false"){
-       NotificationManager.success(message);
+       NotificationManager.success(message , "", 2000, () => {return 0}, true);
        }
        else{
-        NotificationManager.error(message);
+        NotificationManager.error(message , "", 2000, () => {return 0}, true);
        }
         }
 
@@ -125,7 +168,7 @@ const SingleProfile = (props) =>{
               userData.is_blocked = !!response.data.block_status ? 0 : 1
               setUser(userData);
               setRandom(Math.random());
-              NotificationManager.success(response.data.message);
+              NotificationManager.success(response.data.message , "", 2000, () => {return 0}, true);
              
              
           }
@@ -134,7 +177,7 @@ const SingleProfile = (props) =>{
           }
           }, (error) =>{
            
-            NotificationManager.error(error.message);
+            NotificationManager.error(error.message , "", 2000, () => {return 0}, true);
           });
         }
 
@@ -149,14 +192,14 @@ const SingleProfile = (props) =>{
         
           if(response.status==200&& response.data.error == false)
           { 
-            NotificationManager.success("report send successfully");
+            NotificationManager.success("report send successfully" , "", 2000, () => {return 0}, true);
               setSmShow(false);
             }
            else {
-            NotificationManager.error(response.data.error_message);
+            NotificationManager.error(response.data.error_message , "", 1500, () => {return 0}, true);
            }
          } ,(error) => {
-          NotificationManager.error(error.message);
+          NotificationManager.error(error.message , "", 2000, () => {return 0}, true);
          });
 
         };
@@ -254,7 +297,7 @@ const SingleProfile = (props) =>{
         <div className="col-md-5">
           <div className="p-title-info d-flex flex-wrap align-items-center justify-content-between my-3">
             <div className="profile-id">
-              <span className="d-inline-block">{!!userData ? userData.first_name : ""}</span>
+             {!!userData ? <span className="d-inline-block">{userData.first_name}</span>: ""} 
               <span className="d-inline-block">ID:2837289739</span>
             </div>
             <div className="photo-count">
@@ -373,24 +416,38 @@ const SingleProfile = (props) =>{
             <div className="bio-stories">
               <div className="flex-wrapper d-flex align-items-center mb-3">
                 <h5 className="mb-0">Archived Stories</h5>
+        
                 <span className="see-all ml-5">
-                  <a href="javascript:void(0)" onClick={showAllStatus} className="theme-txt">See All</a>
+               {!!archiveStory&& archieveStoryCount >4 ?  <a href="javascript:void(0)" onClick={showAllStatus} className="theme-txt">See All</a>: ""}
+              
+               {/* <a href="javascript:void(0)" onClick={showAllStatus} className="theme-txt">See All</a> */}
                 </span>
               </div>
-            <div className="archived-stories d-flex flex-wrap">
-            <div className="single-stories locked">
+            <div className="archived-stories d-flex flex-wrap stories-grid">
+            {/* <div className="single-stories locked">
                   <i className="fas fa-lock" />
-                </div>
-                
-                {statusData.slice(0, 3).map((item, i) => {
-             return   <div className="single-stories">
+                </div> */}
+                {!!archiveStory&&
+                <>
+                {demoArchieves.slice(0, 4).map((item, i) => {
+                  return  <div className="single-stories">
                   <figure>
-                  {item.status_type==1 ?<img src={item.file} alt="Archived Story" />:<video src={item.file} alt="Archived Story" />}
+                  {(item.file.split(".")[item.file.split(".").length - 1] !== "mp4" && item.file.split(".")[item.file.split(".").length - 1] !== "MP4" && item.file.split(".")[item.file.split(".").length - 1] !== "mov" && item.file.split(".")[item.file.split(".").length - 1] !== "MOV") ?<img src={item.file} alt="Archived Story" />:<video className="video-archieve" autoPlay loop><source src={item.file} type="video/mp4"/></video>}
+                  <small className="story__time"><i class="far fa-clock"></i> {moment(item.created_at).format('LT')}</small>  
                   </figure>
                 </div>
-                  })}  
+                  })}  </>
+                }
+                  
               </div>
-            
+              {
+                  !!warningMessage ?
+                    <h6 className="">
+                      {warningMessage}
+                    </h6>
+                    :
+                    ""
+                  }
             </div>
             <div className="bio-gift">
               <div className="flex-wrapper d-flex align-items-center mb-3">
@@ -433,35 +490,45 @@ const SingleProfile = (props) =>{
     </div>
   </div>
   
-  <Modal className ="status-modal"   show={showStatus} onHide={() => setShowStatus(false)}   aria-labelledby="example-modal-sizes-title-sm"> 
+  <Modal className ="status-modal"   show={showStatus} onHide={() => setShowStatus(false)}  backdrop="static" keyboard={false} aria-labelledby="example-modal-sizes-title-sm"> 
   <div className="bio-stories">
               <div className="flex-wrapper d-flex align-items-center mb-3">
                 <h5 className="mb-0">Archived Stories</h5>
 
               </div>
-            <div className="archived-stories d-flex flex-wrap">
+              {!!archiveStory&& 
+                <>
+                {archiveStory.map((item, i) => (
+              <div class="stories-grid-wrapper mt-3">
+              <h6 className="theme-txt ">{moment(item.status_date).fromNow() }</h6>   
+            <div className="archived-stories d-flex flex-wrap stories-grid">
             {/* <div className="single-stories locked">
                   <i className="fas fa-lock" />
                 </div> */}
-                
-                {statusData.map((item, i) => {
-             return   <div className="single-stories">
-                  <figure>
-                  {item.status_type==1 ?<img src={item.file} alt="Archived Story" />:<video src={item.file} alt="Archived Story" />}
-                  </figure>
-                </div>
-                  })}  
+              {item.status_list.map((story , index) => (
+               <div className="single-stories">
+               <figure>
+               {(story.file.split(".")[story.file.split(".").length - 1] !== "mp4" && story.file.split(".")[story.file.split(".").length - 1] !== "MP4" && story.file.split(".")[story.file.split(".").length - 1] !== "mov" && story.file.split(".")[story.file.split(".").length - 1] !== "MOV") ?<img src={story.file} alt="Archived Story" />:<video className="video-archieve" autoPlay loop><source src={story.file} type="video/mp4"/></video>}
+               <small className="story__time"><i class="far fa-clock"></i> {moment(story.created_at).format('LT')}</small>  
+               </figure>
+             </div>
+              ))}
+                 
+                 
               </div>
-            
+                    
+              </div>            
+                ))}  
+                </>}
             </div>
+            <a href="javascript:void(0)" className="modal-close" onClick={()=> setShowStatus(false)}><img src="/assets/images/btn_close.png" /></a>
   </Modal>
  
-  <Modal className =" report-modal"   show={smShow} onHide={() => setSmShow(false)}   aria-labelledby="example-modal-sizes-title-sm">
+  <Modal className ="report-modal"   show={smShow} onHide={() => setSmShow(false)}  backdrop="static" keyboard={false}  aria-labelledby="example-modal-sizes-title-sm">
         <div className="edit-profile-modal__inner">
-        <Modal.Header  id="example-modal-sizes-title-sm">
-        <Modal.Title> <h4 className="theme-txt text-center mb-4 ">Report a problem</h4>
-          </Modal.Title>
-        </Modal.Header>
+     
+       <h4 className="theme-txt text-center mb-4 ">Report a problem</h4>
+        
         <form>
       
         <div className="choose-report d-flex flex-wrap">
@@ -485,7 +552,7 @@ const SingleProfile = (props) =>{
                           <a className="btn bg-grd-clr d-block btn-countinue-3 "  id="edit-second-step" href="javascript:void(0)" onClick={handleReport}>Send</a>
           </form>
            </div>
-       
+           <a href="javascript:void(0)" className="modal-close" onClick={()=> setSmShow(false)}><img src="/assets/images/btn_close.png" /></a>
     </Modal>
   
     <div className={isOn ? 'all-gifts-wrapper active': 'all-gifts-wrapper '} >

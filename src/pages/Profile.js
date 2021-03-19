@@ -16,13 +16,13 @@ import AboutGlitter from '../components/AboutGlitter';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import { EmailIcon, FacebookIcon,  TelegramIcon, TwitterIcon, WhatsappIcon,EmailShareButton,FacebookShareButton,TelegramShareButton,WhatsappShareButton, TwitterShareButton,} from "react-share";
 import StripeForm from '../components/StripeForm';
-// import DatePicker from 'react-date-picker';
+import DatePicker from 'react-date-picker';
 import moment from 'moment'
 import {SyncLoader, ClipLoader} from "react-spinners";
 import { css } from "@emotion/core";
 import {addDefaultSrc, returnDefaultImage} from "../commonFunctions";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+// import DatePicker from "react-datepicker";
+// import "react-datepicker/dist/react-datepicker.css";
 import Notifications from "react-notifications/lib/Notifications";
 
 const override = css`
@@ -34,7 +34,7 @@ left: 0;
 right: 0;
 margin: 0 auto;
 padding-top:60px;
-top: 50%;
+top: 66%;
 -webkit-transform: translateY(-50%);
 -moz-transform: translateY(-50%);
 transform: translateY(-50%);
@@ -74,7 +74,7 @@ const Profile = (props) =>{
   const [coinPackage , setCoinPackage] = useState([]);
   const [coinHistory , setCoinHistory] = useState([]);
   const [coinSpend , setCoinSpend] = useState('');
-  const [Dob, setDob] = useState(''); 
+  const [Dob, setDob] = useState(); 
   const [isLoaded, setIsLoaded] = useState(false);
   const[isLoading , setIsLoading] = useState(false);
   const [warningMessage, setWarningMessage] = useState('');
@@ -96,8 +96,10 @@ const Profile = (props) =>{
   const handleShare =() => {setShowSetting(false); setShowShare(true);} // show share glitter model
   
   const userData = useSelector(userProfile).user.profile; //using redux useSelector here
-
+  
+  
   var dates = moment(Dob).format('YYYY/MM/DD');
+
   // Getting form value here
   const [form , setForm] = useState({
     
@@ -113,7 +115,7 @@ const Profile = (props) =>{
     interests_hobbie :""
   });
 
-  
+  console.log(Dob, "heheh")
   
   const handleChange = e => { 
     setForm({
@@ -136,11 +138,12 @@ const handleCheck = (e) => {
     var index = selectedArray.indexOf(value); 
     selectedArray.splice(index,1);
     setSlelected(selectedArray)
+
   }
   
 }
 
-    const shareUrl = 'http://localhost:3000/';
+    const shareUrl = 'https://glittersapp.com/';
     const title = 'glitter-app';
     
   //   useEffect(()=>{
@@ -171,7 +174,9 @@ const handleCheck = (e) => {
     //  Setting data variable to state object 
       form.firstName = data.first_name
       form.lastName = data.last_name
-      var Dob =moment(data.dob).format('ddd MMM DD YYYY   h:mm:ss')
+      dates= data.dob
+       setDob(new Date(dates))
+      
       form.aboutMe = data.about_me
       form.height = data.height
       form.weight = data.weight
@@ -195,7 +200,8 @@ const handleCheck = (e) => {
     
 
    
-      
+      console.log(hobbies);
+      console.log(profileData.interest_hobbies);
  
      //update profile data
       
@@ -224,22 +230,22 @@ const handleCheck = (e) => {
         bodyParameters.append('interests_hobbies[]', selectedCheck.join(","));
         
 
-  //  axios.post(EDITPROFILE_API , bodyParameters, config) 
-  //  .then((response) => {
+   axios.post(EDITPROFILE_API , bodyParameters, config) 
+   .then((response) => {
    
-  //  if(response.status==200  && !response.status.error){
-  //   NotificationManager.success("update successfully");
- 
-  //  }
+   if(response.status==200  && !response.status.error){
+    NotificationManager.success(response.data.message);
+    setShow(false);
+   }
    
-  //  }, (error) =>{
-  //   NotificationManager.error(error.message);
-  //   if (error.toString().match("403")) {
-  //     localStorage.removeItem("session_id");
-  //     history.push('/login');
-  //   }
+   }, (error) =>{
+    NotificationManager.error(error.message);
+    if (error.toString().match("403")) {
+      localStorage.removeItem("session_id");
+      history.push('/login');
+    }
    
-  //  });
+   });
    }
 
 
@@ -696,9 +702,8 @@ const openFileUploader = () => {
               </div>
               <div className="form-group dob-field">
                   <label className="d-block">DOB</label>
-                  {/* <DatePicker  className="bg-trsp" name="dob"  value={Dob} selected={Dob} required={true} onChange={date => setDob(date)} /> */}
-                  <DatePicker  className="bg-trsp" name ="dates"  dateFormat="dd/MM/yyyy" selected={Dob} onChange={date => setDob(date)}   isClearable /> 
-                  {/* <input className="form-control bg-trsp" name="dob" type="text" value={form.dob} onChange={handleChange}  /> */}
+                  <DatePicker  className="bg-trsp" name="dob" format="dd/MM/yyyy" clearIcon  value={Dob} dayPlaceholder="dd" monthPlaceholder="mm" yearPlaceholder="yyyy" onChange={(date) => setDob(date)} />
+                 {/* <input className="form-control bg-trsp" name="dob" type="text" value={form.dob} onChange={handleChange}  /> */}
               </div>
 
              <div className="choose-gender d-flex my-4">
@@ -785,13 +790,12 @@ const openFileUploader = () => {
           {interestData.map((item , i) => (
             // checked={CheckedItem(item.id)}
           <div className="form-group">
-              <input type="checkbox" id={"interests_hobbie"+i}  onClick={handleCheck} name="interests_hobbie" value={item.id}/>
+              <input type="checkbox" id={"interests_hobbie"+i} onClick={handleCheck} name="interests_hobbie" value={item.id}/>
             <label for={"interests_hobbie"+i}>  {item.interests_or_hobbies}</label>
             </div>
           ))}
          </div>
 
-       
           <a className="btn bg-grd-clr d-block btn-countinue-3" id="edit-second-step" href="javascript:void(0)" onClick={updateProfile}>Update</a>
 
      
@@ -890,9 +894,9 @@ const openFileUploader = () => {
               <li><a href="javascript:void(0)" id="gift-modal" onClick={handleGift}><img src="/assets/images/gift-icon.png" alt="gifts" />
                   <h6 className="mb-0">Gifts</h6> <i className="fas fa-chevron-right"/>
                 </a></li>
-              {/* <li><a href="javascript:void(0)" id="edit-profile" onClick={handleShow}><img src="/assets/images/edit-profile.png" alt="Edit Profile" />
+              <li><a href="javascript:void(0)" id="edit-profile" onClick={handleShow}><img src="/assets/images/edit-profile.png" alt="Edit Profile" />
                   <h6>Edit Profile</h6> <i className="fas fa-chevron-right" />
-                </a></li> */}
+                </a></li>
                  <li><a href="javascript:void(0)" id="edit-profile" onClick={() => history.push("/recent-call")}><img src="/assets/images/edit-profile.png" alt="Edit Profile" />
                   <h6>Recent Call</h6> <i className="fas fa-chevron-right" />
                 </a></li>
@@ -1037,14 +1041,14 @@ const openFileUploader = () => {
       {!!coinHistory&& coinHistory.map((item , index)=> {
        return  <div className="coin-spend">
         <div className="coin-spend__host">
-          <img src={item.receiver_image} alt="host" />
+       {item.receiver_image!=""?<img src={item.receiver_image} style={{cursor:"pointer"}} onClick={() =>  history.push(`/${item.receiver_id}/single-profile`)} alt="host"  /> :<img onError={(e) => addDefaultSrc(e)} src={returnDefaultImage()}  alt="host" /> }   
         </div>
         <div className="coins-spend__hostname">
           <span>{item.receiver_name}</span> <span className="counter">{item.receiver_age}</span>
           <div className="coin-spend__total mt-2"><img src="/assets/images/diamond-sm.png" />{item.coins}</div>
         </div>
         <div className="coin-spend__gift">
-        {!!item.gift_image!="" ? <img src={!!item.gift_image!="" ? item.gift_image: ""}  alt="gift" />: ""} 
+        {item.gift_image!="" ? <img src={item.gift_image}  alt="gift" />: ""} 
         </div>
       </div>
      })} 
@@ -1073,7 +1077,7 @@ const openFileUploader = () => {
   
     return <div className="coin-spend">
      <div className="coin-spend__host">
-       <img onError={(e) => addDefaultSrc(e)} src={!!item.profile_images ? item.profile_images: returnDefaultImage()}  alt="host" />
+       <img onError={(e) => addDefaultSrc(e)} src={!!item.profile_images ? item.profile_images: returnDefaultImage()} style={{cursor:"pointer"}} onClick={() =>  history.push(`/${item.user_id}/single-profile`)} alt="host" />
      </div>
      <div className="coins-spend__hostname">
        <span>{item.first_name}</span> <span className="counter">{item.age}</span>
@@ -1207,7 +1211,7 @@ const openFileUploader = () => {
           ))} 
         <SyncLoader color={"#fcd46f"} loading={loadedModel} css={override} size={18} />
        </div>
-       <a href="javascript:void(0)" className="modal-close" onClick={() => setShowBuyCoins(false)}><img src="/assets/images/btn_close.png" /></a>
+       <a href="javascript:void(0)" className="modal-close" onClick={() => {setShowBuyCoins(false); setCoinPackage([])}}><img src="/assets/images/btn_close.png" /></a>
       
            </div>
           

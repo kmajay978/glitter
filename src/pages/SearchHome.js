@@ -21,7 +21,8 @@ import {NotificationContainer, NotificationManager} from 'react-notifications';
 import {friendStatus} from '../features/userSlice'
 import StatusUser from "../pages/StatusUser";
 import { Link } from "react-router-dom";
-
+import Select from 'react-dropdown-select';
+import {getCountries} from '../components/Countries';
 
 let isMouseClick = false, startingPos = [], glitterUid, friendLists = [], userData= null, checkOnlineFrdsInterval;
 
@@ -91,8 +92,10 @@ const SearchHome = () =>
     const [audLive, setAudLive] = useState(false)
     const[viewStory , setViewStory] = useState(false);
     const[statusLoading , setStatusLoading] =useState(false);
+    const [countrieBlock , setCountrieBlock] = useState([]);
     userData = useSelector(userProfile).user.profile; //using redux useSelector here
- const options = {
+    const countries =  getCountries();
+ const option = {
   loop: false,
   margin: 20,
   items: 13,
@@ -131,6 +134,7 @@ const SingleProfileView = (id) =>{
   })
 }
 
+console.log(countrieBlock, "countrieBlock..")
 const handleFileChange = e => {
   var data = e.target.files[0];
   // const filename =  e.target.files[0];
@@ -160,7 +164,7 @@ const handleFileChange = e => {
   var data = e.target.files[0];
   const fileName = data.name.split(".");
   const imageFormat = fileName[fileName.length - 1];
-  if(imageFormat === "mp4" || imageFormat === "MP4")
+  if(imageFormat === "mp4" || imageFormat === "MP4" || imageFormat === "mov" || imageFormat === "MOV")
      {
        if(data.size< 5000024){
        setVideo(data);
@@ -237,6 +241,9 @@ const handleFileChange = e => {
   const ViewStatus =() =>{
 
   }
+
+
+
 
   const handleStatus = (user_id) =>
   {
@@ -661,7 +668,7 @@ const openFileUploder = () =>{
 
                 <div className="status__slider">
                 
-        <OwlCarousel  options={options}  >
+        <OwlCarousel  options={option}  >
         {friendList.map((item, i) =>(
            (item.statuses.length > 0 ||  item.is_live === true ) ?
           
@@ -929,21 +936,29 @@ const openFileUploder = () =>{
               <div className="block_countries__list">
                 <img src="/assets/images/add-countries.svg" alt="add countries" />
               </div>
-              <div className="block_countries__list">
+            
+              {/* <div className="block_countries__list">
                 <img src="/assets/images/india-flag.svg" alt="india" />
                 <div className="block_countries__info">
                   <span>India</span>
                   <a href="javascript:void(0)" className="del-country"><img src="/assets/images/country-close.svg" alt="close" /></a>
                 </div>                                    
-              </div>
-              <div className="block_countries__list">
+              </div> */}
+              {/* <div className="block_countries__list">
                 <img src="/assets/images/nigeria.svg" alt="nigeria" />
                 <div className="block_countries__info">
                   <span>India</span>
                   <a href="javascript:void(0)" className="del-country"><img src="/assets/images/country-close.svg" alt="close" /></a>
                 </div>                                    
-              </div>
+              </div> */}
             </div>
+            <Select
+              multi
+              options={countries}
+              placeholder="select countries"
+              onChange={(value) => setCountrieBlock(value)}
+               style ={{color:"#6c757d"}}
+              />
           </div>
           <div className="live_rightblk  text-center">
             <h5 className="mb-4">Select Tag</h5>

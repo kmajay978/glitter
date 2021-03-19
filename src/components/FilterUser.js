@@ -16,6 +16,7 @@ import Swipe from "./Swipe";
 import TinderCardTest from "./TinderCard";
 import useToggle, { removeDublicateFrds }from '../components/CommonFunction';
 import SyncLoader from "react-spinners/SyncLoader";
+import { NotificationManager} from 'react-notifications';
 import { css } from "@emotion/core";
 const alreadyRemoved = [];
 let isMouseClick = false, startingPos = [], glitterUid;
@@ -106,7 +107,7 @@ const handleUserId = (e, userId) =>{
           }
         },
         (error) => {
-          
+          NotificationManager.error(error.message, "", 2000, () => {return 0}, true);
             setDislike(false);
         
         }
@@ -133,7 +134,7 @@ const handleUserId = (e, userId) =>{
           }
         },
         (error) => {
-          
+          NotificationManager.error(error.message, "", 2000, () => {return 0}, true);
           setLiked(false)}
       );
     }
@@ -245,7 +246,7 @@ const handleUserId = (e, userId) =>{
                     {currentUser.first_name}, {currentUser.age}
                   </h3>
                   <span>
-                    {currentUser.distance},{currentUser.occupation}
+                    {currentUser.distance}{ currentUser.occupation!=""  ? " , " : "" }{currentUser.occupation}
                   </span>
                   </div>
 

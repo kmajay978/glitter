@@ -473,6 +473,10 @@ ul.social-login button {
     color: #fff !important;
 }
 
+.upload-txt-spacer{
+padding-left: 44px;
+}
+
 .upload-field #profile-photo {
     position: absolute;
     left: 0;
@@ -1086,6 +1090,7 @@ div#upload-media-modal {
     width: 400px;
     overflow: hidden;
     margin: 0 auto;
+    max-width: 100%;
 }
 
 .preview img {
@@ -1487,6 +1492,34 @@ label.custom-file-upload + a {
 }
 
 /* END GIFT POPUP */
+
+
+.stories-grid{
+    display: grid !important;
+    /* grid-template-columns: auto auto auto auto; */
+    grid-template-columns: repeat(5, 1fr);
+    grid-gap: 10px;
+}
+
+.stories-grid.archived-stories > div{
+    width: auto;
+    margin:0;
+}
+small.story__time {
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+}
+
+.stories-grid img {
+    height: 126px;
+    width: 100%;
+    object-fit: cover;
+}
+
+.react-date-picker__inputGroup__input{
+    cursor: pointer;
+}
 
 /* END SINGLE PROFILE PAGE */
 
@@ -4250,6 +4283,9 @@ object-fit: cover;
     background-color: transparent !important;
 }
 
+.react-date-picker__clear-button {
+    cursor: default !important;
+}
 .signup-inner .react-date-picker__inputGroup input,
 .dob-field .react-date-picker__inputGroup input {
     border: none !important;
@@ -5270,3 +5306,11 @@ div.heart i {
     font-size: 11px;
 }}
 
+<<<<<<< HEAD
+.video-archieve {
+    width: 100%;
+    position: absolute;
+    bottom: 25%;
+}
+=======
+>>>>>>> cfc1a14bb575ef745c16d3783069041b9dc3384a
