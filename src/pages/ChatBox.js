@@ -1,26 +1,25 @@
 import React, { useState, useEffect, useRef } from "react";
-import  $ from 'jquery';
-import {useSelector, useDispatch} from 'react-redux';
+import $ from 'jquery';
+import { useSelector, useDispatch } from 'react-redux';
 import axios from "axios";
 import NavLinks from '../components/Nav';
-import { GIFT_LIST_API , GIFT_PURCHASE_API ,LIKED_LIST, VISITOR_LIST_API ,FRIENDLIST_API, GET_USERPROFILE_API ,VIDEOCALL_API, ACCEPT_REQUEST_API} from '../components/Api';
-import {SOCKET} from '../components/Config';
+import { GIFT_LIST_API, GIFT_PURCHASE_API, LIKED_LIST, VISITOR_LIST_API, FRIENDLIST_API, GET_USERPROFILE_API, VIDEOCALL_API, ACCEPT_REQUEST_API } from '../components/Api';
+import { SOCKET } from '../components/Config';
 import { v4 as uuidv4 } from 'uuid';
 import { css } from "@emotion/core";
-import {BarLoader , SyncLoader} from "react-spinners";
+import { BarLoader, SyncLoader } from "react-spinners";
 import Logo from '../components/Logo';
-import {selectUser, userProfile, videoCall, audioCall} from "../features/userSlice";
-import {NotificationManager} from 'react-notifications';
+import { selectUser, userProfile, videoCall, audioCall } from "../features/userSlice";
+import { NotificationManager } from 'react-notifications';
 import useToggle, { removeDublicateFrds } from '../components/CommonFunction';
 import { useHistory } from "react-router-dom";
-import {addDefaultSrc, returnDefaultImage, useForceUpdate} from "../commonFunctions";
+import { addDefaultSrc, returnDefaultImage, useForceUpdate } from "../commonFunctions";
 import { setWeekYear } from "date-fns";
 import {Modal} from 'react-bootstrap';
 
 let checkLastFrdsMsgInterval, my_friends_list = [];
 
 // import stringLimit from '../components/CommonFunction';
-let count = 0;
 
 const override = css`
   display: block;
@@ -39,24 +38,24 @@ const scrollToBottom = () => {
         div.scroll({ top: div.scrollHeight, behavior: 'smooth' });
 }
 
-const ChatBox = (props) =>{
+const ChatBox = (props) => {
     const forceUpdate = useForceUpdate();
     const inputFile = useRef(null);
     const dispatch = useDispatch();
     const history = useHistory()
     // window.setTimeout()
-    const[Likes, setLikes] = useState([]);
-    const[Visitors, setVisitors] = useState([]);
-    const[FriendList, setFriendlist] = useState([]);
-    const[FriendUserId, setFriendId] = useState('');
-    const[AllData, setData] = useState('');
-    const[CompleteMessageList, setMessages] = useState([]);
-    const[UserMessage, setuserMessage] = useState('');
-    const[randomNumber, setRandomNumber] = useState('');
-    const[lastMessageRandomNumber, setLastMessageRandomNumberRandomNumber] = useState('');
+    const [Likes, setLikes] = useState([]);
+    const [Visitors, setVisitors] = useState([]);
+    const [FriendList, setFriendlist] = useState([]);
+    const [FriendUserId, setFriendId] = useState('');
+    const [AllData, setData] = useState('');
+    const [CompleteMessageList, setMessages] = useState([]);
+    const [UserMessage, setuserMessage] = useState('');
+    const [randomNumber, setRandomNumber] = useState('');
+    const [lastMessageRandomNumber, setLastMessageRandomNumberRandomNumber] = useState('');
     const [isOn, toggleIsOn] = useToggle();
-    const [uploadImage , setUploadImage] = useState('');
-    const [GiftData , setGiftData] =useState([]);
+    const [uploadImage, setUploadImage] = useState('');
+    const [GiftData, setGiftData] = useState([]);
     const [previewData, setPreviewData] = useState([]);
     const [files, setFiles] = useState([]);
     const [previews, setPreviews] = useState([]);
@@ -66,7 +65,7 @@ const ChatBox = (props) =>{
 
 
     let [loading, setLoading] = useState(false);
-    const[recording, setRecording] = useState(false);
+    const [recording, setRecording] = useState(false);
     const [dummyMediaRc, setDummyMediaRc] = useState(null)
     const [chatTyping, setChatTyping] = useState("");
     const [threeMessageWarning, setWarningMessage] = useState("");
@@ -74,7 +73,7 @@ const ChatBox = (props) =>{
 
     console.log(FriendList, "FriendList.....")
     // const createNotificationCustom = (type) => {
-  
+
     //     switch (type) {
     //       case 'success':
     //         NotificationManager.success('Send successfull', 'Gift');
@@ -85,7 +84,7 @@ const ChatBox = (props) =>{
     //   };
     //   };
 
-    const[GetActivity, setActivity] = useState(0);
+    const [GetActivity, setActivity] = useState(0);
 
     userData = useSelector(userProfile).user.profile; //using redux useSelector here
 
@@ -97,26 +96,26 @@ const ChatBox = (props) =>{
 
     // Fetching details of user initial time
     const getAllDetails = async () => {
-        const likes = await axios.post(LIKED_LIST,bodyParameters)
+        const likes = await axios.post(LIKED_LIST, bodyParameters)
         setLikes(removeDublicateFrds(likes.data.data));
 
         // Destructing response and getting data part
-        const visitor = await axios.post(VISITOR_LIST_API,bodyParameters)
+        const visitor = await axios.post(VISITOR_LIST_API, bodyParameters)
         setVisitors(removeDublicateFrds(visitor.data.result));
 
-        const friend= await axios.post(FRIENDLIST_API,bodyParameters)
+        const friend = await axios.post(FRIENDLIST_API, bodyParameters)
         const data = friend.data.data;
-         let friendList = !!data ? data : [];
-         setFriendlist(removeDublicateFrds(friendList));
+        let friendList = !!data ? data : [];
+        setFriendlist(removeDublicateFrds(friendList));
     }
 
-// Onclick button, getting LIkes, Visitor and friends list
+    // Onclick button, getting LIkes, Visitor and friends list
 
     const getLikes = async () => {  //Likes here
         setActivity(0);
         try {
-            const { data: {data , status_code,error } } = await axios.post(LIKED_LIST,bodyParameters)
-            if(status_code==200){
+            const { data: { data, status_code, error } } = await axios.post(LIKED_LIST, bodyParameters)
+            if (status_code == 200) {
                 setLikes(removeDublicateFrds(data));
             }
         }
@@ -124,50 +123,50 @@ const ChatBox = (props) =>{
             if (err.toString().match("403")) {
                 localStorage.removeItem("session_id");
                 history.push('/login');
-              }
+            }
         }
-       
+
     }
 
     const getVisitors = async () => {  // Visitors here
         setActivity(1);
         try {
-            const { data: {result, error , status_code} } = await axios.post(VISITOR_LIST_API,bodyParameters)
-           
-            if(status_code==200){
-            setVisitors(removeDublicateFrds(result));
+            const { data: { result, error, status_code } } = await axios.post(VISITOR_LIST_API, bodyParameters)
+
+            if (status_code == 200) {
+                setVisitors(removeDublicateFrds(result));
             }
         }
         catch (err) {
             if (err.toString().match("403")) {
                 localStorage.removeItem("session_id");
                 history.push('/login');
-              }
+            }
         }
     }
 
-    const getFriend = async() => { //Friends here
+    const getFriend = async () => { //Friends here
         setActivity(2);
         try {
-            const {data:{data ,status_code, error}}= await axios.post(FRIENDLIST_API,bodyParameters)
-           
-            if(status_code==200){     
+            const { data: { data, status_code, error } } = await axios.post(FRIENDLIST_API, bodyParameters)
+
+            if (status_code == 200) {
                 let friendList = !!data ? data : [];
                 let friends_list = [];
                 my_friends_list = removeDublicateFrds(friendList)
                 for (let i in friendList) {
-                    friends_list.push({user_id: friendList[i].user_id})
+                    friends_list.push({ user_id: friendList[i].user_id })
                 }
                 checkLastFrdsMsgInterval = window.setInterval(() => {
                     console.log(friends_list, "friends_list..")
                     if (!!userData && userData.user_id !== null && userData.user_id !== undefined && friendList.length > 0) {
-            
+
                         SOCKET.emit("get_frds_last_messages", {
                             user_id: userData.user_id,
                             friends_list
                         })
                     }
-            }, 1000)
+                }, 1000)
                 setFriendlist(my_friends_list);
 
             }
@@ -176,18 +175,18 @@ const ChatBox = (props) =>{
             if (err.toString().match("403")) {
                 localStorage.removeItem("session_id");
                 history.push('/login');
-              }
+            }
         }
     }
 
     // fetching friends according to userID
-    const getFriendDetails = async() => {
+    const getFriendDetails = async () => {
         const bodyParameters = {
             session_id: localStorage.getItem('session_id'),
             user_id: FriendUserId,
         };
 
-        const {data:{data}}= await axios.post(GET_USERPROFILE_API,bodyParameters)
+        const { data: { data } } = await axios.post(GET_USERPROFILE_API, bodyParameters)
         setData(data);
     }
 // onclick profile image open single profile
@@ -195,195 +194,203 @@ const ChatBox = (props) =>{
    history.push(`/${FriendUserId}/single-profile`)
    }
 
-    const AcceptUserRequest = (LikedUserId) =>{
-      
+
+    const AcceptUserRequest = (LikedUserId) => {
+
         const bodyParameters = {
-            session_id : sessionId,
-            id : LikedUserId
+            session_id: sessionId,
+            id: LikedUserId
         }
-        axios.post(ACCEPT_REQUEST_API , bodyParameters)
+        axios.post(ACCEPT_REQUEST_API, bodyParameters)
             .then((response) => {
-                if(response.status==200)
-                    {
-                        NotificationManager.success(response.data.message);
-                        getLikes();
-                    }
+                if (response.status == 200) {
+                    NotificationManager.success(response.data.message);
+                    getLikes();
+                }
             }, (error) => {
                 if (error.toString().match("403")) {
                     NotificationManager.error("Something went wrong");
                     localStorage.removeItem("session_id");
                     history.push('/login');
-                  }
+                }
             });
 
     }
-     // onclick vistior list then open single profile 
-      const handleVistior =(userId) => {
-      history.push({
-      pathname: '/'+userId+'/single-profile',
-     
-      })
-      }
+    // onclick vistior list then open single profile 
+    const handleVistior = (userId) => {
+        history.push({
+            pathname: '/' + userId + '/single-profile',
 
-      //all gift
-    const handleGift = async() =>{
+        })
+    }
+
+    //all gift
+    const handleGift = async () => {
         toggleIsOn(true);
         const bodyParameters = {
-            session_id :  localStorage.getItem('session_id'),
-            }
-            const {data:{result , status}} = await axios.post(GIFT_LIST_API , bodyParameters)
-            
-             if(status==200){
-             setGiftData(result);
-             }
-             }
-     
-        //get single  gift item
-           const getGiftItem = async(giftId) => {
-           const bodyParameters ={
-           session_id :  localStorage.getItem('session_id') ,
-           gift_id : giftId ,
-           given_to : FriendUserId
-           }
-            const {data : {giftStatus}} = await axios.post(GIFT_PURCHASE_API , bodyParameters)
-                // alert(giftStatus.get_gifts.image);
+            session_id: localStorage.getItem('session_id'),
+        }
+        const { data: { result, status } } = await axios.post(GIFT_LIST_API, bodyParameters)
 
-                if(!!giftStatus)
-                {
-                toggleIsOn(false);
-                var msg = {};
-                msg.file = giftStatus.get_gifts.image;
-                msg.fileName = "abc_image";
-                msg.sessionId = sessionId;
-                msg.reciever_id = receiver_id;
-                SOCKET.emit('gift_send', msg);
-                setLoading(true);
-                }
-                else
-                {
-                    toggleIsOn(false);
-                    NotificationManager.error('Please recharge and try again', 'Insufficient Balance!');      
-                }
-             }
-            
-            //  On change getting image files 
-             const handleFileChange = e => {
-                    const files = [...myFiles]; 
-                    files.push(...e.target.files); 
-                    setMyFiles(files);
-                    setFileUrls(files) 
+        if (status == 200) {
+            setGiftData(result);
+        }
+    }
 
-                    // Pusing inform with base64
-                    const reader = new FileReader();
-                    reader.addEventListener("load", () => {
-                        allBaseImages.push(reader.result); 
-                     setbase64(allBaseImages);
-                    });
-                    reader.readAsDataURL(e.target.files[0]);
-                    if (allBaseImages.length < 3) {
-                        document.getElementById("image-media").style.display = "block"
-                    }
-                    else {
-                        document.getElementById("image-media").style.display = "none"
-                    }
-               };
+    //get single  gift item
+    const getGiftItem = async (giftId) => {
+        const bodyParameters = {
+            session_id: localStorage.getItem('session_id'),
+            gift_id: giftId,
+            given_to: FriendUserId
+        }
+        const { data: { giftStatus } } = await axios.post(GIFT_PURCHASE_API, bodyParameters)
+        // alert(giftStatus.get_gifts.image);
 
-               //    Setting urls for displaying here
-               const setFileUrls = (files) => {
-                const urls = files.map((file) => URL.createObjectURL(file));
-                if(myUrls.length > 0) {
-                    myUrls.forEach((url) => URL.revokeObjectURL(url));
-                }
-                
-                setUrls(urls);
-              }
-              
+        if (!!giftStatus) {
+            toggleIsOn(false);
+            var msg = {};
+            msg.file = giftStatus.get_gifts.image;
+            msg.fileName = "abc_image";
+            msg.sessionId = sessionId;
+            msg.reciever_id = receiver_id;
+            SOCKET.emit('gift_send', msg);
+            setLoading(true);
+        }
+        else {
+            toggleIsOn(false);
+            NotificationManager.error('Please recharge and try again', 'Insufficient Balance!');
+        }
+    }
 
-              const convertBlobTobase64 = () =>{
-               
-            if(!!baseMultipleImage && 
-            baseMultipleImage.length > 0) {
-                const imageMedia = document.getElementById("image-media");
-                
-                let photoInterval = window.setInterval(() => {
-                    if (count > baseMultipleImage.length - 1) {
-                        clearPhotoState()
-                        clearInterval(photoInterval);
-                       
-                    }
-                    else {
-                        var msg ={};
-                        msg.file = baseMultipleImage[count];
-                        msg.fileName = "test";
-                        msg.sessionId = sessionId;
-                        msg.reciever_id = receiver_id;
-                        SOCKET.emit('media_file', msg);
-                        setLoading(true);
-                        count += 1;
-                    }
-                }, 2000)
-            }
-            else {
-                NotificationManager.warning("select atlease one image..")
-            }
-              }
-              
-            // returning in html form to display 
-              const displayUploadedFiles = (urls) => {
-                return urls.map((url, i) => <div className="media-box"><img key={i} src={url}/></div>);
-              }
-   
+    //  On change getting image files 
+    const handleFileChange = e => {
+        const data = e.target.files[0];
+        const fileName = data.name.split(".");
+        const imageFormat = fileName[fileName.length - 1];
+        if (imageFormat === "png" || imageFormat === "jpg" || imageFormat === "jpeg" ||
+            imageFormat === "PNG" || imageFormat === "JPG" || imageFormat === "JPEG") { 
+        const files = [...myFiles];
+        files.push(...e.target.files);
+        setMyFiles(files);
+        setFileUrls(files)
 
-               
+        // Pusing inform with base64
+        const reader = new FileReader();
+        reader.addEventListener("load", () => {
+            allBaseImages.push(reader.result);
+            setbase64(allBaseImages);
+        });
+        reader.readAsDataURL(e.target.files[0]);
+        if (allBaseImages.length < 3) {
+            document.getElementById("image-media").style.display = "block"
+        }
+        else {
+            document.getElementById("image-media").style.display = "none"
+        }
+    }
+    else {
+        NotificationManager.error("Only .png, .jpg, .jpeg image formats supported.", "", 2000, () => {return 0}, true);  
+    }
+    };
 
-            const  stringLimit = (string , counts)=>{
-                var text = string;
-                var count = counts;
-                var result = text.slice(0, count) 
-                // + (text.length > count ? "*********" : "");
-                for(var i=0 ; i<=text.length ; i++){
-                    // text.replace(text.substr(1,text.length-3));
-                    var result = text.slice(0, count)+ (text.length > count ? "*******" : "");
-                } 
-                return result;
-            }
-    /************************************* Working here socket *******************************************************/
+    //    Setting urls for displaying here
+    const setFileUrls = (files) => {
+        const urls = files.map((file) => URL.createObjectURL(file));
+        if (myUrls.length > 0) {
+            myUrls.forEach((url) => URL.revokeObjectURL(url));
+        }
 
-    function readThenSendFile(data){
-      
-         var reader = new FileReader()
-        reader.onload = function(evt){
-            
-        //     var msg ={};
-        //     msg.file = evt.target.result;
-        //     msg.fileName = data.name;
-        //     msg.sessionId = sessionId;
-        //     msg.reciever_id = receiver_id;
-        //     SOCKET.emit('media_file', msg);
-        //     setLoading(true);
-
-        };
-         reader.readAsDataURL(data);
-
-        
+        setUrls(urls);
     }
 
 
-// const CheckBase64Type = (media) =>{
-//     const body = {profilepic:media};
-//     let mimeType = body.profilepic.match(/[^:]\w+\/[\w-+\d.]+(?=;|,)/)[0];
+    const convertBlobTobase64 = () => {
+        let count = 0;
+        if (!!baseMultipleImage &&
+            baseMultipleImage.length > 0) {
+            const imageMedia = document.getElementById("image-media");
 
-//     if(mimeType == "image/png")
-//     {
-//         return <img onError={(e) => addDefaultSrc(e)} src={!!media ? media : returnDefaultImage()}/>
-//     }
-//     else
-//     {
-//         return <video id="video_preview" onError={(e) => addDefaultSrc(e)} src={!!media ? media : returnDefaultImage()} width="300" height="300" controls></video>
-//     }
-     
-//     // return mimeType;
-// }
+            let photoInterval = window.setInterval(() => {
+                console.log(count, baseMultipleImage, "test...man")
+                if (count > baseMultipleImage.length - 1) {
+                    clearPhotoState()
+                    clearInterval(photoInterval);
+
+                }
+                else {
+                    var msg = {};
+                    msg.file = baseMultipleImage[count];
+                    msg.fileName = "test";
+                    msg.sessionId = sessionId;
+                    msg.reciever_id = receiver_id;
+                    SOCKET.emit('media_file', msg);
+                    setLoading(true);
+                    count += 1;
+                }
+            }, 2000)
+        }
+        else {
+            NotificationManager.warning("select atlease one image..")
+        }
+    }
+
+    // returning in html form to display 
+    const displayUploadedFiles = (urls) => {
+        return urls.map((url, i) => <div className="media-box"><img key={i} src={url} /></div>);
+    }
+
+
+
+
+    const stringLimit = (string, counts) => {
+        var text = string;
+        var count = counts;
+        var result = text.slice(0, count)
+        // + (text.length > count ? "*********" : "");
+        for (var i = 0; i <= text.length; i++) {
+            // text.replace(text.substr(1,text.length-3));
+            var result = text.slice(0, count) + (text.length > count ? "*******" : "");
+        }
+        return result;
+    }
+    /************************************* Working here socket *******************************************************/
+
+    function readThenSendFile(data) {
+
+        var reader = new FileReader()
+        reader.onload = function (evt) {
+
+            //     var msg ={};
+            //     msg.file = evt.target.result;
+            //     msg.fileName = data.name;
+            //     msg.sessionId = sessionId;
+            //     msg.reciever_id = receiver_id;
+            //     SOCKET.emit('media_file', msg);
+            //     setLoading(true);
+
+        };
+        reader.readAsDataURL(data);
+
+
+    }
+
+
+    // const CheckBase64Type = (media) =>{
+    //     const body = {profilepic:media};
+    //     let mimeType = body.profilepic.match(/[^:]\w+\/[\w-+\d.]+(?=;|,)/)[0];
+
+    //     if(mimeType == "image/png")
+    //     {
+    //         return <img onError={(e) => addDefaultSrc(e)} src={!!media ? media : returnDefaultImage()}/>
+    //     }
+    //     else
+    //     {
+    //         return <video id="video_preview" onError={(e) => addDefaultSrc(e)} src={!!media ? media : returnDefaultImage()} width="300" height="300" controls></video>
+    //     }
+
+    //     // return mimeType;
+    // }
 
     // Authenicating user here
     const DetermineUser = () => {
@@ -395,12 +402,12 @@ const ChatBox = (props) =>{
     }
 
     // Socket Methods
-    const CheckTextInputIsEmptyOrNot = (e) =>  {
+    const CheckTextInputIsEmptyOrNot = (e) => {
         e.preventDefault()
-        if ( UserMessage != '') {
+        if (UserMessage != '') {
             var secondUserDataId = FriendUserId;
             var message = { "session_id": sessionId, "reciever_id": secondUserDataId, "message": UserMessage }
-          
+
             SOCKET.emit("send_message", message);
             setuserMessage(''); //Empty user input here
         } else {
@@ -413,18 +420,18 @@ const ChatBox = (props) =>{
 
     const componentWillUnmount = () => {
         clearInterval(checkLastFrdsMsgInterval)
-     }
+    }
 
-    useEffect(() => {   
+    useEffect(() => {
         scrollToBottom();
         forceUpdate(); // force re-render
     }, [randomNumber])
-    
-    useEffect(()=>{
+
+    useEffect(() => {
         document.getElementById("tab-chat").click()
         // window.setTimeout(() => {
         //     $(document).on('change', '#uploadfile', function(e) {
-               
+
         //         var data = e.originalEvent.target.files[0]; 
         //         var imageData = e.target.files;
         //         const fileName = data.name.split(".");
@@ -433,20 +440,20 @@ const ChatBox = (props) =>{
         //             imageFormat === "PNG" || imageFormat === "JPG" || imageFormat === "JPEG") {  
         //             readThenSendFile(imageData); 
         //         }
-        
+
         //         else {
         //             alert("Only .png, .jpg, .jpeg image formats supported.")
         //         }
         //     })
         // }, 1000);
 
-             
+
 
         getAllDetails();
 
         SOCKET.on('get_frds_last_messages', (data) => {
             const last_messages = data.friends_list;
-            if (data.user_id == userData.user_id) {
+            if (!!userData && data.user_id == userData.user_id) {
                 console.log(my_friends_list, data, "here....")
                 for (let i in my_friends_list) {
                     if (my_friends_list[i].user_id == last_messages[i].user_id) {
@@ -488,23 +495,23 @@ const ChatBox = (props) =>{
                 ) { // check one-to-one data sync
 
                     if (!!messages.obj.warningMessage) {
-                    
+
                         setWarningMessage(messages.obj.warningMessage);
                         //alert(messages.obj.warningMessage)
                     }
                     else {
                         setWarningMessage('');
-                    messagesList.push(messages.obj);
-                    messageList = messagesList;
-                    setMessages(messagesList);
-                    setRandomNumber(Math.random());
-                    forceUpdate();
-                    scrollToBottom()
+                        messagesList.push(messages.obj);
+                        messageList = messagesList;
+                        setMessages(messagesList);
+                        setRandomNumber(Math.random());
+                        forceUpdate();
+                        scrollToBottom()
                     }
                 }
             }
         });
-        
+
         SOCKET.on('media_file', (messages) => {
             let messagesList = messageList;
             if (!!messages) {
@@ -513,55 +520,53 @@ const ChatBox = (props) =>{
                     (messages.obj.user_from_id === receiver_id && messages.obj.user_to_id === userData.user_id)
                 ) {
                     if (!!messages.obj.warningMessage) {
-                    
+
                         setWarningMessage(messages.obj.warningMessage);
                         //alert(messages.obj.warningMessage)
                         setLoading(false);
                     }
                     else {
                         setWarningMessage('');
-                    messagesList.push(messages.obj);
-                    messageList = messagesList;
-                    setMessages(messagesList);
-                    setuserMessage(''); //Empty user input here
-                    setLoading(false);
-                    setRandomNumber(Math.random());
-                    scrollToBottom()
+                        messagesList.push(messages.obj);
+                        messageList = messagesList;
+                        setMessages(messagesList);
+                        setuserMessage(''); //Empty user input here
+                        setLoading(false);
+                        setRandomNumber(Math.random());
+                        scrollToBottom()
                     }
                 }
             }
         });
 
-        SOCKET.on('gift_send',(messages) =>{
-           let messagesList = messageList;
-            if(!!messages)
-            {
+        SOCKET.on('gift_send', (messages) => {
+            let messagesList = messageList;
+            if (!!messages) {
                 if ((messages.obj.user_from_id === userData.user_id && messages.obj.user_to_id === receiver_id)
                     ||
                     (messages.obj.user_from_id === receiver_id && messages.obj.user_to_id === userData.user_id)
-                )
-                {
+                ) {
                     if (!!messages.obj.warningMessage) {
-                    
+
                         setWarningMessage(messages.obj.warningMessage);
                         //alert(messages.obj.warningMessage)
                         setLoading(false);
                     }
                     else {
                         setWarningMessage('');
-                    messagesList.push(messages.obj);
-                    messageList = messagesList;
-                    
-                    setMessages(messagesList);
-                    setLoading(false);
-                    setRandomNumber(Math.random());
-                    scrollToBottom();
+                        messagesList.push(messages.obj);
+                        messageList = messagesList;
+
+                        setMessages(messagesList);
+                        setLoading(false);
+                        setRandomNumber(Math.random());
+                        scrollToBottom();
                     }
                 }
             }
         });
 
-        SOCKET.on('voice', function(arrayBuffer) {
+        SOCKET.on('voice', function (arrayBuffer) {
             let messagesList = messageList;
             if (!!arrayBuffer) {
                 if ((arrayBuffer.obj.user_from_id === userData.user_id && arrayBuffer.obj.user_to_id === receiver_id)
@@ -569,18 +574,18 @@ const ChatBox = (props) =>{
                     (arrayBuffer.obj.user_from_id === receiver_id && arrayBuffer.obj.user_to_id === userData.user_id)
                 ) {
                     if (!!arrayBuffer.obj.warningMessage) {
-                        setWarningMessage(arrayBuffer.obj.warningMessage); 
-                      
+                        setWarningMessage(arrayBuffer.obj.warningMessage);
+
                     }
                     else {
-                       
+
                         setWarningMessage('');
-                    messagesList.push(arrayBuffer.obj);
-                    messageList = messagesList;
-                    setMessages(messagesList);
-                    setuserMessage(''); //Empty user input here
-                    setRandomNumber(Math.random());
-                    scrollToBottom()
+                        messagesList.push(arrayBuffer.obj);
+                        messageList = messagesList;
+                        setMessages(messagesList);
+                        setuserMessage(''); //Empty user input here
+                        setRandomNumber(Math.random());
+                        scrollToBottom()
                     }
                 }
             }
@@ -590,7 +595,7 @@ const ChatBox = (props) =>{
 
         return () => componentWillUnmount()
 
-    },[])
+    }, [])
 
     // On text typing value
     const changeInput = (e) => {
@@ -602,7 +607,7 @@ const ChatBox = (props) =>{
         })
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         if (GetActivity === 2) {
             SOCKET.connect();
             // checkLastFrdsMsgInterval = window.setInterval(() => {
@@ -613,12 +618,13 @@ const ChatBox = (props) =>{
             // }, 1000)
         }
         else {
+            setFriendId('')
             componentWillUnmount()
             // SOCKET.disconnect();
         }
-    },[GetActivity])
+    }, [GetActivity])
 
-    useEffect(()=>{
+    useEffect(() => {
 
         if (GetActivity === 2) {
             setMessages([]);
@@ -626,13 +632,18 @@ const ChatBox = (props) =>{
             getFriendDetails();
             SOCKET.on('getMessage', (messages) => { // only one time
                 setLoading(false);
-              
-                    setMessages(messages.message_list);
-                    messageList = messages.message_list;
-                
+
+                setMessages(messages.message_list);
+                messageList = messages.message_list;
+
             });
         }
+        console.log(FriendUserId, "FriendUserId..")
         if (!!FriendUserId) {
+            console.log("FriendUserId.. in...")
+            setData('');
+            messageList = []
+            setMessages([]);
             clearPhotoState()
             receiver_id = FriendUserId;
             setWarningMessage('');
@@ -644,11 +655,11 @@ const ChatBox = (props) =>{
         }
         // get messagesfrom socket...
 
-    },[FriendUserId])
+    }, [FriendUserId])
 
-    var blobToBase64 = function(blob, callback) {
+    var blobToBase64 = function (blob, callback) {
         var reader = new FileReader();
-        reader.onload = function() {
+        reader.onload = function () {
             var dataUrl = reader.result;
             var base64 = dataUrl.split(',')[1];
             return callback(base64);
@@ -660,9 +671,9 @@ const ChatBox = (props) =>{
     }, [recording])
     const sendVoiceNote = () => {
         if (!dummyMediaRc) {
-            var constraints = {audio: true};
+            var constraints = { audio: true };
             let recordAudio = false;
-            if ( !!navigator.mediaDevices) {
+            if (!!navigator.mediaDevices) {
                 navigator.mediaDevices.getUserMedia(constraints).then(function (mediaStream) {
                     recordAudio = true;
                     var mediaRecorder = new MediaRecorder(mediaStream);
@@ -677,7 +688,7 @@ const ChatBox = (props) =>{
                     mediaRecorder.onstop = function (e) {
                         var blob = new Blob(this.chunks,);
                         blobToBase64(blob, (output) => {
-                            SOCKET.emit('radio', {blob: 'data:audio/mp3;base64,' + output, sessionId, reciever_id: FriendUserId});
+                            SOCKET.emit('radio', { blob: 'data:audio/mp3;base64,' + output, sessionId, reciever_id: FriendUserId });
                         })
                     };
 
@@ -687,12 +698,12 @@ const ChatBox = (props) =>{
                     NotificationManager.error('err.message', 'Click me!', 5000, () => {
 
                     });
-                   NotificationManager.error(err.message);
+                    NotificationManager.error(err.message);
                 })
             }
             else {
                 NotificationManager.info("You need a secure https connection in order to record voice");
-                
+
             }
         }
         else {
@@ -700,14 +711,14 @@ const ChatBox = (props) =>{
             setDummyMediaRc(null);
         }
     }
-    useEffect( () => {
-        
+    useEffect(() => {
+
         scrollToBottom()
     }, [CompleteMessageList])
 
     /*=============================== Video Call ========================================================*/
 
-    const handleVideo = (image) =>{
+    const handleVideo = (image) => {
         var secondUserDataId = FriendUserId;
         dispatch(
             videoCall({
@@ -723,7 +734,7 @@ const ChatBox = (props) =>{
     }
 
 
-    const handleCall = (image) =>{
+    const handleCall = (image) => {
         var secondUserDataId = FriendUserId;
         dispatch(
             audioCall({
@@ -738,15 +749,15 @@ const ChatBox = (props) =>{
         history.push("/searching-profile-call");
     }
 
- 
+
     const openFileHandler = () => {
-        if(baseMultipleImage.length < 4) {
+        if (baseMultipleImage.length < 4) {
             inputFile.current.click();
         }
         else {
             NotificationManager.error("You can upload max 4 images at a time..");
         }
-      };
+    };
 
     const clearPhotoState = () => {
         allBaseImages = []
@@ -755,7 +766,7 @@ const ChatBox = (props) =>{
         setUrls([])
         setUploadImage(false);
     }
-    return(
+    return (
 
         <section className="home-wrapper">
             <img className="bg-mask" src="/assets/images/mask-bg.png" alt="Mask" />
@@ -766,7 +777,7 @@ const ChatBox = (props) =>{
                             <div className="d-flex flex-wrap align-items-center">
                                 <div className="logo-tab d-flex justify-content-between align-items-start">
                                     <a href="javascript:void(0)">
-                                        <Logo/>
+                                        <Logo />
                                     </a>
                                 </div>
                             </div>
@@ -778,20 +789,20 @@ const ChatBox = (props) =>{
                         </div>
                         <div className="col-lg-5 p-3">
                             <div className="tab-top d-flex flex-wrap-wrap align-items-center">
-                            {!!userData&&
-                            <>
-                             {userData.packages.length>0 ? 
-                             <div className="vc-action-tab ml-auto vip-icon-top">
-                             <span>
-                                 <img src="/assets/images/013-crown.png"/>
-                                 {/* <i className="fas fa-crown" /> */}
-                             </span>
-                                <span className="member-type ml-2">VIP</span>
-                            </div>
-                            : ""}
-                            </>
-                            }
-                        
+                                {!!userData &&
+                                    <>
+                                        {userData.packages.length > 0 ?
+                                            <div className="vc-action-tab ml-auto vip-icon-top">
+                                                <span>
+                                                    <img src="/assets/images/013-crown.png" />
+                                                    {/* <i className="fas fa-crown" /> */}
+                                                </span>
+                                                <span className="member-type ml-2">VIP</span>
+                                            </div>
+                                            : ""}
+                                    </>
+                                }
+
                                 <NavLinks />
                             </div>
                         </div>
@@ -818,92 +829,92 @@ const ChatBox = (props) =>{
                                     <div className="contacts-outter">
                                         <ul className="nav contacts" role="tablist">
 
-                                            { Likes.map((item, i) => (
-                                                (!!userData && userData.packages.length>0 ?
+                                            {Likes.map((item, i) => (
+                                                (!!userData && userData.packages.length > 0 ?
                                                     <li className="nav-item  w-100">
-                                                    <a className="nav-link" href="#chat-field" data-toggle="tab" data-id={item.like_id} role="tab" onClick = {() =>AcceptUserRequest(item.like_id)}>
-                                                 
-                                                   <img alt={item.first_name} className="img-circle medium-image" src={item.profile_images} />
-                                                        <div className="contacts_info">
-                                                            <div className="user_detail">
-                                                                <span className="message-time">{item.created_at}</span>
-                                                                <h6 className="mb-0 name">{item.first_name } .{" " + item.age}</h6>
-                                                                {/* <div className="message-count">2</div> */}
-                                                            </div>
-                                                            <div className="vcentered info-combo">
-                                                            <p>{item.liked_at}</p>
-                                                            </div>
-                                                        </div>
-                                                    </a>
-                                              
-                                                </li>
-                                                
-                                                    : 
-                                                    <li className="nav-item w-100">
-                                                    <a className="nav-link" href="#chat-field" style={{cursor: "default"}} data-toggle="tab" data-id={item.like_id} role="tab">
-                                                   <div className="chat__user__img">
-                                                   <i className="fas fa-lock"></i>
-                                                   <img alt={item.first_name} className="img-circle medium-image" src={item.profile_images} /></div> 
-                                                        <div className="contacts_info">
-                                                            <div className="user_detail">
-                                                                <span className="message-time">{item.created_at}</span>
-                                                                <h6 className="mb-0 name">{stringLimit(item.first_name , 3)  +" "}.{" " + item.age}</h6>
-                                                                {/* <div className="message-count">2</div> */}
-                                                            </div>
-                                                            <div className="vcentered info-combo">
-                                                                <p>{item.liked_at}</p>
-                                                            </div>
-                                                        </div>
-                                                    </a>
+                                                        <a className="nav-link" href="#chat-field" data-toggle="tab" data-id={item.like_id} role="tab" onClick={() => AcceptUserRequest(item.like_id)}>
 
-                                                </li>)
-                                           
+                                                            <img alt={item.first_name} className="img-circle medium-image" src={item.profile_images} />
+                                                            <div className="contacts_info">
+                                                                <div className="user_detail">
+                                                                    <span className="message-time">{item.created_at}</span>
+                                                                    <h6 className="mb-0 name">{item.first_name} .{" " + item.age}</h6>
+                                                                    {/* <div className="message-count">2</div> */}
+                                                                </div>
+                                                                <div className="vcentered info-combo">
+                                                                    <p>{item.liked_at}</p>
+                                                                </div>
+                                                            </div>
+                                                        </a>
+
+                                                    </li>
+
+                                                    :
+                                                    <li className="nav-item w-100">
+                                                        <a className="nav-link" href="#chat-field" style={{ cursor: "default" }} data-toggle="tab" data-id={item.like_id} role="tab">
+                                                            <div className="chat__user__img">
+                                                                <i className="fas fa-lock"></i>
+                                                                <img alt={item.first_name} className="img-circle medium-image" src={item.profile_images} /></div>
+                                                            <div className="contacts_info">
+                                                                <div className="user_detail">
+                                                                    <span className="message-time">{item.created_at}</span>
+                                                                    <h6 className="mb-0 name">{stringLimit(item.first_name, 3) + " "}.{" " + item.age}</h6>
+                                                                    {/* <div className="message-count">2</div> */}
+                                                                </div>
+                                                                <div className="vcentered info-combo">
+                                                                    <p>{item.liked_at}</p>
+                                                                </div>
+                                                            </div>
+                                                        </a>
+
+                                                    </li>)
+
                                             ))}
                                         </ul>
-                                     
+
                                     </div>
-                                
+
                                 </div>
                                 <div id="visitors" className="contacts-outter-wrapper tab-pane fade" role="tabpanel" aria-labelledby="tab-visitors">
                                     <div className="contacts-outter">
                                         <ul className="nav contacts" role="tablist">
 
-                                            { Visitors.map((item, i) => (
-                                                 (!!userData && userData.packages.length>0 ? 
-                                            <li className="nav-item w-100">
-                                                    <a className="nav-link" href="#chat-field" data-toggle="tab" role="tab" onClick={() => handleVistior(item.id)} >
-                                                        <img alt={item.full_name} className="img-circle medium-image" src={item.profile_images}/>
-                                                        <div className="contacts_info">
-                                                            <div className="user_detail">
-                                                                <span className="message-time">{item.created_at}</span>
-                                                                <h6 className="mb-0 name">{item.full_name}</h6>
-                                                                {/* {/* <div className="message-count">2</div> */}
+                                            {Visitors.map((item, i) => (
+                                                (!!userData && userData.packages.length > 0 ?
+                                                    <li className="nav-item w-100">
+                                                        <a className="nav-link" href="#chat-field" data-toggle="tab" role="tab" onClick={() => handleVistior(item.id)} >
+                                                            <img alt={item.full_name} className="img-circle medium-image" src={item.profile_images} />
+                                                            <div className="contacts_info">
+                                                                <div className="user_detail">
+                                                                    <span className="message-time">{item.created_at}</span>
+                                                                    <h6 className="mb-0 name">{item.full_name}</h6>
+                                                                    {/* {/* <div className="message-count">2</div> */}
+                                                                </div>
+                                                                <div className="vcentered info-combo">
+                                                                    <p>Yep, I'm new in town and I wanted</p>
+                                                                </div>
                                                             </div>
-                                                            <div className="vcentered info-combo">
-                                                                <p>Yep, I'm new in town and I wanted</p>
+                                                        </a>
+                                                    </li>
+                                                    :
+                                                    <li className="nav-item w-100">
+                                                        <a className="nav-link" href="#chat-field" style={{ cursor: "default" }} data-toggle="tab" role="tab" >
+                                                            <div className="chat__user__img">
+                                                                <i className="fas fa-lock"></i>
+                                                                <img alt={item.full_name} className="img-circle medium-image" src={item.profile_images} />
                                                             </div>
-                                                        </div>
-                                                    </a>
-                                                </li>
-                                                : 
-                                                <li className="nav-item w-100">
-                                                <a className="nav-link" href="#chat-field" style={{cursor: "default"}} data-toggle="tab" role="tab" >
-                                                <div className="chat__user__img">
-                                               <i className="fas fa-lock"></i>
-                                                    <img alt={item.full_name} className="img-circle medium-image" src={item.profile_images}/>
-                                                    </div>
-                                                    <div className="contacts_info">
-                                                        <div className="user_detail">
-                                                            <span className="message-time">{item.created_at}</span>
-                                                            <h6 className="mb-0 name">{item.full_name}</h6>
-                                                            {/* {/* <div className="message-count">2</div> */}
-                                                        </div>
-                                                        <div className="vcentered info-combo">
-                                                            <p>Yep, I'm new in town and I wanted</p>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </li> )
+                                                            <div className="contacts_info">
+                                                                <div className="user_detail">
+                                                                    <span className="message-time">{item.created_at}</span>
+                                                                    <h6 className="mb-0 name">{item.full_name}</h6>
+                                                                    {/* {/* <div className="message-count">2</div> */}
+                                                                </div>
+                                                                <div className="vcentered info-combo">
+                                                                    <p>Yep, I'm new in town and I wanted</p>
+                                                                </div>
+                                                            </div>
+                                                        </a>
+                                                    </li>)
                                             ))}
 
                                         </ul>
@@ -913,9 +924,9 @@ const ChatBox = (props) =>{
                                     <div className="contacts-outter">
                                         <ul className="nav contacts" role="tablist">
 
-                                            { FriendList.map((item, i) => {
+                                            {FriendList.map((item, i) => {
                                                 return <li className="nav-item w-100">
-                                                    <a className="nav-link" href="#chat-field" data-toggle="tab" data-id={item.user_id} role="tab" onClick={() =>  setFriendId(item.user_id)}>
+                                                    <a className="nav-link" href="#chat-field" data-toggle="tab" data-id={item.user_id} role="tab" onClick={() => setFriendId(item.user_id)}>
 
                                                         <img alt="Mia" className="img-circle medium-image" src={item.profile_images} />
                                                         <div className="contacts_info">
@@ -927,23 +938,23 @@ const ChatBox = (props) =>{
                                                             <div className="vcentered info-combo">
                                                                 {
                                                                     item.last_message_type === 0 &&
-                                                                        <div className="chat-text">
-                                                                            <p>{item.last_message}</p>
-                                                                        </div>
+                                                                    <div className="chat-text">
+                                                                        <p>{item.last_message}</p>
+                                                                    </div>
                                                                 }
                                                                 {
-                                                                    (item.last_message_type === 1 ||  item.last_message_type === 3) &&
-                                                                        <div className="chat-media">
-                                                                           <i class="fas fa-image"></i>
-                                                                        </div>
+                                                                    (item.last_message_type === 1 || item.last_message_type === 3) &&
+                                                                    <div className="chat-media">
+                                                                        <i class="fas fa-image"></i>
+                                                                    </div>
                                                                 }
                                                                 {
                                                                     item.last_message_type === 2 &&
-                                                                        <div className="chat-audio">
-                                                                            <i class="fas fa-music"></i>
-                                                                        </div>
+                                                                    <div className="chat-audio">
+                                                                        <i class="fas fa-music"></i>
+                                                                    </div>
                                                                 }
-                                                                
+
                                                             </div>
                                                         </div>
                                                     </a>
@@ -953,9 +964,9 @@ const ChatBox = (props) =>{
                                     </div>
                                 </div>
                             </div>
-                           
+
                         </div>
-                        
+
                         {/* Chat box here */}
                         {GetActivity === 2 ?
                             <div className="col-md-8 tab-content chat-block" role="tablist">
@@ -965,12 +976,17 @@ const ChatBox = (props) =>{
                                         <figcaption>Nothing To See</figcaption>
                                     </figure>
                                 </div>
+                             
+                                
                                 <div className="tab-pane tab-pane fade" id="chat-field">
                                     <div className="message-top d-flex flex-wrap align-items-center justify-content-between">
+                                        {
+
+                                            !loading &&
                                         <div className="chat-header-info d-flex align-items-center">
                                             {!!AllData ? <img alt="Mia" style={{cursor:"pointer"}} className="img-circle medium-image" onClick={handleOpenImage} src={AllData.profile_images}/> : ""}
                                             <div className="chat-user-info ml-2">
-                                                {!!AllData ? <h5 className="mb-0 name">{AllData.first_name}</h5> : <h5>  </h5> }
+                                                {!!AllData ? <h5 className="mb-0 name">{AllData.first_name}</h5> : <h5>  </h5>}
                                                 <div className="info">
                                                     {!!AllData &&
                                                     <>{AllData.occupation}{AllData.occupation!="" && AllData.age !="" ? " ," : ""} {AllData.age} </>
@@ -979,18 +995,22 @@ const ChatBox = (props) =>{
                                                 </div>
                                             </div>
                                         </div>
-                                        
-                                        {/* Video call */}
-                                        <div className="chat-call-opt d-flex">
-                                        <a className="bg-grd-clr mr-3" onClick = {() => handleCall(AllData.profile_images[0])} href="javascript:void(0)">
-                                             
-                                                <i className="fas fa-phone-alt" /></a>
-                                            <a className="bg-grd-clr" onClick = {() => handleVideo(AllData.profile_images[0])} href="javascript:void(0)">
-                                          
-                                                <i className="fas fa-video" />
+}
 
-                                            </a>
-                                        </div>
+                                        {/* Video call */}
+                                        {
+                                            !loading &&
+                                            <div className="chat-call-opt d-flex">
+                                                <a className="bg-grd-clr mr-3" onClick={() => handleCall(AllData.profile_images[0])} href="javascript:void(0)">
+
+                                                    <i className="fas fa-phone-alt" /></a>
+                                                <a className="bg-grd-clr" onClick={() => handleVideo(AllData.profile_images[0])} href="javascript:void(0)">
+
+                                                    <i className="fas fa-video" />
+
+                                                </a>
+                                            </div>
+                                        }
                                     </div>
 
                                     {/*<div className="chat-date text-center my-2">Today</div>*/}
@@ -1005,7 +1025,7 @@ const ChatBox = (props) =>{
                                                                 <div className="message info">
                                                                     <div className="message-body">
                                                                         {
-                                                                            !!data.media &&   
+                                                                            !!data.media &&
                                                                             <div className="media-socket">
                                                                                 <img  onClick={() => setImageFull({open: true, media: (!!data.media ? data.media : returnDefaultImage())})} onError={(e) => addDefaultSrc(e)} src={!!data.media ? data.media : returnDefaultImage()}/>
                                                                             </div>
@@ -1020,8 +1040,8 @@ const ChatBox = (props) =>{
                                                                         }
                                                                         {
                                                                             !!data.audio &&
-                                                                            <div  className="audio-socket">
-                                                                                <audio controls src={data.audio} className="audio-left"/>
+                                                                            <div className="audio-socket">
+                                                                                <audio controls src={data.audio} className="audio-left" />
                                                                             </div>
                                                                         }
 
@@ -1036,7 +1056,7 @@ const ChatBox = (props) =>{
                                                                                 <img onClick={() => setImageFull({open: true, media: (!!data.media ? data.media : returnDefaultImage())})} onError={(e) => addDefaultSrc(e)} src={!!data.media ? data.media : returnDefaultImage()}/>
                                                                             </div>
                                                                         }
-                                                                        
+
 
                                                                         {
                                                                             !!data.message &&
@@ -1047,7 +1067,7 @@ const ChatBox = (props) =>{
                                                                         {
                                                                             !!data.audio &&
                                                                             <div>
-                                                                                <audio controls src={data.audio} className="audio-right"/>
+                                                                                <audio controls src={data.audio} className="audio-right" />
                                                                             </div>
                                                                         }
 
@@ -1058,40 +1078,40 @@ const ChatBox = (props) =>{
                                                 ))
                                             }
                                             {
-                                                
-                                                    !!threeMessageWarning &&
-                                                    <div className="message-text warning-msg" >
+
+                                                !!threeMessageWarning &&
+                                                <div className="message-text warning-msg" >
                                                     <p>{threeMessageWarning}</p>
                                                 </div>
-                                                }
+                                            }
                                         </div>
                                         <form onSubmit={CheckTextInputIsEmptyOrNot}>
 
-                                        <div className="chat-footer">
-                                        {uploadImage ?                                 
-                                        <div className="send-photos-modal">
-                                            <a href="javascript:void(0)" className="theme-txt done-media" onClick={convertBlobTobase64}>Done</a>
-                                            <a href="javascript:void(0)"  onClick={(() => clearPhotoState())} className="close-image-btn"><span className="close-image-btn "><img src="/assets/images/btn_msg_close.png" /></span></a>
-                                            <h6 className="text-center">Send Photos</h6>
-                                            
-                                            <div className="send-photos-listing d-flex my-4">
-                                                <div id="image-media"className="media-box add-media">
-                                                <a id="upload__media" href="javascript:void(0)" onClick={openFileHandler}>
-                                                <img src="/assets/images/add-media.svg" alt="add media" />
-                                                 <input id="uploadfile" type="file" className="d-none" ref={inputFile} onChange={handleFileChange} multiple="true" accept="image/* , video/*"/>
-                                                    </a>
-                                                </div>
-                                               
-                                              {/* Displaying image here */}
-                                              {myUrls.length > 0 &&
-                                                   <>
-                                                   { displayUploadedFiles(myUrls) }
-                                                   </> 
-                                                }
-                                         
-                                            </div>
-                                            
-                                            {/* <h6>Put Price</h6>
+                                            <div className="chat-footer">
+                                                {uploadImage ?
+                                                    <div className="send-photos-modal">
+                                                        <a href="javascript:void(0)" className="theme-txt done-media" onClick={convertBlobTobase64}>Done</a>
+                                                        <a href="javascript:void(0)" onClick={(() => clearPhotoState())} className="close-image-btn"><span className="close-image-btn "><img src="/assets/images/btn_msg_close.png" /></span></a>
+                                                        <h6 className="text-center">Send Photos</h6>
+
+                                                        <div className="send-photos-listing d-flex my-4">
+                                                            <div id="image-media" className="media-box add-media">
+                                                                <a id="upload__media" href="javascript:void(0)" onClick={openFileHandler}>
+                                                                    <img src="/assets/images/add-media.svg" alt="add media" />
+                                                                    <input id="uploadfile" type="file" className="d-none" ref={inputFile} onChange={handleFileChange} multiple="true" accept=".png, .jpg, .jpeg, .PNG, .JPG, .JPEG" />
+                                                                </a>
+                                                            </div>
+
+                                                            {/* Displaying image here */}
+                                                            {myUrls.length > 0 &&
+                                                                <>
+                                                                    {displayUploadedFiles(myUrls)}
+                                                                </>
+                                                            }
+
+                                                        </div>
+
+                                                        {/* <h6>Put Price</h6>
                                             <div className="image-coins d-flex">
                                             <div className="coin-price">
                                                 <input type="radio" id="coin-value1" name="coin" />
@@ -1117,19 +1137,19 @@ const ChatBox = (props) =>{
                                                 
                                             </div>
                                             </div> */}
-                                        </div>
-                                        
-                                        : ""}
+                                                    </div>
+
+                                                    : ""}
 
                                                 <div className="sweet-loading">
                                                     <BarLoader color={"#fcd46f"} loading={loading} css={override} size={1000} />
                                                 </div>
                                                 <label className="upload-file">
                                                     <div>
-                                                    <a href="javascript:void(0)" onClick={()=> setUploadImage(!uploadImage)} >
-                                                        {/* <input id="uploadfile" type="file" accept=".png, .jpg, .jpeg, .PNG, .JPG, .JPEG" /> */}
-                                                        <img src="/assets/images/msg-icon.png" alt="add media" />
-                                                        {/* <i className="far fa-image" /> */}
+                                                        <a href="javascript:void(0)" onClick={() => setUploadImage(!uploadImage)} >
+                                                            {/* <input id="uploadfile" type="file" accept=".png, .jpg, .jpeg, .PNG, .JPG, .JPEG" /> */}
+                                                            <img src="/assets/images/msg-icon.png" alt="add media" />
+                                                            {/* <i className="far fa-image" /> */}
                                                         </a>
                                                     </div>
                                                 </label>
@@ -1141,10 +1161,10 @@ const ChatBox = (props) =>{
                                                     </a>
                                                 </label>
                                                 <label className="record-message">
-                                                    <a  onClick={sendVoiceNote}>
+                                                    <a onClick={sendVoiceNote}>
                                                         {
                                                             dummyMediaRc &&
-                                                            <i className="fas fa-microphone-slash"/>
+                                                            <i className="fas fa-microphone-slash" />
                                                         }
                                                         {
                                                             !dummyMediaRc &&
@@ -1154,28 +1174,28 @@ const ChatBox = (props) =>{
                                                     </a>
                                                 </label>
                                                 <button type="submit" className="send-message-button bg-grd-clr"><i className="fas fa-paper-plane" /></button>
-                                                
+
                                             </div>
                                             {
-                                                    !!chatTyping &&
-                                                    <div>{chatTyping} is typing...</div>
-                                                }
+                                                !!chatTyping &&
+                                                <div>{chatTyping} is typing...</div>
+                                            }
                                         </form>
                                     </div>
 
                                 </div>
 
                             </div>
-                            :<div className="nothing-to-see text-center active">
+                            : <div className="nothing-to-see text-center active">
                                 <figure>
                                     <img src="/assets/images/message-circle.png" alt="Message" />
                                     <figcaption>Nothing To See</figcaption>
                                 </figure>
-                            </div> }
-                       
+                            </div>}
+
                         {/* End chat box here */}
 
-            <Modal className =" fullSize-image-modal" show={imageFullSize.open} onHide={() => setImageFull({open: false, media: null})} backdrop="static" keyboard={false}>
+            <Modal className ="fullSize-image-modal" show={imageFullSize.open} onHide={() => setImageFull({open: false, media: null})} backdrop="static" keyboard={false}>
             
             <img onError={(e) => addDefaultSrc(e)} src={ imageFullSize.media}/>
          
@@ -1197,7 +1217,7 @@ const ChatBox = (props) =>{
                                 <div className="all-gift-body">
 
                                     <ul className="d-flex flex-wrap text-center gift__items">
-                                        {GiftData.map((items , i) => {
+                                        {GiftData.map((items, i) => {
                                             return <li onClick={() => getGiftItem(items.id)}>
                                                 <a href="javascript:void(0)" >
                                                     <div>

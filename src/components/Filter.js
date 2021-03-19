@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import {  useHistory } from 'react-router';
 import axios from "axios";
@@ -10,13 +9,12 @@ import {Typography} from '@material-ui/core';
 import {filterData, profile, logout} from '../features/userSlice';
 import useToggle, { removeDublicateFrds }from '../components/CommonFunction';
 import { useDispatch } from 'react-redux';
+import { NotificationManager} from 'react-notifications';
 
 const useStyles = makeStyles({
   root: {
     backgroundcolor: '#f4c862',
     height: 5,
-
-    
   },
 });
 

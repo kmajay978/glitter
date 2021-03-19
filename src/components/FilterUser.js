@@ -16,6 +16,7 @@ import Swipe from "./Swipe";
 import TinderCardTest from "./TinderCard";
 import useToggle, { removeDublicateFrds }from '../components/CommonFunction';
 import SyncLoader from "react-spinners/SyncLoader";
+import { NotificationManager} from 'react-notifications';
 import { css } from "@emotion/core";
 const alreadyRemoved = [];
 let isMouseClick = false, startingPos = [], glitterUid;

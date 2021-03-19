@@ -342,7 +342,7 @@ const LiveVideoChat = () => {
                             let count = 0;
                             let heartInterval = window.setInterval(() => {
                                 if (count < 5) {
-                                    
+
                                     document.getElementById("next").click();
                                     count++;
                                 }
@@ -577,7 +577,7 @@ const LiveVideoChat = () => {
                         <div className="col-lg-5 p-3">
                             <div className="d-flex flex-wrap align-items-center">
                                 <div className="logo-tab d-flex justify-content-between align-items-start">
-                                    <a href="javascript:void(0)" style={{cursor: "default"}}>
+                                    <a href="javascript:void(0)" style={{ cursor: "default" }}>
                                         <img src="/assets/images/glitters.png" alt="Glitters" />
                                     </a>
                                 </div>
@@ -586,14 +586,20 @@ const LiveVideoChat = () => {
                                         <figure>
                                             <img onError={(e) => addDefaultSrc(e)} src={!!user ? user.profile_images[0] : returnDefaultImage()} alt="Augusta Castro" />
                                         </figure>
+
+
                                         {
                                             !!user &&
                                             <div class="name ml-2">
                                                 {user.first_name}
                                                 <span class="age"> {user.age}</span>
                                                 <span class="d-block small">{totalTimeLeft}</span>
-                                                <span class="small">
-                                                    <img src="/assets/images/eye-icon.svg" /> {totalViews}</span>
+                                                {
+                                                    (!!userData && userData.user_id == params.user_id) &&
+                                                    <span class="small">
+                                                        <img src="/assets/images/eye-icon.svg" /> {totalViews}</span>
+                                                }
+
                                             </div>
 
                                         }
@@ -603,10 +609,16 @@ const LiveVideoChat = () => {
 
                                                 <span class="age"> </span>
                                                 <span class="d-block small"> </span>
-                                                <span class="small">
-                                                    <img src="/assets/images/eye-icon.svg" /> </span>
+                                                {
+                                                    (!!userData && userData.user_id == params.user_id) &&
+                                                    <span class="small">
+                                                        <img src="/assets/images/eye-icon.svg" /> </span>
+                                                }
+
                                             </div>
+
                                         }
+
                                     </div>
                                     <div className="remaining-coins ml-4">
                                         <><img src="/assets/images/diamond-coin.png" alt="Coins" /> </>
@@ -721,10 +733,10 @@ const LiveVideoChat = () => {
                                     </li>
                                     {
                                         <li className="send-heart">
-                                            <div class="hearts" style={{left: (!!userData && userData.user_id != params.user_id) ? "0px" : "-50px"}}></div>
+                                            <div class="hearts" style={{ left: (!!userData && userData.user_id != params.user_id) ? "0px" : "-50px" }}></div>
                                             {
                                                 (!!userData && userData.user_id != params.user_id) &&
-                                                    <a className="btn-round bg-grd-clr" href="javascript:void(0)" id="heart" onClick={sendHeart}><i class="fa fa-heart"></i></a>
+                                                <a className="btn-round bg-grd-clr" href="javascript:void(0)" id="heart" onClick={sendHeart}><i class="fa fa-heart"></i></a>
                                             }
                                         </li>
                                     }
@@ -741,7 +753,7 @@ const LiveVideoChat = () => {
                                         <figure>
                                             <img src="/assets/images/message-circle.png" alt="Message" />
                                             <figcaption>Nothing To See</figcaption>
-                                        </figure> 
+                                        </figure>
                                     </div>
                                 }
                                 <div class="live__comments__items live__comments" id="chat-body">
