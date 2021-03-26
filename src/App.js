@@ -44,6 +44,11 @@ function App(props) {
   const dispatch = useDispatch();
   const is_auth = useSelector(userAuth); //using redux useSelector here
   userData = useSelector(userProfile).user.profile; //using redux useSelector here
+  function onBackButtonEvent(event) {
+    event.preventDefault();
+    // the user shouldn’t be able to move backward or forward
+    }
+
   useEffect(() => {
     SOCKET.connect();
     const sessionId = localStorage.getItem("session_id");
@@ -133,6 +138,14 @@ function App(props) {
 
 
   useEffect(() => {
+      window.history.pushState(null, "", window.location.href);        
+      // window.onpopstate = function() {
+      //     window.history.pushState(null, "", window.location.href);
+      // };
+
+  // window.addEventListener('popstate', function (event) {
+  //   history.pushState(null, document.title, location.href);
+  // });
   
     // handleRefresh();
     
@@ -149,7 +162,7 @@ function App(props) {
     //     window.location.hash = "no-back-button";
     // }
 
-    // // Anything in here is fired on component mount. Component did mount
+    // Anything in here is fired on component mount. Component did mount
     // const { history } = props;
     // history.listen((newLocation, action) => {
     //   if (action === "PUSH") {

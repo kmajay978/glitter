@@ -40,6 +40,22 @@ top: 66%;
 transform: translateY(-50%);
 `;
 
+const overridePackage = css`
+    
+text-align: center;
+width: 95%;
+position: absolute;
+left: 0;
+right: 0;
+margin: 0 auto;
+padding-top:60px;
+top: 35%;
+-webkit-transform: translateY(-50%);
+-moz-transform: translateY(-50%);
+transform: translateY(-50%);
+`;
+
+
 const Profile = (props) =>{
 
   
@@ -131,14 +147,13 @@ const handleCheck = (e) => {
   
   if(target.checked){
     let selectedArray = selectedCheck;
-    selectedArray.push(value)
-    setSlelected(selectedArray)
+    selectedArray.push(value);
+    setSlelected(selectedArray);
   }else{
     let selectedArray = selectedCheck;
     var index = selectedArray.indexOf(value); 
     selectedArray.splice(index,1);
-    setSlelected(selectedArray)
-
+    setSlelected(selectedArray);
   }
   
 }
@@ -194,8 +209,8 @@ const handleCheck = (e) => {
                 profile: data
             })
         );
-        var obj = [...Object.values(Object.keys(form.interests_hobbie))]
-        setHobbies(obj);
+        // var obj = [...Object.values(Object.keys(form.interests_hobbie))]
+        // setHobbies(obj);
        }
     
 
@@ -206,7 +221,7 @@ const handleCheck = (e) => {
      //update profile data
       
      const updateProfile = (e) =>{
-     
+     setIsLoading(true);
       const config = {
         headers : {
                   Accept: "application/json",
@@ -233,11 +248,14 @@ const handleCheck = (e) => {
    axios.post(EDITPROFILE_API , bodyParameters, config) 
    .then((response) => {
    
-   if(response.status==200  && !response.status.error){
+   if(response.status==200  && response.data.success==true){
+     setIsLoading(false);
     NotificationManager.success(response.data.message);
     setShow(false);
    }
-   
+   else{
+    NotificationManager.error(response.data.message);
+   }
    }, (error) =>{
     NotificationManager.error(error.message);
     if (error.toString().match("403")) {
@@ -283,7 +301,7 @@ const handleCheck = (e) => {
  
       if(picture == null)
       {
-        NotificationManager.error(" please, add the  picture ", "", 2000, () => {return 0}, true );
+        NotificationManager.error(" please, add the  picture ", "", 1600, () => {return 0}, true );
 
         setShowImage(true);
         isValid = false;
@@ -324,12 +342,12 @@ const handleCheck = (e) => {
    .then((response) => {
    
    if(response.status==200  && !response.status.error ){
-    NotificationManager.success(" profile picture update successfully", "", 2000, () => {return 0}, true);
+    NotificationManager.success("profile picture update successfully", "", 2000, () => {return 0}, true);
       setShowImage(false);
     ProfileData();
     setIsLoading(false);
    }
-  setPicture(null);
+   setPicture(null);
    }, (error) =>{
      setIsLoading(false);
     NotificationManager.error(error.message, "", 2000, () => {return 0}, true);
@@ -502,8 +520,8 @@ else {
       else {
         setWarningMessage("No recieved gifts found");
       }
-  }
-  catch (err) {
+   }
+   catch (err) {
     setLoadedModel(false);
     NotificationManager.error(err.message);
       if (err.toString().match("403")) {
@@ -790,14 +808,13 @@ const openFileUploader = () => {
           {interestData.map((item , i) => (
             // checked={CheckedItem(item.id)}
           <div className="form-group">
-              <input type="checkbox" id={"interests_hobbie"+i} onClick={handleCheck} name="interests_hobbie" value={item.id}/>
+              <input type="checkbox" id={"interests_hobbie"+i}  onClick={handleCheck} name="interests_hobbie" value={item.id}/>
             <label for={"interests_hobbie"+i}>  {item.interests_or_hobbies}</label>
             </div>
           ))}
          </div>
 
-          <a className="btn bg-grd-clr d-block btn-countinue-3" id="edit-second-step" href="javascript:void(0)" onClick={updateProfile}>Update</a>
-
+          <a className={!!isLoading ?"btn bg-grd-clr d-block btn-countinue-3 disabled" : "btn bg-grd-clr d-block btn-countinue-3" } id="edit-second-step" href="javascript:void(0)" onClick={updateProfile}>{!!isLoading ?"Processing...": "update"}</a>
      
       </div>
   
@@ -937,7 +954,6 @@ const openFileUploader = () => {
 
           {packageList.map((item,i) =>(
            (!!item && item.duration === "12") ?
-     
             <div className="membership-plans__block active mt-5">
             <a href="javascript:void(0)" key={i} onClick={(e) => Stripehandler(item.plan_id)}>
               <span className="membership-discount">{`save ${item.save}`}</span>
@@ -957,9 +973,8 @@ const openFileUploader = () => {
             </div>
           </a>
         </div>
-            
          ))}
-          <SyncLoader color={"#fcd46f"} loading={isLoaded} css={override} size={18} />
+          <SyncLoader color={"#fcd46f"} loading={isLoaded} css={overridePackage} size={18} />
           </div>
         
         </div>
@@ -996,7 +1011,7 @@ const openFileUploader = () => {
     </div>
   </section>
 
-  <Modal className =" edit-payment-modal" show={showStripe} onHide={() => setShowStripe(false)} backdrop="static" keyboard={false}>
+  <Modal className ="edit-payment-modal" show={showStripe} onHide={() => setShowStripe(false)} backdrop="static" keyboard={false}>
         <div className="edit-payment-modal__inner">       
           
             <h4 className="theme-txt text-center mb-4">Your Card details</h4>
@@ -1067,9 +1082,9 @@ const openFileUploader = () => {
     <a href="javascript:void(0)" className="modal-close" onClick={closeCoinSpend}><img src="/assets/images/btn_close.png" /></a>
   </Modal>
  
-  <Modal className ="blacklist-modal " show={showBlock} onHide={()=> setShowBlock(false)} backdrop="static" keyboard={false}>
+  <Modal className ="blacklist-modal" show={showBlock} onHide={()=> setShowBlock(false)} backdrop="static" keyboard={false}>
     <div className="edit-profile-modal__inner">
-    <h4 className="theme-txt text-center mb-4 ">Blacklist</h4>
+    <h4 className="theme-txt text-center mb-4">Blacklist</h4>
          
     {!!blockData&&
     <>
@@ -1273,7 +1288,7 @@ const openFileUploader = () => {
     <div className="all-gift-inner">
     <a href="javascript:void(0)" className="close-gift-btn modal-close" onClick={closeGiftModel}><img src="/assets/images/btn_close.png" /></a>
       <div className="all-gift-header d-flex flex-wrap align-items-center mb-3">
-        <h5 className="mb-0 mr-4">Send Gift</h5>
+        <h5 className="mb-0 mr-4">Received Gift</h5>
         <div className="remaining-coins">
           <img src="/assets/images/diamond-coin.png" alt="Coins" />
           <span> {!!userData&& userData.coins!=0 ?  userData.coins :  "0" }</span>

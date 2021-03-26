@@ -3,7 +3,10 @@ import {  useDispatch } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
 import {videoCall} from "../features/userSlice";
 
+ 
+
 const NavLinks = () => {
+  //  const {route} = useRouter()
     const dispatch = useDispatch();
     const history = useHistory();
 
@@ -13,6 +16,7 @@ const NavLinks = () => {
 
  
     useEffect(() => {
+ 
       // alert(window.location.href)
         pathname = window.location.pathname;
         // if (pathname !==)/chat   /searching-profile  /video-chat  /answer-calling
@@ -24,8 +28,18 @@ const NavLinks = () => {
             dispatch(videoCall(null))
         }
         setPath(pathname)
-       
+      
     }, [window.location.pathname]);
+
+    // useEffect(() => {
+    //   return () => {
+    //     // && history.location.pathname === "any specific path")
+    //     if (history.action === "POP") {
+    //       alert("pop")
+    //       history.replace(history.location.pathname, /* the new state */);
+    //     }
+    //   };
+    // }, [history])
 
     return(
       !path.match("/live-video-chat") && !path.match("/searching-profile") &&

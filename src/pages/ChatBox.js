@@ -15,7 +15,7 @@ import useToggle, { removeDublicateFrds } from '../components/CommonFunction';
 import { useHistory } from "react-router-dom";
 import { addDefaultSrc, returnDefaultImage, useForceUpdate } from "../commonFunctions";
 import { setWeekYear } from "date-fns";
-import {Modal} from 'react-bootstrap';
+import { Modal } from 'react-bootstrap';
 
 let checkLastFrdsMsgInterval, my_friends_list = [];
 
@@ -69,8 +69,9 @@ const ChatBox = (props) => {
     const [dummyMediaRc, setDummyMediaRc] = useState(null)
     const [chatTyping, setChatTyping] = useState("");
     const [threeMessageWarning, setWarningMessage] = useState("");
-    const [ imageFullSize , setImageFull] = useState({open: false, media: null});
+    const [imageFullSize, setImageFull] = useState({ open: false, media: null });
 
+    console.log(Visitors);
     console.log(FriendList, "FriendList.....")
     // const createNotificationCustom = (type) => {
 
@@ -99,9 +100,10 @@ const ChatBox = (props) => {
         const likes = await axios.post(LIKED_LIST, bodyParameters)
         setLikes(removeDublicateFrds(likes.data.data));
 
-        // Destructing response and getting data part
-        const visitor = await axios.post(VISITOR_LIST_API, bodyParameters)
-        setVisitors(removeDublicateFrds(visitor.data.result));
+        // // Destructing response and getting data part
+        // const visitor = await axios.post(VISITOR_LIST_API, bodyParameters)
+        // console.log(visitor.data.result, "kuch ni.....")
+        // setVisitors(removeDublicateFrds(visitor.data.result));
 
         const friend = await axios.post(FRIENDLIST_API, bodyParameters)
         const data = friend.data.data;
@@ -131,10 +133,13 @@ const ChatBox = (props) => {
     const getVisitors = async () => {  // Visitors here
         setActivity(1);
         try {
-            const { data: { result, error, status_code } } = await axios.post(VISITOR_LIST_API, bodyParameters)
-
-            if (status_code == 200) {
-                setVisitors(removeDublicateFrds(result));
+            const response = await axios.post(VISITOR_LIST_API, bodyParameters)
+            let response_data = response.data.result;
+            for (let i in response_data) {
+                response_data[i]['user_id'] = response_data[i]['id']
+            }
+            if (response.status == 200 && !response.status.error) {
+                setVisitors(removeDublicateFrds(response_data));
             }
         }
         catch (err) {
@@ -189,10 +194,10 @@ const ChatBox = (props) => {
         const { data: { data } } = await axios.post(GET_USERPROFILE_API, bodyParameters)
         setData(data);
     }
-// onclick profile image open single profile
-  const handleOpenImage =() =>{
-   history.push(`/${FriendUserId}/single-profile`)
-   }
+    // // onclick profile image open single profile
+    // const handleOpenImage = () => {
+    //     history.push(`/${FriendUserId}/single-profile`)
+    // }
 
 
     const AcceptUserRequest = (LikedUserId) => {
@@ -269,29 +274,29 @@ const ChatBox = (props) => {
         const fileName = data.name.split(".");
         const imageFormat = fileName[fileName.length - 1];
         if (imageFormat === "png" || imageFormat === "jpg" || imageFormat === "jpeg" ||
-            imageFormat === "PNG" || imageFormat === "JPG" || imageFormat === "JPEG") { 
-        const files = [...myFiles];
-        files.push(...e.target.files);
-        setMyFiles(files);
-        setFileUrls(files)
+            imageFormat === "PNG" || imageFormat === "JPG" || imageFormat === "JPEG") {
+            const files = [...myFiles];
+            files.push(...e.target.files);
+            setMyFiles(files);
+            setFileUrls(files)
 
-        // Pusing inform with base64
-        const reader = new FileReader();
-        reader.addEventListener("load", () => {
-            allBaseImages.push(reader.result);
-            setbase64(allBaseImages);
-        });
-        reader.readAsDataURL(e.target.files[0]);
-        if (allBaseImages.length < 3) {
-            document.getElementById("image-media").style.display = "block"
+            // Pusing inform with base64
+            const reader = new FileReader();
+            reader.addEventListener("load", () => {
+                allBaseImages.push(reader.result);
+                setbase64(allBaseImages);
+            });
+            reader.readAsDataURL(e.target.files[0]);
+            if (allBaseImages.length < 3) {
+                document.getElementById("image-media").style.display = "block"
+            }
+            else {
+                document.getElementById("image-media").style.display = "none"
+            }
         }
         else {
-            document.getElementById("image-media").style.display = "none"
+            NotificationManager.error("Only .png, .jpg, .jpeg image formats supported.", "", 2000, () => { return 0 }, true);
         }
-    }
-    else {
-        NotificationManager.error("Only .png, .jpg, .jpeg image formats supported.", "", 2000, () => {return 0}, true);  
-    }
     };
 
     //    Setting urls for displaying here
@@ -886,12 +891,12 @@ const ChatBox = (props) => {
                                                             <img alt={item.full_name} className="img-circle medium-image" src={item.profile_images} />
                                                             <div className="contacts_info">
                                                                 <div className="user_detail">
-                                                                    <span className="message-time">{item.created_at}</span>
-                                                                    <h6 className="mb-0 name">{item.full_name}</h6>
+                                                                    {/* <span className="message-time">{item.created_at}</span> */}
+                                                                    <h6 className="mb-0 name">{item.full_name}.{" " + item.age}</h6>
                                                                     {/* {/* <div className="message-count">2</div> */}
                                                                 </div>
                                                                 <div className="vcentered info-combo">
-                                                                    <p>Yep, I'm new in town and I wanted</p>
+                                                                    <p>{item.visited_at}</p>
                                                                 </div>
                                                             </div>
                                                         </a>
@@ -905,16 +910,17 @@ const ChatBox = (props) => {
                                                             </div>
                                                             <div className="contacts_info">
                                                                 <div className="user_detail">
-                                                                    <span className="message-time">{item.created_at}</span>
-                                                                    <h6 className="mb-0 name">{item.full_name}</h6>
+                                                                    {/* <span className="message-time">{item.created_at}</span> */}
+                                                                    <h6 className="mb-0 name">{item.full_name}.{" " + item.age}</h6>
                                                                     {/* {/* <div className="message-count">2</div> */}
                                                                 </div>
                                                                 <div className="vcentered info-combo">
-                                                                    <p>Yep, I'm new in town and I wanted</p>
+                                                                    <p>{item.visited_at}</p>
                                                                 </div>
                                                             </div>
                                                         </a>
                                                     </li>)
+
                                             ))}
 
                                         </ul>
@@ -976,26 +982,26 @@ const ChatBox = (props) => {
                                         <figcaption>Nothing To See</figcaption>
                                     </figure>
                                 </div>
-                             
-                                
+
+
                                 <div className="tab-pane tab-pane fade" id="chat-field">
                                     <div className="message-top d-flex flex-wrap align-items-center justify-content-between">
                                         {
 
                                             !loading &&
-                                        <div className="chat-header-info d-flex align-items-center">
-                                            {!!AllData ? <img alt="Mia" style={{cursor:"pointer"}} className="img-circle medium-image" onClick={handleOpenImage} src={AllData.profile_images}/> : ""}
-                                            <div className="chat-user-info ml-2">
-                                                {!!AllData ? <h5 className="mb-0 name">{AllData.first_name}</h5> : <h5>  </h5>}
-                                                <div className="info">
-                                                    {!!AllData &&
-                                                    <>{AllData.occupation}{AllData.occupation!="" && AllData.age !="" ? " ," : ""} {AllData.age} </>
-                                                    }
-                                                    {<>  </>}
+                                            <div className="chat-header-info d-flex align-items-center">
+                                                {!!AllData ? <img alt="Mia" style={{ cursor: "pointer" }} className="img-circle medium-image" onClick={() =>  history.push(`/${FriendUserId}/single-profile`)} src={AllData.profile_images} /> : ""}
+                                                <div className="chat-user-info ml-2">
+                                                    {!!AllData ? <h5 className="mb-0 name">{AllData.first_name}</h5> : <h5>  </h5>}
+                                                    <div className="info">
+                                                        {!!AllData &&
+                                                            <>{AllData.occupation}{AllData.occupation != "" && AllData.age != "" ? " ," : ""} {AllData.age} </>
+                                                        }
+                                                        {<>  </>}
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-}
+                                        }
 
                                         {/* Video call */}
                                         {
@@ -1027,7 +1033,7 @@ const ChatBox = (props) => {
                                                                         {
                                                                             !!data.media &&
                                                                             <div className="media-socket">
-                                                                                <img  onClick={() => setImageFull({open: true, media: (!!data.media ? data.media : returnDefaultImage())})} onError={(e) => addDefaultSrc(e)} src={!!data.media ? data.media : returnDefaultImage()}/>
+                                                                                <img onClick={() => setImageFull({ open: true, media: (!!data.media ? data.media : returnDefaultImage()) })} onError={(e) => addDefaultSrc(e)} src={!!data.media ? data.media : returnDefaultImage()} />
                                                                             </div>
                                                                         }
 
@@ -1053,7 +1059,7 @@ const ChatBox = (props) => {
                                                                         {
                                                                             !!data.media &&
                                                                             <div className="media-socket">
-                                                                                <img onClick={() => setImageFull({open: true, media: (!!data.media ? data.media : returnDefaultImage())})} onError={(e) => addDefaultSrc(e)} src={!!data.media ? data.media : returnDefaultImage()}/>
+                                                                                <img onClick={() => setImageFull({ open: true, media: (!!data.media ? data.media : returnDefaultImage()) })} onError={(e) => addDefaultSrc(e)} src={!!data.media ? data.media : returnDefaultImage()} />
                                                                             </div>
                                                                         }
 
@@ -1195,16 +1201,16 @@ const ChatBox = (props) => {
 
                         {/* End chat box here */}
 
-            <Modal className ="fullSize-image-modal" show={imageFullSize.open} onHide={() => setImageFull({open: false, media: null})} backdrop="static" keyboard={false}>
-            
-            <img onError={(e) => addDefaultSrc(e)} src={ imageFullSize.media}/>
-         
-           <a href="javascript:void(0)" className="modal-close" onClick={() => setImageFull({open: false, media: null})}><img src="/assets/images/btn_close.png" /></a>
-        </Modal>
-             
-              
-                            
-                        <div className={isOn ? 'all-gifts-wrapper active': 'all-gifts-wrapper '} >
+                        <Modal className="fullSize-image-modal" show={imageFullSize.open} onHide={() => setImageFull({ open: false, media: null })} backdrop="static" keyboard={false}>
+
+                            <img onError={(e) => addDefaultSrc(e)} src={imageFullSize.media} />
+
+                            <a href="javascript:void(0)" className="modal-close" onClick={() => setImageFull({ open: false, media: null })}><img src="/assets/images/btn_close.png" /></a>
+                        </Modal>
+
+
+
+                        <div className={isOn ? 'all-gifts-wrapper active' : 'all-gifts-wrapper '} >
                             <div className="all-gift-inner">
                                 <a href="javascript:void(0)" className="close-gift-btn modal-close" onClick={toggleIsOn}><img src="/assets/images/btn_close.png" /></a>
                                 <div className="all-gift-header d-flex flex-wrap align-items-center mb-3">

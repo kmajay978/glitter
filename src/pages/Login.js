@@ -461,7 +461,7 @@ const changeDate = (date) => {
                 <h4 className="theme-txt">Your Information</h4>
                 </div>
                 <div className="form-group">
-                <DatePicker className="bg-trsp" id="dateob" name="date-birth"   value={Dob} selected={Dob} required onChange={date => changeDate(date)} placeholder="Your Date of birth" />
+                <DatePicker className="bg-trsp" id="dateob" name="date-birth" format="dd/MM/yyyy" dayPlaceholder="dd" monthPlaceholder="mm" yearPlaceholder="yyyy" value={Dob} selected={Dob}  onChange={date => changeDate(date)} />
                 { Object.keys(dobErr).map((key) => {
                           return <div style={{color : "red"}}>{dobErr[key]}</div>
                         }) }
@@ -524,7 +524,7 @@ const changeDate = (date) => {
           <div className="signup-inner" id="login-tab-5">
           <div className="signup-header">
             <a href="javascript:void(0)" className="login-back-4 btn-back" onClick={() => setStep(step - 1)}><i className="fas fa-chevron-left" /></a>
-          <h4 class="theme-txt upload-txt-spacer">Upload Profile Photo</h4>
+          <h4 className="theme-txt upload-txt-spacer">Upload Profile Photo</h4>
           </div>
           <div className="form-group upload-field position-relative mb-5">
             <img id="PreviewPicture" src={imgData} />
@@ -542,7 +542,6 @@ const changeDate = (date) => {
     }
 
   }
-
 
   
 
@@ -622,7 +621,7 @@ const changeOtp = (value) => {
                <LoginSidebar/>
               </div>
               <div className="col-md-4 mx-auto">
-                <form action="#" method="post" id="login_form" enctype="multipart/form-data" >
+                <form action="#" method="post" id="login_form" encType="multipart/form-data" >
                   <div className="signup-wrapper__form">
 
                     <div className="signup-form text-center">
