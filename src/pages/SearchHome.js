@@ -529,7 +529,9 @@ const openFileUploder = () =>{
               newState.channel_name = data.channel_name;
               newState.channel_token = data.channel_token;
               localStorage.setItem("liveVideoProps", JSON.stringify(newState))
-              history.push('/'+data.host_id+ '/' + uuidv4() +'/'+ data.channel_name + '/live-video-chat')
+              const page = '/'+data.host_id+ '/' + uuidv4() +'/'+ data.channel_name + '/live-video-chat';
+              window.open('http://localhost:3000'+page,'PoP_Up','directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=1024,height=768')
+              // history.push('/'+data.host_id+ '/' + uuidv4() +'/'+ data.channel_name + '/live-video-chat')
           }
       })
 
@@ -561,8 +563,10 @@ const openFileUploder = () =>{
           if ((data.user_id == userData.user_id) && data.channel_id && data.channel_name) {
               // $('#live-modal').hide();
               // setShowLive(false)
-              history.push(data.user_id+ '/' + data.channel_id +'/'+ data.channel_name + '/live-video-chat')
-          }
+              // history.push(data.user_id+ '/' + data.channel_id +'/'+ data.channel_name + '/live-video-chat')
+              const page = '/' + data.user_id+ '/' + data.channel_id +'/'+ data.channel_name + '/live-video-chat'
+              window.open('http://localhost:3000'+page,'PoP_Up','directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=1024,height=768', "_self")
+            }
       });
 
     // uploadImage();
