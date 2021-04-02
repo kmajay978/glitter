@@ -15,7 +15,7 @@ const AnswerCalling = () =>{
     const receiverDetails = !!localStorage.getItem("receiverDetails") ? JSON.parse(localStorage.getItem("receiverDetails")) : null
     const senderDetails = !!localStorage.getItem("receiverDetails") ? JSON.parse(localStorage.getItem("receiverDetails")).sender_details : null
     useEffect(() => {
-        pickVideoCallInterval = window.setInterval(() => {
+        pickVideoCallInterval = window.setInterval(() => {    
             pickVideoCallCount = pickVideoCallCount + 1;
             SOCKET.emit("check_pick_video_call_status", {
                 type: receiverDetails.type,

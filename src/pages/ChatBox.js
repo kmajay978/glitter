@@ -158,14 +158,14 @@ const ChatBox = (props) => {
                     friends_list.push({ user_id: friendList[i].user_id })
                 }
                 checkLastFrdsMsgInterval = window.setInterval(() => {
-                    console.log(friends_list, "friends_list..")
-                    if (!!userData && userData.user_id !== null && userData.user_id !== undefined && friendList.length > 0) {
+                    // console.log(friends_list, "friends_list..")
+                    // if (!!userData && userData.user_id !== null && userData.user_id !== undefined && friendList.length > 0) {
 
-                        SOCKET.emit("get_frds_last_messages", {
-                            user_id: userData.user_id,
-                            friends_list
-                        })
-                    }
+                    //     SOCKET.emit("get_frds_last_messages", {
+                    //         user_id: userData.user_id,
+                    //         friends_list
+                    //     })
+                    // }
                 }, 1000)
                 setFriendlist(my_friends_list);
 
@@ -593,7 +593,7 @@ const ChatBox = (props) => {
 
         });
 
-        return () => componentWillUnmount()
+        return () => { componentWillUnmount()}
 
     }, [])
 
@@ -736,17 +736,20 @@ const ChatBox = (props) => {
 
     const handleCall = (image) => {
         var secondUserDataId = FriendUserId;
+        const audio_data = {
+            user_from_id: userData.user_id,
+            user_to_id: secondUserDataId,
+            user_to_image: image,
+            channel_id: uuidv4(),
+            channel_name: null,
+            channel_token: null
+        }
+        localStorage.setItem("audio_call", JSON.stringify(audio_data))
         dispatch(
-            audioCall({
-                user_from_id: userData.user_id,
-                user_to_id: secondUserDataId,
-                user_to_image: image,
-                channel_id: uuidv4(),
-                channel_name: null,
-                channel_token: null
-            })
+            audioCall(audio_data)
         );
-        history.push("/searching-profile-call");
+        window.open('http://localhost:3000/searching-profile-call','PoP_Up','directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=1024,height=768')  
+        // history.push("/searching-profile-call");
     }
 
 
