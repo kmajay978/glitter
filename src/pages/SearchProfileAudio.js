@@ -16,7 +16,9 @@ const SearchProfile = () =>{
   const history = useHistory();
 
   const [user_to, setUserTo] = useState({image: ""});
-  let videoCallState = useSelector(audioCallUser); //using redux useSelector here
+  // let videoCallState = useSelector(audioCallUser); //using redux useSelector here
+  let videoCallState = JSON.parse(localStorage.getItem("audio_call")) //using redux useSelector here
+  console.log(videoCallState, "videoCallState...")
   const userData = useSelector(userProfile).user.profile; //using redux useSelector here
   useEffect(() => {
     document.getElementById("stacked-cards-block").classList.remove("init");

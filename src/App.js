@@ -59,7 +59,8 @@ function App(props) {
       if (!!userData && (data.user_to_id == userData.user_id)) { // check one-to-one data sync
         localStorage.setItem("receiverDetails", JSON.stringify(data))
         const page = "/answer-calling"
-        history.push(page)
+        window.open('http://localhost:3000'+page,'PoP_Up','directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=1024,height=768')
+        // history.push(page)
       }
     })
     SOCKET.on('receiver_decline_video_call', (data) => {

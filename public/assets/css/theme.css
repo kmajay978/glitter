@@ -5317,4 +5317,5 @@ div.heart i {
 .fullSize-image-modal .modal-content {
     max-width: 600px !important;
     max-height: 600px !important;
+    overflow: hidden;
 }

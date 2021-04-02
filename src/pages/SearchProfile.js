@@ -16,7 +16,8 @@ const SearchProfile = () =>{
   const history = useHistory();
 
   const [user_to, setUserTo] = useState({image: ""});
-  let videoCallState = useSelector(videoCallUser); //using redux useSelector here
+  // let videoCallState = useSelector(videoCallUser); //using redux useSelector here
+  let videoCallState = JSON.parse(localStorage.getItem("video_call"))
   const userData = useSelector(userProfile).user.profile; //using redux useSelector here
 
 

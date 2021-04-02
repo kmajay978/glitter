@@ -127,7 +127,7 @@ export const startVideoChatInit = (history, dispatch, bodyParameters) => {
 export const startAudioChatInit = (history, dispatch, bodyParameters) => {
     axios.post(VIDEO_CALL_START,bodyParameters)
     .then((response) => {
-      if (response.status === 200) {
+      if (response.status === 200) { // db entry done
           window.setTimeout(() => {
               history.push("/false/" + bodyParameters.user_from_id + "/" + bodyParameters.user_to_id + "/" + bodyParameters.channel_id + "/" + bodyParameters.channel_name + "/audio-chat");
           }, 5000)
