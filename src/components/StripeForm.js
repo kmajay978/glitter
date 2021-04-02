@@ -1,13 +1,13 @@
 import React, { useState } from "react";
-import {ElementsConsumer, CardElement} from "@stripe/react-stripe-js";
+import { ElementsConsumer, CardElement } from "@stripe/react-stripe-js";
 import CardSection from "./CardSection";
-import {useSelector, useDispatch} from "react-redux";
-import {stripeDataPlanid , stripeCoinDataPlanid ,stripeCoinPlanId , stripePlanId , profile} from "../features/userSlice";
-import {ACTIVATE_STRIPE_PACKAGE , ACTIVATE_COIN_PACKAGE , GET_LOGGEDPROFILE_API} from "./Api";
-import { NotificationManager} from 'react-notifications';
+import { useSelector, useDispatch } from "react-redux";
+import { stripeDataPlanid, stripeCoinDataPlanid, stripeCoinPlanId, stripePlanId, profile } from "../features/userSlice";
+import { ACTIVATE_STRIPE_PACKAGE, ACTIVATE_COIN_PACKAGE, GET_LOGGEDPROFILE_API } from "./Api";
+import { NotificationManager } from 'react-notifications';
 import axios from "axios";
 import { useHistory } from "react-router-dom";
-import { ClipLoader} from "react-spinners";
+import { ClipLoader } from "react-spinners";
 import { css } from "@emotion/core";
 
 const override = css`
@@ -34,117 +34,112 @@ const CheckoutForm = (props) => {
 
     const dispatch = useDispatch();
     var sessionId = localStorage.getItem("session_id")
-   const profileData =() =>{
-    const bodyParameters = {
-        session_id: sessionId,
+    const profileData = () => {
+        const bodyParameters = {
+            session_id: sessionId,
         };
-          axios.post(GET_LOGGEDPROFILE_API,bodyParameters)
-          .then((response) => {
-          dispatch (
-              profile ({
-                  profile : response.data.data
-              })
-          );
-          } ,(error)=> {
-            NotificationManager.error(error.message, "", 2000, () => {return 0}, true);
-          })
-   } 
+        axios.post(GET_LOGGEDPROFILE_API, bodyParameters)
+            .then((response) => {
+                dispatch(
+                    profile({
+                        profile: response.data.data
+                    })
+                );
+            }, (error) => {
+                NotificationManager.error(error.message, "", 2000, () => { return 0 }, true);
+            })
+    }
 
     const handleSubmit = async event => {
         event.preventDefault();
-        const {stripe, elements} = props;
+        const { stripe, elements } = props;
         if (!stripe || !elements) {
             return;
         }
 
         const card = elements.getElement(CardElement);
         const result = await stripe.createToken(card);
-        
-        if (result.error) {
-            NotificationManager.error(result.error.message, "", 2000, () => {return 0}, true);
-        } else {
-             // Activating VIP Membership here
-            if(!!Selected_Stripe_planid){
-                setIsloading(true)
-            const bodyParameters = {
-                session_id: sessionId,
-                plan_id: Selected_Stripe_planid,
-                token: result.token.id
-            }
-            const stripeClose = document.getElementById("stripe-close");
-            axios
-                .post(ACTIVATE_STRIPE_PACKAGE, bodyParameters)
-                .then((response) => {
-                    setIsloading(false)
-                  
-                    if(response.status==200)
-                    { 
-                    NotificationManager.success( "You have subscribed the Package", "", 2000, () => {return 0}, true);
-                    dispatch(stripePlanId({stripePlanId: null}));
-                    profileData();
-                  }
-                  stripeClose.click();
-                }, (error) => {
-                    setIsloading(false);
-                    NotificationManager.error(error.message, "", 2000, () => {return 0}, true);
-                    if (error.toString().match("403")) {
-                        localStorage.removeItem("session_id");
-                        history.push('/login');
-                      }
-                   
-                    stripeClose.click();
-                });
-             
-        }
 
-        // Activating coin package here
-        if(!!Selected_Stripe_coinid)
-        {
-            setIsloading(true);
-            const bodyParameters = {
-                session_id: sessionId,
-                coins_package_id: Selected_Stripe_coinid,
-                token: result.token.id
+        if (result.error) {
+            NotificationManager.error(result.error.message, "", 2000, () => { return 0 }, true);
+        } else {
+            // Activating VIP Membership here
+            if (!!Selected_Stripe_planid) {
+                setIsloading(true)
+                const bodyParameters = {
+                    session_id: sessionId,
+                    plan_id: Selected_Stripe_planid,
+                    token: result.token.id
+                }
+                const stripeClose = document.getElementById("stripe-close");
+                axios
+                    .post(ACTIVATE_STRIPE_PACKAGE, bodyParameters)
+                    .then((response) => {
+                        setIsloading(false)
+
+                        if (response.status == 200) {
+                            NotificationManager.success("You have subscribed the Package", "", 2000, () => { return 0 }, true);
+                            dispatch(stripePlanId({ stripePlanId: null }));
+                            profileData();
+                        }
+                        stripeClose.click();
+                    }, (error) => {
+                        setIsloading(false);
+                        NotificationManager.error(error.message, "", 2000, () => { return 0 }, true);
+                        if (error.toString().match("403")) {
+                            localStorage.removeItem("session_id");
+                            history.push('/login');
+                        }
+                        stripeClose.click();
+                    });
+
             }
-            const stripeClose = document.getElementById("stripe-close")
-            axios
-                .post(ACTIVATE_COIN_PACKAGE, bodyParameters)
-                .then((response) => { 
-                    setIsloading(false);
-                    if(response.status==200)
-                    { 
-                        NotificationManager.success( "Your coin package activated", "", 2000, () => {return 0}, true);
-                        dispatch(stripeCoinPlanId({stripeCoinPlanId: null}));
-                        profileData();
-                  }
-               stripeClose.click();
-                }, (error) => {
-                    setIsloading(false);
-                    NotificationManager.error(error.message, "", 2000, () => {return 0}, true);
-                    if (error.toString().match("403")) {
-                        localStorage.removeItem("session_id");
-                        history.push('/login');
-                      }
-                   stripeClose.click();
-                });
+
+            // Activating coin package here
+            if (!!Selected_Stripe_coinid) {
+                setIsloading(true);
+                const bodyParameters = {
+                    session_id: sessionId,
+                    coins_package_id: Selected_Stripe_coinid,
+                    token: result.token.id
+                }
+                const stripeClose = document.getElementById("stripe-close")
+                axios
+                    .post(ACTIVATE_COIN_PACKAGE, bodyParameters)
+                    .then((response) => {
+                        setIsloading(false);
+                        if (response.status == 200) {
+                            NotificationManager.success("Your coin package activated", "", 2000, () => { return 0 }, true);
+                            dispatch(stripeCoinPlanId({ stripeCoinPlanId: null }));
+                            profileData();
+                        }
+                        stripeClose.click();
+                    }, (error) => {
+                        setIsloading(false);
+                        NotificationManager.error(error.message, "", 2000, () => { return 0 }, true);
+                        if (error.toString().match("403")) {
+                            localStorage.removeItem("session_id");
+                            history.push('/login');
+                        }
+                        stripeClose.click();
+                    });
+            }
+
         }
-       
-    }
     };
 
 
     return (
         <div>
             <form onSubmit={handleSubmit}>
-                <CardSection/>
-                <button disabled={(isLoading || !props.stripe) ? true : false} className="btn-pay">
-                
-                        {
-                            isLoading ? <ClipLoader color={"#fff"} loading={isLoading} css={override} />
+                <CardSection />
+                <button disabled={(!!isLoading || !props.stripe) ? true : false} className="btn-pay">
+                    {
+                        isLoading ? <ClipLoader color={"#fff"} loading={isLoading} css={override} />
                             :
                             "Buy Now"
-                        }
-                        
+                    }
+
                 </button>
             </form>
         </div>
@@ -155,7 +150,7 @@ const CheckoutForm = (props) => {
 export default function InjectedCheckoutForm() {
     return (
         <ElementsConsumer>
-            {({stripe, elements}) => (<CheckoutForm stripe={stripe} elements={elements}/>)}
+            {({ stripe, elements }) => (<CheckoutForm stripe={stripe} elements={elements} />)}
         </ElementsConsumer>
     );
 }

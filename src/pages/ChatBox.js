@@ -209,12 +209,12 @@ const ChatBox = (props) => {
         axios.post(ACCEPT_REQUEST_API, bodyParameters)
             .then((response) => {
                 if (response.status == 200) {
-                    NotificationManager.success(response.data.message);
+                    NotificationManager.success(response.data.message, "", 2000, () => {return 0}, true);
                     getLikes();
                 }
             }, (error) => {
                 if (error.toString().match("403")) {
-                    NotificationManager.error("Something went wrong");
+                    NotificationManager.error("Something went wrong", "", 2000, () => {return 0}, true);
                     localStorage.removeItem("session_id");
                     history.push('/login');
                 }
@@ -264,7 +264,7 @@ const ChatBox = (props) => {
         }
         else {
             toggleIsOn(false);
-            NotificationManager.error('Please recharge and try again', 'Insufficient Balance!');
+            NotificationManager.error('Please recharge and try again', 'Insufficient Balance!', "", 2000, () => {return 0}, true);
         }
     }
 
@@ -408,11 +408,10 @@ const ChatBox = (props) => {
 
     // Socket Methods
     const CheckTextInputIsEmptyOrNot = (e) => {
-        e.preventDefault()
+        e.preventDefault();
         if (UserMessage != '') {
             var secondUserDataId = FriendUserId;
             var message = { "session_id": sessionId, "reciever_id": secondUserDataId, "message": UserMessage }
-
             SOCKET.emit("send_message", message);
             setuserMessage(''); //Empty user input here
         } else {
