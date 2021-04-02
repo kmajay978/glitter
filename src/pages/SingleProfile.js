@@ -32,6 +32,7 @@ const SingleProfile = (props) =>{
     const [ archieveStoryCount, setArchiveStoryCount] = useState(0);
     const [ demoArchieves, setDemoArchieves] = useState([]);
     const [warningMessage , setWarningMessage]= useState('');
+    const [isLoading , setIsLoading] = useState(false);
 
     const showAllStatus = () => {setShowStatus(true);
     // handleStatus();
@@ -182,6 +183,7 @@ const SingleProfile = (props) =>{
         }
 
       const handleReport =() =>{
+        setIsLoading(true);
          const bodyParameters ={
           session_id: localStorage.getItem('session_id') ,
           report_user :checkUid ,
@@ -192,13 +194,16 @@ const SingleProfile = (props) =>{
         
           if(response.status==200&& response.data.error == false)
           { 
-            NotificationManager.success("report send successfully" , "", 2000, () => {return 0}, true);
+              NotificationManager.success("report send successfully" , "", 2000, () => {return 0}, true);
               setSmShow(false);
+              setIsLoading(false);
             }
            else {
+            setIsLoading(false);
             NotificationManager.error(response.data.error_message , "", 1500, () => {return 0}, true);
            }
          } ,(error) => {
+          setIsLoading(false);
           NotificationManager.error(error.message , "", 2000, () => {return 0}, true);
          });
 
@@ -323,7 +328,7 @@ const SingleProfile = (props) =>{
                     !!userData &&
                     <>
                       <h5>{userData.first_name+" " + userData.last_name}, {userData.age}</h5>
-                      <span>{userData.distance}, {userData.occupation}</span>
+                      <span>{userData.distance}{!!userData.occupation ? "," :""} {userData.occupation}</span>
                     </>
                   }
                   {
@@ -549,7 +554,7 @@ const SingleProfile = (props) =>{
                               <span>Other</span>  
                           </div>
                           </div>
-                          <a className="btn bg-grd-clr d-block btn-countinue-3 "  id="edit-second-step" href="javascript:void(0)" onClick={handleReport}>Send</a>
+                          <a className={!!isLoading ?"btn bg-grd-clr d-block btn-countinue-3 disabled" : "btn bg-grd-clr d-block btn-countinue-3"}  id="edit-second-step" href="javascript:void(0)" onClick={handleReport}>{!!isLoading ? "Processing" : "send"}</a>
           </form>
            </div>
            <a href="javascript:void(0)" className="modal-close" onClick={()=> setSmShow(false)}><img src="/assets/images/btn_close.png" /></a>

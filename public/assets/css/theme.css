@@ -4292,6 +4292,7 @@ object-fit: cover;
     border-radius: 0px !important;
     background: transparent !important;
     min-width: 10px;
+    color: #F4C862;
 }
 
 .react-date-picker__wrapper svg {
@@ -4301,6 +4302,7 @@ object-fit: cover;
 
 .react-date-picker__inputGroup {
     text-align: left;
+    color: #F4C862;
 }
 
 .react-calendar__month-view__weekdays__weekday {

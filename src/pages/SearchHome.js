@@ -57,6 +57,7 @@ transform: translateY(-30%);
 
 `;
 
+
 const SearchHome = () =>
 {
     const history = useHistory();
@@ -463,6 +464,7 @@ document.getElementById("image").remove()
     setShowPencil(false);
   }
   } ,(error) => {
+    
     NotificationManager.error(error.message , "", 2000, () => {return 0}, true );
     if (error.toString().match("403")) {
       localStorage.removeItem("session_id");
@@ -895,7 +897,7 @@ const openFileUploder = () =>{
                           }
                          
                        
-                        <a className="status-upload"  className={!!isLoading ?"btn bg-grd-clr btn-small mt-4 disabled" : "btn bg-grd-clr btn-small mt-4" } onClick={handleUploadStatus}>{!!isLoading ?  "Processing..." : " Publish Status"}</a>
+                        <a  className={!!isLoading ?"status-upload btn bg-grd-clr btn-small mt-4 disabled" : "status-upload btn bg-grd-clr btn-small mt-4" } onClick={handleUploadStatus}>{!!isLoading ?  "Processing..." : " Publish Status"}</a>
              
                     </div>
                     
