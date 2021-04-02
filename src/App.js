@@ -15,7 +15,7 @@ import { userProfile, videoCall } from "./features/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { profile, userAuth } from './features/userSlice';
 import { SOCKET } from "./components/Config";
-import { checkLiveDomain } from './commonFunctions';
+import { checkLiveDomain, openNewWindow } from './commonFunctions';
 import NotificationContainer from 'react-notifications/lib/NotificationContainer';
 import 'react-notifications/lib/notifications.css';
 
@@ -58,8 +58,7 @@ function App(props) {
     SOCKET.on('pick_video_call', (data) => {
       if (!!userData && (data.user_to_id == userData.user_id)) { // check one-to-one data sync
         localStorage.setItem("receiverDetails", JSON.stringify(data))
-        const page = "/answer-calling"
-        window.open('http://localhost:3000'+page,'PoP_Up','directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=1024,height=768')
+        openNewWindow("/answer-calling")
         // history.push(page)
       }
     })

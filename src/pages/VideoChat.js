@@ -123,7 +123,7 @@ const SearchProfile = () => {
       });
       SOCKET.emit("authenticate_one_to_one_video_message", {
         sender_id: Number(videoCallParams.user_from_id),
-        user_id: Number(userData.user_id),
+        user_id: Number(userData.user_id), 
         channel_name: videoCallParams.channel_name
     });
     }
@@ -139,11 +139,13 @@ const SearchProfile = () => {
     SOCKET.on('end_one_to_one_video_call_no_coin_warning', (data) => {
       if (data.channel_name == videoCallParams.channel_name) {
         if (Number(userData.user_id) === data.user_id) {
-          alert("No coins Left")
+          NotificationManager.error("no coins left", "", 2000, () => {return 0}, true);
+          // alert("No coins Left")
           endCall(false)
         }
         else { // audience..
-          alert("Your friend is left with no coins. Sorry the call is declining.")
+          NotificationManager.error("your friend is left with no coins. Sorry the call is declining", "", 2000, () => {return 0}, true);
+          // alert("Your friend is left with no coins. Sorry the call is declining.")
           endCall(false)
         }
       }

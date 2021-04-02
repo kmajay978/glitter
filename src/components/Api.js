@@ -40,16 +40,14 @@ export const RECEIVED_GIFT_LIST = getApiUrl("received-gifts");
 export const VIEW_LIKE_STATUS = getApiUrl("view_like_statuses");
 export const DETUCT_THOUSAND_COIN = getApiUrl("detuct_thousand_coins");
 export const ARCHIVE_STORIES = getApiUrl("archive_stories");
+export const ADD_STATUS_API=getApiUrl("add_status");
+export const ACCEPT_REQUEST_API=getApiUrl("accept_friend_like");
 
 // Not done yet
 export const CALL_ACTION_API=getApiUrl("call_action");
 export const CHECK_CALLSTATUS_API=getApiUrl("fetch_action");
-export const ACCEPT_REQUEST_API=getApiUrl("accept_friend_like");
 export const TOKEN_AGORA_API=getApiUrl("generateToken");
 export const TOKEN_AGORA_FORLIVE_API=getApiUrl("liveUserToken");
 export const ENDLIVE_API=getApiUrl("disconnectLive");
 export const GET_LIVE_USER_TOKEN_API=getApiUrl("getLiveUserToken");
 export const VISITOR_API=getApiUrl("view");
-export const ADD_STATUS_API=getApiUrl("add_status");
-
-

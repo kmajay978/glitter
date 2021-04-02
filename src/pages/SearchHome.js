@@ -13,7 +13,7 @@ import {SOCKET} from '../components/Config';
 import {useDispatch, useSelector} from "react-redux";
 import {userProfile} from "../features/userSlice";
 import {generateLiveVideoChatToken} from "../api/videoApi";
-import {addDefaultSrc, returnDefaultImage} from "../commonFunctions";
+import {addDefaultSrc, openNewWindow, returnDefaultImage} from "../commonFunctions";
 import useToggle , {removeDublicateFrds} from '../components/CommonFunction';
 import {SyncLoader , ClipLoader } from "react-spinners";
 import { css } from "@emotion/core";
@@ -530,7 +530,7 @@ const openFileUploder = () =>{
               newState.channel_token = data.channel_token;
               localStorage.setItem("liveVideoProps", JSON.stringify(newState))
               const page = '/'+data.host_id+ '/' + uuidv4() +'/'+ data.channel_name + '/live-video-chat';
-              window.open('http://localhost:3000'+page,'PoP_Up','directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=1024,height=768')
+              openNewWindow(page)
               // history.push('/'+data.host_id+ '/' + uuidv4() +'/'+ data.channel_name + '/live-video-chat')
           }
       })
@@ -565,7 +565,7 @@ const openFileUploder = () =>{
               // setShowLive(false)
               // history.push(data.user_id+ '/' + data.channel_id +'/'+ data.channel_name + '/live-video-chat')
               const page = '/' + data.user_id+ '/' + data.channel_id +'/'+ data.channel_name + '/live-video-chat'
-              window.open('http://localhost:3000'+page,'PoP_Up','directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=1024,height=768', "_self")
+              openNewWindow(page)
             }
       });
 

@@ -13,7 +13,7 @@ import { selectUser, userProfile, videoCall, audioCall } from "../features/userS
 import { NotificationManager } from 'react-notifications';
 import useToggle, { removeDublicateFrds } from '../components/CommonFunction';
 import { useHistory } from "react-router-dom";
-import { addDefaultSrc, returnDefaultImage, useForceUpdate } from "../commonFunctions";
+import { addDefaultSrc, openNewWindow, returnDefaultImage, useForceUpdate } from "../commonFunctions";
 import { setWeekYear } from "date-fns";
 import { Modal } from 'react-bootstrap';
 
@@ -209,12 +209,12 @@ const ChatBox = (props) => {
         axios.post(ACCEPT_REQUEST_API, bodyParameters)
             .then((response) => {
                 if (response.status == 200) {
-                    NotificationManager.success(response.data.message);
+                    NotificationManager.success(response.data.message, "", 2000, () => {return 0}, true);
                     getLikes();
                 }
             }, (error) => {
                 if (error.toString().match("403")) {
-                    NotificationManager.error("Something went wrong");
+                    NotificationManager.error("Something went wrong", "", 2000, () => {return 0}, true);
                     localStorage.removeItem("session_id");
                     history.push('/login');
                 }
@@ -264,7 +264,7 @@ const ChatBox = (props) => {
         }
         else {
             toggleIsOn(false);
-            NotificationManager.error('Please recharge and try again', 'Insufficient Balance!');
+            NotificationManager.error('Please recharge and try again', 'Insufficient Balance!', "", 2000, () => {return 0}, true);
         }
     }
 
@@ -408,11 +408,10 @@ const ChatBox = (props) => {
 
     // Socket Methods
     const CheckTextInputIsEmptyOrNot = (e) => {
-        e.preventDefault()
+        e.preventDefault();
         if (UserMessage != '') {
             var secondUserDataId = FriendUserId;
             var message = { "session_id": sessionId, "reciever_id": secondUserDataId, "message": UserMessage }
-
             SOCKET.emit("send_message", message);
             setuserMessage(''); //Empty user input here
         } else {
@@ -725,17 +724,20 @@ const ChatBox = (props) => {
 
     const handleVideo = (image) => {
         var secondUserDataId = FriendUserId;
+        const video_data ={
+            user_from_id: userData.user_id,
+            user_to_id: secondUserDataId,
+            user_to_image: image,
+            channel_id: uuidv4(),
+            channel_name: null,
+            channel_token: null 
+        }
+        localStorage.setItem("video_call" , JSON.stringify(video_data))
         dispatch(
-            videoCall({
-                user_from_id: userData.user_id,
-                user_to_id: secondUserDataId,
-                user_to_image: image,
-                channel_id: uuidv4(),
-                channel_name: null,
-                channel_token: null
-            })
+            videoCall(video_data)
         );
-        history.push("/searching-profile");
+        openNewWindow("/searching-profile")
+        // history.push("/searching-profile");
     }
 
 
@@ -753,7 +755,7 @@ const ChatBox = (props) => {
         dispatch(
             audioCall(audio_data)
         );
-        window.open('http://localhost:3000/searching-profile-call','PoP_Up','directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=1024,height=768')  
+        openNewWindow("/searching-profile-call")
         // history.push("/searching-profile-call");
     }
 

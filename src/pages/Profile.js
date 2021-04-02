@@ -250,14 +250,14 @@ const handleCheck = (e) => {
    
    if(response.status==200  && response.data.success==true){
      setIsLoading(false);
-    NotificationManager.success(response.data.message);
+    NotificationManager.success(response.data.message, "", 2000, () => {return 0}, true);
     setShow(false);
    }
    else{
-    NotificationManager.error(response.data.message);
+    NotificationManager.error(response.data.message, "", 2000, () => {return 0}, true);
    }
    }, (error) =>{
-    NotificationManager.error(error.message);
+    NotificationManager.error(error.message, "", 2000, () => {return 0}, true);
     if (error.toString().match("403")) {
       localStorage.removeItem("session_id");
       history.push('/login');
@@ -492,7 +492,7 @@ else {
       
       }, (error)=> {
         setLoadedModel(false);
-        NotificationManager.error(error.message);
+        NotificationManager.error(error.message, "", 2000, () => {return 0}, true);
         if (error.toString().match("403")) {
           localStorage.removeItem("session_id");
         
@@ -523,7 +523,7 @@ else {
    }
    catch (err) {
     setLoadedModel(false);
-    NotificationManager.error(err.message);
+    NotificationManager.error(err.message, "", 2000, () => {return 0}, true);
       if (err.toString().match("403")) {
           localStorage.removeItem("session_id");
           history.push('/login');
@@ -553,7 +553,7 @@ else {
     
    
        }, (error) =>{
-        NotificationManager.error(error.message);
+        NotificationManager.error(error.message, "", 2000, () => {return 0}, true);
         if (error.toString().match("403")) {
           localStorage.removeItem("session_id");
           history.push('/login');
@@ -822,7 +822,6 @@ const openFileUploader = () => {
              default:
         return 'foo';
     }
-
   }
 
   return(
