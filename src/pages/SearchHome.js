@@ -591,7 +591,15 @@ const SearchHome = () => {
         }
         for (let j in totalLiveFrds) {
           if (totalLiveFrds[j].user_id == frdList[i].user_id) {
-            frdList[i].is_live = true;
+            let is_live = true, countryCode = frdList[i].country_code;
+            for (let k in onlineUsers) {
+              if (frdList[i].user_id == onlineUsers[k].user_id) {
+                if (countryCode.match(onlineUsers[k].blocked_countries)) {
+                  is_live = false
+                }
+              }
+            }
+            frdList[i].is_live = is_live;
             frdList[i].channel_id = uuidv4();
             frdList[i].channel_name = totalLiveFrds[j].channel_name;
             frdList[i].channel_token = totalLiveFrds[j].channel_token;
@@ -603,6 +611,7 @@ const SearchHome = () => {
     });
     SOCKET.on('start_your_live_video_now', (data) => {
       if ((data.user_id == userData.user_id) && data.channel_id && data.channel_name) {
+        alert("live!!")
         // $('#live-modal').hide();
         // setShowLive(false)
         // history.push(data.user_id+ '/' + data.channel_id +'/'+ data.channel_name + '/live-video-chat')
@@ -621,9 +630,8 @@ const SearchHome = () => {
       user_id: userData.user_id,
       type: 3
     }
-    const call_type = 1, user_id = userData.user_id;
-    generateLiveVideoChatToken(dispatch, history, bodyParameters, call_type, user_id, uuidv4(), SOCKET);
-
+    const call_type = 1, user_id = userData.user_id, block_countries = '+92,'.slice(0, '+92,'.length - 1);
+    generateLiveVideoChatToken(dispatch, history, bodyParameters, call_type, user_id, uuidv4(), block_countries, SOCKET);
   }
 
   const watchLive = () => {

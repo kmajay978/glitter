@@ -77,7 +77,7 @@ export const generateAudioChatToken = (history, dispatch, bodyParameters, startV
 }
 
 
-export const generateLiveVideoChatToken = (dispatch, history, bodyParameters, call_type, user_id, channel_id, SOCKET) => {
+export const generateLiveVideoChatToken = (dispatch, history, bodyParameters, call_type, user_id, channel_id, block_countries, SOCKET) => {
     axios.post(TOKEN_AGORA_API,bodyParameters)
         .then((response) => {
             if (response.status === 200 && !response.data.error) {
@@ -92,7 +92,8 @@ export const generateLiveVideoChatToken = (dispatch, history, bodyParameters, ca
                 localStorage.setItem("liveVideoProps", JSON.stringify(newState))
 
                 dispatch(liveVideoCall(newState));
-                SOCKET.emit("start_live_video_call", newState)
+                SOCKET.emit("block_countries_live_video_call", {user_id, block_countries}, newState)
+                // SOCKET.emit("start_live_video_call", newState)
             }
             else {
                 if (response.status === 200 && response.data.error) {
