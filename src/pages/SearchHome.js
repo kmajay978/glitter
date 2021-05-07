@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import axios from "axios";
 import NavLinks from '../components/Nav';
 import FilterSide from '../components/Filter';
-import { ADD_STATUS, FRIENDLIST_API, GET_STATUS, VIEW_LIKE_STATUS, DETUCT_THOUSAND_COIN } from '../components/Api';
+import { ADD_STATUS, FRIENDLIST_API, GET_STATUS, LIKE_STATUS_API, DETUCT_THOUSAND_COIN } from '../components/Api';
 import { Modal } from 'react-bootstrap';
 import OwlCarousel from 'react-owl-carousel2';
 import { SOCKET } from '../components/Config';
@@ -21,11 +21,17 @@ import { NotificationManager } from 'react-notifications';
 import { friendStatus } from '../features/userSlice'
 import StatusUser from "../pages/StatusUser";
 import { Link } from "react-router-dom";
-import Select from 'react-dropdown-select';
+// import Select from 'react-dropdown-select';
 import { getCountries } from '../components/Countries';
 import { FacebookIcon, FacebookShareButton } from "react-share";
+import { getNameList } from 'country-list'
+import Select from 'react-select';
 
 let isMouseClick = false, startingPos = [], glitterUid, friendLists = [], userData = null, checkOnlineFrdsInterval;
+
+
+let isLikedStatus = false, TLikesStatus = 0, MLikesStatus = 0;
+
 
 const override = css`
 text-align: center;
@@ -90,16 +96,21 @@ const SearchHome = () => {
   const [viewStory, setViewStory] = useState(false);
   const [statusLoading, setStatusLoading] = useState(false);
   const [countrieBlock, setCountrieBlock] = useState([]);
-  const [statusPrice, setStatusPrice] = useState("0")
+  const [countrieList, setCountrieList] = useState([]);
+  const [statusPrice, setStatusPrice] = useState("0");
+console.log(countrieList, "countrieList....")
+
   // const [statusId , setStatusId] = useState("")
   userData = useSelector(userProfile).user.profile; //using redux useSelector here
-  const countries = getCountries();
+  const countries = getNameList();
+  // const countries = getCountries();
   console.log(statusPrice);
 
+  console.log(countrieList);
   const shareUrl = 'https://glittersapp.com/';
   const title = 'glitter-app';
 
-  console.log(countrieBlock, "countries");
+  console.log(countries, "countries");
   const option = {
     loop: false,
     margin: 20,
@@ -115,7 +126,23 @@ const SearchHome = () => {
     margin: 'auto'
   }
 
-  const customCollapsedComponent = ({ totalviews, status_id }) => {
+  useEffect(() => {
+    let countriesList = []; 
+    for (var key in countries) {
+      if (countries.hasOwnProperty(key)) {
+        countriesList.push({ "value": countries[key], "label": key })
+      }
+    }
+    setCountrieList(countriesList)
+    // for (const [key, value] of Object.entries(countries)) {
+    //   setCountrieList( { "value": value, "label": key })
+    //   }
+  }, [countries])
+ 
+ useEffect(() => {
+  console.log(countrieBlock, "countrieBlock..")
+ }, [countrieBlock])
+  const customCollapsedComponent = ({ totalviews, status_id, total_likes, is_liked }) => {
     return <>
       {/* 
       <div className="status_heading">
@@ -124,11 +151,37 @@ const SearchHome = () => {
 
       <div className="status_footer">
         <span className="status_view"><img src="/assets/images/eye-icon.svg" alt="eye" />{totalviews}</span>
-        <div className="status_like" onClick={() => alert(status_id)}>
-          <span ><img src="/assets/images/heart-icon.svg" alt="like status" /> 2,190</span>
+        <div className="status_like" onClick={() => likeStatus(status_id, is_liked)}>
+          <span ><img src="/assets/images/heart-icon.svg" alt="like status" /> {TLikesStatus}</span>
         </div>
       </div>
     </>
+  }
+  // Like status
+  const likeStatus = (Id, is_liked) => {
+    if (isLikedStatus) {
+      if (TLikesStatus > (MLikesStatus - 1)) {
+        TLikesStatus = TLikesStatus - 1 == -1 ? 0 : TLikesStatus - 1;
+        isLikedStatus = false
+      }
+    }
+    else {
+      if (TLikesStatus < (MLikesStatus + 1)) {
+        TLikesStatus = TLikesStatus + 1;
+        isLikedStatus = true
+      }
+    }
+      const bodyParameters = {
+        session_id: localStorage.getItem("session_id"),
+        status_id: Id
+      }
+      axios.post(LIKE_STATUS_API, bodyParameters)
+        .then((response) => {
+          if(response.status==200 && !response.status.error){
+          }
+        }, (error) => {
+  
+        });
   }
 
   useEffect(() => {
@@ -144,24 +197,32 @@ const SearchHome = () => {
   if (!!storyData) {
     for (let i in storyData) {
       console.log(storyData[i]);
-      if(storyData[i].type=="image")
-      {
-        if(storyData[i].paid_status==false ){
-          storyData[i].url = "/assets/images/heart-icon.svg"
+      if (storyData[i].type == "image") {
+        if (storyData[i].paid_status == false) {
+          storyData[i].url = "/assets/images/blur.png"
+        }
       }
-      }
-      else{
-        if(storyData[i].paid_status==false ){
-          storyData[i].url = "/assets/images/heart-icon.svg"
-      }
+      else {
+        if (storyData[i].paid_status == false) {
+          storyData[i].url = "/assets/images/blur.png"
+        }
       }
       storyData[i].seeMore = () => customCollapsedComponent(storyData[i]);
       storyData[i].seeMoreCollapsed = () => customCollapsedComponent(storyData[i]);
     }
   }
 
-  const stories =
-    !!storyData ? storyData : []
+  const stories = !!storyData ? storyData : []
+
+  const seeStatus = (stories, e) => {
+    isLikedStatus = stories[e].is_liked;
+    TLikesStatus = stories[e].total_likes;
+    MLikesStatus = stories[e].total_likes;
+    console.log(e , "start...")
+    if (!stories[e].is_seen) {
+      // hit see api
+    }
+  }
 
   const statusoptions = {
     loop: false,
@@ -284,13 +345,6 @@ const SearchHome = () => {
 
       });
   }
-  //Like view status api
-  const ViewStatus = () => {
-
-  }
-
-
-
 
   const handleStatus = (user_id) => {
     setStatusLoading(true);
@@ -345,6 +399,18 @@ const SearchHome = () => {
 
 
 
+  const changeCountries = (data) => {
+    const my_countries = getCountries();
+    for (let i in data) {
+      for (let j in my_countries) {
+        if (data[i].value == my_countries[j].code) {
+          data[i].phone = "+"+my_countries[j].phone
+        }
+      }
+    }
+    setCountrieBlock(data);
+  }
+  
   const modelClose = () => {
     setUploadStatus(false);
     setLivePopup(false)
@@ -772,7 +838,6 @@ const SearchHome = () => {
       </div>
 
       <Modal id="status-modal" show={viewStory} onHide={() => setViewStory(false)} backdrop="static" keyboard={false}>
-        {/* <div className="status-modal"> */}
         <div className="story-modal" style={{ position: "relative" }}>
           <a href="javascript:void(0)" className="close-gift-btn modal-close" onClick={closeDialog}><img src="/assets/images/btn_close.png" /></a>
           {
@@ -780,38 +845,17 @@ const SearchHome = () => {
             <>
               <Stories
                 stories={stories}
-                defaultInterval={3000}
+                defaultInterval={4500}
                 storyStyles={storyContent}
                 width={377}
                 height={468}
-                onAllStoriesEnd={() => setViewStory(false)}
+                onStoryStart={(e) => seeStatus(stories, e)}
+                onAllStoriesEnd={closeDialog}
               />
             </>
           }
-          {/* </div> */}
         </div>
       </Modal>
-
-      {/* <div className={isOn ? 'all-gifts-wrapper active': 'all-gifts-wrapper'} >
-    <div className="status-modal">
-    <a href="javascript:void(0)" className="close-gift-btn modal-close" onClick={closeDialog}><img src="/assets/images/btn_close.png" /></a>
-      <div className="all-gift-body">
-      
-      {
-  stories.length > 0 &&
-  
-  <Stories
-      stories={stories}
-      defaultInterval={3000}
-      storyStyles={storyContent}
-      width={377}
-      height={468}
-  />      
-}
-      </div>
-      
-    </div>
-  </div> */}
 
       {/* <div className="modal fade" id="status-modal" tabIndex={-1} role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div className="modal-dialog" role="document">
@@ -908,17 +952,13 @@ const SearchHome = () => {
 
               </div>
               {!!picture && videoData == 'image' ?
-
                 <div className="preview">
-
                   <img onError={(e) => addDefaultSrc(e)} id="PreviewPicture" src={!!imgData ? imgData : returnDefaultImage()
                   } />
                 </div>
                 : videoData == 'video' ?
                   <div className="preview">
-
                     <video id="video_preview" src={videoFile} width="300" height="300" controls></video>
-
                   </div>
                   : ""
               }
@@ -967,10 +1007,10 @@ const SearchHome = () => {
       </Modal>
 
       {/* Live video screen Pop up */}
-      <Modal className="theme-modal" id="upload-media-modal" id="live-modal" show={showLivePopup} onHide={() => setLivePopup(false)} backdrop="static" keyboard={false} style={{ display: 'block', paddingLeft: '17px' }}>
-        {/* <div className="modal-dialog" role="document"> 
-        <div className="modal-content">
-        <div className="modal-body p-0">*/}
+      <Modal className="live-modals" id="upload-media-modal" id="live-modal" show={showLivePopup} onHide={() => setLivePopup(false)} backdrop="static" keyboard={false} style={{ display: 'block', paddingLeft: '17px' }}>
+        {/* <div className="modal-dialog" role="document">  */}
+        {/* <div className="modal-content"> */}
+        {/* <div className="modal-body p-0"> */}
         <div className="live-wrapper">
           <div className="live__leftblk">
             <div className="live_info d-flex">
@@ -1014,13 +1054,21 @@ const SearchHome = () => {
                 </div>                                    
               </div> */}
             </div>
+
             <Select
+              value={countrieBlock}
+              onChange={(data) => changeCountries(data)}
+              options={countrieList}
+              isMulti={true}
+            />
+
+            {/* <Select
               multi
               options={countries}
               placeholder="select countries"
               onChange={(value) => setCountrieBlock(value)}
               style={{ color: "#6c757d" }}
-            />
+            /> */}
           </div>
           <div className="live_rightblk  text-center">
             <h5 className="mb-4">Select Tag</h5>
@@ -1074,11 +1122,11 @@ const SearchHome = () => {
               <span>Live</span>
             </div>
           </div>
-          <a href="javascript:void(0)" className="modal-close" onClick={modelClose}><img src="/assets/images/btn_close.png" /></a>
         </div>
 
-        {/*  </div>
-     </div> */}
+        {/* </div> */}
+        {/* </div> */}
+        <a href="javascript:void(0)" className="modal-close" onClick={modelClose}><img src="/assets/images/btn_close.png" /></a>
         {/* <div className="modal-close">
       <img src="/assets/images/btn_close.png" alt="close popup" onClick={() => setLivePopup(false)} />
     </div> */}

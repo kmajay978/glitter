@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 
-
 export const API_BASE_URL = "https://rrmr.co.in/glitter-101/api/";
 export const getApiUrl = (endpoint) => API_BASE_URL + endpoint;
 export const LOGIN_API = getApiUrl("/api/login");
@@ -42,6 +41,7 @@ export const DETUCT_THOUSAND_COIN = getApiUrl("detuct_thousand_coins");
 export const ARCHIVE_STORIES = getApiUrl("archive_stories");
 export const ADD_STATUS_API = getApiUrl("add_status");
 export const ACCEPT_REQUEST_API = getApiUrl("accept_friend_like");
+export const LIKE_STATUS_API = getApiUrl("like_status");
 
 // Not done yet
 export const CALL_ACTION_API = getApiUrl("call_action");

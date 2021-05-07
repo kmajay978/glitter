@@ -1708,6 +1708,16 @@ small.story__time {
 .modal-content {
     margin: 0 auto;
     max-width: 700px;
+    /* background-color: #373737; */
+    -webkit-border-radius: 30px;
+    -moz-border-radius: 30px;
+    border-radius: 30px;
+    padding: 60px;
+}
+
+.modal-content {
+    margin: 0 auto;
+    max-width: 700px;
     background-color: #373737;
     -webkit-border-radius: 30px;
     -moz-border-radius: 30px;
@@ -4452,14 +4462,14 @@ span.gift__discount {
 }
 
 /* go live modal */
-.theme-modal .modal-dialog {
+.live-modals .modal-dialog {
     max-width: 800px;
     background-color: #373737;
     border-radius: 30px;
     padding: 30px;
 }
 
-.theme-modal .modal-dialog .modal-content {
+.live-modals .modal-dialog .modal-content {
     background-color: transparent;
     border: none;
 }
