@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import $ from 'jquery';
 import { useHistory, useParams } from 'react-router';
 import axios from "axios";
-import Logo from '../components/Logo';
 import { SOCKET } from '../components/Config';
 import NavLinks from '../components/Nav';
 import { css } from "@emotion/core";
@@ -38,7 +37,6 @@ const SearchProfile = () => {
   const dispatch = useDispatch();
   const videoCallState = useSelector(videoCallUser); //using redux useSelector here
 
-  const [isExpired, setIsExpired] = useState(false);
   const [totalCoinsLeft, setTotalCoinsLeft] = useState(null);
   const [totalTimeLeft, setTotalTimeLeft] = useState(null);
   const [chatTyping, setChatTyping] = useState("");
@@ -51,9 +49,6 @@ const SearchProfile = () => {
   const [randomNumber, setRandomNumber] = useState('');
   const [isOn, toggleIsOn] = useToggle();
   const [GiftData, setGiftData] = useState([]);
-  const [givenGift, setGivenGift] = useState();
-  const [reRenderGifts, setReRenderGifts] = useState('');
-
 
   const userData = useSelector(userProfile).user.profile; //using redux useSelector here
 
@@ -108,7 +103,7 @@ const SearchProfile = () => {
       }
       else {
         videoCallStatus = 3
-         componentWillUnmount()
+        componentWillUnmount()
       }
       // check with backend + socket if this channel exist...
       if (params.receiver == "false") {
@@ -123,9 +118,9 @@ const SearchProfile = () => {
       });
       SOCKET.emit("authenticate_one_to_one_video_message", {
         sender_id: Number(videoCallParams.user_from_id),
-        user_id: Number(userData.user_id), 
+        user_id: Number(userData.user_id),
         channel_name: videoCallParams.channel_name
-    });
+      });
     }
     SOCKET.on('unauthorize_video_call', (data) => {
       if ((data.user_from_id == videoCallParams.user_from_id && data.user_to_id == videoCallParams.user_to_id)
@@ -139,12 +134,12 @@ const SearchProfile = () => {
     SOCKET.on('end_one_to_one_video_call_no_coin_warning', (data) => {
       if (data.channel_name == videoCallParams.channel_name) {
         if (Number(userData.user_id) === data.user_id) {
-          NotificationManager.error("no coins left", "", 2000, () => {return 0}, true);
+          NotificationManager.error("no coins left", "", 2000, () => { return 0 }, true);
           // alert("No coins Left")
           endCall(false)
         }
         else { // audience..
-          NotificationManager.error("your friend is left with no coins. Sorry the call is declining", "", 2000, () => {return 0}, true);
+          NotificationManager.error("your friend is left with no coins. Sorry the call is declining", "", 2000, () => { return 0 }, true);
           // alert("Your friend is left with no coins. Sorry the call is declining.")
           endCall(false)
         }
@@ -168,80 +163,80 @@ const SearchProfile = () => {
       let messagesList = messageList;
 
       if (
-          // message.sender_id == videoCallParams.user_id &&
-          // message.user_id == videoCallState.user_id &&
-          videoCallParams.channel_name == message.channel_name) { //check one-to-one data sync
-          if (!!message.message.message) {
-              if (message.sender_id == videoCallParams.user_from_id &&
-                  message.user_id == userData.user_id) {
-                  alert(message.message.message)
-              }
+        // message.sender_id == videoCallParams.user_id &&
+        // message.user_id == videoCallState.user_id &&
+        videoCallParams.channel_name == message.channel_name) { //check one-to-one data sync
+        if (!!message.message.message) {
+          if (message.sender_id == videoCallParams.user_from_id &&
+            message.user_id == userData.user_id) {
+            alert(message.message.message)
           }
-          else {
-              if (message.message.chat_type === 0) {
-                  const new_message = {
-                      message: message.message.text_message,
-                      message_sender_name: message.message.message_sender_name,
-                      receiver_id: userData.user_id,
-                      user_id: videoCallParams.user_from_id
-                  }
-                  messagesList.push(new_message);
-                  messageList = messagesList;
-                  setMessages(messagesList);
-                  setRandomNumber(Math.random());
-                  scrollToBottom()
-              }
-              if (message.message.chat_type === 1) {
-                  const gift = {
-                      user: changeImageLinkDomain() + message.message.userImage,
-                      gift: changeGiftLinkDomain() + message.message.giftImage,
-                      f_name: message.message.user_first_name,
-                      l_name: message.message.user_last_name,
-                      gift_name: message.message.giftName,
-                      dateTime: new Date()
-                  }
-                  let newGift = friendGift;
-                  newGift.unshift(gift);
-                  setFriendGift(newGift);
-                  allGifts = newGift;
-                  setRandomNumberGift(Math.random());
-              }
+        }
+        else {
+          if (message.message.chat_type === 0) {
+            const new_message = {
+              message: message.message.text_message,
+              message_sender_name: message.message.message_sender_name,
+              receiver_id: userData.user_id,
+              user_id: videoCallParams.user_from_id
+            }
+            messagesList.push(new_message);
+            messageList = messagesList;
+            setMessages(messagesList);
+            setRandomNumber(Math.random());
+            scrollToBottom()
           }
+          if (message.message.chat_type === 1) {
+            const gift = {
+              user: changeImageLinkDomain() + message.message.userImage,
+              gift: changeGiftLinkDomain() + message.message.giftImage,
+              f_name: message.message.user_first_name,
+              l_name: message.message.user_last_name,
+              gift_name: message.message.giftName,
+              dateTime: new Date()
+            }
+            let newGift = friendGift;
+            newGift.unshift(gift);
+            setFriendGift(newGift);
+            allGifts = newGift;
+            setRandomNumberGift(Math.random());
+          }
+        }
 
       }
 
-  });
+    });
 
     SOCKET.on('get_messages_one_to_one_video', (messages) => { // only one time
       if (messages.sender_id == videoCallParams.user_from_id &&
-          messages.user_id == userData.user_id &&
-          videoCallParams.channel_name == messages.channel_name) {
-          setLoading(false);
-          let all_messages = [];
-          const socket_messages = messages.messages;
-          for (let i in socket_messages) {
-              all_messages.push({
-                  message: socket_messages[i].message,
-                  message_sender_name: socket_messages[i].message_sender_name,
-                  receiver_id: socket_messages[i].receiver_id,
-                  user_id: socket_messages[i].user_id
-              })
-          }
-          setMessages(all_messages);
-          messageList = all_messages;
+        messages.user_id == userData.user_id &&
+        videoCallParams.channel_name == messages.channel_name) {
+        setLoading(false);
+        let all_messages = [];
+        const socket_messages = messages.messages;
+        for (let i in socket_messages) {
+          all_messages.push({
+            message: socket_messages[i].message,
+            message_sender_name: socket_messages[i].message_sender_name,
+            receiver_id: socket_messages[i].receiver_id,
+            user_id: socket_messages[i].user_id
+          })
+        }
+        setMessages(all_messages);
+        messageList = all_messages;
       }
-  });
+    });
 
-  SOCKET.on('typing_one_to_one_video_message', (typing) => { // only one time
+    SOCKET.on('typing_one_to_one_video_message', (typing) => { // only one time
       if (videoCallParams.channel_name == typing.channel_name) {
-          if (typing.user_id !== userData.user_id) {
-              setChatTyping(typing.typing_user)
-              window.setTimeout(() => {
-                  setChatTyping("")
-              }, 2000)
-          }
+        if (typing.user_id !== userData.user_id) {
+          setChatTyping(typing.typing_user)
+          window.setTimeout(() => {
+            setChatTyping("")
+          }, 2000)
+        }
       }
-  })
+    })
 
     SOCKET.on('one_to_one_video_manage_coins_time_views', (data) => {
       if (data.channel_name === videoCallParams.channel_name && userData.user_id == data.user_id) {
@@ -408,15 +403,15 @@ const SearchProfile = () => {
     removeGiftInterval = window.setInterval(() => {
       const current_time = new Date();
       for (let i in allGifts) {
-          const startDate = allGifts[i].dateTime;
-          const seconds = (current_time.getTime() - startDate.getTime()) / 1000;
-          if (seconds > 10) {
-              allGifts.splice(i, 1)
-          }
+        const startDate = allGifts[i].dateTime;
+        const seconds = (current_time.getTime() - startDate.getTime()) / 1000;
+        if (seconds > 10) {
+          allGifts.splice(i, 1)
+        }
       }
       setFriendGift(allGifts);
       setReRenderGifts(Math.random())
-  }, 250)
+    }, 250)
 
   }, [])
 
@@ -446,70 +441,70 @@ const SearchProfile = () => {
   const scrollToBottom = () => {
     var div = document.getElementById('chat-body');
     if (!!div)
-        div.scroll({ top: div.scrollHeight, behavior: 'smooth' });
-}
+      div.scroll({ top: div.scrollHeight, behavior: 'smooth' });
+  }
 
-const scrollToTop = () => {
+  const scrollToTop = () => {
     // $('body, html, #giftSender').scrollTop(0);
     $('body, html, #giftSender').animate({
-        scrollTop: 0
+      scrollTop: 0
     }, 1000);
-}
+  }
 
   const CheckTextInputIsEmptyOrNot = (e) => {
     e.preventDefault()
     if (UserMessage != '') {
-        var message = {
-            "firstName": userData.first_name,
-            "lastName": userData.last_name,
-            "user_id": Number(userData.user_id),
-            "text_message": UserMessage,
-            "channel_name": videoCallParams.channel_name,
-            "sender_id": Number(videoCallParams.user_from_id),
-            "type": 0,
-            "gift_id": null,
-            "is_send_heart": 0,
-            "coins": 0,
-            "message_sender_name": userData.first_name + " " + userData.last_name
-        }
-        SOCKET.emit("send_one_to_one_video_item", message);
-        setuserMessage(''); //Empty user input here
+      var message = {
+        "firstName": userData.first_name,
+        "lastName": userData.last_name,
+        "user_id": Number(userData.user_id),
+        "text_message": UserMessage,
+        "channel_name": videoCallParams.channel_name,
+        "sender_id": Number(videoCallParams.user_from_id),
+        "type": 0,
+        "gift_id": null,
+        "is_send_heart": 0,
+        "coins": 0,
+        "message_sender_name": userData.first_name + " " + userData.last_name
+      }
+      SOCKET.emit("send_one_to_one_video_item", message);
+      setuserMessage(''); //Empty user input here
     } else {
     }
-}
-const changeInput = (e) => {
-  setuserMessage(e.target.value)
-  SOCKET.emit("typing_one_to_one_video_message", {
+  }
+  const changeInput = (e) => {
+    setuserMessage(e.target.value)
+    SOCKET.emit("typing_one_to_one_video_message", {
       user_id: userData.user_id,
       typing_user: userData.first_name + " " + userData.last_name,
       channel_name: videoCallParams.channel_name
-  })
-}
+    })
+  }
 
-useEffect(() => {
-  scrollToBottom();
-}, [randomNumber])
+  useEffect(() => {
+    scrollToBottom();
+  }, [randomNumber])
 
-useEffect(() => {
-  scrollToTop();
-}, [randomNumberGift])
+  useEffect(() => {
+    scrollToTop();
+  }, [randomNumberGift])
 
 
-const handleGift = async () => {
-  toggleIsOn(true);
+  const handleGift = async () => {
+    toggleIsOn(true);
 
-  const bodyParameters = {
+    const bodyParameters = {
       session_id: localStorage.getItem('session_id'),
-  }
-  const { data: { result, status } } = await axios.post(GIFT_LIST_API, bodyParameters)
+    }
+    const { data: { result, status } } = await axios.post(GIFT_LIST_API, bodyParameters)
 
-  if (status == 200) {
+    if (status == 200) {
       setGiftData(result);
+    }
   }
-}
-//get single  gift item
-const getGiftItem = async (giftId) => {
-  var message = {
+  //get single  gift item
+  const getGiftItem = async (giftId) => {
+    var message = {
       "user_id": Number(userData.user_id),
       "text_message": "",
       "channel_name": videoCallParams.channel_name,
@@ -519,13 +514,13 @@ const getGiftItem = async (giftId) => {
       "is_send_heart": 0,
       "coins": 0,
       "message_sender_name": userData.first_name + " " + userData.last_name
-  }
+    }
 
-  SOCKET.emit('send_one_to_one_video_item', message);
-  setGivenGift('');
-  //  setLoading(true);
-  toggleIsOn(false);
-}
+    SOCKET.emit('send_one_to_one_video_item', message);
+    setGivenGift('');
+    //  setLoading(true);
+    toggleIsOn(false);
+  }
   return (
     <section className="home-wrapper">
       <img className="bg-mask" src="/assets/images/mask-bg.png" alt="Mask" />
@@ -576,22 +571,6 @@ const getGiftItem = async (giftId) => {
             <div className="col-lg-7 p-3">
               <div className="tab-top d-flex flex-wrap-wrap align-items-center">
                 <div className="vc-action-tab ml-auto mr-4 position-relative">
-                  {/* <div className="vc-action-btn">
-                <span />
-                <span />
-                <span />
-              </div> */}
-                  {/* <ul className="action-menu">
-                <li>
-                  <a href="javascript:void(0)">Report</a>
-                </li>
-                <li>
-                  <a href="javascript:void(0)">Block</a>
-                </li>
-                <li>
-                  <a href="javascript:void(0)" onClick={endCall}>End Video</a>
-                </li>
-              </ul> */}
                 </div>
                 <NavLinks />
                 <a href="javascript:void(0)" className="end-video bg-grd-clr" onClick={() => endCall(true)}>End Video</a>
@@ -608,47 +587,47 @@ const getGiftItem = async (giftId) => {
               id="remote_video_"
               style={{ width: "100%", height: "100%" }}
             />
-        
-        <div class="gift-sender" id="giftSender">
-                            {
-                                friendGift.map((item, index) => (
-                                    <div className="gifter" id={item.gift}>
-                                        <img src={item.user} alt="gifter" />
-                                        <div className="gifter__info">
-                                            <h6>{item.f_name + " " + item.l_name}</h6>
-                                            <span>Sent a {item.gift_name}</span>
-                                        </div>
-                                        <div className="gifter__media">
-                                            <img src={item.gift} alt="gift" />
-                                        </div>
-                                    </div>
-                                ))
 
-                            }
+            <div class="gift-sender" id="giftSender">
+              {
+                friendGift.map((item, index) => (
+                  <div className="gifter" id={item.gift}>
+                    <img src={item.user} alt="gifter" />
+                    <div className="gifter__info">
+                      <h6>{item.f_name + " " + item.l_name}</h6>
+                      <span>Sent a {item.gift_name}</span>
+                    </div>
+                    <div className="gifter__media">
+                      <img src={item.gift} alt="gift" />
+                    </div>
+                  </div>
+                ))
 
-                        </div>
+              }
 
-          {
-            (!!userData && !!videoCallParams && userData.user_id == videoCallParams.user_from_id) &&
-            <div className="charges-reminder-txt">
-              <p>After 25 Seconds, you will be charged 120 coins per minute</p>
             </div>
-          }
-          <div className="vc-timer-box text-center">
-            <div className="timer">
-              <i className="far fa-clock"></i>
-              <span>{totalTimeLeft}</span>
-            </div>
-            {/* <div className="vc-sppiner">
+
+            {
+              (!!userData && !!videoCallParams && userData.user_id == videoCallParams.user_from_id) &&
+              <div className="charges-reminder-txt">
+                <p>After 25 Seconds, you will be charged 120 coins per minute</p>
+              </div>
+            }
+            <div className="vc-timer-box text-center">
+              <div className="timer">
+                <i className="far fa-clock"></i>
+                <span>{totalTimeLeft}</span>
+              </div>
+              {/* <div className="vc-sppiner">
            <a className="sppiner bg-grd-clr" href="javascript:void(0)">
              <img src="/assets/images/sppiner.png" alt="Sppiner"/>
            </a>
          </div> */}
-          </div>
-          <div className="vc-option-block d-flex flex-wrap align-items-end">
-         <div className="vc-options">
-           <ul>
-             {/* <li>
+            </div>
+            <div className="vc-option-block d-flex flex-wrap align-items-end">
+              <div className="vc-options">
+                <ul>
+                  {/* <li>
                <a className="btn-round bg-grd-clr" href="javascript:void(0)">
                  <img src="/assets/images/magic-stick.png" alt="Magic"/>
                </a>
@@ -658,97 +637,97 @@ const getGiftItem = async (giftId) => {
                  <img src="/assets/images/chat.png" alt="Chat"/>
                </a>
              </li> */}
-             <li>
-               <a className="btn-round bg-grd-clr" href="javascript:void(0)" onClick={handleGift}>
-                 <img src="/assets/images/gift.png" alt="Gift"/>
-               </a>
-             </li>
-             {/* <li>
+                  <li>
+                    <a className="btn-round bg-grd-clr" href="javascript:void(0)" onClick={handleGift}>
+                      <img src="/assets/images/gift.png" alt="Gift" />
+                    </a>
+                  </li>
+                  {/* <li>
                <a className="btn btn-nxt bg-grd-clr" href="javascript:void(0)">Next</a>
              </li> */}
-           </ul>
-         </div>
-       </div>
-        </div>
-       
-        <div class="col-md-3 live__comments_bg p-4">
-                         <div class="live__comments__wrap">
-                            <form onSubmit={CheckTextInputIsEmptyOrNot}>
-                                {
-                                    !loading && CompleteMessageList.length === 0 &&
-                                    <div className="nothing-to-see text-center active">
-                                        <figure>
-                                            <img src="/assets/images/message-circle.png" alt="Message" />
-                                            <figcaption>Nothing To See</figcaption>
-                                        </figure>
-                                    </div>
-                                }
-                                <div class="live__comments__items live__comments" id="chat-body">
-                                    {
-                                        CompleteMessageList.map((data, i) => (
-                                            <>
-                                                <span class="comment_username">{data.message_sender_name} :</span> {data.message} <br />
-                                            </>
-                                        ))
-                                    }
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-3 live__comments_bg p-4">
+            <div class="live__comments__wrap">
+              <form onSubmit={CheckTextInputIsEmptyOrNot}>
+                {
+                  !loading && CompleteMessageList.length === 0 &&
+                  <div className="nothing-to-see text-center active">
+                    <figure>
+                      <img src="/assets/images/message-circle.png" alt="Message" />
+                      <figcaption>Nothing To See</figcaption>
+                    </figure>
+                  </div>
+                }
+                <div class="live__comments__items live__comments" id="chat-body">
+                  {
+                    CompleteMessageList.map((data, i) => (
+                      <>
+                        <span class="comment_username">{data.message_sender_name} :</span> {data.message} <br />
+                      </>
+                    ))
+                  }
 
 
 
-                                </div>
+                </div>
 
-                                <div class="write-comments">
-                                    <div className="sweet-loading">
-                                        <BarLoader color={"#fcd46f"} loading={loading} css={override} size={1000} />
-                                    </div>
-                                    <div class="write-comments__fields position-relative">
-                                        <input type="text" name="comments" id="Message" placeholder="Message..." value={UserMessage} onChange={e => changeInput(e)} />
-                                        <button type="submit" class="send-message-button bg-grd-clr"><i class="fas fa-paper-plane"></i></button>
-                                        {
-                                            !!chatTyping &&
-                                            <div>{chatTyping} is typing...</div>
-                                        }
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
+                <div class="write-comments">
+                  <div className="sweet-loading">
+                    <BarLoader color={"#fcd46f"} loading={loading} css={override} size={1000} />
+                  </div>
+                  <div class="write-comments__fields position-relative">
+                    <input type="text" name="comments" id="Message" placeholder="Message..." value={UserMessage} onChange={e => changeInput(e)} />
+                    <button type="submit" class="send-message-button bg-grd-clr"><i class="fas fa-paper-plane"></i></button>
+                    {
+                      !!chatTyping &&
+                      <div>{chatTyping} is typing...</div>
+                    }
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
         </div>
         <div className={isOn ? 'video-streaming-gift all-gifts-wrapper active' : 'all-gifts-wrapper video-streaming-gift'} >
-                    <div className="all-gift-inner">
-                        <a href="javascript:void(0)" className="close-gift-btn modal-close" onClick={toggleIsOn}><img src="/assets/images/btn_close.png" /></a>
-                        <div className="all-gift-header d-flex flex-wrap align-items-center mb-3">
-                            <h5 className="mb-0 mr-4">Send Gift</h5>
-                            <div className="remaining-coins">
-                                <img src="/assets/images/diamond-coin.png" alt="Coins" />
-                                <span> {totalCoinsLeft !== null && totalCoinsLeft}</span>
-                            </div>
-                        </div>
-                        <div className="all-gift-body">
+          <div className="all-gift-inner">
+            <a href="javascript:void(0)" className="close-gift-btn modal-close" onClick={toggleIsOn}><img src="/assets/images/btn_close.png" /></a>
+            <div className="all-gift-header d-flex flex-wrap align-items-center mb-3">
+              <h5 className="mb-0 mr-4">Send Gift</h5>
+              <div className="remaining-coins">
+                <img src="/assets/images/diamond-coin.png" alt="Coins" />
+                <span> {totalCoinsLeft !== null && totalCoinsLeft}</span>
+              </div>
+            </div>
+            <div className="all-gift-body">
 
-                            <ul className="d-flex flex-wrap text-center gift__items">
-                                {GiftData.map((items, i) => {
-                                    return <li onClick={() => getGiftItem(items.id)}>
-                                        <a href="javascript:void(0)" >
-                                            <div>
-                                                <figure>
-                                                    <img onError={(e) => addDefaultSrc(e)} src={!!items.image ? items.image : returnDefaultImage()} alt={items.name} />
-                                                </figure>
-                                                <div className="gift-price">
-                                                    <img src="/assets/images/diamond-coin.png" alt="Coins" />
-                                                    <span>{items.coins}</span>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </li>
-                                })}
-                                <li>
-                                </li>
-                                <li>
-                                </li>
-                            </ul>
+              <ul className="d-flex flex-wrap text-center gift__items">
+                {GiftData.map((items, i) => {
+                  return <li onClick={() => getGiftItem(items.id)}>
+                    <a href="javascript:void(0)" >
+                      <div>
+                        <figure>
+                          <img onError={(e) => addDefaultSrc(e)} src={!!items.image ? items.image : returnDefaultImage()} alt={items.name} />
+                        </figure>
+                        <div className="gift-price">
+                          <img src="/assets/images/diamond-coin.png" alt="Coins" />
+                          <span>{items.coins}</span>
                         </div>
-                    </div>
-                </div>
+                      </div>
+                    </a>
+                  </li>
+                })}
+                <li>
+                </li>
+                <li>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 

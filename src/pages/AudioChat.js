@@ -1,24 +1,22 @@
 
 import React, { useState, useEffect } from "react";
-import {  useHistory, useParams } from 'react-router';
-import axios from "axios";
-import Logo from '../components/Logo';
-import {SOCKET} from '../components/Config';
+import { useHistory, useParams } from 'react-router';
+import { SOCKET } from '../components/Config';
 import NavLinks from '../components/Nav';
 import { joinChannelAudio, leaveEventAudience, leaveEventHost } from "../components/VideoComponent";
-import {useSelector, useDispatch} from "react-redux";
-import {userProfile, audioCall, audioCallUser} from "../features/userSlice";
-import {changeImageLinkDomain, checkLiveDomain, returnDefaultImage} from "../commonFunctions";
+import { useSelector, useDispatch } from "react-redux";
+import { userProfile, audioCall, audioCallUser } from "../features/userSlice";
+import { changeImageLinkDomain, checkLiveDomain, returnDefaultImage } from "../commonFunctions";
 import NotificationManager from "react-notifications/lib/NotificationManager";
 
 let videoCallStatus = 0, videoCallParams, interval,
-manageCoinsTimeViewsInterval, manageCoinsTimeViewsCounter = 0, manageTimeInterval, goHost = false, goAud = false, hostCallCheck = true;
+  manageCoinsTimeViewsInterval, manageCoinsTimeViewsCounter = 0, manageTimeInterval, goHost = false, goAud = false, hostCallCheck = true;
 
 const clearChatState = (dispatch) => {
   dispatch(audioCall(null))
 }
 
-const AudioChat = () =>{
+const AudioChat = () => {
   const [user, setUserData] = useState(null);
   const params = useParams();
   const history = useHistory();
@@ -33,7 +31,7 @@ const AudioChat = () =>{
   const componentWillUnmount = () => {
     if (videoCallStatus == 3) {
       SOCKET.emit("unauthorize_video_call", {
-        sender: {user_from_id: videoCallParams.user_from_id, session_id: localStorage.getItem("session_id")},
+        sender: { user_from_id: videoCallParams.user_from_id, session_id: localStorage.getItem("session_id") },
         reciever_id: videoCallParams.user_to_id,
         channel_name: videoCallParams.channel_name,
         type: 1,
@@ -47,14 +45,14 @@ const AudioChat = () =>{
     clearInterval(manageTimeInterval);
     window.location.href = "/chat";
   }
-  useEffect(() =>{
+  useEffect(() => {
     if (!!userData) {
       setUserData(userData)
     }
   }, [userData])
   useEffect(() => {
     if (!params.channel_name) {
-          componentWillUnmount()
+      componentWillUnmount()
     }
     else {
       const getPageRefresh = localStorage.getItem("videoCallPageRefresh");
@@ -67,23 +65,23 @@ const AudioChat = () =>{
         user_to_image: null
       }
       document.getElementsByClassName("vc-screen")[0]
-          .setAttribute("id", (params.receiver == "false" ? "video-sender" : "video-receiver"))
+        .setAttribute("id", (params.receiver == "false" ? "video-sender" : "video-receiver"))
       if (!getPageRefresh) {
         // SOCKET.connect();
         // if (params.receiver == "true") {
-          dispatch(audioCall(videoCallParams))
+        dispatch(audioCall(videoCallParams))
         // }
         localStorage.setItem("videoCallPageRefresh", "1");
       }
       else {
         videoCallStatus = 3
-         componentWillUnmount()
+        componentWillUnmount()
       }
       // check with backend + socket if this channel exist...
       if (params.receiver == "false") {
       }
       SOCKET.emit("authenticate_video_call", {
-        sender: {user_from_id: videoCallParams.user_from_id, session_id: localStorage.getItem("session_id")},
+        sender: { user_from_id: videoCallParams.user_from_id, session_id: localStorage.getItem("session_id") },
         reciever_id: videoCallParams.user_to_id,
         channel_name: videoCallParams.channel_name,
         type: 1,
@@ -91,18 +89,18 @@ const AudioChat = () =>{
       });
     }
     SOCKET.on('unauthorize_video_call', (data) => {
-        if ((data.user_from_id == videoCallParams.user_from_id && data.user_to_id == videoCallParams.user_to_id)
-            ||
-            (data.user_from_id == videoCallParams.user_to_id && data.user_to_id == videoCallParams.user_from_id)
-        ) { // check one-to-one data sync
-          componentWillUnmount()
-        }
+      if ((data.user_from_id == videoCallParams.user_from_id && data.user_to_id == videoCallParams.user_to_id)
+        ||
+        (data.user_from_id == videoCallParams.user_to_id && data.user_to_id == videoCallParams.user_from_id)
+      ) { // check one-to-one data sync
+        componentWillUnmount()
+      }
     });
 
     SOCKET.on('timeCounter_video_call', (data) => {
       if ((data.user_from_id == videoCallParams.user_from_id && data.user_to_id == videoCallParams.user_to_id)
-          ||
-          (data.user_from_id == videoCallParams.user_to_id && data.user_to_id == videoCallParams.user_from_id)
+        ||
+        (data.user_from_id == videoCallParams.user_to_id && data.user_to_id == videoCallParams.user_from_id)
       ) { // check one-to-one data sync
         if (data.isExpired) {
           componentWillUnmount()
@@ -155,8 +153,8 @@ const AudioChat = () =>{
 
     SOCKET.on('sender_show_video_call', (data) => {
       if ((data.user_from_id == videoCallParams.user_from_id && data.user_to_id == videoCallParams.user_to_id)
-          ||
-          (data.user_from_id == videoCallParams.user_to_id && data.user_to_id == videoCallParams.user_from_id)
+        ||
+        (data.user_from_id == videoCallParams.user_to_id && data.user_to_id == videoCallParams.user_from_id)
       ) { // check one-to-one data sync
         if (!!userData && (data.user_from_id == userData.user_id)) {
           const option = {
@@ -170,40 +168,40 @@ const AudioChat = () =>{
           joinChannelAudio('audience', option)
           interval = window.setInterval(() => {
             var list = document.getElementById("local_stream");   // Get the <ul> element with id="myList"
-                   if (!!list) {
-                     list.remove() // Remove <ul>'s first child node (index 0)
-                     clearInterval(interval)
-                   }
+            if (!!list) {
+              list.remove() // Remove <ul>'s first child node (index 0)
+              clearInterval(interval)
+            }
           }, 1000)
         }
       }
     })
-          SOCKET.on('authorize_video_call', (data) => {
+    SOCKET.on('authorize_video_call', (data) => {
       if ((data.user_from_id == videoCallParams.user_from_id && data.user_to_id == videoCallParams.user_to_id)
-          ||
-          (data.user_from_id == videoCallParams.user_to_id && data.user_to_id == videoCallParams.user_from_id)
+        ||
+        (data.user_from_id == videoCallParams.user_to_id && data.user_to_id == videoCallParams.user_from_id)
       ) { // check one-to-one data sync
 
         // change backend status === 1 if loggedIn user is "user_to"
         const userDetails = data.users_detail;
         if (!!userData && (data.user_to_id == userData.user_id)) {
-          
+
           manageAudienceHostDetails()
           for (let i in userDetails) {
             if (userDetails[i].id != userData.user_id) {
-              document.getElementById("audioCallingPic").setAttribute("src", changeImageLinkDomain() +userDetails[i].profilePics)
+              document.getElementById("audioCallingPic").setAttribute("src", changeImageLinkDomain() + userDetails[i].profilePics)
               break;
             }
           }
           SOCKET.emit("acknowledged_video_call", {
-            sender: {user_from_id: videoCallParams.user_from_id, session_id: localStorage.getItem("session_id")},
+            sender: { user_from_id: videoCallParams.user_from_id, session_id: localStorage.getItem("session_id") },
             reciever_id: videoCallParams.user_to_id,
             channel_name: videoCallParams.channel_name,
             type: 1,
             status: 1
           });
           // initate video call for receiver...
-          
+
           const option = {
             appID: "52cacdcd9b5e4b418ac2dca58f69670c",
             channel: data.videoCallState.channel_name,
@@ -227,7 +225,7 @@ const AudioChat = () =>{
           // add timer... after 1 min to detect the expire of the link
 
           SOCKET.emit("timeCounter_video_call", {
-            sender: {user_from_id: videoCallParams.user_from_id, session_id: localStorage.getItem("session_id")},
+            sender: { user_from_id: videoCallParams.user_from_id, session_id: localStorage.getItem("session_id") },
             reciever_id: videoCallParams.user_to_id,
             channel_name: videoCallParams.channel_name,
             type: 1,
@@ -236,33 +234,33 @@ const AudioChat = () =>{
         }
         if (!!userData && (data.user_from_id == userData.user_id)) {
           if (hostCallCheck) {
-          for (let i in userDetails) {
-            if (userDetails[i].id != userData.user_id) {
-              document.getElementById("audioCallingPic").setAttribute("src", changeImageLinkDomain() +userDetails[i].profilePics)
-              break;
+            for (let i in userDetails) {
+              if (userDetails[i].id != userData.user_id) {
+                document.getElementById("audioCallingPic").setAttribute("src", changeImageLinkDomain() + userDetails[i].profilePics)
+                break;
+              }
             }
+
+            manageAudienceHostDetails()
+            manageTimeInterval = window.setInterval(() => {
+              SOCKET.emit("one_to_one_audio_manage_time", {
+                channel_name: videoCallState.channel_name
+              })
+            }, 1000)
+
+            // initate video call for sender...
+            const option = {
+              appID: "52cacdcd9b5e4b418ac2dca58f69670c",
+              channel: videoCallState.channel_name,
+              uid: 0,
+              token: videoCallState.channel_token,
+              key: '',
+              secret: ''
+            }
+            joinChannelAudio('host', option)
+            hostCallCheck = false
           }
-          
-          manageAudienceHostDetails()
-          manageTimeInterval = window.setInterval(() => {
-            SOCKET.emit("one_to_one_audio_manage_time", {
-              channel_name: videoCallState.channel_name
-            })
-          }, 1000)
-          
-          // initate video call for sender...
-          const option = {
-            appID: "52cacdcd9b5e4b418ac2dca58f69670c",
-            channel: videoCallState.channel_name,
-            uid: 0,
-            token: videoCallState.channel_token,
-            key: '',
-            secret: ''
-          }
-          joinChannelAudio('host', option)
-          hostCallCheck = false
         }
-      }
       }
     });
   }, [])
@@ -287,7 +285,7 @@ const AudioChat = () =>{
   const endCall = (showMsg) => {
     if (params.receiver == "false") {
       SOCKET.emit("sender_decline_video_call", {
-        sender: {user_from_id: videoCallParams.user_from_id},
+        sender: { user_from_id: videoCallParams.user_from_id },
         reciever_id: videoCallParams.user_to_id,
         channel_name: videoCallParams.channel_name,
         showMsg,
@@ -297,7 +295,7 @@ const AudioChat = () =>{
     }
     else {
       SOCKET.emit("receiver_decline_video_call", {
-        sender: {user_from_id: videoCallParams.user_from_id},
+        sender: { user_from_id: videoCallParams.user_from_id },
         reciever_id: videoCallParams.user_to_id,
         channel_name: videoCallParams.channel_name,
         showMsg,
@@ -306,61 +304,61 @@ const AudioChat = () =>{
       });
     }
   }
-    return(
-   <section className="home-wrapper">
-  <img className="bg-mask" src="/assets/images/mask-bg.png" alt="Mask" />
-  <div className="header-bar">
-    <div className="container-fluid p-0">
-      <div className="row no-gutters">
-        <div className="col-lg-5 p-3">
-          <div className="d-flex flex-wrap align-items-center">
-            <div className="logo-tab d-flex justify-content-between align-items-start">
-              <a href="javascript:void(0)" style={{cursor: "default"}}>
-                <img src="/assets/images/glitters.png" alt="Glitters" />
-              </a>
-            </div>
-            <div className="vc-head-title d-flex flex-wrap align-items-center ml-5">
-              <div className="vc-user-name d-flex flex-wrap align-items-center">
-                <figure>
-                  {
-                    !user &&
-                    <img src={changeImageLinkDomain() + "1611574536_download.jpg"} alt="placeholder"/>
-                  }
-                  {
-                    !!user &&
-                    <img src={user.profile_images[0]} alt="Augusta Castro" />
-                  }
-                </figure>
-                {
-                  !!user &&
-                  <div className="name ml-2">{user.first_name} <span className="age">{user.age}</span></div>
-                }
-                {
-                  !user &&
-                  <div className="name ml-2"> <span className="age"> </span></div>
-                }
-              </div>
-              <div className="remaining-coins ml-4">
-                <img src="/assets/images/diamond-coin.png" alt="Coins" />
-                {
+  return (
+    <section className="home-wrapper">
+      <img className="bg-mask" src="/assets/images/mask-bg.png" alt="Mask" />
+      <div className="header-bar">
+        <div className="container-fluid p-0">
+          <div className="row no-gutters">
+            <div className="col-lg-5 p-3">
+              <div className="d-flex flex-wrap align-items-center">
+                <div className="logo-tab d-flex justify-content-between align-items-start">
+                  <a href="javascript:void(0)" style={{ cursor: "default" }}>
+                    <img src="/assets/images/glitters.png" alt="Glitters" />
+                  </a>
+                </div>
+                <div className="vc-head-title d-flex flex-wrap align-items-center ml-5">
+                  <div className="vc-user-name d-flex flex-wrap align-items-center">
+                    <figure>
+                      {
+                        !user &&
+                        <img src={changeImageLinkDomain() + "1611574536_download.jpg"} alt="placeholder" />
+                      }
+                      {
+                        !!user &&
+                        <img src={user.profile_images[0]} alt="Augusta Castro" />
+                      }
+                    </figure>
+                    {
+                      !!user &&
+                      <div className="name ml-2">{user.first_name} <span className="age">{user.age}</span></div>
+                    }
+                    {
+                      !user &&
+                      <div className="name ml-2"> <span className="age"> </span></div>
+                    }
+                  </div>
+                  <div className="remaining-coins ml-4">
+                    <img src="/assets/images/diamond-coin.png" alt="Coins" />
+                    {
                       <span>{totalCoinsLeft !== null && totalCoinsLeft}</span>
                     }
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-        <div>
-        </div>
+            <div>
+            </div>
 
-        <div className="col-lg-7 p-3">
-          <div className="tab-top d-flex flex-wrap-wrap align-items-center">
-            <div className="vc-action-tab ml-auto mr-4 position-relative">
-              {/* <div className="vc-action-btn">
+            <div className="col-lg-7 p-3">
+              <div className="tab-top d-flex flex-wrap-wrap align-items-center">
+                <div className="vc-action-tab ml-auto mr-4 position-relative">
+                  {/* <div className="vc-action-btn">
                 <span />
                 <span />
                 <span />
               </div> */}
-              {/* <ul className="action-menu">
+                  {/* <ul className="action-menu">
                 <li>
                   <a href="javascript:void(0)">Report</a>
                 </li>
@@ -371,48 +369,48 @@ const AudioChat = () =>{
                   <a href="javascript:void(0)" onClick={endCall}>End Audio</a>
                 </li>
               </ul> */}
+                </div>
+                <NavLinks />
+                <a href="javascript:void(0)" className="end-video bg-grd-clr" onClick={() => endCall(true)}>End Audio</a>
+              </div>
             </div>
-           <NavLinks />
-            <a href="javascript:void(0)" className="end-video bg-grd-clr" onClick={() => endCall(true)}>End Audio</a>
           </div>
         </div>
       </div>
-    </div>
-  </div> 
-     <div className="vc-screen-wrapper">
-       <div className="vc-screen audio-one-to-one">
-       <div className="audio-calling">
-         <div className="circle-ripple">
-                <img id="audioCallingPic" style={{borderRadius: "50%"}} src={returnDefaultImage()} />
-         </div>
-           </div>
-
-         <div id="local_stream" className="local_stream" style={{ width: "400px", height: "400px" }}></div>
-         <div
-             id="remote_video_"
-             style={{ width: "100%", height: "100%" }}
-         />
-
-       </div>
-       {
-            (!!userData && !!videoCallParams && userData.user_id == videoCallParams.user_from_id) &&
-            <div className="charges-reminder-txt">
-              <p>After 25 Seconds, you will be charged 120 coins per minute</p>
+      <div className="vc-screen-wrapper">
+        <div className="vc-screen audio-one-to-one">
+          <div className="audio-calling">
+            <div className="circle-ripple">
+              <img id="audioCallingPic" style={{ borderRadius: "50%" }} src={returnDefaultImage()} />
             </div>
-          }
-       <div className="vc-timer-box text-center">
-         <div className="timer">
-           <i className="far fa-clock"></i>
-           <span>{totalTimeLeft}</span>
-         </div>
-         {/* <div className="vc-sppiner">
+          </div>
+
+          <div id="local_stream" className="local_stream" style={{ width: "400px", height: "400px" }}></div>
+          <div
+            id="remote_video_"
+            style={{ width: "100%", height: "100%" }}
+          />
+
+        </div>
+        {
+          (!!userData && !!videoCallParams && userData.user_id == videoCallParams.user_from_id) &&
+          <div className="charges-reminder-txt">
+            <p>After 25 Seconds, you will be charged 120 coins per minute</p>
+          </div>
+        }
+        <div className="vc-timer-box text-center">
+          <div className="timer">
+            <i className="far fa-clock"></i>
+            <span>{totalTimeLeft}</span>
+          </div>
+          {/* <div className="vc-sppiner">
            <a className="sppiner bg-grd-clr" href="javascript:void(0)">
              <img src="/assets/images/sppiner.png" alt="Sppiner"/>
            </a>
          </div> */}
-       </div>
-       <div className="vc-option-block d-flex flex-wrap align-items-end">
-         {/* <div className="vc-options">
+        </div>
+        <div className="vc-option-block d-flex flex-wrap align-items-end">
+          {/* <div className="vc-options">
            <ul>
              <li>
                <a className="btn-round bg-grd-clr" href="javascript:void(0)">
@@ -434,12 +432,12 @@ const AudioChat = () =>{
              </li>
            </ul>
          </div> */}
-       </div>
-     </div>
-</section>
+        </div>
+      </div>
+    </section>
 
 
-    )
+  )
 }
 export default AudioChat;
 

@@ -20,7 +20,7 @@ export function joinChannel(role, option) {
         rtc.client.join(option.token ?
             option.token : null,
             option.channel, option.uid ? +option.uid : null, function (uid) {
-                
+
                 rtc.params.uid = uid;
                 if (role === "host") {
                     rtc.client.setClientRole("host");
@@ -47,7 +47,7 @@ export function joinChannel(role, option) {
                     rtc.client.on("connection-state-change", function (evt) {
                     })
                     rtc.client.on("stream-added", function (evt) {
-                        
+
                         var remoteStream = evt.stream;
                         var id = remoteStream.getId();
                         if (id !== rtc.params.uid) {

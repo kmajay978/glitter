@@ -7,7 +7,7 @@ const ProtectedRoute = ({
 }) => {
   return (
     <Route
-        {...rest}
+      {...rest}
       render={props =>
         localStorage.getItem("session_id") ? (
           <Component {...props} />

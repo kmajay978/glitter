@@ -1,70 +1,70 @@
-import React, {Component, useEffect, useState } from 'react';
-import {useSelector} from 'react-redux';
-import {  useHistory } from 'react-router'
+import React, { Component, useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router'
 import { selectUser } from '../features/userSlice';
 import FilterSide from '../components/Filter';
 import NavLinks from '../components/Nav';
 import Loader from '../components/Loader';
-import FilterUser from '../components/FilterUser'; 
+import FilterUser from '../components/FilterUser';
 import axios from 'axios';
 import Logo from '../components/Logo';
 import $ from 'jquery';
 
-const Home = (props) =>{
-    
-    const history = useHistory();
-    const user = useSelector(selectUser); //using redux useSelector here
-    const [fetchedProfile, setFilterUser] = useState('');
-   
-    const handleChat = () => {
-       history.push("/search-home");
-    }
-useEffect(() => {
-  $(".show-filter").click(function(){
-  $(".option-bar").toggleClass("filter-active"); 
-});
-},[])
-  return(
-          <section className="home-wrapper">
-           {/* <Loader isLoading={isLoading} />  */}
-  
-        <div className="home-inner">
-          <div className="container-fluid p-0">
-            <div className="row no-gutters">
-              <div className="col-lg-3 option-bar p-3 vh-100 position-fixed">
-                <div className="logo-tab mb-5 d-flex justify-content-between align-items-start">                  
-              <Logo/>     
-                  <a className="show-filter" href="javascript:void(0)"><img src="/assets/images/Filter.png" alt="filter" /></a>
-                  <span className="chat-point position-relative">
-                    <a href="javascript:void(0)" onClick={handleChat}>
-                      <i className="fas fa-comment" /> 
-                    </a>    
-                  </span>                            
-                </div>
-                
-                {/* Sidebar filter */}
+const Home = (props) => {
+
+  const history = useHistory();
+  const user = useSelector(selectUser); //using redux useSelector here
+  const [fetchedProfile, setFilterUser] = useState('');
+
+  const handleChat = () => {
+    history.push("/search-home");
+  }
+  useEffect(() => {
+    $(".show-filter").click(function () {
+      $(".option-bar").toggleClass("filter-active");
+    });
+  }, [])
+  return (
+    <section className="home-wrapper">
+      {/* <Loader isLoading={isLoading} />  */}
+
+      <div className="home-inner">
+        <div className="container-fluid p-0">
+          <div className="row no-gutters">
+            <div className="col-lg-3 option-bar p-3 vh-100 position-fixed">
+              <div className="logo-tab mb-5 d-flex justify-content-between align-items-start">
+                <Logo />
+                <a className="show-filter" href="javascript:void(0)"><img src="/assets/images/Filter.png" alt="filter" /></a>
+                <span className="chat-point position-relative">
+                  <a href="javascript:void(0)" onClick={handleChat}>
+                    <i className="fas fa-comment" />
+                  </a>
+                </span>
+              </div>
+
+              {/* Sidebar filter */}
 
               <FilterSide setFilterUser={setFilterUser} />
-                {/* End filter here */}
-              </div>
-              <div className="col-lg-9 main-bar p-3" style={{marginLeft: '25%'}}>
-                <div className="tab-top d-flex flex-wrap">
-                  {/* <div className="live-icon">
+              {/* End filter here */}
+            </div>
+            <div className="col-lg-9 main-bar p-3" style={{ marginLeft: '25%' }}>
+              <div className="tab-top d-flex flex-wrap">
+                {/* <div className="live-icon">
                     <img src="/assets/images/live.png" alt="Live" />
                   </div> */}
-                 <NavLinks/>
-                </div>
-                <div className="profile-swipe-wrapper">
-                  <FilterUser fetchedProfile={fetchedProfile} />
-               
-                </div>
-              
+                <NavLinks />
               </div>
+              <div className="profile-swipe-wrapper">
+                <FilterUser fetchedProfile={fetchedProfile} />
+
+              </div>
+
             </div>
           </div>
         </div>
-      </section>
-    )
+      </div>
+    </section>
+  )
 
 }
 

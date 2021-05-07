@@ -20,7 +20,7 @@ export function joinChannel(role, option) {
         rtc.client.join(option.token ?
             option.token : null,
             option.channel, option.uid ? +option.uid : null, function (uid) {
-                
+
                 rtc.params.uid = uid;
                 if (role === "host") {
                     rtc.client.setClientRole("host");
@@ -30,7 +30,7 @@ export function joinChannel(role, option) {
                         audio: true,
                         video: true,
                         screen: false,
-                        
+
                     })
                     rtc.localStream.setVideoProfile("4K_3")
                     // Initialize the local stream
@@ -49,7 +49,7 @@ export function joinChannel(role, option) {
                     rtc.client.on("connection-state-change", function (evt) {
                     })
                     rtc.client.on("stream-added", function (evt) {
-                        
+
                         var remoteStream = evt.stream;
                         var id = remoteStream.getId();
                         if (id !== rtc.params.uid) {
@@ -91,7 +91,7 @@ export function joinChannelAudio(role, option) {
         rtc.client.join(option.token ?
             option.token : null,
             option.channel, option.uid ? +option.uid : null, function (uid) {
-                
+
                 rtc.params.uid = uid;
                 if (role === "host") {
                     rtc.client.setClientRole("host");
@@ -119,7 +119,7 @@ export function joinChannelAudio(role, option) {
                     rtc.client.on("connection-state-change", function (evt) {
                     })
                     rtc.client.on("stream-added", function (evt) {
-                        
+
                         var remoteStream = evt.stream;
                         var id = remoteStream.getId();
                         if (id !== rtc.params.uid) {

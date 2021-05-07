@@ -39,7 +39,7 @@ function App(props) {
   const new_history = useHistory();
   const [currentPathname, setCurrentPathname] = useState(null);
   const [currentSearch, setCurrentSearch] = useState(null);
-  
+
 
   const dispatch = useDispatch();
   const is_auth = useSelector(userAuth); //using redux useSelector here
@@ -47,7 +47,7 @@ function App(props) {
   function onBackButtonEvent(event) {
     event.preventDefault();
     // the user shouldn’t be able to move backward or forward
-    }
+  }
 
   useEffect(() => {
     SOCKET.connect();
@@ -120,35 +120,35 @@ function App(props) {
       }
     })
   }, [])
-  
-//   var ctrlKeyDown = false;
-//  const handleRefresh = (e) =>{
-//   document.addEventListener('keydown', (e) => {
-//     e = e || window.event;
-//     if( ((e.which || e.keyCode) == 116)|| ((e.which || e.keyCode) == 82  && ctrlKeyDown) ){
-//         e.preventDefault();
-//     }
-//    else if ((e.which || e.keyCode) == 17) {
-//         // Pressing  only Ctrl
-//         ctrlKeyDown = true;
-//     }
-// });
 
-//  }
+  //   var ctrlKeyDown = false;
+  //  const handleRefresh = (e) =>{
+  //   document.addEventListener('keydown', (e) => {
+  //     e = e || window.event;
+  //     if( ((e.which || e.keyCode) == 116)|| ((e.which || e.keyCode) == 82  && ctrlKeyDown) ){
+  //         e.preventDefault();
+  //     }
+  //    else if ((e.which || e.keyCode) == 17) {
+  //         // Pressing  only Ctrl
+  //         ctrlKeyDown = true;
+  //     }
+  // });
+
+  //  }
 
 
   useEffect(() => {
-      window.history.pushState(null, "", window.location.href);        
-      // window.onpopstate = function() {
-      //     window.history.pushState(null, "", window.location.href);
-      // };
+    window.history.pushState(null, "", window.location.href);
+    // window.onpopstate = function() {
+    //     window.history.pushState(null, "", window.location.href);
+    // };
 
-  // window.addEventListener('popstate', function (event) {
-  //   history.pushState(null, document.title, location.href);
-  // });
-  
+    // window.addEventListener('popstate', function (event) {
+    //   history.pushState(null, document.title, location.href);
+    // });
+
     // handleRefresh();
-    
+
     // window.onbeforeunload = function(e) {
     //   return confirm("confirm refresh")
     // };
@@ -185,7 +185,7 @@ function App(props) {
     //     // Anything in here is fired on component unmount. component will mount 
     //     window.onpopstate = null;
     // }
-}, [])
+  }, [])
 
   return (
     <Router>
@@ -195,22 +195,22 @@ function App(props) {
           <Route exact path='/signup-completed' component={SignupCompleted} />
           {/* Private routes */}
           <ProtectedRoute exact path='/' component={Home} />
-          <ProtectedRoute  path='/profile' component={Profile} />
-          <ProtectedRoute  path="/answer-calling" component={AnswerCalling} />
-          <ProtectedRoute  path='/chat' component={ChatBox} />
-          <ProtectedRoute  path='/searching-profile' component={SearchProfile} />
-          <ProtectedRoute  path='/searching-profile-call' component={SearchProfileAudio} />
-          <ProtectedRoute  path='/search-home' component={SearchHome} />
-          <ProtectedRoute  path='/:userId/single-profile' component={SingleProfile} />
-          <ProtectedRoute  path='/recent-call' component={RecentCall} />
-          <ProtectedRoute  path='/:receiver/:user_from_id/:user_to_id/:channel_id/:channel_name/video-chat' component={VideoChat} />
-          <ProtectedRoute  path='/:receiver/:user_from_id/:user_to_id/:channel_id/:channel_name/audio-chat' component={AudioChat} />
-          <ProtectedRoute  path='/:user_id/:channel_id/:channel_name/live-video-chat' component={LiveVideoChat} />
+          <ProtectedRoute path='/profile' component={Profile} />
+          <ProtectedRoute path="/answer-calling" component={AnswerCalling} />
+          <ProtectedRoute path='/chat' component={ChatBox} />
+          <ProtectedRoute path='/searching-profile' component={SearchProfile} />
+          <ProtectedRoute path='/searching-profile-call' component={SearchProfileAudio} />
+          <ProtectedRoute path='/search-home' component={SearchHome} />
+          <ProtectedRoute path='/:userId/single-profile' component={SingleProfile} />
+          <ProtectedRoute path='/recent-call' component={RecentCall} />
+          <ProtectedRoute path='/:receiver/:user_from_id/:user_to_id/:channel_id/:channel_name/video-chat' component={VideoChat} />
+          <ProtectedRoute path='/:receiver/:user_from_id/:user_to_id/:channel_id/:channel_name/audio-chat' component={AudioChat} />
+          <ProtectedRoute path='/:user_id/:channel_id/:channel_name/live-video-chat' component={LiveVideoChat} />
         </Elements>
       </Switch>
-        <NotificationContainer 
-        />
-        
+      <NotificationContainer
+      />
+
     </Router>
   );
 }

@@ -3888,13 +3888,14 @@ object-fit: cover;
 
 .status_view {
     background-color: rgba(213, 143, 33, 0.2);
-    font-size: 11px;
-    padding: 5px 10px;
+    font-size: 12px;
+    padding: 6px 15px;
     border-radius: 50px;
-    margin-top: 5px;
+    margin-top: 0px;
     display: inline-block;
     align-items: center;
     width: auto;
+    margin-right: 10px;
 }
 
 
@@ -3906,7 +3907,7 @@ object-fit: cover;
     /* justify-content: space-between; */
     width: 100%;
     align-items: center;
-    padding: 0px 30px;
+    padding: 0px 10px;
 }
 
 #status-bar .owl-dots {
@@ -4089,6 +4090,7 @@ object-fit: cover;
     font-size: 13px;
     padding: 5px 10px;
     border-radius: 50px;
+    cursor: pointer;
 }
 
 .status_like img {

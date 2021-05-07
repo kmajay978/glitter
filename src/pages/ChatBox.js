@@ -209,12 +209,12 @@ const ChatBox = (props) => {
         axios.post(ACCEPT_REQUEST_API, bodyParameters)
             .then((response) => {
                 if (response.status == 200) {
-                    NotificationManager.success(response.data.message, "", 2000, () => {return 0}, true);
+                    NotificationManager.success(response.data.message, "", 2000, () => { return 0 }, true);
                     getLikes();
                 }
             }, (error) => {
                 if (error.toString().match("403")) {
-                    NotificationManager.error("Something went wrong", "", 2000, () => {return 0}, true);
+                    NotificationManager.error("Something went wrong", "", 2000, () => { return 0 }, true);
                     localStorage.removeItem("session_id");
                     history.push('/login');
                 }
@@ -264,7 +264,7 @@ const ChatBox = (props) => {
         }
         else {
             toggleIsOn(false);
-            NotificationManager.error('Please recharge and try again', 'Insufficient Balance!', "", 2000, () => {return 0}, true);
+            NotificationManager.error('Please recharge and try again', 'Insufficient Balance!', "", 2000, () => { return 0 }, true);
         }
     }
 
@@ -597,7 +597,7 @@ const ChatBox = (props) => {
 
         });
 
-        return () => { componentWillUnmount()}
+        return () => { componentWillUnmount() }
 
     }, [])
 
@@ -724,15 +724,15 @@ const ChatBox = (props) => {
 
     const handleVideo = (image) => {
         var secondUserDataId = FriendUserId;
-        const video_data ={
+        const video_data = {
             user_from_id: userData.user_id,
             user_to_id: secondUserDataId,
             user_to_image: image,
             channel_id: uuidv4(),
             channel_name: null,
-            channel_token: null 
+            channel_token: null
         }
-        localStorage.setItem("video_call" , JSON.stringify(video_data))
+        localStorage.setItem("video_call", JSON.stringify(video_data))
         dispatch(
             videoCall(video_data)
         );
@@ -995,7 +995,7 @@ const ChatBox = (props) => {
 
                                             !loading &&
                                             <div className="chat-header-info d-flex align-items-center">
-                                                {!!AllData ? <img alt="Mia" style={{ cursor: "pointer" }} className="img-circle medium-image" onClick={() =>  history.push(`/${FriendUserId}/single-profile`)} src={AllData.profile_images} /> : ""}
+                                                {!!AllData ? <img alt="Mia" style={{ cursor: "pointer" }} className="img-circle medium-image" onClick={() => history.push(`/${FriendUserId}/single-profile`)} src={AllData.profile_images} /> : ""}
                                                 <div className="chat-user-info ml-2">
                                                     {!!AllData ? <h5 className="mb-0 name">{AllData.first_name}</h5> : <h5>  </h5>}
                                                     <div className="info">
@@ -1038,7 +1038,7 @@ const ChatBox = (props) => {
                                                                         {
                                                                             !!data.media &&
                                                                             <div className="media-socket">
-                                                                                <img style={{cursor: "pointer"}} onClick={() => setImageFull({open: true, media: (!!data.media ? data.media : returnDefaultImage())})} onError={(e) => addDefaultSrc(e)} src={!!data.media ? data.media : returnDefaultImage()}/>
+                                                                                <img style={{ cursor: "pointer" }} onClick={() => setImageFull({ open: true, media: (!!data.media ? data.media : returnDefaultImage()) })} onError={(e) => addDefaultSrc(e)} src={!!data.media ? data.media : returnDefaultImage()} />
                                                                             </div>
                                                                         }
 
@@ -1064,7 +1064,7 @@ const ChatBox = (props) => {
                                                                         {
                                                                             !!data.media &&
                                                                             <div className="media-socket">
-                                                                                <img style={{cursor: "pointer"}} onClick={() => setImageFull({open: true, media: (!!data.media ? data.media : returnDefaultImage())})} onError={(e) => addDefaultSrc(e)} src={!!data.media ? data.media : returnDefaultImage()}/>
+                                                                                <img style={{ cursor: "pointer" }} onClick={() => setImageFull({ open: true, media: (!!data.media ? data.media : returnDefaultImage()) })} onError={(e) => addDefaultSrc(e)} src={!!data.media ? data.media : returnDefaultImage()} />
                                                                             </div>
                                                                         }
 

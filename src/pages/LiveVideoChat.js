@@ -5,7 +5,7 @@ import axios from "axios";
 import Logo from '../components/Logo';
 import { SOCKET } from '../components/Config';
 import NavLinks from '../components/Nav';
-import { joinChannel, leaveEventAudience, leaveEventHost } from "../components/VideoComponent";
+import { joinChannel } from "../components/VideoComponent";
 import { useSelector, useDispatch } from "react-redux";
 import { css } from "@emotion/core";
 import BarLoader from "react-spinners/BarLoader";

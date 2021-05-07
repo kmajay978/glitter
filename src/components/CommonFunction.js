@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 
 // Common function toggle
 export default function useToggle(initialValue = false) {
@@ -20,7 +20,7 @@ export function addBodyClass(className) {
 
 }
 
-export function stringLimit(string , counts){
+export function stringLimit(string, counts) {
     var text = string;
     var count = counts;
     var result = text.slice(0, count) + (text.length > count ? "**********" : "");
