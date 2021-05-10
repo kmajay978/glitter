@@ -669,7 +669,7 @@ const SearchHome = () => {
         }
         for (let j in totalLiveFrds) {
           if (totalLiveFrds[j].user_id == frdList[i].user_id) {
-            let is_live = true, countryCode = frdList[i].country_code;
+            let is_live = true, countryCode = userData.country_code;
             for (let k in onlineUsers) {
               if (frdList[i].user_id == onlineUsers[k].user_id) {
                 if (countryCode.match(onlineUsers[k].blocked_countries)) {
@@ -689,7 +689,6 @@ const SearchHome = () => {
     });
     SOCKET.on('start_your_live_video_now', (data) => {
       if ((data.user_id == userData.user_id) && data.channel_id && data.channel_name) {
-        alert("live!!")
         // $('#live-modal').hide();
         // setShowLive(false)
         // history.push(data.user_id+ '/' + data.channel_id +'/'+ data.channel_name + '/live-video-chat')
@@ -715,7 +714,6 @@ const SearchHome = () => {
     const modified_block_countries = blocked_list_data.join(",");
     console.log(countrieBlock, "countrieBlock...")
     const call_type = 1, user_id = userData.user_id, block_countries = modified_block_countries.slice(0, modified_block_countries.length);
-    alert(modified_block_countries)
     console.log(block_countries, "block_countries..")
     generateLiveVideoChatToken(dispatch, history, bodyParameters, call_type, user_id, uuidv4(), block_countries, SOCKET);
   }
