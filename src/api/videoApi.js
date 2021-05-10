@@ -1,6 +1,6 @@
 import axios from "axios";
 import { TOKEN_AGORA_API, VIDEO_CALL_START } from "../components/Api";
-import { videoCall, liveVideoCall, audioCall } from "../features/userSlice";
+import { videoCall, liveVideoCall, audioCall, myLiveLoading } from "../features/userSlice";
 import moment from "moment";
 
 export const generateVideoChatToken = (history, dispatch, bodyParameters, startVideoChatInitParams) => {
@@ -96,6 +96,7 @@ export const generateLiveVideoChatToken = (dispatch, history, bodyParameters, ca
                 // SOCKET.emit("start_live_video_call", newState)
             }
             else {
+                dispatch(myLiveLoading(false))
                 if (response.status === 200 && response.data.error) {
                     alert(response.data.message)
                 }
@@ -105,7 +106,7 @@ export const generateLiveVideoChatToken = (dispatch, history, bodyParameters, ca
                 history.push("/search-home")
             }
         }, (error) => {
-            alert(error.message);
+            dispatch(myLiveLoading(false))
             history.push("/search-home")
         });
 }

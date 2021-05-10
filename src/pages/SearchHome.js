@@ -11,7 +11,7 @@ import { Modal } from 'react-bootstrap';
 import OwlCarousel from 'react-owl-carousel2';
 import { SOCKET } from '../components/Config';
 import { useDispatch, useSelector } from "react-redux";
-import { userProfile } from "../features/userSlice";
+import { userProfile, myLiveLoadingData, myLiveLoading } from "../features/userSlice";
 import { generateLiveVideoChatToken } from "../api/videoApi";
 import { addDefaultSrc, openNewWindow, returnDefaultImage } from "../commonFunctions";
 import useToggle, { removeDublicateFrds } from '../components/CommonFunction';
@@ -27,7 +27,9 @@ import { FacebookIcon, FacebookShareButton } from "react-share";
 import { getNameList } from 'country-list'
 import Select from 'react-select';
 
-let isMouseClick = false, startingPos = [], glitterUid, friendLists = [], userData = null, checkOnlineFrdsInterval;
+let isMouseClick = false, startingPos = [], 
+glitterUid, friendLists = [], userData = null, 
+myLiveLoadData = false, checkOnlineFrdsInterval;
 
 
 let isLikedStatus = false, TLikesStatus = 0, MLikesStatus = 0;
@@ -102,6 +104,7 @@ const SearchHome = () => {
 
   // const [statusId , setStatusId] = useState("")
   userData = useSelector(userProfile).user.profile; //using redux useSelector here
+  myLiveLoadData = useSelector(myLiveLoadingData);
   const countries = getNameList();
   // const countries = getCountries();
   console.log(statusPrice);
@@ -123,7 +126,8 @@ const SearchHome = () => {
     width: '100%',
     maxWidth: '100%',
     maxHeight: '468px',
-    margin: 'auto'
+    margin: 'auto',
+    items: 13,
   }
 
   useEffect(() => {
@@ -143,19 +147,13 @@ const SearchHome = () => {
     console.log(countrieBlock, "countrieBlock..")
   }, [countrieBlock])
   const customCollapsedComponent = ({ totalviews, status_id, total_likes, is_liked , paid_status }) => {
-    return <>
-      {/* 
-      <div className="status_heading">
-        <span className="status_view"><img src="/assets/images/eye-icon.svg" alt="eye" />{totalviews}</span>
-      </div> */}
-      
+    return <>      
       <div className="status_footer">
         <span className="status_view"><img src="/assets/images/eye-icon.svg" alt="eye" />{totalviews}</span>
         <div className="status_like" onClick={() => likeStatus(status_id, is_liked, paid_status)}>
           <span ><img src="/assets/images/heart-icon.svg" alt="like status" /> {TLikesStatus}</span>
         </div>
       </div>
-      
     </>
   }
   // Like status
@@ -204,7 +202,6 @@ const SearchHome = () => {
           else if(storyData[i].coins == 100){storyData[i].url = "/assets/images/Coins_100.png" }
           else if(storyData[i].coins == 250){storyData[i].url = "/assets/images/Coins_250.png" }
           else if(storyData[i].coins == 500){storyData[i].url = "/assets/images/Coins_500.png" }
-
           if(storyData[i].type == "video") {
             storyData[i].type = "image"
           }
@@ -408,7 +405,6 @@ const SearchHome = () => {
     inputVideoFile.current.click();
     setVideoData('');
   }
-
 
 
   const changeCountries = (data) => {
@@ -676,7 +672,8 @@ const SearchHome = () => {
                 const frd_blocked_countries = !!onlineUsers[k].blocked_countries ? onlineUsers[k].blocked_countries.split(",") : [];
                 console.log(onlineUsers[k].user_id, countryCode, onlineUsers[k].blocked_countries, "onlineUsers[k].user_id")
                 for (let f in frd_blocked_countries) {
-                if (countryCode.match(frd_blocked_countries[f].replace("+", ""))) {
+                if (countryCode == (frd_blocked_countries[f].replace("+", ""))) {
+                  // alert(countryCode)
                   is_live = false
                 }
               }
@@ -694,11 +691,15 @@ const SearchHome = () => {
     });
     SOCKET.on('start_your_live_video_now', (data) => {
       if ((data.user_id == userData.user_id) && data.channel_id && data.channel_name) {
+        setLivePopup(false)
+        window.setTimeout(() => {
+          dispatch(myLiveLoading(false));
+        }, 1000)
         // $('#live-modal').hide();
         // setShowLive(false)
         // history.push(data.user_id+ '/' + data.channel_id +'/'+ data.channel_name + '/live-video-chat')
         const page = '/' + data.user_id + '/' + data.channel_id + '/' + data.channel_name + '/live-video-chat'
-        openNewWindow(page)
+        openNewWindow(page);
       }
     });
 
@@ -706,7 +707,11 @@ const SearchHome = () => {
     return () => componentWillUnmount()
   }, [])
 
+  
+  console.log(myLiveLoadData, "myLiveLoadingData..")
   const makeMeLive = () => {
+    // setMyLiveLoading(true)
+    dispatch(myLiveLoading(true))
     const bodyParameters = {
       session_id: localStorage.getItem("session_id"),
       user_id: userData.user_id,
@@ -1147,7 +1152,7 @@ console.log(friendList, "friendList...")
             </div>
           </div>
           <div className="live-option w-100 text-center">
-            <button className="btn bg-grd-clr" onClick={makeMeLive}>Go live</button>
+            <button className="btn bg-grd-clr" disabled={myLiveLoadData ? true : false} onClick={makeMeLive}>{myLiveLoadData ? "Creating Live..." : "Go live"}</button>
             <div className="live-type mt-4">
               <span className="active">Group Chat Live</span>
               <span>Live</span>
