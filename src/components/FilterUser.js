@@ -22,7 +22,6 @@ const alreadyRemoved = [];
 let isMouseClick = false, startingPos = [], glitterUid;
 
 const override = css`
-    
 text-align: center;
 width: 95%;
 position: absolute;
