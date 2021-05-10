@@ -98,7 +98,6 @@ const SearchHome = () => {
   const [countrieBlock, setCountrieBlock] = useState([]);
   const [countrieList, setCountrieList] = useState([]);
   const [statusPrice, setStatusPrice] = useState("0");
-  console.log(countrieList, "countrieList....")
 
   // const [statusId , setStatusId] = useState("")
   userData = useSelector(userProfile).user.profile; //using redux useSelector here
@@ -123,8 +122,7 @@ const SearchHome = () => {
     width: '100%',
     maxWidth: '100%',
     maxHeight: '468px',
-    margin: 'auto',
-    items: 13,
+    margin: 'auto'
   }
 
   useEffect(() => {
@@ -143,6 +141,7 @@ const SearchHome = () => {
   useEffect(() => {
     console.log(countrieBlock, "countrieBlock..")
   }, [countrieBlock])
+
   const customCollapsedComponent = ({ totalviews, status_id, total_likes, is_liked , paid_status }) => {
     return <>      
       <div className="status_footer">
@@ -209,7 +208,7 @@ const SearchHome = () => {
   }
 
   const stories = !!storyData ? storyData : []
-
+console.log(stories)
   const seeStatus = (stories, e) => {
     isLikedStatus = stories[e].is_liked;
     TLikesStatus = stories[e].total_likes;
@@ -452,21 +451,19 @@ const SearchHome = () => {
         bodyParameters.append("coins", "" + statusPrice);
         axios.post(ADD_STATUS, bodyParameters, config)
           .then((response) => {
-            if (response.status == 200) {
+            if (response.status == 200 &&  !response.status.error)  {
               NotificationManager.success(response.data.message, "", 2000, () => { return 0 }, true);
               setIsLoading(false);
               setUploadStatus(false);
               setVideoData('');
               setStatusPrice("0");
             }
-
+           else{
+             NotificationManager.success(response.data.message , "" , 2000 , () => { return 0} , true);
+           }
           }, (error) => {
             NotificationManager.error(error.message, "", 2000, () => { return 0 }, true);
             setIsLoading(false);
-            if (error.toString().match("403")) {
-              localStorage.removeItem("session_id");
-              history.push('/login');
-            }
           });
 
       }
@@ -479,21 +476,20 @@ const SearchHome = () => {
         bodyParameters.append("coins", "" + statusPrice);
         axios.post(ADD_STATUS, bodyParameters, config)
           .then((response) => {
-            if (response.status == 200) {
+            if (response.status == 200 && !response.status.error) {
               NotificationManager.success(response.data.message, "", 2000, () => { return 0 }, true);
               setIsLoading(false);
               setUploadStatus(false);
               setVideoData('');
               setStatusPrice("0");
             }
+            else{
+              NotificationManager.success(response.data.message , "" , 2000 , () => {return 0} , true);
+            }
           }, (error) => {
             NotificationManager.error(error.message, "", 2000, () => { return 0 }, true);
             setIsLoading(false);
-            if (error.toString().match("403")) {
-              localStorage.removeItem("session_id");
-              history.push('/login');
-              setIsLoading(false);
-            }
+            
           });
       }
       else if (videoData == 'text') {
@@ -664,13 +660,13 @@ const SearchHome = () => {
         for (let j in totalLiveFrds) {
           if (totalLiveFrds[j].user_id == frdList[i].user_id) {
             let is_live = true, countryCode = userData.country_code.replace("+", "");
+            // alert(countryCode)
             for (let k in onlineUsers) {
               if (frdList[i].user_id == onlineUsers[k].user_id) {
                 const frd_blocked_countries = !!onlineUsers[k].blocked_countries ? onlineUsers[k].blocked_countries.split(",") : [];
                 console.log(onlineUsers[k].user_id, countryCode, onlineUsers[k].blocked_countries, "onlineUsers[k].user_id")
                 for (let f in frd_blocked_countries) {
                 if (countryCode == (frd_blocked_countries[f].replace("+", ""))) {
-                  // alert(countryCode)
                   is_live = false
                 }
               }
@@ -680,6 +676,7 @@ const SearchHome = () => {
             frdList[i].channel_id = uuidv4();
             frdList[i].channel_name = totalLiveFrds[j].channel_name;
             frdList[i].channel_token = totalLiveFrds[j].channel_token;
+            console.log(frdList, "sandeep")
           }
         }
       }
@@ -820,9 +817,7 @@ console.log(friendList, "friendList...")
                           </div>
                           : ""
                       ))}
-
                     </OwlCarousel>
-
                   </div>
                 </div>
                 <div className="search-people-row">
@@ -1060,6 +1055,7 @@ console.log(friendList, "friendList...")
               </ul>
             </div>
             <div className="block_countries">
+              <p>Block countries</p>
               <div className="block_countries__list">
                 <img src="/assets/images/add-countries.svg" alt="add countries" />
               </div>
