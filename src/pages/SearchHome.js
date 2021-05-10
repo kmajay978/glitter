@@ -659,6 +659,7 @@ const SearchHome = () => {
       let frdList = friendLists;
       const totalLiveFrds = data.live;
       const onlineUsers = data.online;
+      console.log(onlineUsers, "onlineUsers..")
       for (let i in frdList) {
         frdList[i].is_live = false;
         frdList[i].online = false;
@@ -672,9 +673,14 @@ const SearchHome = () => {
             let is_live = true, countryCode = userData.country_code;
             for (let k in onlineUsers) {
               if (frdList[i].user_id == onlineUsers[k].user_id) {
-                if (countryCode.match(onlineUsers[k].blocked_countries)) {
+                const frd_blocked_countries = !!onlineUsers[k].blocked_countries ? onlineUsers[k].blocked_countries.split(",") : [];
+                console.log(onlineUsers[k].user_id, countryCode, onlineUsers[k].blocked_countries, "onlineUsers[k].user_id")
+                for (let f in frd_blocked_countries) {
+                if (countryCode.match(frd_blocked_countries[f])) {
+                  alert("no live!!")
                   is_live = false
                 }
+              }
               }
             }
             frdList[i].is_live = is_live;
@@ -767,7 +773,7 @@ const SearchHome = () => {
   //   }, 1000)
   //   return <video id= {video} src={video} alt="status" />
   // }
-
+console.log(friendList, "friendList...")
 
   return (
     <section className="home-wrapper">
