@@ -35,7 +35,8 @@ const Login = () => {
   //   };
 
   const [phoneNumber, setPhone] = useState('');   //For past users
-  const [cntCode, setCntCode] = useState('1');   //For past users
+  const [cntCode, setCntCode] = useState('1');
+  const [cntCodeName, setCntCodeName] = useState('us');   //For past users
 
 
 
@@ -44,6 +45,12 @@ const Login = () => {
     const value = e.target.value.replace(/\D/g, "");
     setPhone(value);
   };
+
+  const changeCountry = (e) => {
+    const target = e.target;
+    setCntCode(target.getAttribute("data-cid"))
+    setCntCodeName(target.getAttribute("data-code"))
+  }
 
   // OTP fields in state
   const [otp_1, setOtp1] = useState('');
@@ -334,11 +341,11 @@ const Login = () => {
             </div>
             <div className="form-group">
               <div className="country text-left">
-                <div id="country" className="select" ><img src="https://flagcdn.com/16x12/us.png" />+1</div>
+                <div id="country" className="select" ><img src={"https://flagcdn.com/16x12/" + cntCodeName.toLowerCase() + ".png"} />+{cntCode}</div>
                 <div id="country-drop" className="dropdown">
                   <ul>
                     {getCountries().map((country, index) => (
-                      <li onClick={e => setCntCode(e.target.getAttribute("data-cid"))} data-code={country.code.toLowerCase()} data-name={country.label} data-cid={country.phone}><img src={"https://flagcdn.com/16x12/" + country.code.toLowerCase() + ".png"} />+{country.phone}</li>
+                      <li onClick={e => changeCountry(e)} data-code={country.code.toLowerCase()} data-name={country.label} data-cid={country.phone}><img src={"https://flagcdn.com/16x12/" + country.code.toLowerCase() + ".png"} />+{country.phone}</li>
                     ))}
                   </ul>
                 </div>

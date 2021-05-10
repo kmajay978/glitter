@@ -426,26 +426,22 @@ const SingleProfile = (props) => {
                         {demoArchieves.slice(0, 4).map((story, i) => {
                           return <div className="single-stories">
                               <figure>
-                              {story.status_type==1 &&
-                              story.paid_status==true ?  
+                              {story.status_type==1 ?
+                              (story.paid_status==true ?  
                                 <>
                               <img src={story.file} alt="Archived Story" />
                               <small className="story__time"><i class="far fa-clock"></i> {moment(story.created_at).format('LT')}</small>
                              </>
                               :
-                              <div className="single-stories locked">
-                              <i className="fas fa-lock" />
-                            </div> 
-                            }
-                            {
+                              <img src="/assets/images/blur.png" alt="seeStory"/> )
+                            :
+                            (
                               story.paid_status==true ?  
                                 <>
                               <video className="video-archieve" autoPlay loop><source src={story.file} type="video/mp4" /></video>
                               <small className="story__time"><i class="far fa-clock"></i> {moment(story.created_at).format('LT')}</small>
                               </>:
-                              <div className="single-stories locked">
-                              <i className="fas fa-lock" />
-                            </div> 
+                               <img src="/assets/images/blur.png" alt="seeStory"/>)
                             }
                                 {/* {(item.file.split(".")[item.file.split(".").length - 1] !== "mp4" && item.file.split(".")[item.file.split(".").length - 1] !== "MP4" && item.file.split(".")[item.file.split(".").length - 1] !== "mov" && item.file.split(".")[item.file.split(".").length - 1] !== "MOV") ? <img src={item.file} alt="Archived Story" /> : <video className="video-archieve" autoPlay loop><source src={item.file} type="video/mp4" /></video>} */}
                                 {/* <small className="story__time"><i class="far fa-clock"></i> {moment(item.created_at).format('LT')}</small> */}
@@ -519,21 +515,32 @@ const SingleProfile = (props) => {
                   <div className="archived-stories d-flex flex-wrap stories-grid">
                     {item.status_list.map((story, index) => (
                       <div className="single-stories">
-                        {story.paid_status == false ?
-                          <div className="single-stories locked">
-                            <i className="fas fa-lock" />
-                          </div> :
                           <figure>
-                            {story.status_type==1 &&
+                          {story.status_type==1 ?
+                              (story.paid_status==true ?  
+                                <>
+                              <img src={story.file} alt="Archived Story" />
+                              <small className="story__time"><i class="far fa-clock"></i> {moment(story.created_at).format('LT')}</small>
+                             </>
+                              :
+                              <img src="/assets/images/blur.png" alt="seeStory"/> )
+                            :
+                            (
+                              story.paid_status==true ?  
+                                <>
+                              <video className="video-archieve" autoPlay loop><source src={story.file} type="video/mp4" /></video>
+                              <small className="story__time"><i class="far fa-clock"></i> {moment(story.created_at).format('LT')}</small>
+                              </>:
+                               <img src="/assets/images/blur.png" alt="seeStory"/>)
+                            }
+                            {/* {story.status_type==1 &&
                               story.paid_status==true ?  
                                 <>
                               <img src={story.file} alt="Archived Story" />
                               <small className="story__time"><i class="far fa-clock"></i> {moment(story.created_at).format('LT')}</small>
                              </>
                               :
-                              <div className="single-stories locked">
-                              <i className="fas fa-lock" />
-                            </div> 
+                              <img src="/assets/images/blur.png" alt="seeStory"/>
                             }
                             {
                               story.paid_status==true ?  
@@ -541,14 +548,12 @@ const SingleProfile = (props) => {
                               <video className="video-archieve" autoPlay loop><source src={story.file} type="video/mp4" /></video>
                               <small className="story__time"><i class="far fa-clock"></i> {moment(story.created_at).format('LT')}</small>
                               </>:
-                              <div className="single-stories locked">
-                              <i className="fas fa-lock" />
-                            </div> 
-                            }
+                             <img src="/assets/images/blur.png" alt="seeStory"/>
+                            } */}
                             {/* {(story.file.split(".")[story.file.split(".").length - 1] !== "mp4" && story.file.split(".")[story.file.split(".").length - 1] !== "MP4" && story.file.split(".")[story.file.split(".").length - 1] !== "mov" && story.file.split(".")[story.file.split(".").length - 1] !== "MOV") ? <img src={story.file} alt="Archived Story" /> : <video className="video-archieve" autoPlay loop><source src={story.file} type="video/mp4" /></video>}
                             <small className="story__time"><i class="far fa-clock"></i> {moment(story.created_at).format('LT')}</small> */}
                           </figure>
-                        }
+                      
                       </div>
                     ))}
                   </div>
