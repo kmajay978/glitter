@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import axios from "axios";
 import NavLinks from '../components/Nav';
 import FilterSide from '../components/Filter';
-import { ADD_STATUS, FRIENDLIST_API, GET_STATUS, LIKE_STATUS_API, DETUCT_THOUSAND_COIN } from '../components/Api';
+import { ADD_STATUS, FRIENDLIST_API, GET_STATUS, LIKE_STATUS_API, DETUCT_THOUSAND_COIN, VIEW_STATUS_API } from '../components/Api';
 import { Modal } from 'react-bootstrap';
 import OwlCarousel from 'react-owl-carousel2';
 import { SOCKET } from '../components/Config';
@@ -142,34 +142,37 @@ const SearchHome = () => {
   useEffect(() => {
     console.log(countrieBlock, "countrieBlock..")
   }, [countrieBlock])
-  const customCollapsedComponent = ({ totalviews, status_id, total_likes, is_liked }) => {
+  const customCollapsedComponent = ({ totalviews, status_id, total_likes, is_liked , paid_status }) => {
     return <>
       {/* 
       <div className="status_heading">
         <span className="status_view"><img src="/assets/images/eye-icon.svg" alt="eye" />{totalviews}</span>
       </div> */}
-
+      
       <div className="status_footer">
         <span className="status_view"><img src="/assets/images/eye-icon.svg" alt="eye" />{totalviews}</span>
-        <div className="status_like" onClick={() => likeStatus(status_id, is_liked)}>
+        <div className="status_like" onClick={() => likeStatus(status_id, is_liked, paid_status)}>
           <span ><img src="/assets/images/heart-icon.svg" alt="like status" /> {TLikesStatus}</span>
         </div>
       </div>
+      
     </>
   }
   // Like status
-  const likeStatus = (Id, is_liked) => {
-    if (isLikedStatus) {
-      if (TLikesStatus > (MLikesStatus - 1)) {
-        TLikesStatus = TLikesStatus - 1 == -1 ? 0 : TLikesStatus - 1;
-        isLikedStatus = false
+  const likeStatus = (Id, is_liked, paid_status) => {
+    if (paid_status) {
+      if (isLikedStatus) {
+        if (TLikesStatus > (MLikesStatus - 1)) {
+          TLikesStatus = TLikesStatus - 1 == -1 ? 0 : TLikesStatus - 1;
+          isLikedStatus = false
+        }
       }
+      else {
+        if (TLikesStatus < (MLikesStatus + 1)) {
+          TLikesStatus = TLikesStatus + 1;
+          isLikedStatus = true
+        }
     }
-    else {
-      if (TLikesStatus < (MLikesStatus + 1)) {
-        TLikesStatus = TLikesStatus + 1;
-        isLikedStatus = true
-      }
     }
     const bodyParameters = {
       session_id: localStorage.getItem("session_id"),
@@ -196,16 +199,15 @@ const SearchHome = () => {
 
   if (!!storyData) {
     for (let i in storyData) {
-      console.log(storyData[i]);
-      if (storyData[i].type == "image") {
-        if (storyData[i].paid_status == false) {
-          storyData[i].url = "/assets/images/blur.png"
-        }
-      }
-      else {
-        if (storyData[i].paid_status == false) {
-          storyData[i].url = "/assets/images/blur.png"
-        }
+      if (storyData[i].paid_status == false) {
+          if(storyData[i].coins == 50){storyData[i].url = "/assets/images/Coins_50.png"}
+          else if(storyData[i].coins == 100){storyData[i].url = "/assets/images/Coins_100.png" }
+          else if(storyData[i].coins == 250){storyData[i].url = "/assets/images/Coins_250.png" }
+          else if(storyData[i].coins == 500){storyData[i].url = "/assets/images/Coins_500.png" }
+
+          if(storyData[i].type == "video") {
+            storyData[i].type = "image"
+          }
       }
       storyData[i].seeMore = () => customCollapsedComponent(storyData[i]);
       storyData[i].seeMoreCollapsed = () => customCollapsedComponent(storyData[i]);
@@ -219,8 +221,18 @@ const SearchHome = () => {
     TLikesStatus = stories[e].total_likes;
     MLikesStatus = stories[e].total_likes;
     console.log(e, "start...")
-    if (!stories[e].is_seen) {
-      // hit see api
+    let status_id = stories[e].status_id
+    if (!stories[e].is_seen && stories[e].paid_status) {
+      const bodyParameters = {
+        session_id: localStorage.getItem("session_id"),
+        status_id: status_id
+      }
+      axios.post(VIEW_STATUS_API, bodyParameters)
+        .then((response) => {
+
+        }, (error) => {
+
+        });
     }
   }
 

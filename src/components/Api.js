@@ -42,6 +42,7 @@ export const ARCHIVE_STORIES = getApiUrl("archive_stories");
 export const ADD_STATUS_API = getApiUrl("add_status");
 export const ACCEPT_REQUEST_API = getApiUrl("accept_friend_like");
 export const LIKE_STATUS_API = getApiUrl("like_status");
+export const VIEW_STATUS_API = getApiUrl("view_status");
 
 // Not done yet
 export const CALL_ACTION_API = getApiUrl("call_action");
