@@ -123,7 +123,8 @@ const SearchHome = () => {
     width: '100%',
     maxWidth: '100%',
     maxHeight: '468px',
-    margin: 'auto'
+    margin: 'auto',
+    items: 13,
   }
 
   useEffect(() => {
@@ -661,7 +662,15 @@ const SearchHome = () => {
         }
         for (let j in totalLiveFrds) {
           if (totalLiveFrds[j].user_id == frdList[i].user_id) {
-            frdList[i].is_live = true;
+            let is_live = true, countryCode = userData.country_code;
+            for (let k in onlineUsers) {
+              if (frdList[i].user_id == onlineUsers[k].user_id) {
+                if (countryCode.match(onlineUsers[k].blocked_countries)) {
+                  is_live = false
+                }
+              }
+            }
+            frdList[i].is_live = is_live;
             frdList[i].channel_id = uuidv4();
             frdList[i].channel_name = totalLiveFrds[j].channel_name;
             frdList[i].channel_token = totalLiveFrds[j].channel_token;
@@ -691,9 +700,15 @@ const SearchHome = () => {
       user_id: userData.user_id,
       type: 3
     }
-    const call_type = 1, user_id = userData.user_id;
-    generateLiveVideoChatToken(dispatch, history, bodyParameters, call_type, user_id, uuidv4(), SOCKET);
-
+    let blocked_list_data = [];
+    for (let i in countrieBlock) {
+      blocked_list_data.push(countrieBlock[i].phone)
+    }
+    const modified_block_countries = blocked_list_data.join(",");
+    console.log(countrieBlock, "countrieBlock...")
+    const call_type = 1, user_id = userData.user_id, block_countries = modified_block_countries.slice(0, modified_block_countries.length);
+    console.log(block_countries, "block_countries..")
+    generateLiveVideoChatToken(dispatch, history, bodyParameters, call_type, user_id, uuidv4(), block_countries, SOCKET);
   }
 
   const watchLive = () => {
