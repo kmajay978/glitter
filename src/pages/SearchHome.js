@@ -670,14 +670,13 @@ const SearchHome = () => {
         }
         for (let j in totalLiveFrds) {
           if (totalLiveFrds[j].user_id == frdList[i].user_id) {
-            let is_live = true, countryCode = userData.country_code;
+            let is_live = true, countryCode = userData.country_code.replace("+", "");
             for (let k in onlineUsers) {
               if (frdList[i].user_id == onlineUsers[k].user_id) {
                 const frd_blocked_countries = !!onlineUsers[k].blocked_countries ? onlineUsers[k].blocked_countries.split(",") : [];
                 console.log(onlineUsers[k].user_id, countryCode, onlineUsers[k].blocked_countries, "onlineUsers[k].user_id")
                 for (let f in frd_blocked_countries) {
-                if (countryCode.match(frd_blocked_countries[f])) {
-                  alert("no live!!")
+                if (countryCode.match(frd_blocked_countries[f].replace("+", ""))) {
                   is_live = false
                 }
               }
