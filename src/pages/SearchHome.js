@@ -143,19 +143,13 @@ const SearchHome = () => {
     console.log(countrieBlock, "countrieBlock..")
   }, [countrieBlock])
   const customCollapsedComponent = ({ totalviews, status_id, total_likes, is_liked , paid_status }) => {
-    return <>
-      {/* 
-      <div className="status_heading">
-        <span className="status_view"><img src="/assets/images/eye-icon.svg" alt="eye" />{totalviews}</span>
-      </div> */}
-      
+    return <>      
       <div className="status_footer">
         <span className="status_view"><img src="/assets/images/eye-icon.svg" alt="eye" />{totalviews}</span>
         <div className="status_like" onClick={() => likeStatus(status_id, is_liked, paid_status)}>
           <span ><img src="/assets/images/heart-icon.svg" alt="like status" /> {TLikesStatus}</span>
         </div>
       </div>
-      
     </>
   }
   // Like status
@@ -204,7 +198,6 @@ const SearchHome = () => {
           else if(storyData[i].coins == 100){storyData[i].url = "/assets/images/Coins_100.png" }
           else if(storyData[i].coins == 250){storyData[i].url = "/assets/images/Coins_250.png" }
           else if(storyData[i].coins == 500){storyData[i].url = "/assets/images/Coins_500.png" }
-
           if(storyData[i].type == "video") {
             storyData[i].type = "image"
           }
@@ -408,7 +401,6 @@ const SearchHome = () => {
     inputVideoFile.current.click();
     setVideoData('');
   }
-
 
 
   const changeCountries = (data) => {
