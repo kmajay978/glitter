@@ -628,7 +628,8 @@ const SearchHome = () => {
     SOCKET.connect();
     checkOnlineFrdsInterval = window.setInterval(() => {
       SOCKET.emit("authenticate_friend_list_live", {
-        session_id: localStorage.getItem("session_id")
+        session_id: localStorage.getItem("session_id"),
+        user_id: userData.user_id
       });
     }, 1000)
 
@@ -651,44 +652,47 @@ const SearchHome = () => {
       }
     })
 
-    SOCKET.on('live_friends', (data) => {
-      let frdList = friendLists;
-      const totalLiveFrds = data.live;
-      const onlineUsers = data.online;
-      console.log(onlineUsers, "onlineUsers..")
-      for (let i in frdList) {
-        frdList[i].is_live = false;
-        frdList[i].online = false;
-        for (let k in onlineUsers) {
-          if (frdList[i].user_id == onlineUsers[k].user_id) {
-            frdList[i].online = true
+    SOCKET.on('live_friends', (data, user) => {
+      if (user.user_id == userData.user_id) {
+        let frdList = friendLists;
+        const totalLiveFrds = data.live;
+        const onlineUsers = data.online;
+        console.log(onlineUsers, "onlineUsers..")
+        for (let i in frdList) {
+          frdList[i].is_live = false;
+          frdList[i].online = false;
+          for (let k in onlineUsers) {
+            if (frdList[i].user_id == onlineUsers[k].user_id) {
+              frdList[i].online = true
+            }
           }
-        }
-        for (let j in totalLiveFrds) {
-          if (totalLiveFrds[j].user_id == frdList[i].user_id) {
-            let is_live = true, countryCode = userData.country_code.replace("+", "");
-            for (let k in onlineUsers) {
-              if (frdList[i].user_id == onlineUsers[k].user_id) {
-                const frd_blocked_countries = !!onlineUsers[k].blocked_countries ? onlineUsers[k].blocked_countries.split(",") : [];
-                console.log(onlineUsers[k].user_id, countryCode, onlineUsers[k].blocked_countries, "onlineUsers[k].user_id")
-                for (let f in frd_blocked_countries) {
-                if (countryCode == (frd_blocked_countries[f].replace("+", ""))) {
-                  // alert(countryCode)
-                  is_live = false
+          for (let j in totalLiveFrds) {
+            if (totalLiveFrds[j].user_id == frdList[i].user_id) {
+              let is_live = true, countryCode = userData.country_code.replace("+", "");
+              for (let k in onlineUsers) {
+                if (frdList[i].user_id == onlineUsers[k].user_id) {
+                  const frd_blocked_countries = !!onlineUsers[k].blocked_countries ? onlineUsers[k].blocked_countries.split(",") : [];
+                  console.log(onlineUsers[k].user_id, countryCode, onlineUsers[k].blocked_countries, "onlineUsers[k].user_id")
+                  for (let f in frd_blocked_countries) {
+                  if (countryCode == (frd_blocked_countries[f].replace("+", ""))) {
+                    // alert(countryCode)
+                    is_live = false
+                  }
+                }
                 }
               }
-              }
+              frdList[i].is_live = is_live;
+              frdList[i].channel_id = uuidv4();
+              frdList[i].channel_name = totalLiveFrds[j].channel_name;
+              frdList[i].channel_token = totalLiveFrds[j].channel_token;
             }
-            frdList[i].is_live = is_live;
-            frdList[i].channel_id = uuidv4();
-            frdList[i].channel_name = totalLiveFrds[j].channel_name;
-            frdList[i].channel_token = totalLiveFrds[j].channel_token;
           }
         }
+        setFriendlist(frdList);
+        setRandomNumber(Math.random());
       }
-      setFriendlist(frdList);
-      setRandomNumber(Math.random());
     });
+
     SOCKET.on('start_your_live_video_now', (data) => {
       if ((data.user_id == userData.user_id) && data.channel_id && data.channel_name) {
         setLivePopup(false)
