@@ -294,7 +294,7 @@ const SingleProfile = (props) => {
             <div className="col-md-5">
               <div className="p-title-info d-flex flex-wrap align-items-center justify-content-between my-3">
                 <div className="profile-id">
-                  {!!userData ? <span className="d-inline-block">{userData.first_name}</span> : ""}
+                  {!!userData && userData.first_name != "" ? <span className="d-inline-block">{userData.first_name}</span> : ""}
                   <span className="d-inline-block">ID:2837289739</span>
                 </div>
                 <div className="photo-count">
@@ -478,7 +478,6 @@ const SingleProfile = (props) => {
                         <div className="gift-price mt-2"><span className="star"><i className="fas fa-star" /></span> {item.coins}</div>
                       </div>
                     ))}
-
                   </div>
 
                 </div>
@@ -489,7 +488,7 @@ const SingleProfile = (props) => {
                       <span className="d-inline-block">
                         {userData.looking_for == '1' ? "Men"
                           : userData.looking_for == '2' ? "Women"
-                            : userData.looking_for == '2' ? "Both"
+                            : userData.looking_for == '3' ? "Both"
                               : ""}
                       </span>
                       : ""}
@@ -505,7 +504,6 @@ const SingleProfile = (props) => {
         <div className="bio-stories">
           <div className="flex-wrapper d-flex align-items-center mb-3">
             <h5 className="mb-0">Archived Stories</h5>
-
           </div>
           {!!archiveStory &&
             <>

@@ -144,7 +144,7 @@ const Profile = (props) => {
   const handleCheck = (e) => {
     const target = e.target;
     var value = target.value;
-
+    console.log( value , "checkvalue...");
     if (target.checked) {
       let selectedArray = selectedCheck;
       selectedArray.push(value);
@@ -155,7 +155,6 @@ const Profile = (props) => {
       selectedArray.splice(index, 1);
       setSlelected(selectedArray);
     }
-
   }
 
   const shareUrl = 'https://glittersapp.com/';
@@ -172,8 +171,6 @@ const Profile = (props) => {
   //   $('.react-date-picker__inputGroup__month').val('05');
   //   $('.react-date-picker__inputGroup__year').val('1997');
   // }, 2000)
-
-
   //   },[show])
 
   // Fetching profile Data
@@ -202,7 +199,6 @@ const Profile = (props) => {
 
     var obj = [...Object.values(Object.keys(form.interests_hobbie))]
     setHobbies(obj);
-
     setProfile(data);
     dispatch(
       profile({
@@ -608,7 +604,6 @@ const Profile = (props) => {
         history.push('/login');
       }
     }
-
   }
 
   const CheckedItem = (id) => {
@@ -625,9 +620,8 @@ const Profile = (props) => {
       return ""
     }
   }
+
   // Get id of current plan 
-
-
   const Stripehandler = (id) => {
     dispatch(
       stripePlanId({
@@ -635,7 +629,6 @@ const Profile = (props) => {
       })
     );
     setShowStripe(true);
-
   }
 
   const StripeCoinHandler = (id) => {
@@ -646,7 +639,6 @@ const Profile = (props) => {
     );
     setShowStripe(true);
     setShowBuyCoins(false);
-
   }
 
   const closeStripeModel = () => {

@@ -11,7 +11,7 @@ import { Modal } from 'react-bootstrap';
 import OwlCarousel from 'react-owl-carousel2';
 import { SOCKET } from '../components/Config';
 import { useDispatch, useSelector } from "react-redux";
-import { userProfile } from "../features/userSlice";
+import { userProfile, myLiveLoadingData, myLiveLoading } from "../features/userSlice";
 import { generateLiveVideoChatToken } from "../api/videoApi";
 import { addDefaultSrc, openNewWindow, returnDefaultImage } from "../commonFunctions";
 import useToggle, { removeDublicateFrds } from '../components/CommonFunction';
@@ -27,7 +27,9 @@ import { FacebookIcon, FacebookShareButton } from "react-share";
 import { getNameList } from 'country-list'
 import Select from 'react-select';
 
-let isMouseClick = false, startingPos = [], glitterUid, friendLists = [], userData = null, checkOnlineFrdsInterval;
+let isMouseClick = false, startingPos = [], 
+glitterUid, friendLists = [], userData = null, 
+myLiveLoadData = false, checkOnlineFrdsInterval;
 
 
 let isLikedStatus = false, TLikesStatus = 0, MLikesStatus = 0;
@@ -79,7 +81,7 @@ const SearchHome = () => {
   const [statusLength, setStatusLength] = useState("");
   const [showLive, setShowLive] = useState(false);
   const [showPencil, setShowPencil] = useState(false);
-  const [pencilData, setPencilData] = useState('')
+  // const [pencilData, setPencilData] = useState('')
   const [picture, setPicture] = useState(null);
   const [imgData, setImgData] = useState(null);
   const [video, setVideo] = useState('');
@@ -101,13 +103,13 @@ const SearchHome = () => {
 
   // const [statusId , setStatusId] = useState("")
   userData = useSelector(userProfile).user.profile; //using redux useSelector here
+  myLiveLoadData = useSelector(myLiveLoadingData);
   const countries = getNameList();
   // const countries = getCountries();
-  console.log(statusPrice);
 
   console.log(countrieList);
-  const shareUrl = 'https://glittersapp.com/';
-  const title = 'glitter-app';
+  const shareUrl = !!userData ? 'https://glittersapp.com/' + userData.user_id + '/single-profile' : "";
+  const title = 'https://glittersapp.com';
 
   console.log(countries, "countries");
   const option = {
@@ -350,7 +352,7 @@ console.log(stories)
 
       });
   }
-
+console.log(statusPrice ,"statusPrice...")
   const handleStatus = (user_id) => {
     setStatusLoading(true);
     const bodyParameters = {
@@ -400,6 +402,7 @@ console.log(stories)
   const handleVideo = () => {
     inputVideoFile.current.click();
     setVideoData('');
+    setStatusPrice("0");
   }
 
 
@@ -610,6 +613,7 @@ console.log(stories)
   const openFileUploder = () => {
     inputFile.current.click();
     setVideoData('');
+    setStatusPrice("0");
   }
 
   const componentWillUnmount = () => {
@@ -685,11 +689,15 @@ console.log(stories)
     });
     SOCKET.on('start_your_live_video_now', (data) => {
       if ((data.user_id == userData.user_id) && data.channel_id && data.channel_name) {
+        setLivePopup(false)
+        window.setTimeout(() => {
+          dispatch(myLiveLoading(false));
+        }, 1000)
         // $('#live-modal').hide();
         // setShowLive(false)
         // history.push(data.user_id+ '/' + data.channel_id +'/'+ data.channel_name + '/live-video-chat')
         const page = '/' + data.user_id + '/' + data.channel_id + '/' + data.channel_name + '/live-video-chat'
-        openNewWindow(page)
+        openNewWindow(page);
       }
     });
 
@@ -697,7 +705,11 @@ console.log(stories)
     return () => componentWillUnmount()
   }, [])
 
+  
+  console.log(myLiveLoadData, "myLiveLoadingData..")
   const makeMeLive = () => {
+    // setMyLiveLoading(true)
+    dispatch(myLiveLoading(true))
     const bodyParameters = {
       session_id: localStorage.getItem("session_id"),
       user_id: userData.user_id,
@@ -1049,9 +1061,7 @@ console.log(friendList, "friendList...")
                 <FacebookShareButton size={13} url={shareUrl} quote={title} >
                   <FacebookIcon round />
                 </FacebookShareButton>
-
-                <li><a href="javascript:void(0)"><i className="fab fa-facebook-f" /></a></li>
-                <li><a href="javascript:void(0)"><i className="fab fa-instagram" /></a></li>
+                {/* <li><a href="javascript:void(0)"><i className="fab fa-instagram" /></a></li> */}
               </ul>
             </div>
             <div className="block_countries">
@@ -1137,7 +1147,7 @@ console.log(friendList, "friendList...")
             </div>
           </div>
           <div className="live-option w-100 text-center">
-            <button className="btn bg-grd-clr" onClick={makeMeLive}>Go live</button>
+            <button className="btn bg-grd-clr" disabled={myLiveLoadData ? true : false} onClick={makeMeLive}>{myLiveLoadData ? "Creating Live..." : "Go live"}</button>
             <div className="live-type mt-4">
               <span className="active">Group Chat Live</span>
               <span>Live</span>

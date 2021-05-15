@@ -139,6 +139,7 @@ const FilterUser = ({ fetchedProfile }) => {
       );
     }
   };
+  console.log(allData , "allData...");
   const childRefs = userData;
   const swipe = (dir, userId) => {
     if (allData.length > 0) {
@@ -175,7 +176,6 @@ const FilterUser = ({ fetchedProfile }) => {
       }
     }
   };
-
 
   useEffect(() => {
     if (!!cardClick) {
@@ -226,8 +226,6 @@ const FilterUser = ({ fetchedProfile }) => {
 
 
   // }, []) 
-
-
 
   return (
     <>
