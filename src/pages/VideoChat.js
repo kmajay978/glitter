@@ -413,6 +413,7 @@ const SearchProfile = () => {
       setReRenderGifts(Math.random())
     }, 250)
 
+    return () => { SOCKET.removeAllListeners() }
   }, [])
 
   const endCall = (showMsg) => {

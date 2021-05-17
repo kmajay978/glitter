@@ -435,6 +435,7 @@ const LiveVideoChat = () => {
             }, c * 900)
         });
 
+        return () => { SOCKET.removeAllListeners()}
     }, [])
 
     const scrollToBottom = () => {

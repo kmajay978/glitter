@@ -34,7 +34,7 @@ const AnswerCalling = () => {
             }
         })
 
-        return () => localStorage.removeItem("receiverDetails")
+        return () => { SOCKET.removeAllListeners(); localStorage.removeItem("receiverDetails") }
     }, [])
     const videoChatNow = () => {
         if (!!receiverDetails) {

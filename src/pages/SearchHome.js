@@ -708,7 +708,7 @@ const SearchHome = () => {
     });
 
     // uploadImage();
-    return () => componentWillUnmount()
+    return () => { SOCKET.removeAllListeners(); componentWillUnmount() }
   }, [])
 
   

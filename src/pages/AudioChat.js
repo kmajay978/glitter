@@ -263,6 +263,7 @@ const AudioChat = () => {
         }
       }
     });
+    return () => { SOCKET.removeAllListeners()}
   }, [])
 
   const audioManageCoinsTimeViews = () => {

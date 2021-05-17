@@ -119,6 +119,7 @@ function App(props) {
         }
       }
     })
+    return () => { SOCKET.removeAllListeners() }
   }, [])
 
   //   var ctrlKeyDown = false;

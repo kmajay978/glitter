@@ -595,7 +595,7 @@ const ChatBox = (props) => {
             // src= window.URL.createObjectURL(blob);
 
         });
-        return () => { componentWillUnmount() }
+        return () => { SOCKET.removeAllListeners(); componentWillUnmount() }
 
     }, [])
 
