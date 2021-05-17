@@ -625,7 +625,7 @@ const SearchHome = () => {
 
   useEffect(() => {
     handleFriendList();
-    SOCKET.connect();
+    // SOCKET.connect(); qwert
     checkOnlineFrdsInterval = window.setInterval(() => {
       SOCKET.emit("authenticate_friend_list_live", {
         session_id: localStorage.getItem("session_id"),

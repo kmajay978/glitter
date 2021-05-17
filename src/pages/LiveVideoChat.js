@@ -108,7 +108,7 @@ const LiveVideoChat = () => {
                 componentWillUnmount()
             }
             // check with backend + socket if this channel exist...
-            SOCKET.connect()
+            // SOCKET.connect() qwert
             setLoading(true);
             SOCKET.emit("authenticate_live_video_call", {
                 host_id: Number(videoCallParams.user_id),
