@@ -629,7 +629,7 @@ const SearchHome = () => {
     checkOnlineFrdsInterval = window.setInterval(() => {
       SOCKET.emit("authenticate_friend_list_live", {
         session_id: localStorage.getItem("session_id"),
-        user_id: userData.user_id
+        user_id: !!userData && userData.user_id
       });
     }, 1000)
 
@@ -653,7 +653,7 @@ const SearchHome = () => {
     })
 
     SOCKET.on('live_friends', (data, user) => {
-      if (user.user_id == userData.user_id) {
+      if (!!userData && user.user_id == userData.user_id) {
         let frdList = friendLists;
         const totalLiveFrds = data.live;
         const onlineUsers = data.online;
