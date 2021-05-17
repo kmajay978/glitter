@@ -124,14 +124,14 @@ const LiveVideoChat = () => {
                 channel_name: videoCallParams.channel_name
             });
 
-            SOCKET.on('end_live_video_call_host', (data) => {
+            SOCKET.off('end_live_video_call_host').on('end_live_video_call_host', (data) => {
                 if (data.channel_name == videoCallParams.channel_name) {
                     // alert("channel is closing....")
                     componentWillUnmount();
                 }
             })
 
-            SOCKET.on('end_live_video_call_host_warning', (data) => {
+            SOCKET.off('end_live_video_call_host_warning').on('end_live_video_call_host_warning', (data) => {
                 if (data.channel_name == videoCallParams.channel_name) {
                     alert("Live video call is closing soon. Something went wrong...")
                     SOCKET.emit("end_live_video_call_host", {
@@ -144,7 +144,7 @@ const LiveVideoChat = () => {
                 }
             })
 
-            SOCKET.on('end_live_video_call_audience', (data) => {
+            SOCKET.off('end_live_video_call_audience').on('end_live_video_call_audience', (data) => {
                 if (data.user_id === videoCallState.user_id && data.channel_name == videoCallParams.channel_name) {
                     if (Number(videoCallParams.user_id) === data.user_id) {
                         // alert("host")
@@ -156,7 +156,7 @@ const LiveVideoChat = () => {
                     }
                 }
             })
-            SOCKET.on('end_live_video_call_audience_warning', (data) => {
+            SOCKET.off('end_live_video_call_audience_warning').on('end_live_video_call_audience_warning', (data) => {
                 if (data.user_id === videoCallState.user_id && data.channel_name == videoCallParams.channel_name) {
                     if (Number(videoCallParams.user_id) === data.user_id) {
                         // alert("host")
@@ -178,7 +178,7 @@ const LiveVideoChat = () => {
 
 
 
-            SOCKET.on('live_video_manage_coins_time_views', (data) => {
+            SOCKET.off('live_video_manage_coins_time_views').on('live_video_manage_coins_time_views', (data) => {
                 if (data.channel_name === videoCallState.channel_name && videoCallState.user_id == data.user_id) {
                     if (data.msg === "") {
                         setTotalCoinsLeft(data.coins);
@@ -191,7 +191,7 @@ const LiveVideoChat = () => {
 
 
 
-            SOCKET.on('unauthorize_live_video_call', (data) => {
+            SOCKET.off('unauthorize_live_video_call').on('unauthorize_live_video_call', (data) => {
                 if (data.is_host) {
 
                 }
@@ -227,7 +227,7 @@ const LiveVideoChat = () => {
                 }, 10000)
             }
 
-            SOCKET.on('authorize_live_video_call', (data) => {
+            SOCKET.off('authorize_live_video_call').on('authorize_live_video_call', (data) => {
                 if (data.user_id === videoCallState.user_id) {
                     if (Number(videoCallParams.user_id) === data.user_id) {
                         manageLiveAudienceHostDetails()
@@ -282,13 +282,13 @@ const LiveVideoChat = () => {
             }
 
 
-            SOCKET.on('live_video_manage_time', (data) => {
+            SOCKET.off('live_video_manage_time').on('live_video_manage_time', (data) => {
                 if (data.channel_name == videoCallState.channel_name) {
                     setTotalTimeLeft(data.time)
                 }
             })
 
-            SOCKET.on('live_video_manage_views', (data) => {
+            SOCKET.off('live_video_manage_views').on('live_video_manage_views', (data) => {
                 if (data.channel_name == videoCallState.channel_name) {
                     setTotalViews(data.views)
                 }
@@ -296,7 +296,7 @@ const LiveVideoChat = () => {
 
 
 
-            SOCKET.on('send_live_video_item', (message) => {
+            SOCKET.off('send_live_video_item').on('send_live_video_item', (message) => {
                 let messagesList = messageList;
 
                 if (
@@ -358,7 +358,7 @@ const LiveVideoChat = () => {
 
             });
 
-            SOCKET.on('get_messages_live_video', (messages) => { // only one time
+            SOCKET.off('get_messages_live_video').on('get_messages_live_video', (messages) => { // only one time
                 if (messages.sender_id == videoCallParams.user_id &&
                     messages.user_id == videoCallState.user_id &&
                     videoCallParams.channel_name == messages.channel_name) {
@@ -378,7 +378,7 @@ const LiveVideoChat = () => {
                 }
             });
 
-            SOCKET.on('typing_live_video_message', (typing) => { // only one time
+            SOCKET.off('typing_live_video_message').on('typing_live_video_message', (typing) => { // only one time
                 if (videoCallParams.channel_name == typing.channel_name) {
                     if (typing.user_id !== userData.user_id) {
                         setChatTyping(typing.typing_user)
@@ -435,7 +435,7 @@ const LiveVideoChat = () => {
             }, c * 900)
         });
 
-        return () => { SOCKET.removeAllListeners()}
+        // return () => { SOCKET.removeAllListeners()}
     }, [])
 
     const scrollToBottom = () => {
@@ -561,7 +561,7 @@ const LiveVideoChat = () => {
 
     useEffect(() => {
         //   Listing gift here
-        SOCKET.on('gift_send', (messages) => {
+        SOCKET.off('gift_send').on('gift_send', (messages) => {
             setGivenGift(messages.obj.media)
         });
     }, [])

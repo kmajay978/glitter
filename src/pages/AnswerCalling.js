@@ -26,7 +26,7 @@ const AnswerCalling = () => {
             })
         }, 1000)
 
-        SOCKET.on("stop_pick_video_call_status", (data) => {
+        SOCKET.off('stop_pick_video_call_status').on("stop_pick_video_call_status", (data) => {
 
             if (!!userData && (data.user_to_id == userData.user_id)) { // check one-to-one data sync
                 clearInterval(pickVideoCallInterval);
@@ -34,7 +34,7 @@ const AnswerCalling = () => {
             }
         })
 
-        return () => { SOCKET.removeAllListeners(); localStorage.removeItem("receiverDetails") }
+        return () => { localStorage.removeItem("receiverDetails") }
     }, [])
     const videoChatNow = () => {
         if (!!receiverDetails) {

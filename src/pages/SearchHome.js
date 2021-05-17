@@ -633,7 +633,7 @@ const SearchHome = () => {
       });
     }, 1000)
 
-    SOCKET.on('sendAudienceToLiveVideo', (data) => {
+    SOCKET.off('sendAudienceToLiveVideo').on('sendAudienceToLiveVideo', (data) => {
 
       setAudLive(false)
       if (userData.user_id === data.user_id) {
@@ -652,7 +652,7 @@ const SearchHome = () => {
       }
     })
 
-    SOCKET.on('live_friends', (data, user) => {
+    SOCKET.off('live_friends').on('live_friends', (data, user) => {
       if (!!userData && user.user_id == userData.user_id) {
         let frdList = friendLists;
         const totalLiveFrds = data.live;
@@ -693,7 +693,7 @@ const SearchHome = () => {
       }
     });
 
-    SOCKET.on('start_your_live_video_now', (data) => {
+    SOCKET.off('start_your_live_video_now').on('start_your_live_video_now', (data) => {
       if ((data.user_id == userData.user_id) && data.channel_id && data.channel_name) {
         setLivePopup(false)
         window.setTimeout(() => {
@@ -708,7 +708,7 @@ const SearchHome = () => {
     });
 
     // uploadImage();
-    return () => { SOCKET.removeAllListeners(); componentWillUnmount() }
+    return () => {  componentWillUnmount() }
   }, [])
 
   

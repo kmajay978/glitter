@@ -55,14 +55,14 @@ function App(props) {
     if ((window.location.pathname !== "/profile") && !!sessionId) {
       ProfileData(dispatch, sessionId)
     }
-    SOCKET.on('pick_video_call', (data) => {
+    SOCKET.off('pick_video_call').on('pick_video_call', (data) => {
       if (!!userData && (data.user_to_id == userData.user_id)) { // check one-to-one data sync
         localStorage.setItem("receiverDetails", JSON.stringify(data))
         openNewWindow("/answer-calling")
         // history.push(page)
       }
     })
-    SOCKET.on('receiver_decline_video_call', (data) => {
+    SOCKET.off('receiver_decline_video_call').on('receiver_decline_video_call', (data) => {
       localStorage.removeItem("videoCallPageRefresh");
       // SOCKET.disconnect();
       dispatch(videoCall(null))
@@ -77,7 +77,7 @@ function App(props) {
         history.push(page)
       }
     })
-    SOCKET.on('sender_decline_video_call', (data) => {
+    SOCKET.off('sender_decline_video_call').on('sender_decline_video_call', (data) => {
       localStorage.removeItem("videoCallPageRefresh");
       // SOCKET.disconnect();
       dispatch(videoCall(null))
@@ -92,7 +92,7 @@ function App(props) {
         history.push(page)
       }
     })
-    SOCKET.on('call_not_picked_receiver_hide_page_video_call', (data) => {
+    SOCKET.off('call_not_picked_receiver_hide_page_video_call').on('call_not_picked_receiver_hide_page_video_call', (data) => {
       localStorage.removeItem("videoCallPageRefresh");
       // SOCKET.disconnect();
       dispatch(videoCall(null))
@@ -108,7 +108,7 @@ function App(props) {
         }
       }
     })
-    SOCKET.on('call_malfunctioned_in_between_receiver_call_video_call', (data) => {
+    SOCKET.off('call_malfunctioned_in_between_receiver_call_video_call').on('call_malfunctioned_in_between_receiver_call_video_call', (data) => {
       localStorage.removeItem("videoCallPageRefresh");
       // SOCKET.disconnect();
       dispatch(videoCall(null))
@@ -119,7 +119,7 @@ function App(props) {
         }
       }
     })
-    return () => { SOCKET.removeAllListeners() }
+    // return () => { alert("123"); SOCKET.removeAllListeners() }
   }, [])
 
   //   var ctrlKeyDown = false;
