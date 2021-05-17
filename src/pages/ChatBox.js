@@ -492,7 +492,6 @@ const ChatBox = (props) => {
         SOCKET.on('message_data', (messages) => {
             let messagesList = messageList;
             if (!!messages) {
-
                 if ((messages.obj.user_from_id === userData.user_id && messages.obj.user_to_id === receiver_id)
                     ||
                     (messages.obj.user_from_id === receiver_id && messages.obj.user_to_id === userData.user_id)
@@ -596,8 +595,7 @@ const ChatBox = (props) => {
             // src= window.URL.createObjectURL(blob);
 
         });
-
-        return () => { componentWillUnmount() }
+        return () => { SOCKET.removeAllListeners(); componentWillUnmount() }
 
     }, [])
 
@@ -613,7 +611,7 @@ const ChatBox = (props) => {
 
     useEffect(() => {
         if (GetActivity === 2) {
-            SOCKET.connect();
+            // SOCKET.connect(); qwert
             // checkLastFrdsMsgInterval = window.setInterval(() => {
             //     SOCKET.emit("get_frds_last_messages", {
             //         user_id: userData.user_id,

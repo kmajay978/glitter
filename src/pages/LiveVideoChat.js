@@ -5,9 +5,9 @@ import axios from "axios";
 import Logo from '../components/Logo';
 import { SOCKET } from '../components/Config';
 import NavLinks from '../components/Nav';
-import { joinChannel } from "../components/VideoComponent";
+import {joinChannel} from "../components/VideoComponent";
 import { useSelector, useDispatch } from "react-redux";
-import { css } from "@emotion/core";
+import {css} from "@emotion/core";
 import BarLoader from "react-spinners/BarLoader";
 import { userProfile, liveVideoCall, liveVideoCallUser } from "../features/userSlice";
 import { func } from "prop-types";
@@ -108,7 +108,7 @@ const LiveVideoChat = () => {
                 componentWillUnmount()
             }
             // check with backend + socket if this channel exist...
-            SOCKET.connect()
+            // SOCKET.connect() qwert
             setLoading(true);
             SOCKET.emit("authenticate_live_video_call", {
                 host_id: Number(videoCallParams.user_id),
@@ -435,6 +435,7 @@ const LiveVideoChat = () => {
             }, c * 900)
         });
 
+        return () => { SOCKET.removeAllListeners()}
     }, [])
 
     const scrollToBottom = () => {

@@ -623,11 +623,11 @@ console.log(statusPrice ,"statusPrice...")
 
   useEffect(() => {
     handleFriendList();
-    SOCKET.connect();
+    // SOCKET.connect(); qwert
     checkOnlineFrdsInterval = window.setInterval(() => {
       SOCKET.emit("authenticate_friend_list_live", {
         session_id: localStorage.getItem("session_id"),
-        user_id: userData.user_id
+        user_id: !!userData && userData.user_id
       });
     }, 1000)
 
@@ -651,7 +651,7 @@ console.log(statusPrice ,"statusPrice...")
     })
 
     SOCKET.on('live_friends', (data, user) => {
-      if (user.user_id == userData.user_id) {
+      if (!!userData && user.user_id == userData.user_id) {
         let frdList = friendLists;
         const totalLiveFrds = data.live;
         const onlineUsers = data.online;
@@ -706,7 +706,7 @@ console.log(statusPrice ,"statusPrice...")
     });
 
     // uploadImage();
-    return () => componentWillUnmount()
+    return () => { SOCKET.removeAllListeners(); componentWillUnmount() }
   }, [])
 
   

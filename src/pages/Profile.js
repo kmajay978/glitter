@@ -143,21 +143,20 @@ const Profile = (props) => {
   const handleCheck = (e) => {
     const target = e.target;
     var value = target.value;
-    console.log( value , "checkvalue...");
-     alert(target.checked);
-    // if (target.checked) {
-    //   console.log(target.checked);
-    //   let selectedArray = selectedCheck;
-    //   selectedArray.push(value);
-    //   setSlelected(selectedArray);
-    // } else {
-    //   let selectedArray = selectedCheck;
-    //   var index = selectedArray.indexOf(value);
-    //   selectedArray.splice(index, 1);
-    //   setSlelected(selectedArray);
-    // }
+    alert(target.checked);
+    if (target.checked) {
+      console.log(target.checked);
+      let selectedArray = selectedCheck;
+      selectedArray.push(value);
+      setSlelected(selectedArray);
+    } else {
+      let selectedArray = selectedCheck;
+      var index = selectedArray.indexOf(value);
+      selectedArray.splice(index, 1);
+      setSlelected(selectedArray);
+    }
   }
-  
+
   const shareUrl = 'https://glittersapp.com/';
   const title = 'glitter-app';
 
@@ -212,9 +211,9 @@ const Profile = (props) => {
 
 
 
-  console.log(hobbies , "hobbies...");
+  console.log(hobbies, "hobbies...");
   console.log(profileData.interest_hobbies);
-   console.log(selectedCheck , "selectedCheck");
+  console.log(selectedCheck.join(","), "selectedCheck...");
   //update profile data
 
   const updateProfile = (e) => {
@@ -524,26 +523,13 @@ const Profile = (props) => {
     }
   }
 
-  //get single  gift item
-  const getGiftItem = async (Uid) => {
-    const bodyParameters = {
-      session_id: sessionId,
-      gift_id: Uid
-    }
-    const { data: { result } } = await axios.post(GET_GIFT_API, bodyParameters)
-
-  }
-
   //get interest hobbies
   const handleInterest = () => {
     axios.get(INTEREST_HOBBIES_LIST)
       .then((response) => {
-
         if (response.status == 200) {
           showInterestData(response.data);
         }
-
-
       }, (error) => {
         NotificationManager.error(error.message, "", 2000, () => { return 0 }, true);
         if (error.toString().match("403")) {
@@ -551,7 +537,6 @@ const Profile = (props) => {
           history.push('/login');
         }
       });
-
   }
 
   const handleFileChange = e => {
@@ -786,14 +771,17 @@ const Profile = (props) => {
               <div className="tab-title">
                 <label>Interest hobbies</label>
               </div>
+              <div className="form-group">
               {interestData.map((item, i) => (
-                // checked={CheckedItem(item.id)}
-                // onClick={handleCheck}
-                <div className="form-group">
-                  <input type="checkbox" id={"interests_hobbie" + i} checked={CheckedItem(item.id)}  name="interests_hobbie" value={item.id} />
+                <>
+                 {/* checked={CheckedItem(item.id)}
+                 onClick={handleCheck}
+                 value={item.id} */}
+                  <input type="checkbox" id={"interests_hobbie" + i} checked={item.id==2 ? "checked":""} name={"interests_hobbie" + i} value={item.id} />
                   <label for={"interests_hobbie" + i}>{item.interests_or_hobbies}</label>
-                </div>
+             </>
               ))}
+              </div>
             </div>
 
             <a className={!!isLoading ? "btn bg-grd-clr d-block btn-countinue-3 disabled" : "btn bg-grd-clr d-block btn-countinue-3"} id="edit-second-step" href="javascript:void(0)" onClick={updateProfile}>{!!isLoading ? "Processing..." : "update"}</a>
@@ -847,7 +835,7 @@ const Profile = (props) => {
             <div className="col-md-4 border-rt">
               <div className="user-profile becomevip-wrapper__innerblock p-0">
                 <div className="user-profile__details text-center">
-                  <img style={{cursor: "pointer"}} onError={(e) => addDefaultSrc(e)} src={!!profileData.profile_images ? profileData.profile_images : returnDefaultImage()} alt="user" className="user-profile__image img-circle" onClick={handleImage} />
+                  <img style={{ cursor: "pointer" }} onError={(e) => addDefaultSrc(e)} src={!!profileData.profile_images ? profileData.profile_images : returnDefaultImage()} alt="user" className="user-profile__image img-circle" onClick={handleImage} />
 
                   <div className="user-profile__details__data">
                     <h5 className="user-profile__name">{!!profileData ? `${profileData.first_name} ${profileData.last_name}` : ""} </h5>
