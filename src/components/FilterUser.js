@@ -40,7 +40,7 @@ const FilterUser = ({ fetchedProfile }) => {
   const [lastDirection, setLastDirection] = useState();
   const [characters, setCharacters] = useState();
   const [allData, setAllData] = useState([]);
-  const [mouseIsClicked, setmouseIsClicked] = useState("false");
+  // const [mouseIsClicked, setmouseIsClicked] = useState("false");
   const [cardClick, setCardClick] = useState(false);
   const [cardStartPosition, setStartPosition] = useState([])
   const [userData, setUserData] = useState([]);
@@ -58,11 +58,10 @@ const FilterUser = ({ fetchedProfile }) => {
       session_id: localStorage.getItem("session_id"),
     };
     axios.post(GETALLUSER_API, bodyParameters)
-
       .then((response) => {
+        setIsLoaded(false);
         if (response.status == 200) {
           setUserData(removeDublicateFrds(response.data.data));
-          setIsLoaded(false);
 
         }
       },
@@ -71,7 +70,7 @@ const FilterUser = ({ fetchedProfile }) => {
             localStorage.removeItem("session_id");
             history.push('/login');
           }
-          setIsLoaded(true);
+          setIsLoaded(false);
 
         }
       );
@@ -94,13 +93,7 @@ const FilterUser = ({ fetchedProfile }) => {
       axios.post(DISLIKE_USER, bodyParameters)
         .then(
           (response) => {
-
             setDislike(false);
-            // if(response.error=="bad_request")
-            // {
-            //   localStorage.removeItem("session_id");
-            //   history.push('/login');
-            // }
             if (response.status == 200) {
               alreadyRemoved.push(userId);
             }
@@ -120,11 +113,6 @@ const FilterUser = ({ fetchedProfile }) => {
       axios.post(LIKE_USER, bodyParameters).then(
         (response) => {
           setLiked(false)
-          // if(response.error=="bad_request")
-          // {
-          //   localStorage.removeItem("session_id");
-          //   history.push('/login');
-          // }
           if (response.status == 200) {
             alreadyRemoved.push(userId);
             setTimeout(() => {
@@ -143,7 +131,6 @@ const FilterUser = ({ fetchedProfile }) => {
   const childRefs = userData;
   const swipe = (dir, userId) => {
     if (allData.length > 0) {
-
       const cardsLeft = allData.filter(
         (currentUser) => !alreadyRemoved.includes(currentUser.user_id)
       );
@@ -176,6 +163,7 @@ const FilterUser = ({ fetchedProfile }) => {
       }
     }
   };
+
 
   useEffect(() => {
     if (!!cardClick) {
@@ -251,8 +239,6 @@ const FilterUser = ({ fetchedProfile }) => {
                       {currentUser.distance}{currentUser.occupation != "" ? " , " : ""}{currentUser.occupation}
                     </span>
                   </div>
-
-
                 </div>
 
               </GlitterCard>
@@ -291,9 +277,7 @@ const FilterUser = ({ fetchedProfile }) => {
 
       {
         !isLoaded &&
-
         <div className="action-tray global-actions d-flex flex-wrap justify-content-center align-items-center mt-3">
-
           <div className="close-btn tray-btn-s">
             <a className="left-action" href="javascript:void(0)" onClick={() => swipe("left")}>×</a>
           </div>

@@ -137,7 +137,6 @@ const Profile = (props) => {
     setForm({
       ...form,
       [e.target.name]: e.target.value,
-
     })
   }
 
@@ -145,18 +144,20 @@ const Profile = (props) => {
     const target = e.target;
     var value = target.value;
     console.log( value , "checkvalue...");
-    if (target.checked) {
-      let selectedArray = selectedCheck;
-      selectedArray.push(value);
-      setSlelected(selectedArray);
-    } else {
-      let selectedArray = selectedCheck;
-      var index = selectedArray.indexOf(value);
-      selectedArray.splice(index, 1);
-      setSlelected(selectedArray);
-    }
+     alert(target.checked);
+    // if (target.checked) {
+    //   console.log(target.checked);
+    //   let selectedArray = selectedCheck;
+    //   selectedArray.push(value);
+    //   setSlelected(selectedArray);
+    // } else {
+    //   let selectedArray = selectedCheck;
+    //   var index = selectedArray.indexOf(value);
+    //   selectedArray.splice(index, 1);
+    //   setSlelected(selectedArray);
+    // }
   }
-
+  
   const shareUrl = 'https://glittersapp.com/';
   const title = 'glitter-app';
 
@@ -211,9 +212,9 @@ const Profile = (props) => {
 
 
 
-  console.log(hobbies);
+  console.log(hobbies , "hobbies...");
   console.log(profileData.interest_hobbies);
-
+   console.log(selectedCheck , "selectedCheck");
   //update profile data
 
   const updateProfile = (e) => {
@@ -768,7 +769,6 @@ const Profile = (props) => {
                 <label>Looking For</label>
               </div>
               <div className="form-group">
-
                 <input type="radio" id="female" name="looking_for" value={1} checked={form.looking_for == 1 ? "checked" : ""} onChange={handleChange} placeholder="Female" />
                 <label htmlFor="female">Men</label>
               </div>
@@ -776,7 +776,6 @@ const Profile = (props) => {
                 <input type="radio" id="male" name="looking_for" value={2} checked={form.looking_for == 2 ? "checked" : ""} onChange={handleChange} placeholder="Male" />
                 <label htmlFor="male">Women</label>
               </div>
-
               <div className="form-group">
                 <input type="radio" id="more" value={3} checked={form.looking_for == 3 ? "checked" : ""} onChange={handleChange} name="looking_for" />
                 <label htmlFor="more">Both</label>
@@ -787,12 +786,12 @@ const Profile = (props) => {
               <div className="tab-title">
                 <label>Interest hobbies</label>
               </div>
-
               {interestData.map((item, i) => (
                 // checked={CheckedItem(item.id)}
+                // onClick={handleCheck}
                 <div className="form-group">
-                  <input type="checkbox" id={"interests_hobbie" + i} onClick={handleCheck} name="interests_hobbie" value={item.id} />
-                  <label for={"interests_hobbie" + i}>  {item.interests_or_hobbies}</label>
+                  <input type="checkbox" id={"interests_hobbie" + i} checked={CheckedItem(item.id)}  name="interests_hobbie" value={item.id} />
+                  <label for={"interests_hobbie" + i}>{item.interests_or_hobbies}</label>
                 </div>
               ))}
             </div>
