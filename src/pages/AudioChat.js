@@ -237,8 +237,8 @@ const AudioChat = () => {
             status: 1
           });
         }
-        if (!!userData && data.user_to_id == userData.user_id) {
-          alert("acknowledge")
+        if (data.user_to_id == videoCallParams.user_to_id) {
+          alert("acknowledge true")
           frdAcknowledgedCall = true;
         }
 
@@ -269,6 +269,10 @@ const AudioChat = () => {
             }
             joinChannelAudio('host', option)
             hostCallCheck = false
+
+            alert("acknowledge false")
+            frdAcknowledgedCall = false;
+
           }
         }
       }
