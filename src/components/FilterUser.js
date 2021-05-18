@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import $ from 'jquery';
 import { useSelector } from "react-redux"
 import { useHistory } from "react-router";
@@ -35,12 +35,12 @@ transform: translateY(-50%);
 
 `;
 
-const FilterUser = ({ fetchedProfile }) => {
+const FilterUser = ({fetchedProfile}) => {
   const history = useHistory();
   const [lastDirection, setLastDirection] = useState();
   const [characters, setCharacters] = useState();
   const [allData, setAllData] = useState([]);
-  const [mouseIsClicked, setmouseIsClicked] = useState("false");
+  // const [mouseIsClicked, setmouseIsClicked] = useState("false");
   const [cardClick, setCardClick] = useState(false);
   const [cardStartPosition, setStartPosition] = useState([])
   const [userData, setUserData] = useState([]);
@@ -58,12 +58,10 @@ const FilterUser = ({ fetchedProfile }) => {
       session_id: localStorage.getItem("session_id"),
     };
     axios.post(GETALLUSER_API, bodyParameters)
-
       .then((response) => {
+        setIsLoaded(false);
         if (response.status == 200) {
           setUserData(removeDublicateFrds(response.data.data));
-          setIsLoaded(false);
-
         }
       },
         (error) => {
@@ -71,7 +69,7 @@ const FilterUser = ({ fetchedProfile }) => {
             localStorage.removeItem("session_id");
             history.push('/login');
           }
-          setIsLoaded(true);
+          setIsLoaded(false);
 
         }
       );
@@ -94,13 +92,7 @@ const FilterUser = ({ fetchedProfile }) => {
       axios.post(DISLIKE_USER, bodyParameters)
         .then(
           (response) => {
-
             setDislike(false);
-            // if(response.error=="bad_request")
-            // {
-            //   localStorage.removeItem("session_id");
-            //   history.push('/login');
-            // }
             if (response.status == 200) {
               alreadyRemoved.push(userId);
             }
@@ -120,11 +112,6 @@ const FilterUser = ({ fetchedProfile }) => {
       axios.post(LIKE_USER, bodyParameters).then(
         (response) => {
           setLiked(false)
-          // if(response.error=="bad_request")
-          // {
-          //   localStorage.removeItem("session_id");
-          //   history.push('/login');
-          // }
           if (response.status == 200) {
             alreadyRemoved.push(userId);
             setTimeout(() => {
@@ -139,10 +126,12 @@ const FilterUser = ({ fetchedProfile }) => {
       );
     }
   };
+ 
+  console.log(allData , "allData...");
+  console.log(userData , "allDat..");
   const childRefs = userData;
   const swipe = (dir, userId) => {
-    if (allData.length > 0) {
-
+    // if (allData.length > 0) {
       const cardsLeft = allData.filter(
         (currentUser) => !alreadyRemoved.includes(currentUser.user_id)
       );
@@ -157,23 +146,23 @@ const FilterUser = ({ fetchedProfile }) => {
         } else {
         }
       }
-    }
-    else {
-      const cardsLeft = userData.filter(
-        (currentUser) => !alreadyRemoved.includes(currentUser.user_id)
-      );
-      if (cardsLeft.length) {
-        const toBeRemoved = cardsLeft[cardsLeft.length - 1].user_id; // Find the card object to be removed
-        const index = userData
-          .map((person) => person.user_id)
-          .indexOf(toBeRemoved); // Find the index of which to make the reference to
-        alreadyRemoved.push(toBeRemoved); // Make sure the next card gets removed next time if this card do not have time to exit the screen
-        if (!!childRefs && childRefs[index]) {
-          childRefs[index].current.swipe(dir); // Swipe the card!
-        } else {
-        }
-      }
-    }
+    // }
+    // else {
+    //   const cardsLeft = userData.filter(
+    //     (currentUser) => !alreadyRemoved.includes(currentUser.user_id)
+    //   );
+    //   if (cardsLeft.length) {
+    //     const toBeRemoved = cardsLeft[cardsLeft.length - 1].user_id; // Find the card object to be removed
+    //     const index = userData
+    //       .map((person) => person.user_id)
+    //       .indexOf(toBeRemoved); // Find the index of which to make the reference to
+    //     alreadyRemoved.push(toBeRemoved); // Make sure the next card gets removed next time if this card do not have time to exit the screen
+    //     if (!!childRefs && childRefs[index]) {
+    //       childRefs[index].current.swipe(dir); // Swipe the card!
+    //     } else {
+    //     }
+    //   }
+    // }
   };
 
 
@@ -184,7 +173,7 @@ const FilterUser = ({ fetchedProfile }) => {
   }, [cardClick])
 
   useEffect(() => {
-    handleUserData();
+    // handleUserData();
   }, [])
 
   useEffect(() => {
@@ -227,13 +216,11 @@ const FilterUser = ({ fetchedProfile }) => {
 
   // }, []) 
 
-
-
   return (
     <>
       {/* {allData.length> 0 ?  set: ""} */}
       <div className="cardContainer">
-        {allData.length > 0 ? <>
+        {/* {allData.length > 0 ? <> */}
           {allData.map((currentUser, index) => (
             <div className="main_wrapper" id={currentUser.user_id}>
               <GlitterCard
@@ -253,15 +240,13 @@ const FilterUser = ({ fetchedProfile }) => {
                       {currentUser.distance}{currentUser.occupation != "" ? " , " : ""}{currentUser.occupation}
                     </span>
                   </div>
-
-
                 </div>
 
               </GlitterCard>
 
             </div>
           ))}
-        </> :
+        {/* </> :
           <>
             {userData.map((currentUser, index) => (
               <div className="main_wrapper" id={currentUser.user_id}>
@@ -285,7 +270,7 @@ const FilterUser = ({ fetchedProfile }) => {
                 </GlitterCard>
 
               </div>
-            ))} </>}
+            ))} </>} */}
 
         <SyncLoader color={"#fcd46f"} loading={isLoaded} css={override} size={18} />
 
@@ -293,9 +278,7 @@ const FilterUser = ({ fetchedProfile }) => {
 
       {
         !isLoaded &&
-
         <div className="action-tray global-actions d-flex flex-wrap justify-content-center align-items-center mt-3">
-
           <div className="close-btn tray-btn-s">
             <a className="left-action" href="javascript:void(0)" onClick={() => swipe("left")}>×</a>
           </div>

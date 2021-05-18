@@ -350,7 +350,7 @@ const Login = () => {
                   </ul>
                 </div>
               </div>
-              <input className="form-control" name="phone_number" id="phone_number" type="text" placeholder="Enter Phone Number" value={phoneNumber} onChange={handlePhoneChange} />
+              <input className="form-control" name="phone_number" id="phone_number" maxlength="19" type="text" placeholder="Enter Phone Number" value={phoneNumber} onChange={handlePhoneChange} />
               {Object.keys(phoneErr).map((key) => {
                 return <div style={{ color: "red" }}>{phoneErr[key]}</div>
               })}
@@ -360,24 +360,27 @@ const Login = () => {
             <p>Continue with</p>
             <ul className="social-login">
               <li>
-                <FacebookProvider appId="123456789" fields="name,email,picture">
+              <a className="bg-grd-clr" href="javascript:void(0)"><i class="fab fa-facebook-f"></i></a>
+                {/* <FacebookProvider appId="123456789" fields="name,email,picture">
                   <LoginButton scope="email" onCompleted={handleResponse} onError={handleError}>
                     <a className="bg-grd-clr" href="javascript:void(0)">  <i className="fab fa-facebook-f" /></a>
                   </LoginButton>
-                </FacebookProvider>
+                </FacebookProvider> */}
               </li>
               <li>
-                <GoogleLogin
+              <a className="bg-grd-clr" href="javascript:void(0)"><i class="fab fa-google"></i></a>
+                {/* <GoogleLogin
                   clientId="265643113121-uh1cur9885cc2e35qjroijdbor8camgp.apps.googleusercontent.com"
                   render={renderProps => (
                     <a className="bg-grd-clr" href="javascript:void(0)" onClick={renderProps.onClick} disabled={renderProps.disabled}><i className="fab fa-google" /></a>
                   )}
                   onSuccess={responseGoogle}
                   onFailure={responseGoogle}
-                  cookiePolicy={'single_host_origin'} isSignedIn={true} />
+                  cookiePolicy={'single_host_origin'} isSignedIn={true} /> */}
               </li>
               <li>
-                <TwitterLogin loginUrl="http://localhost:4000/api/v1/auth/twitter"
+              <a className="bg-grd-clr" href="javascript:void(0)"><i class="fab fa-twitter"></i></a>
+                {/* <TwitterLogin loginUrl="http://localhost:4000/api/v1/auth/twitter"
 
                   onFailure={onFailed}
                   onSuccess={onSuccess}
@@ -385,7 +388,7 @@ const Login = () => {
                   showIcon={true}
                 >
                   <a className="bg-grd-clr" href="javascript:void(0)"><i className="fab fa-twitter" /></a>
-                </TwitterLogin>
+                </TwitterLogin> */}
               </li>
             </ul>
             <div className="accept-field d-flex justify-content-center align-items-center mt-4">
@@ -590,7 +593,6 @@ const Login = () => {
                   <div className="signup-form text-center">
                     {tabScreen()}
                   </div>
-
                 </div>
               </form>
             </div>

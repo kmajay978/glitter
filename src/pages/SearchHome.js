@@ -81,7 +81,7 @@ const SearchHome = () => {
   const [statusLength, setStatusLength] = useState("");
   const [showLive, setShowLive] = useState(false);
   const [showPencil, setShowPencil] = useState(false);
-  const [pencilData, setPencilData] = useState('')
+  // const [pencilData, setPencilData] = useState('')
   const [picture, setPicture] = useState(null);
   const [imgData, setImgData] = useState(null);
   const [video, setVideo] = useState('');
@@ -100,18 +100,16 @@ const SearchHome = () => {
   const [countrieBlock, setCountrieBlock] = useState([]);
   const [countrieList, setCountrieList] = useState([]);
   const [statusPrice, setStatusPrice] = useState("0");
-  console.log(countrieList, "countrieList....")
 
   // const [statusId , setStatusId] = useState("")
   userData = useSelector(userProfile).user.profile; //using redux useSelector here
   myLiveLoadData = useSelector(myLiveLoadingData);
   const countries = getNameList();
   // const countries = getCountries();
-  console.log(statusPrice);
 
   console.log(countrieList);
-  const shareUrl = 'https://glittersapp.com/';
-  const title = 'glitter-app';
+  const shareUrl = !!userData ? 'https://glittersapp.com/' + userData.user_id + '/single-profile' : "";
+  const title = 'https://glittersapp.com';
 
   console.log(countries, "countries");
   const option = {
@@ -126,8 +124,7 @@ const SearchHome = () => {
     width: '100%',
     maxWidth: '100%',
     maxHeight: '468px',
-    margin: 'auto',
-    items: 13,
+    margin: 'auto'
   }
 
   useEffect(() => {
@@ -146,11 +143,12 @@ const SearchHome = () => {
   useEffect(() => {
     console.log(countrieBlock, "countrieBlock..")
   }, [countrieBlock])
+
   const customCollapsedComponent = ({ totalviews, status_id, total_likes, is_liked , paid_status }) => {
     return <>      
       <div className="status_footer">
         <span className="status_view"><img src="/assets/images/eye-icon.svg" alt="eye" />{totalviews}</span>
-        <div className="status_like" onClick={() => likeStatus(status_id, is_liked, paid_status)}>
+        <div className="status_like" style={{ cursor: paid_status ? "pointer" : "default"}} onClick={() => likeStatus(status_id, is_liked, paid_status)}>
           <span ><img src="/assets/images/heart-icon.svg" alt="like status" /> {TLikesStatus}</span>
         </div>
       </div>
@@ -171,7 +169,7 @@ const SearchHome = () => {
           isLikedStatus = true
         }
     }
-    }
+  
     const bodyParameters = {
       session_id: localStorage.getItem("session_id"),
       status_id: Id
@@ -183,6 +181,7 @@ const SearchHome = () => {
       }, (error) => {
 
       });
+    }
   }
 
   useEffect(() => {
@@ -212,7 +211,7 @@ const SearchHome = () => {
   }
 
   const stories = !!storyData ? storyData : []
-
+console.log(stories)
   const seeStatus = (stories, e) => {
     isLikedStatus = stories[e].is_liked;
     TLikesStatus = stories[e].total_likes;
@@ -354,7 +353,7 @@ const SearchHome = () => {
 
       });
   }
-
+console.log(statusPrice ,"statusPrice...")
   const handleStatus = (user_id) => {
     setStatusLoading(true);
     const bodyParameters = {
@@ -404,6 +403,7 @@ const SearchHome = () => {
   const handleVideo = () => {
     inputVideoFile.current.click();
     setVideoData('');
+    setStatusPrice("0");
   }
 
 
@@ -455,23 +455,21 @@ const SearchHome = () => {
         bodyParameters.append("coins", "" + statusPrice);
         axios.post(ADD_STATUS, bodyParameters, config)
           .then((response) => {
-            if (response.status == 200) {
+            if (response.data.status_code == 200 &&  !response.data.error)  {
               NotificationManager.success(response.data.message, "", 2000, () => { return 0 }, true);
               setIsLoading(false);
               setUploadStatus(false);
               setVideoData('');
               setStatusPrice("0");
             }
-
+           else{
+             NotificationManager.error(response.data.message , "" , 2000 , () => { return 0} , true);
+             setIsLoading(false);
+           }
           }, (error) => {
             NotificationManager.error(error.message, "", 2000, () => { return 0 }, true);
             setIsLoading(false);
-            if (error.toString().match("403")) {
-              localStorage.removeItem("session_id");
-              history.push('/login');
-            }
           });
-
       }
       else if (videoData == 'video') {
         setIsLoading(true);
@@ -482,21 +480,21 @@ const SearchHome = () => {
         bodyParameters.append("coins", "" + statusPrice);
         axios.post(ADD_STATUS, bodyParameters, config)
           .then((response) => {
-            if (response.status == 200) {
+            if (response.data.status_code == 200 && !response.data.error) {
               NotificationManager.success(response.data.message, "", 2000, () => { return 0 }, true);
               setIsLoading(false);
               setUploadStatus(false);
               setVideoData('');
               setStatusPrice("0");
             }
+            else{
+              NotificationManager.error(response.data.message , "" , 2000 , () => {return 0} , true);
+              setIsLoading(false);
+            }
           }, (error) => {
             NotificationManager.error(error.message, "", 2000, () => { return 0 }, true);
             setIsLoading(false);
-            if (error.toString().match("403")) {
-              localStorage.removeItem("session_id");
-              history.push('/login');
-              setIsLoading(false);
-            }
+            
           });
       }
       else if (videoData == 'text') {
@@ -617,6 +615,7 @@ const SearchHome = () => {
   const openFileUploder = () => {
     inputFile.current.click();
     setVideoData('');
+    setStatusPrice("0");
   }
 
   const componentWillUnmount = () => {
@@ -835,9 +834,7 @@ console.log(friendList, "friendList...")
                           </div>
                           : ""
                       ))}
-
                     </OwlCarousel>
-
                   </div>
                 </div>
                 <div className="search-people-row">
@@ -854,7 +851,7 @@ console.log(friendList, "friendList...")
                                 <div className="sp-singular-content">
                                   {!item.online ? <div className="status offline">Offline</div> : <div className="status online">Online</div>}
 
-                                  <h4>{item.first_name + ' ' + item.last_name} <span className="age">{item.age}</span></h4>
+                                  <h4>{item.name} <span className="age">{item.age}</span></h4>
                                   <div className="info">{item.distance}, {item.occupation}</div>
                                 </div>
                               </a>
@@ -1069,12 +1066,11 @@ console.log(friendList, "friendList...")
                 <FacebookShareButton size={13} url={shareUrl} quote={title} >
                   <FacebookIcon round />
                 </FacebookShareButton>
-
-                <li><a href="javascript:void(0)"><i className="fab fa-facebook-f" /></a></li>
-                <li><a href="javascript:void(0)"><i className="fab fa-instagram" /></a></li>
+                {/* <li><a href="javascript:void(0)"><i className="fab fa-instagram" /></a></li> */}
               </ul>
             </div>
             <div className="block_countries">
+              <p>Block countries</p>
               <div className="block_countries__list">
                 <img src="/assets/images/add-countries.svg" alt="add countries" />
               </div>

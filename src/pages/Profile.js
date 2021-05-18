@@ -137,15 +137,15 @@ const Profile = (props) => {
     setForm({
       ...form,
       [e.target.name]: e.target.value,
-
     })
   }
 
   const handleCheck = (e) => {
     const target = e.target;
     var value = target.value;
-
+    alert(target.checked);
     if (target.checked) {
+      console.log(target.checked);
       let selectedArray = selectedCheck;
       selectedArray.push(value);
       setSlelected(selectedArray);
@@ -155,7 +155,6 @@ const Profile = (props) => {
       selectedArray.splice(index, 1);
       setSlelected(selectedArray);
     }
-
   }
 
   const shareUrl = 'https://glittersapp.com/';
@@ -172,8 +171,6 @@ const Profile = (props) => {
   //   $('.react-date-picker__inputGroup__month').val('05');
   //   $('.react-date-picker__inputGroup__year').val('1997');
   // }, 2000)
-
-
   //   },[show])
 
   // Fetching profile Data
@@ -202,7 +199,6 @@ const Profile = (props) => {
 
     var obj = [...Object.values(Object.keys(form.interests_hobbie))]
     setHobbies(obj);
-
     setProfile(data);
     dispatch(
       profile({
@@ -215,9 +211,9 @@ const Profile = (props) => {
 
 
 
-  console.log(hobbies);
+  console.log(hobbies, "hobbies...");
   console.log(profileData.interest_hobbies);
-
+  console.log(selectedCheck.join(","), "selectedCheck...");
   //update profile data
 
   const updateProfile = (e) => {
@@ -527,26 +523,13 @@ const Profile = (props) => {
     }
   }
 
-  //get single  gift item
-  const getGiftItem = async (Uid) => {
-    const bodyParameters = {
-      session_id: sessionId,
-      gift_id: Uid
-    }
-    const { data: { result } } = await axios.post(GET_GIFT_API, bodyParameters)
-
-  }
-
   //get interest hobbies
   const handleInterest = () => {
     axios.get(INTEREST_HOBBIES_LIST)
       .then((response) => {
-
         if (response.status == 200) {
           showInterestData(response.data);
         }
-
-
       }, (error) => {
         NotificationManager.error(error.message, "", 2000, () => { return 0 }, true);
         if (error.toString().match("403")) {
@@ -554,7 +537,6 @@ const Profile = (props) => {
           history.push('/login');
         }
       });
-
   }
 
   const handleFileChange = e => {
@@ -608,7 +590,6 @@ const Profile = (props) => {
         history.push('/login');
       }
     }
-
   }
 
   const CheckedItem = (id) => {
@@ -625,9 +606,8 @@ const Profile = (props) => {
       return ""
     }
   }
+
   // Get id of current plan 
-
-
   const Stripehandler = (id) => {
     dispatch(
       stripePlanId({
@@ -635,7 +615,6 @@ const Profile = (props) => {
       })
     );
     setShowStripe(true);
-
   }
 
   const StripeCoinHandler = (id) => {
@@ -646,7 +625,6 @@ const Profile = (props) => {
     );
     setShowStripe(true);
     setShowBuyCoins(false);
-
   }
 
   const closeStripeModel = () => {
@@ -654,6 +632,7 @@ const Profile = (props) => {
     dispatch(stripePlanId({ stripePlanId: null }));
     dispatch(stripeCoinPlanId({ stripeCoinPlanId: null }));
   }
+ 
 
   const closeGiftModel = () => {
     setGiftData('');
@@ -776,7 +755,6 @@ const Profile = (props) => {
                 <label>Looking For</label>
               </div>
               <div className="form-group">
-
                 <input type="radio" id="female" name="looking_for" value={1} checked={form.looking_for == 1 ? "checked" : ""} onChange={handleChange} placeholder="Female" />
                 <label htmlFor="female">Men</label>
               </div>
@@ -784,27 +762,28 @@ const Profile = (props) => {
                 <input type="radio" id="male" name="looking_for" value={2} checked={form.looking_for == 2 ? "checked" : ""} onChange={handleChange} placeholder="Male" />
                 <label htmlFor="male">Women</label>
               </div>
-
               <div className="form-group">
                 <input type="radio" id="more" value={3} checked={form.looking_for == 3 ? "checked" : ""} onChange={handleChange} name="looking_for" />
                 <label htmlFor="more">Both</label>
               </div>
             </div>
-
-            <div className="choose-intersest ft-block d-flex flex-wrap"  >
+             
+              <div className="choose-intersest ft-block d-flex flex-wrap"  >
               <div className="tab-title">
                 <label>Interest hobbies</label>
               </div>
-
+              <div className="form-group">
               {interestData.map((item, i) => (
-                // checked={CheckedItem(item.id)}
-                <div className="form-group">
-                  <input type="checkbox" id={"interests_hobbie" + i} onClick={handleCheck} name="interests_hobbie" value={item.id} />
-                  <label for={"interests_hobbie" + i}>  {item.interests_or_hobbies}</label>
-                </div>
+                <>
+                 {/* checked={CheckedItem(item.id)}
+                 onClick={handleCheck}
+                 value={item.id} */}
+                  <input type="checkbox" id={"interests_hobbie" + i} checked={item.id==2 ? "checked":""} name={"interests_hobbie" + i} value={item.id} />
+                  <label for={"interests_hobbie" + i}>{item.interests_or_hobbies}</label>
+             </>
               ))}
+              </div>
             </div>
-
             <a className={!!isLoading ? "btn bg-grd-clr d-block btn-countinue-3 disabled" : "btn bg-grd-clr d-block btn-countinue-3"} id="edit-second-step" href="javascript:void(0)" onClick={updateProfile}>{!!isLoading ? "Processing..." : "update"}</a>
 
           </div>
@@ -856,7 +835,7 @@ const Profile = (props) => {
             <div className="col-md-4 border-rt">
               <div className="user-profile becomevip-wrapper__innerblock p-0">
                 <div className="user-profile__details text-center">
-                  <img style={{cursor: "pointer"}} onError={(e) => addDefaultSrc(e)} src={!!profileData.profile_images ? profileData.profile_images : returnDefaultImage()} alt="user" className="user-profile__image img-circle" onClick={handleImage} />
+                  <img style={{ cursor: "pointer" }} onError={(e) => addDefaultSrc(e)} src={!!profileData.profile_images ? profileData.profile_images : returnDefaultImage()} alt="user" className="user-profile__image img-circle" onClick={handleImage} />
 
                   <div className="user-profile__details__data">
                     <h5 className="user-profile__name">{!!profileData ? `${profileData.first_name} ${profileData.last_name}` : ""} </h5>
@@ -1276,10 +1255,10 @@ const Profile = (props) => {
           </div>
           <div className="all-gift-body">
 
-            <ul className="d-flex flex-wrap text-center ">
+            <ul className="d-flex flex-wrap text-center">
               {!!GiftData && GiftData.map((items, i) => {
                 return <li >
-                  <a href="javascript:void(0)" >
+                  <a href="javascript:void(0)" style={{ cursor: "default" }} >
                     <div>
                       <figure>
                         <img src={items.gift_image} alt={items.gift_name} />

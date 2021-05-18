@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import $ from 'jquery';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
-import { BrowserRouter as Router, Switch, Route, withRouter, useParams, useHistory } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, withRouter, useHistory } from 'react-router-dom';
 // Importing all pages from index.js 
 import { Home, Login, ChatBox, SearchHome, AnswerCalling, SignupCompleted, Profile, SingleProfile, RecentCall, VideoChat, LiveVideoChat, SearchProfile, SearchProfileAudio, AudioChat } from './pages'
 import ProtectedRoute from "./protected.route";
@@ -121,22 +121,6 @@ function App(props) {
     })
     // return () => { alert("123"); SOCKET.removeAllListeners() }
   }, [])
-
-  //   var ctrlKeyDown = false;
-  //  const handleRefresh = (e) =>{
-  //   document.addEventListener('keydown', (e) => {
-  //     e = e || window.event;
-  //     if( ((e.which || e.keyCode) == 116)|| ((e.which || e.keyCode) == 82  && ctrlKeyDown) ){
-  //         e.preventDefault();
-  //     }
-  //    else if ((e.which || e.keyCode) == 17) {
-  //         // Pressing  only Ctrl
-  //         ctrlKeyDown = true;
-  //     }
-  // });
-
-  //  }
-
 
   useEffect(() => {
     window.history.pushState(null, "", window.location.href);

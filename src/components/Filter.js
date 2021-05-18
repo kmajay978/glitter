@@ -117,7 +117,7 @@ const SideFilter = ({ setFilterUser }) => {
   const filterHandle = (e) => {
     if (!!e)
       e.preventDefault();
-
+      setLoading(true);
     const bodyParameters = {
       session_id: localStorage.getItem('session_id'),
       age_from: valueAge[0],
@@ -131,16 +131,10 @@ const SideFilter = ({ setFilterUser }) => {
       latitude: 30.70,
       longitude: 76.71
     };
-
     axios.post(FILTER_LIST_API, bodyParameters)
       .then((response) => {
-        // if(response.error=="bad_request")
-        // {
-        //   localStorage.removeItem("session_id");
-        //   history.push('/login');
-        // }
+        setLoading(false);
         if (response.status == 200) {
-          setLoading(true);
           setFilterUser(removeDublicateFrds(response.data.data));
           dispatch(
             filterData({
@@ -148,13 +142,11 @@ const SideFilter = ({ setFilterUser }) => {
             })
           );
           setTimeout(() => {
-
-            setLoading(false);
           }, 600);
         } else {
         }
-
       }, (error) => {
+        setLoading(false);
         NotificationManager.error(error.message, "", 2000, () => { return 0 }, true);
         localStorage.clear();
       });
@@ -175,7 +167,7 @@ const SideFilter = ({ setFilterUser }) => {
 
       {/* <Loader isLoading={isLoading} /> */}
       <h4 className="mb-4">Filter</h4>
-      <form action="#" method="post" className="form">
+      <form action="#" method="post" className="form" >
         <div className="tab-title">
           <h5>Show Me</h5>
         </div>

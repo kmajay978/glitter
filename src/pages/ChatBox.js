@@ -264,7 +264,7 @@ const ChatBox = (props) => {
         }
         else {
             toggleIsOn(false);
-            NotificationManager.error('Please recharge and try again', 'Insufficient Balance!', "", 2000, () => { return 0 }, true);
+            NotificationManager.error('Please recharge and try again', 'Insufficient Balance!');
         }
     }
 
@@ -845,7 +845,7 @@ const ChatBox = (props) => {
                                                             <div className="contacts_info">
                                                                 <div className="user_detail">
                                                                     <span className="message-time">{item.created_at}</span>
-                                                                    <h6 className="mb-0 name">{item.first_name} .{" " + item.age}</h6>
+                                                                    <h6 className="mb-0 name">{item.name} .{" " + item.age}</h6>
                                                                     {/* <div className="message-count">2</div> */}
                                                                 </div>
                                                                 <div className="vcentered info-combo">
@@ -865,7 +865,7 @@ const ChatBox = (props) => {
                                                             <div className="contacts_info">
                                                                 <div className="user_detail">
                                                                     <span className="message-time">{item.created_at}</span>
-                                                                    <h6 className="mb-0 name">{stringLimit(item.first_name, 3) + " "}.{" " + item.age}</h6>
+                                                                    <h6 className="mb-0 name">{stringLimit(item.name, 3) + " "}.{" " + item.age}</h6>
                                                                     {/* <div className="message-count">2</div> */}
                                                                 </div>
                                                                 <div className="vcentered info-combo">
@@ -940,7 +940,7 @@ const ChatBox = (props) => {
                                                         <div className="contacts_info">
                                                             <div className="user_detail">
                                                                 <span className="message-time">{item.created_at}</span>
-                                                                <h6 className="mb-0 name">{item.first_name}</h6>
+                                                                <h6 className="mb-0 name">{item.name}</h6>
                                                                 {/* <div className="message-count">2</div> */}
                                                             </div>
                                                             <div className="vcentered info-combo">
