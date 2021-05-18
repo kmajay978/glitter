@@ -205,7 +205,6 @@ const AudioChat = () => {
             type: 1,
             status: 1
           });
-          frdAcknowledgedCall = true;
           // initate video call for receiver...
 
           const option = {
@@ -238,6 +237,11 @@ const AudioChat = () => {
             status: 1
           });
         }
+        if (data.user_to_id == videoCallParams.user_to_id) {
+          alert("acknowledge")
+          frdAcknowledgedCall = true;
+        }
+
         if (!!userData && (data.user_from_id == userData.user_id)) {
           if (hostCallCheck) {
             for (let i in userDetails) {
