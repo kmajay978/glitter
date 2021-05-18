@@ -10,7 +10,8 @@ import { changeImageLinkDomain, checkLiveDomain, returnDefaultImage } from "../c
 import NotificationManager from "react-notifications/lib/NotificationManager";
 
 let videoCallStatus = 0, videoCallParams, interval,
-  manageCoinsTimeViewsInterval, manageCoinsTimeViewsCounter = 0, manageTimeInterval, goHost = false, goAud = false, hostCallCheck = true;
+  manageCoinsTimeViewsInterval, manageCoinsTimeViewsCounter = 0, manageTimeInterval, goHost = false, goAud = false, hostCallCheck = true,
+  checkIntervalHostTimeout, checkIntervalHostTimeoutCount = 0, frdAcknowledgedCall = false;
 
 const clearChatState = (dispatch) => {
   dispatch(audioCall(null))
@@ -41,6 +42,7 @@ const AudioChat = () => {
     }
     // localStorage.removeItem("videoCallPageRefresh");
     clearChatState(dispatch);
+    clearInterval(checkIntervalHostTimeout);
     clearInterval(manageCoinsTimeViewsInterval);
     clearInterval(manageTimeInterval);
     window.location.href = "/chat";
@@ -87,6 +89,10 @@ const AudioChat = () => {
         type: 1,
         videoCallState: params.receiver == "false" ? videoCallState : null
       });
+
+      checkIntervalHostTimeout = winsow.setInterval(() => {
+        checkIntervalHostTimeoutCount += 1 
+      }, 1000)
     }
     SOCKET.off('unauthorize_video_call').on('unauthorize_video_call', (data) => {
       if ((data.user_from_id == videoCallParams.user_from_id && data.user_to_id == videoCallParams.user_to_id)
@@ -185,8 +191,7 @@ const AudioChat = () => {
         // change backend status === 1 if loggedIn user is "user_to"
         const userDetails = data.users_detail;
         if (!!userData && (data.user_to_id == userData.user_id)) {
-
-          manageAudienceHostDetails()
+          manageAudienceHostDetails(false)
           for (let i in userDetails) {
             if (userDetails[i].id != userData.user_id) {
               document.getElementById("audioCallingPic").setAttribute("src", changeImageLinkDomain() + userDetails[i].profilePics)
@@ -200,6 +205,7 @@ const AudioChat = () => {
             type: 1,
             status: 1
           });
+          frdAcknowledgedCall = true;
           // initate video call for receiver...
 
           const option = {
@@ -241,7 +247,7 @@ const AudioChat = () => {
               }
             }
 
-            manageAudienceHostDetails()
+            manageAudienceHostDetails(true)
             manageTimeInterval = window.setInterval(() => {
               SOCKET.emit("one_to_one_audio_manage_time", {
                 channel_name: videoCallState.channel_name
@@ -275,11 +281,18 @@ const AudioChat = () => {
     })
   }
 
-  const manageAudienceHostDetails = () => {
+  const manageAudienceHostDetails = (is_host) => {
     audioManageCoinsTimeViews()
     manageCoinsTimeViewsInterval = window.setInterval(() => {
-      audioManageCoinsTimeViews()
-      manageCoinsTimeViewsCounter = manageCoinsTimeViewsCounter + 10
+      if ((is_host && checkIntervalHostTimeoutCount > 24 && frdAcknowledgedCall) || !is_host) {
+        console.log(manageCoinsTimeViewsCounter, "manageCoinsTimeViewsCounter...")
+        audioManageCoinsTimeViews()
+        manageCoinsTimeViewsCounter = manageCoinsTimeViewsCounter + 10
+      }
+      if (is_host && checkIntervalHostTimeoutCount > 24 && !frdAcknowledgedCall) {
+        // decline call
+        document.getElementById("endCall").click()
+      }
     }, 10000)
   }
 
@@ -374,7 +387,7 @@ const AudioChat = () => {
                 <NavLinks />
                 {
                   (!!userData && !!videoCallParams && userData.user_id == videoCallParams.user_from_id) &&
-<a href="javascript:void(0)" className="end-video bg-grd-clr" onClick={() => endCall(true)}>End Audio</a>
+                  <a href="javascript:void(0)" id="endCall" className="end-video bg-grd-clr" onClick={() => endCall(true)}>End Audio</a>
                 }
               </div>
             </div>
