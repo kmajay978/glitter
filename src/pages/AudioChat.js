@@ -268,9 +268,7 @@ const AudioChat = () => {
             }
             joinChannelAudio('host', option)
             hostCallCheck = false
-
             // frdAcknowledgedCall = false;
-
           }
         }
       }
