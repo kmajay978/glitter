@@ -10,7 +10,7 @@ import { changeImageLinkDomain, checkLiveDomain, returnDefaultImage } from "../c
 import NotificationManager from "react-notifications/lib/NotificationManager";
 
 let videoCallStatus = 0, videoCallParams, interval,
-  manageCoinsTimeViewsInterval, manageCoinsTimeViewsCounter = 0, manageTimeInterval, goHost = false, goAud = false, hostCallCheck = true,
+  manageCoinsTimeViewsInterval, manageCoinsTimeViewsCounter = 0, manageTimeInterval, goHost = false, goAud = false, hostCallCheck = true;
   // checkIntervalHostTimeout, checkIntervalHostTimeoutCount = 0, frdAcknowledgedCall = false;
 
 const clearChatState = (dispatch) => {
