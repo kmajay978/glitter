@@ -264,7 +264,7 @@ const ChatBox = (props) => {
         }
         else {
             toggleIsOn(false);
-            NotificationManager.error('Please recharge and try again', 'Insufficient Balance!', "", 2000, () => { return 0 }, true);
+            NotificationManager.error('Please recharge and try again', 'Insufficient Balance!');
         }
     }
 
@@ -455,7 +455,7 @@ const ChatBox = (props) => {
 
         getAllDetails();
 
-        SOCKET.on('get_frds_last_messages', (data) => {
+        SOCKET.off('get_frds_last_messages').on('get_frds_last_messages', (data) => {
             const last_messages = data.friends_list;
             if (!!userData && data.user_id == userData.user_id) {
                 console.log(my_friends_list, data, "here....")
@@ -472,7 +472,7 @@ const ChatBox = (props) => {
         })
 
         // Checking the typing user
-        SOCKET.on('typing', (typing) => {
+        SOCKET.off('typing').on('typing', (typing) => {
             if (!!typing) {
                 if ((typing.user_id === userData.user_id && typing.reciever_id === receiver_id)
                     ||
@@ -488,8 +488,7 @@ const ChatBox = (props) => {
                 }
             }
         })
-
-        SOCKET.on('message_data', (messages) => {
+        SOCKET.off('message_data').on('message_data', (messages) => {
             let messagesList = messageList;
             if (!!messages) {
                 if ((messages.obj.user_from_id === userData.user_id && messages.obj.user_to_id === receiver_id)
@@ -515,7 +514,7 @@ const ChatBox = (props) => {
             }
         });
 
-        SOCKET.on('media_file', (messages) => {
+        SOCKET.off('media_file').on('media_file', (messages) => {
             let messagesList = messageList;
             if (!!messages) {
                 if ((messages.obj.user_from_id === userData.user_id && messages.obj.user_to_id === receiver_id)
@@ -542,7 +541,7 @@ const ChatBox = (props) => {
             }
         });
 
-        SOCKET.on('gift_send', (messages) => {
+        SOCKET.off('gift_send').on('gift_send', (messages) => {
             let messagesList = messageList;
             if (!!messages) {
                 if ((messages.obj.user_from_id === userData.user_id && messages.obj.user_to_id === receiver_id)
@@ -569,7 +568,7 @@ const ChatBox = (props) => {
             }
         });
 
-        SOCKET.on('voice', function (arrayBuffer) {
+        SOCKET.off('voice').on('voice', function (arrayBuffer) {
             let messagesList = messageList;
             if (!!arrayBuffer) {
                 if ((arrayBuffer.obj.user_from_id === userData.user_id && arrayBuffer.obj.user_to_id === receiver_id)
@@ -595,7 +594,7 @@ const ChatBox = (props) => {
             // src= window.URL.createObjectURL(blob);
 
         });
-        return () => { SOCKET.removeAllListeners(); componentWillUnmount() }
+        return () => { componentWillUnmount() }
 
     }, [])
 
@@ -632,7 +631,7 @@ const ChatBox = (props) => {
             setMessages([]);
             messageList = [];
             getFriendDetails();
-            SOCKET.on('getMessage', (messages) => { // only one time
+            SOCKET.off('getMessage').on('getMessage', (messages) => { // only one time
                 setLoading(false);
 
                 setMessages(messages.message_list);
@@ -846,7 +845,7 @@ const ChatBox = (props) => {
                                                             <div className="contacts_info">
                                                                 <div className="user_detail">
                                                                     <span className="message-time">{item.created_at}</span>
-                                                                    <h6 className="mb-0 name">{item.first_name} .{" " + item.age}</h6>
+                                                                    <h6 className="mb-0 name">{item.name} .{" " + item.age}</h6>
                                                                     {/* <div className="message-count">2</div> */}
                                                                 </div>
                                                                 <div className="vcentered info-combo">
@@ -866,7 +865,7 @@ const ChatBox = (props) => {
                                                             <div className="contacts_info">
                                                                 <div className="user_detail">
                                                                     <span className="message-time">{item.created_at}</span>
-                                                                    <h6 className="mb-0 name">{stringLimit(item.first_name, 3) + " "}.{" " + item.age}</h6>
+                                                                    <h6 className="mb-0 name">{stringLimit(item.name, 3) + " "}.{" " + item.age}</h6>
                                                                     {/* <div className="message-count">2</div> */}
                                                                 </div>
                                                                 <div className="vcentered info-combo">
@@ -941,7 +940,7 @@ const ChatBox = (props) => {
                                                         <div className="contacts_info">
                                                             <div className="user_detail">
                                                                 <span className="message-time">{item.created_at}</span>
-                                                                <h6 className="mb-0 name">{item.first_name}</h6>
+                                                                <h6 className="mb-0 name">{item.name}</h6>
                                                                 {/* <div className="message-count">2</div> */}
                                                             </div>
                                                             <div className="vcentered info-combo">

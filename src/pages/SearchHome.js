@@ -455,7 +455,7 @@ console.log(statusPrice ,"statusPrice...")
         bodyParameters.append("coins", "" + statusPrice);
         axios.post(ADD_STATUS, bodyParameters, config)
           .then((response) => {
-            if (response.status == 200 &&  !response.status.error)  {
+            if (response.data.status_code == 200 &&  !response.data.error)  {
               NotificationManager.success(response.data.message, "", 2000, () => { return 0 }, true);
               setIsLoading(false);
               setUploadStatus(false);
@@ -463,13 +463,13 @@ console.log(statusPrice ,"statusPrice...")
               setStatusPrice("0");
             }
            else{
-             NotificationManager.success(response.data.message , "" , 2000 , () => { return 0} , true);
+             NotificationManager.error(response.data.message , "" , 2000 , () => { return 0} , true);
+             setIsLoading(false);
            }
           }, (error) => {
             NotificationManager.error(error.message, "", 2000, () => { return 0 }, true);
             setIsLoading(false);
           });
-
       }
       else if (videoData == 'video') {
         setIsLoading(true);
@@ -480,7 +480,7 @@ console.log(statusPrice ,"statusPrice...")
         bodyParameters.append("coins", "" + statusPrice);
         axios.post(ADD_STATUS, bodyParameters, config)
           .then((response) => {
-            if (response.status == 200 && !response.status.error) {
+            if (response.data.status_code == 200 && !response.data.error) {
               NotificationManager.success(response.data.message, "", 2000, () => { return 0 }, true);
               setIsLoading(false);
               setUploadStatus(false);
@@ -488,7 +488,8 @@ console.log(statusPrice ,"statusPrice...")
               setStatusPrice("0");
             }
             else{
-              NotificationManager.success(response.data.message , "" , 2000 , () => {return 0} , true);
+              NotificationManager.error(response.data.message , "" , 2000 , () => {return 0} , true);
+              setIsLoading(false);
             }
           }, (error) => {
             NotificationManager.error(error.message, "", 2000, () => { return 0 }, true);
@@ -631,7 +632,7 @@ console.log(statusPrice ,"statusPrice...")
       });
     }, 1000)
 
-    SOCKET.on('sendAudienceToLiveVideo', (data) => {
+    SOCKET.off('sendAudienceToLiveVideo').on('sendAudienceToLiveVideo', (data) => {
 
       setAudLive(false)
       if (userData.user_id === data.user_id) {
@@ -650,7 +651,7 @@ console.log(statusPrice ,"statusPrice...")
       }
     })
 
-    SOCKET.on('live_friends', (data, user) => {
+    SOCKET.off('live_friends').on('live_friends', (data, user) => {
       if (!!userData && user.user_id == userData.user_id) {
         let frdList = friendLists;
         const totalLiveFrds = data.live;
@@ -691,7 +692,7 @@ console.log(statusPrice ,"statusPrice...")
       }
     });
 
-    SOCKET.on('start_your_live_video_now', (data) => {
+    SOCKET.off('start_your_live_video_now').on('start_your_live_video_now', (data) => {
       if ((data.user_id == userData.user_id) && data.channel_id && data.channel_name) {
         setLivePopup(false)
         window.setTimeout(() => {
@@ -706,7 +707,7 @@ console.log(statusPrice ,"statusPrice...")
     });
 
     // uploadImage();
-    return () => { SOCKET.removeAllListeners(); componentWillUnmount() }
+    return () => {  componentWillUnmount() }
   }, [])
 
   
@@ -850,7 +851,7 @@ console.log(friendList, "friendList...")
                                 <div className="sp-singular-content">
                                   {!item.online ? <div className="status offline">Offline</div> : <div className="status online">Online</div>}
 
-                                  <h4>{item.first_name + ' ' + item.last_name} <span className="age">{item.age}</span></h4>
+                                  <h4>{item.name} <span className="age">{item.age}</span></h4>
                                   <div className="info">{item.distance}, {item.occupation}</div>
                                 </div>
                               </a>

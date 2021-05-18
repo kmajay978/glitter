@@ -632,6 +632,7 @@ const Profile = (props) => {
     dispatch(stripePlanId({ stripePlanId: null }));
     dispatch(stripeCoinPlanId({ stripeCoinPlanId: null }));
   }
+ 
 
   const closeGiftModel = () => {
     setGiftData('');
@@ -766,8 +767,8 @@ const Profile = (props) => {
                 <label htmlFor="more">Both</label>
               </div>
             </div>
-
-            <div className="choose-intersest ft-block d-flex flex-wrap"  >
+             
+              <div className="choose-intersest ft-block d-flex flex-wrap"  >
               <div className="tab-title">
                 <label>Interest hobbies</label>
               </div>
@@ -783,7 +784,6 @@ const Profile = (props) => {
               ))}
               </div>
             </div>
-
             <a className={!!isLoading ? "btn bg-grd-clr d-block btn-countinue-3 disabled" : "btn bg-grd-clr d-block btn-countinue-3"} id="edit-second-step" href="javascript:void(0)" onClick={updateProfile}>{!!isLoading ? "Processing..." : "update"}</a>
 
           </div>
@@ -1255,10 +1255,10 @@ const Profile = (props) => {
           </div>
           <div className="all-gift-body">
 
-            <ul className="d-flex flex-wrap text-center ">
+            <ul className="d-flex flex-wrap text-center">
               {!!GiftData && GiftData.map((items, i) => {
                 return <li >
-                  <a href="javascript:void(0)" >
+                  <a href="javascript:void(0)" style={{ cursor: "default" }} >
                     <div>
                       <figure>
                         <img src={items.gift_image} alt={items.gift_name} />

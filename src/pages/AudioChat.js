@@ -88,7 +88,7 @@ const AudioChat = () => {
         videoCallState: params.receiver == "false" ? videoCallState : null
       });
     }
-    SOCKET.on('unauthorize_video_call', (data) => {
+    SOCKET.off('unauthorize_video_call').on('unauthorize_video_call', (data) => {
       if ((data.user_from_id == videoCallParams.user_from_id && data.user_to_id == videoCallParams.user_to_id)
         ||
         (data.user_from_id == videoCallParams.user_to_id && data.user_to_id == videoCallParams.user_from_id)
@@ -97,7 +97,7 @@ const AudioChat = () => {
       }
     });
 
-    SOCKET.on('timeCounter_video_call', (data) => {
+    SOCKET.off('timeCounter_video_call').on('timeCounter_video_call', (data) => {
       if ((data.user_from_id == videoCallParams.user_from_id && data.user_to_id == videoCallParams.user_to_id)
         ||
         (data.user_from_id == videoCallParams.user_to_id && data.user_to_id == videoCallParams.user_from_id)
@@ -108,7 +108,7 @@ const AudioChat = () => {
       }
     });
 
-    SOCKET.on('end_one_to_one_audio_call_no_coin_warning', (data) => {
+    SOCKET.off('end_one_to_one_audio_call_no_coin_warning').on('end_one_to_one_audio_call_no_coin_warning', (data) => {
       if (data.channel_name == videoCallParams.channel_name) {
         if (Number(userData.user_id) === data.user_id) {
           NotificationManager.warning("No coins Left");
@@ -121,7 +121,7 @@ const AudioChat = () => {
       }
     })
 
-    SOCKET.on('end_one_to_one_audio_call_warning', (data) => {
+    SOCKET.off('end_one_to_one_audio_call_warning').on('end_one_to_one_audio_call_warning', (data) => {
       if (data.channel_name == videoCallParams.channel_name) {
         if (Number(userData.user_id) === data.user_id) {
           alert(data.msg)
@@ -134,7 +134,7 @@ const AudioChat = () => {
       }
     })
 
-    SOCKET.on('one_to_one_audio_manage_coins_time_views', (data) => {
+    SOCKET.off('one_to_one_audio_manage_coins_time_views').on('one_to_one_audio_manage_coins_time_views', (data) => {
       if (data.channel_name === videoCallParams.channel_name && userData.user_id == data.user_id) {
         if (data.msg === "") {
           setTotalCoinsLeft(data.coins);
@@ -145,13 +145,13 @@ const AudioChat = () => {
       }
     })
 
-    SOCKET.on('one_to_one_audio_manage_time', (data) => {
+    SOCKET.off('one_to_one_audio_manage_time').on('one_to_one_audio_manage_time', (data) => {
       if (data.channel_name == videoCallParams.channel_name) {
         setTotalTimeLeft(data.time)
       }
     })
 
-    SOCKET.on('sender_show_video_call', (data) => {
+    SOCKET.off('sender_show_video_call').on('sender_show_video_call', (data) => {
       if ((data.user_from_id == videoCallParams.user_from_id && data.user_to_id == videoCallParams.user_to_id)
         ||
         (data.user_from_id == videoCallParams.user_to_id && data.user_to_id == videoCallParams.user_from_id)
@@ -176,7 +176,7 @@ const AudioChat = () => {
         }
       }
     })
-    SOCKET.on('authorize_video_call', (data) => {
+    SOCKET.off('authorize_video_call').on('authorize_video_call', (data) => {
       if ((data.user_from_id == videoCallParams.user_from_id && data.user_to_id == videoCallParams.user_to_id)
         ||
         (data.user_from_id == videoCallParams.user_to_id && data.user_to_id == videoCallParams.user_from_id)
@@ -263,7 +263,7 @@ const AudioChat = () => {
         }
       }
     });
-    return () => { SOCKET.removeAllListeners()}
+    // return () => { SOCKET.removeAllListeners()}
   }, [])
 
   const audioManageCoinsTimeViews = () => {
@@ -372,7 +372,10 @@ const AudioChat = () => {
               </ul> */}
                 </div>
                 <NavLinks />
-                <a href="javascript:void(0)" className="end-video bg-grd-clr" onClick={() => endCall(true)}>End Audio</a>
+                {
+                  (!!userData && !!videoCallParams && userData.user_id == videoCallParams.user_from_id) &&
+<a href="javascript:void(0)" className="end-video bg-grd-clr" onClick={() => endCall(true)}>End Audio</a>
+                }
               </div>
             </div>
           </div>

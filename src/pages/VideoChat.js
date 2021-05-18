@@ -122,7 +122,7 @@ const SearchProfile = () => {
         channel_name: videoCallParams.channel_name
       });
     }
-    SOCKET.on('unauthorize_video_call', (data) => {
+    SOCKET.off('unauthorize_video_call').on('unauthorize_video_call', (data) => {
       if ((data.user_from_id == videoCallParams.user_from_id && data.user_to_id == videoCallParams.user_to_id)
         ||
         (data.user_from_id == videoCallParams.user_to_id && data.user_to_id == videoCallParams.user_from_id)
@@ -131,7 +131,7 @@ const SearchProfile = () => {
       }
     });
 
-    SOCKET.on('end_one_to_one_video_call_no_coin_warning', (data) => {
+    SOCKET.off('end_one_to_one_video_call_no_coin_warning').on('end_one_to_one_video_call_no_coin_warning', (data) => {
       if (data.channel_name == videoCallParams.channel_name) {
         if (Number(userData.user_id) === data.user_id) {
           NotificationManager.error("no coins left", "", 2000, () => { return 0 }, true);
@@ -146,7 +146,7 @@ const SearchProfile = () => {
       }
     })
 
-    SOCKET.on('end_one_to_one_video_call_warning', (data) => {
+    SOCKET.off('end_one_to_one_video_call_warning').on('end_one_to_one_video_call_warning', (data) => {
       if (data.channel_name == videoCallParams.channel_name) {
         if (Number(userData.user_id) === data.user_id) {
           alert(data.msg)
@@ -159,7 +159,7 @@ const SearchProfile = () => {
       }
     })
 
-    SOCKET.on('send_one_to_one_video_item', (message) => {
+    SOCKET.off('send_one_to_one_video_item').on('send_one_to_one_video_item', (message) => {
       let messagesList = messageList;
 
       if (
@@ -207,7 +207,7 @@ const SearchProfile = () => {
 
     });
 
-    SOCKET.on('get_messages_one_to_one_video', (messages) => { // only one time
+    SOCKET.off('get_messages_one_to_one_video').on('get_messages_one_to_one_video', (messages) => { // only one time
       if (messages.sender_id == videoCallParams.user_from_id &&
         messages.user_id == userData.user_id &&
         videoCallParams.channel_name == messages.channel_name) {
@@ -227,7 +227,7 @@ const SearchProfile = () => {
       }
     });
 
-    SOCKET.on('typing_one_to_one_video_message', (typing) => { // only one time
+    SOCKET.off('typing_one_to_one_video_message').on('typing_one_to_one_video_message', (typing) => { // only one time
       if (videoCallParams.channel_name == typing.channel_name) {
         if (typing.user_id !== userData.user_id) {
           setChatTyping(typing.typing_user)
@@ -238,7 +238,7 @@ const SearchProfile = () => {
       }
     })
 
-    SOCKET.on('one_to_one_video_manage_coins_time_views', (data) => {
+    SOCKET.off('one_to_one_video_manage_coins_time_views').on('one_to_one_video_manage_coins_time_views', (data) => {
       if (data.channel_name === videoCallParams.channel_name && userData.user_id == data.user_id) {
         if (data.msg === "") {
           setTotalCoinsLeft(data.coins);
@@ -249,13 +249,13 @@ const SearchProfile = () => {
       }
     })
 
-    SOCKET.on('one_to_one_video_manage_time', (data) => {
+    SOCKET.off('one_to_one_video_manage_time').on('one_to_one_video_manage_time', (data) => {
       if (data.channel_name == videoCallParams.channel_name) {
         setTotalTimeLeft(data.time)
       }
     })
 
-    SOCKET.on('timeCounter_video_call', (data) => {
+    SOCKET.off('timeCounter_video_call').on('timeCounter_video_call', (data) => {
       if ((data.user_from_id == videoCallParams.user_from_id && data.user_to_id == videoCallParams.user_to_id)
         ||
         (data.user_from_id == videoCallParams.user_to_id && data.user_to_id == videoCallParams.user_from_id)
@@ -266,7 +266,7 @@ const SearchProfile = () => {
       }
     });
 
-    SOCKET.on('sender_show_video_call', (data) => {
+    SOCKET.off('sender_show_video_call').on('sender_show_video_call', (data) => {
       if ((data.user_from_id == videoCallParams.user_from_id && data.user_to_id == videoCallParams.user_to_id)
         ||
         (data.user_from_id == videoCallParams.user_to_id && data.user_to_id == videoCallParams.user_from_id)
@@ -309,7 +309,7 @@ const SearchProfile = () => {
       }, 10000)
     }
 
-    SOCKET.on('authorize_video_call', (data) => {
+    SOCKET.off('authorize_video_call').on('authorize_video_call', (data) => {
       if ((data.user_from_id == videoCallParams.user_from_id && data.user_to_id == videoCallParams.user_to_id)
         ||
         (data.user_from_id == videoCallParams.user_to_id && data.user_to_id == videoCallParams.user_from_id)
@@ -413,7 +413,7 @@ const SearchProfile = () => {
       setReRenderGifts(Math.random())
     }, 250)
 
-    return () => { SOCKET.removeAllListeners() }
+    // return () => { SOCKET.removeAllListeners() }
   }, [])
 
   const endCall = (showMsg) => {
@@ -574,7 +574,10 @@ const SearchProfile = () => {
                 <div className="vc-action-tab ml-auto mr-4 position-relative">
                 </div>
                 <NavLinks />
-                <a href="javascript:void(0)" className="end-video bg-grd-clr" onClick={() => endCall(true)}>End Video</a>
+                {
+                  (!!userData && !!videoCallParams && userData.user_id == videoCallParams.user_from_id) &&
+<a href="javascript:void(0)" className="end-video bg-grd-clr" onClick={() => endCall(true)}>End Video</a>
+                }
               </div>
             </div>
           </div>
