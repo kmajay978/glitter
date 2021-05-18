@@ -237,7 +237,7 @@ const AudioChat = () => {
             status: 1
           });
         }
-        if (data.user_to_id == videoCallParams.user_to_id) {
+        if (!!userData && data.user_to_id == userData.user_id) {
           alert("acknowledge")
           frdAcknowledgedCall = true;
         }
