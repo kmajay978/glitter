@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef } from "react";
+import React, { useState, useEffect, useMemo, useRef, createRef } from "react";
 import $ from 'jquery';
 import { useSelector } from "react-redux"
 import { useHistory } from "react-router";
@@ -129,7 +129,8 @@ const FilterUser = ({fetchedProfile}) => {
  
   console.log(allData , "allData...");
   console.log(userData , "allDat..");
-  const childRefs = userData;
+  // const childRefs = userData;
+  const childRefs = useMemo(() => Array(allData.length).fill(0).map(i => createRef()), [])
   const swipe = (dir, userId) => {
     // if (allData.length > 0) {
       const cardsLeft = allData.filter(
