@@ -71,8 +71,6 @@ const ChatBox = (props) => {
     const [threeMessageWarning, setWarningMessage] = useState("");
     const [imageFullSize, setImageFull] = useState({ open: false, media: null });
 
-    console.log(Visitors);
-    console.log(FriendList, "FriendList.....")
     // const createNotificationCustom = (type) => {
 
     //     switch (type) {

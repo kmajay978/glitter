@@ -591,13 +591,13 @@ const LiveVideoChat = () => {
 
                                         {
                                             !!user &&
-                                            <div class="name ml-2">
+                                            <div className="name ml-2">
                                                 {user.first_name}
-                                                <span class="age"> {user.age}</span>
-                                                <span class="d-block small">{totalTimeLeft}</span>
+                                                <span className="age"> {user.age}</span>
+                                                <span className="d-block small">{totalTimeLeft}</span>
                                                 {
                                                     (!!userData && userData.user_id == params.user_id) &&
-                                                    <span class="small">
+                                                    <span className="small">
                                                         <img src="/assets/images/eye-icon.svg" /> {totalViews}</span>
                                                 }
 
@@ -606,13 +606,13 @@ const LiveVideoChat = () => {
                                         }
                                         {
                                             !user &&
-                                            <div class="name ml-2">
+                                            <div className="name ml-2">
 
-                                                <span class="age"> </span>
-                                                <span class="d-block small"> </span>
+                                                <span className="age"> </span>
+                                                <span className="d-block small"> </span>
                                                 {
                                                     (!!userData && userData.user_id == params.user_id) &&
-                                                    <span class="small">
+                                                    <span className="small">
                                                         <img src="/assets/images/eye-icon.svg" /> </span>
                                                 }
 
