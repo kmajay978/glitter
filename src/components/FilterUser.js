@@ -19,7 +19,7 @@ import SyncLoader from "react-spinners/SyncLoader";
 import { NotificationManager } from 'react-notifications';
 import { css } from "@emotion/core";
 const alreadyRemoved = [];
-let isMouseClick = false, startingPos = [], glitterUid;
+let isMouseClick = false, startingPos = [], glitterUid, childRefs = [];
 
 const override = css`
 text-align: center;
@@ -50,7 +50,7 @@ const FilterUser = ({fetchedProfile}) => {
   const [disliked_clicked, setDislike] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const filters = useSelector(filterDataUser); //using redux useSelector here
-
+  console.log(filters , " filters...");
 
   const handleUserData = () => {
     setIsLoaded(true);
@@ -128,9 +128,10 @@ const FilterUser = ({fetchedProfile}) => {
   };
  
   console.log(allData , "allData...");
-  console.log(userData , "allDat..");
   // const childRefs = userData;
-  const childRefs = useMemo(() => Array(allData.length).fill(0).map(i => createRef()), [])
+  // let childRefs = allData.length > 0 ? useRef(allData) : useRef([])
+  childRefs = useRef(filters);
+
   const swipe = (dir, userId) => {
     // if (allData.length > 0) {
       const cardsLeft = allData.filter(
@@ -166,7 +167,7 @@ const FilterUser = ({fetchedProfile}) => {
     // }
   };
 
-
+console.log(childRefs , "childref..")
   useEffect(() => {
     if (!!cardClick) {
       history.push('/' + glitterUid + '/single-profile')
@@ -177,6 +178,8 @@ const FilterUser = ({fetchedProfile}) => {
     // handleUserData();
   }, [])
 
+  console.log(allData, "nnnnnnn")
+ 
   useEffect(() => {
     if (!!fetchedProfile) {
       setIsLoaded(false);
