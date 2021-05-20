@@ -103,7 +103,10 @@ const Profile = (props) => {
 
   const [isOn, toggleIsOn] = useToggle();
   const [isProfile, toggleProfile] = useToggle();
-  const handleShow = () => setShow(true); // show Edit model
+  const [ pageloading , setPageLoading] = useState(false);
+  const handleShow = () => {
+    setShow(true);
+  } // show Edit model
   const handleSettingShow = () => setShowSetting(true); //show Setting Model
 
   const handleImage = () => setShowImage(true);
@@ -139,11 +142,10 @@ const Profile = (props) => {
       [e.target.name]: e.target.value,
     })
   }
-
   const handleCheck = (e) => {
     const target = e.target;
     var value = target.value;
-    alert(target.checked);
+    target.checked = target.checked
     if (target.checked) {
       console.log(target.checked);
       let selectedArray = selectedCheck;
@@ -172,16 +174,15 @@ const Profile = (props) => {
   //   $('.react-date-picker__inputGroup__year').val('1997');
   // }, 2000)
   //   },[show])
-
+console.log(pageloading , "pageloading..")
   // Fetching profile Data
-  var sessionId = localStorage.getItem("session_id")
-  const ProfileData = async () => {
-
+  var sessionId = localStorage.getItem("session_id");
+  const ProfileData = async (interests_list) => {
     const bodyParameters = {
       session_id: sessionId,
     };
     const { data: { data } } = await axios.post(GET_LOGGEDPROFILE_API, bodyParameters)
-
+    setPageLoading(false);
 
     //  Setting data variable to state object 
     form.firstName = data.first_name
@@ -199,6 +200,8 @@ const Profile = (props) => {
 
     var obj = [...Object.values(Object.keys(form.interests_hobbie))]
     setHobbies(obj);
+    console.log(interests_list, "hjhjhjh")
+    console.log(obj)
     setProfile(data);
     dispatch(
       profile({
@@ -225,6 +228,12 @@ const Profile = (props) => {
       }
     }
 
+    var textinputs = document.querySelectorAll('input:checked');
+    let selectedCheck = []
+    for (let i in textinputs) {
+      selectedCheck.push(textinputs[i].value)
+    }
+
     const bodyParameters = new FormData();
     bodyParameters.append("session_id", "" + sessionId);
     bodyParameters.append("device_token", "uhydfdfghdertyt445t6y78755t5jhyhyy");
@@ -248,6 +257,8 @@ const Profile = (props) => {
           setIsLoading(false);
           NotificationManager.success(response.data.message, "", 2000, () => { return 0 }, true);
           setShow(false);
+          ProfileData();
+          setStep(1);
         }
         else {
           NotificationManager.error(response.data.message, "", 2000, () => { return 0 }, true);
@@ -290,6 +301,16 @@ const Profile = (props) => {
 
   function isElement(element) {
     return element instanceof Element || element instanceof HTMLDocument;
+  }
+
+  const changeStep = () => {
+    setStep(step + 1);
+    console.log(interestData, "interestData..")
+    window.setTimeout(() => {
+      for (let i in interestData) {
+        CheckedItem(interestData[i].id)
+      }
+    }, 250)
   }
 
   const formValidation = () => {
@@ -525,12 +546,15 @@ const Profile = (props) => {
 
   //get interest hobbies
   const handleInterest = () => {
+    setPageLoading(true);
     axios.get(INTEREST_HOBBIES_LIST)
       .then((response) => {
         if (response.status == 200) {
           showInterestData(response.data);
+          ProfileData(response.data);
         }
       }, (error) => {
+        setPageLoading(false);
         NotificationManager.error(error.message, "", 2000, () => { return 0 }, true);
         if (error.toString().match("403")) {
           localStorage.removeItem("session_id");
@@ -594,16 +618,17 @@ const Profile = (props) => {
 
   const CheckedItem = (id) => {
     let checkId = false;
+    const elm = document.getElementById("interests_hobbie" + id);
+    console.log(hobbies, "asdf")
     for (let i in hobbies) {
       if (hobbies[i] == id) {
         checkId = true
       }
     }
-    if (checkId) {
-      return "checked"
-    }
-    else {
-      return ""
+  
+    console.log(elm, "elm...")
+    if (!!elm) {
+      elm.checked = checkId;
     }
   }
 
@@ -632,7 +657,7 @@ const Profile = (props) => {
     dispatch(stripePlanId({ stripePlanId: null }));
     dispatch(stripeCoinPlanId({ stripeCoinPlanId: null }));
   }
- 
+
 
   const closeGiftModel = () => {
     setGiftData('');
@@ -655,7 +680,6 @@ const Profile = (props) => {
 
   useEffect(() => {
     GetStipePackage();
-    ProfileData(dispatch)
     handleInterest();
     uploadImage();
     //handleBlock();
@@ -670,6 +694,11 @@ const Profile = (props) => {
   const openFileUploader = () => {
     openFile.current.click();
   }
+
+const closeEditProfile =()=> {
+  setShow(false);
+  setStep(1);
+}
 
   const tabScreen = () => {
     switch (step) {
@@ -726,7 +755,7 @@ const Profile = (props) => {
               </select>
             </div>
 
-            <a className="btn bg-grd-clr d-block btn-countinue-3" id="edit-first-step" href="javascript:void(0)" onClick={() => setStep(step + 1)}>Next</a>
+            <a className="btn bg-grd-clr d-block btn-countinue-3" id="edit-first-step" href="javascript:void(0)" onClick={changeStep}>Next</a>
           </div>
 
         );
@@ -767,25 +796,20 @@ const Profile = (props) => {
                 <label htmlFor="more">Both</label>
               </div>
             </div>
-             
-              <div className="choose-intersest ft-block d-flex flex-wrap"  >
+
+            <div className="choose-intersest ft-block d-flex flex-wrap"  >
               <div className="tab-title">
                 <label>Interest hobbies</label>
               </div>
               <div className="form-group">
-                  <input type="checkbox" id="interests"  name="interests"  value="1" checked />
-                  <label for="interests" >hobbies</label>
-                  <input type="checkbox" id="hobbie"  name="hobbie" value="2"/>
-                  <label for="hobbie" >interests</label>
-              {/* {interestData.map((item, i) => (
-                <>
-                 checked={CheckedItem(item.id)}
-                 onClick={handleCheck}
-                 value={item.id}
-                  <input type="checkbox" id={"interests_hobbie" + i} checked={item.id==2 ? "checked":""} name={"interests_hobbie" + i} value={item.id} />
-                  <label for={"interests_hobbie" + i}>{item.interests_or_hobbies}</label>
-             </>
-              ))} */}
+                {interestData.map((item, i) => (
+                  <>
+                    {/* checked={CheckedItem(item.id)} */}
+                    <input type="checkbox" id={"interests_hobbie" + item.id}
+                      onClick={handleCheck} name={"interests_hobbie" + i} value={item.id} />
+                    <label for={"interests_hobbie" + item.id}>{item.interests_or_hobbies}</label>
+                  </>
+                ))}
               </div>
             </div>
             <a className={!!isLoading ? "btn bg-grd-clr d-block btn-countinue-3 disabled" : "btn bg-grd-clr d-block btn-countinue-3"} id="edit-second-step" href="javascript:void(0)" onClick={updateProfile}>{!!isLoading ? "Processing..." : "update"}</a>
@@ -882,9 +906,14 @@ const Profile = (props) => {
                   <li><a href="javascript:void(0)" id="gift-modal" onClick={handleGift}><img src="/assets/images/gift-icon.png" alt="gifts" />
                     <h6 className="mb-0">Gifts</h6> <i className="fas fa-chevron-right" />
                   </a></li>
+                  {
+                    !pageloading &&
                   <li><a href="javascript:void(0)" id="edit-profile" onClick={handleShow}><img src="/assets/images/edit-profile.png" alt="Edit Profile" />
                     <h6>Edit Profile</h6> <i className="fas fa-chevron-right" />
-                  </a></li>
+                  </a>
+                  
+                  </li>
+                  }
                   <li><a href="javascript:void(0)" id="edit-profile" onClick={() => history.push("/recent-call")}><img src="/assets/images/edit-profile.png" alt="Edit Profile" />
                     <h6>Recent Call</h6> <i className="fas fa-chevron-right" />
                   </a></li>
@@ -1012,7 +1041,7 @@ const Profile = (props) => {
             {tabScreen()}
           </form>
         </div>
-        <a href="javascript:void(0)" className="modal-close" onClick={() => setShow(false)}><img src="/assets/images/btn_close.png" /></a>
+        <a href="javascript:void(0)" className="modal-close" onClick={closeEditProfile}><img src="/assets/images/btn_close.png" /></a>
       </Modal>
 
       <Modal className="coin-spend-modal" show={showCoins} onHide={() => setShowCoin(false)} backdrop="static" keyboard={false}>
