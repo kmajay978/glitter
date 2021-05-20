@@ -2,10 +2,8 @@ import React, { Component, useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router'
 import { selectUser } from '../features/userSlice';
-// import FilterSide from '../components/Filter';
 import NavLinks from '../components/Nav';
 import Loader from '../components/Loader';
-// import FilterUser from '../components/FilterUser';
 import axios from 'axios';
 import Logo from '../components/Logo';
 import $ from 'jquery';
@@ -81,19 +79,14 @@ const Home = (props) => {
   const user = useSelector(selectUser); //using redux useSelector here
   const [fetchedProfile, setFilterUser] = useState([]);
 
-  const [lastDirection, setLastDirection] = useState();
-  const [characters, setCharacters] = useState();
-  const [allData, setAllData] = useState([]);
   // const [mouseIsClicked, setmouseIsClicked] = useState("false");
   const [cardClick, setCardClick] = useState(false);
   const [cardStartPosition, setStartPosition] = useState([])
   const [userData, setUserData] = useState([]);
-  const [showAccept, setShowAccept] = useState(false);
-  const [isOn, toggleIsOn] = useToggle(false);
+  // const [isOn, toggleIsOn] = useToggle(false);
   const [liked_clicked, setLiked] = useState(false);
   const [disliked_clicked, setDislike] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [random, setRandom] = useState('');
   // const filters = useSelector(filterDataUser); //using redux useSelector here
   // console.log(filters , " filters...");
 
@@ -144,7 +137,6 @@ const Home = (props) => {
           (error) => {
             NotificationManager.error(error.message, "", 2000, () => { return 0 }, true);
             setDislike(false);
-
           }
         );
     } else if (direction == "right") {
@@ -165,7 +157,7 @@ const Home = (props) => {
         },
         (error) => {
           NotificationManager.error(error.message, "", 2000, () => { return 0 }, true);
-          setLiked(false)
+          setLiked(false);
         }
       );
     }
@@ -173,32 +165,26 @@ const Home = (props) => {
 
   useEffect(() => {
     childRefs = Array(fetchedProfile.length).fill(0).map(i => React.createRef()), []
-    console.log(childRefs, "refs...")
   }, [fetchedProfile])
-  console.log(fetchedProfile, "fetchedPropfile");
-
+ 
   const swipe = (direction) => {
     const cardsLeft = fetchedProfile.filter(
       (currentUser) => !alreadyRemoved.includes(currentUser.user_id)
     );
     if (cardsLeft.length) {
       const toBeRemoved = cardsLeft[cardsLeft.length - 1].user_id; // Find the card object to be removed
-      console.log(toBeRemoved, "childref userid");
       const index = fetchedProfile
         .map((person) => person.user_id)
         .indexOf(toBeRemoved); // Find the index of which to make the reference to
       alreadyRemoved.push(toBeRemoved); // Make sure the next card gets removed next time if this card do not have time to exit the screen
       if (!!childRefs && childRefs[index] && !!childRefs[index].current) {
-        console.log(childRefs, "childRefs..");
-   
-        console.log(childRefs[index].current, "childRefs[index].current");
         childRefs[index].current.swipe(direction); // Swipe the card!
+        console.log( childRefs[index].current , "direction..")
       } else {
       }
     }
   };
-
-  console.log(childRefs, "childref..")
+ 
   useEffect(() => {
     if (!!cardClick) {
       history.push('/' + glitterUid + '/single-profile')
@@ -223,13 +209,13 @@ const Home = (props) => {
         })
         .mouseup(function () {
           if (!isMouseClick) {
-            setCardClick(isMouseClick)
+            setCardClick(isMouseClick);
           } else {
-            isMouseClick = true
-            setCardClick(isMouseClick)
+            isMouseClick = true;
+            setCardClick(isMouseClick);
           }
           startingPos = [];
-          setStartPosition(startingPos)
+          setStartPosition(startingPos);
         });
     }, 1000);
   }, [fetchedProfile]);
@@ -465,7 +451,6 @@ const Home = (props) => {
               </div>
               <div className="profile-swipe-wrapper">
                 <div className="cardContainer">
-                  {/* {allData.length > 0 ? <> */}
                   {fetchedProfile.map((currentUser, index) => (
                     <div className="main_wrapper" id={currentUser.user_id}>
                       <GlitterCard
@@ -476,10 +461,10 @@ const Home = (props) => {
                         <div className="user__card position-relative">
                           {liked_clicked ? <div className="accept__user"><img src="/assets/images/accept-icon.png" width="auto" height="auto" /></div> : ""}
                           {disliked_clicked ? <div class="accept__user"><img src="/assets/images/country-close.svg" width="auto" height="auto" /></div> : ""}
-                          <img src={currentUser.profile_images} alt={currentUser.first_name} width="100%" />
+                          <img src={currentUser.profile_images} alt={currentUser.name} width="100%" />
                           <div className="card-titles">
                             <h3>
-                              {currentUser.first_name}, {currentUser.age}
+                              {currentUser.name}, {currentUser.age}
                             </h3>
                             <span>
                               {currentUser.distance}{currentUser.occupation != "" ? " , " : ""}{currentUser.occupation}
@@ -491,32 +476,6 @@ const Home = (props) => {
 
                     </div>
                   ))}
-                  {/* </> :
-          <>
-            {userData.map((currentUser, index) => (
-              <div className="main_wrapper" id={currentUser.user_id}>
-                <GlitterCard ref={childRefs[index]} className="swipe" key={currentUser.user_id} onSwipe={(dir) => swiped(dir, currentUser.user_id)} >
-                  <div className="user__card position-relative">
-                    {liked_clicked ? <div className="accept__user"><img src="/assets/images/accept-icon.png" width="auto" height="auto" /></div> : ""}
-                    {disliked_clicked ? <div class="accept__user"><img src="/assets/images/country-close.svg" width="auto" height="auto" /></div> : ""}
-                    <img src={currentUser.profile_images} alt={currentUser.first_name} width="100%" />
-                    <div className="card-titles">
-
-                      <h3>
-                        {currentUser.first_name}, {currentUser.age}
-                      </h3>
-                      <span>
-                        {currentUser.distance},{currentUser.occupation}
-                      </span>
-                    </div>
-
-                  </div>
-
-                </GlitterCard>
-
-              </div>
-            ))} </>} */}
-
                   <SyncLoader color={"#fcd46f"} loading={isLoaded} css={override} size={18} />
 
                 </div>
