@@ -6,7 +6,7 @@ import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { FILTER_LIST_API } from './Api';
 import Loader from '../components/Loader';
 import { Typography } from '@material-ui/core';
-import { filterData, profile, logout } from '../features/userSlice';
+import { filterData } from '../features/userSlice';
 import useToggle, { removeDublicateFrds } from '../components/CommonFunction';
 import { useDispatch } from 'react-redux';
 import { NotificationManager } from 'react-notifications';

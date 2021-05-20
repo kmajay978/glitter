@@ -773,15 +773,19 @@ const Profile = (props) => {
                 <label>Interest hobbies</label>
               </div>
               <div className="form-group">
-              {interestData.map((item, i) => (
+                  <input type="checkbox" id="interests"  name="interests"  value="1" checked />
+                  <label for="interests" >hobbies</label>
+                  <input type="checkbox" id="hobbie"  name="hobbie" value="2"/>
+                  <label for="hobbie" >interests</label>
+              {/* {interestData.map((item, i) => (
                 <>
-                 {/* checked={CheckedItem(item.id)}
+                 checked={CheckedItem(item.id)}
                  onClick={handleCheck}
-                 value={item.id} */}
+                 value={item.id}
                   <input type="checkbox" id={"interests_hobbie" + i} checked={item.id==2 ? "checked":""} name={"interests_hobbie" + i} value={item.id} />
                   <label for={"interests_hobbie" + i}>{item.interests_or_hobbies}</label>
              </>
-              ))}
+              ))} */}
               </div>
             </div>
             <a className={!!isLoading ? "btn bg-grd-clr d-block btn-countinue-3 disabled" : "btn bg-grd-clr d-block btn-countinue-3"} id="edit-second-step" href="javascript:void(0)" onClick={updateProfile}>{!!isLoading ? "Processing..." : "update"}</a>
