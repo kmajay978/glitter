@@ -228,7 +228,8 @@ console.log(pageloading , "pageloading..")
       }
     }
 
-    var textinputs = document.querySelectorAll('input:checked');
+    var textinputs = document.querySelectorAll('input[class=hobbie]:checked');
+    console.log(textinputs, "textinputs...")
     let selectedCheck = []
     for (let i in textinputs) {
       selectedCheck.push(textinputs[i].value)
@@ -805,7 +806,7 @@ const closeEditProfile =()=> {
                 {interestData.map((item, i) => (
                   <>
                     {/* checked={CheckedItem(item.id)} */}
-                    <input type="checkbox" id={"interests_hobbie" + item.id}
+                    <input type="checkbox" className="hobbie" id={"interests_hobbie" + item.id}
                       onClick={handleCheck} name={"interests_hobbie" + i} value={item.id} />
                     <label for={"interests_hobbie" + item.id}>{item.interests_or_hobbies}</label>
                   </>
