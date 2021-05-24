@@ -12,19 +12,22 @@ import { userProfile } from '../features/userSlice'
 const RecentCall = () => {
   const history = useHistory();
   const [allcalls, setAllCall] = useState([]);
+  const [callType, setCallType] = useState("");
 
   const userData = useSelector(userProfile).user.profile; // using redux
 
-  const handleAllCall = async () => {
+  const handleAllCall = async (type) => {
     const bodyParameters = {
+      type,
       session_id: localStorage.getItem('session_id')
     }
-    const { data: { result } } = await axios.post(GET_ALL_CALL, bodyParameters)
-    setAllCall(result);
+    const { data: { list } } = await axios.post(GET_ALL_CALL, bodyParameters)
+    setAllCall(list);
   }
   useEffect(() => {
-    handleAllCall();
-  }, [])
+    setAllCall([])
+    handleAllCall(callType);
+  }, [callType])
 
   return (
     <section className="home-wrapper">
@@ -62,13 +65,13 @@ const RecentCall = () => {
       <div className="rcall-wrapper">
         <ul id="tabs" className="nav rcall-tabs mb-4" role="tablist">
           <li className="nav-item">
-            <a id="tab-all-call" href="#rcall-all" className="nav-link active" data-toggle="tab" role="tab" onClick={handleAllCall}>All</a>
+            <a id="tab-all-call" href="#rcall-all" className="nav-link active" data-toggle="tab" role="tab" onClick={() => setCallType("")}>All</a>
           </li>
           <li className="nav-item">
-            <a id="tab-missed-call" href="#rcall-missed" className="nav-link" data-toggle="tab" role="tab">Missed</a>
+            <a id="tab-missed-call" href="#rcall-missed" className="nav-link" data-toggle="tab" role="tab" onClick={() => setCallType(5)}>Missed</a>
           </li>
           <li className="nav-item">
-            <a id="tab-matched-call" href="#rcall-matched" className="nav-link" data-toggle="tab" role="tab">Matched</a>
+            <a id="tab-matched-call" href="#rcall-matched" className="nav-link" data-toggle="tab" role="tab" onClick={() => setCallType(3)}>Matched</a>
           </li>
         </ul>
         <div id="content" className="tab-content rcall-history" role="tablist">
@@ -78,21 +81,21 @@ const RecentCall = () => {
             {allcalls.map((item, i) => {
               return <div className="rc-history-card d-flex flex-wrap align-items-center">
                 <figure className="rc-user-avtar mb-0 mr-3">
-                  <img src={!!item ? item.from_user_profile_image : ""} alt="Augugsta Castro" />
+                  <img src={!!item ? item.profile_file : ""} alt={item.name} />
                 </figure>
                 <div className="rc-user-details d-flex flex-wrap">
                   <div className="rcu-name mr-3">
-                    <h5 className="mb-1">{!!item ? item.from_user_data : ""} <span className="age">20</span></h5>
+                    <h5 className="mb-1">{!!item ? item.name : ""} <span className="age">{item.age}</span></h5>
                     <div className="rcu-date-time">
                       <span className="time">{!!item ? item.time : ""} </span>
-                      <span className="date">{moment(!!item ? item.date : "").format('l')}</span>
+                      <span className="date">{!!item.call_created_date ? moment(!!item ? item.call_created_date : "").format('l') : ""}</span>
                     </div>
                   </div>
                   <div className="rcu-call-time">{!!item ? item.time : ""}</div>
                 </div>
                 <div className="rcu-call-type ml-auto">
                   <figure className="mb-0 bg-grd-clr">
-                    <img src="/assets/images/missed-call-icon.png" alt="audio" />
+                    <img src={item.call_status == 5 ? "/assets/images/missed-call-icon.png" : (item.call_type == 0 ? "/assets/images/video-icon.png": "/assets/images/audio.png")} alt="audio" />
                   </figure>
                 </div>
               </div>
@@ -102,16 +105,16 @@ const RecentCall = () => {
           {/* Missed Calls here */}
           <div id="rcall-missed" className="tab-pane fade" role="tabpanel" aria-labelledby="tab-missed-call">
             {allcalls.map((item, i) => {
-              return item.type === "Missed Call" ? <div className="rc-history-card d-flex flex-wrap align-items-center">
+              return  <div className="rc-history-card d-flex flex-wrap align-items-center">
                 <figure className="rc-user-avtar mb-0 mr-3">
-                  <img src={!!item ? item.from_user_profile_image : ""} alt="Augugsta Castro" />
+                  <img src={!!item ? item.profile_file : ""} alt="Augugsta Castro" />
                 </figure>
                 <div className="rc-user-details d-flex flex-wrap">
                   <div className="rcu-name mr-3">
-                    <h5 className="mb-1">{!!item ? item.from_user_data : ""} <span className="age">20</span></h5>
+                    <h5 className="mb-1">{!!item ? item.name : ""} <span className="age">{item.age}</span></h5>
                     <div className="rcu-date-time">
                       <span className="time">{!!item ? item.time : ""} </span>
-                      <span className="date">{moment(!!item ? item.date : "").format('l')}</span>
+                      <span className="date">{!!item.call_created_date ? moment(!!item ? item.call_created_date : "").format('l') : ""}</span>
                     </div>
                   </div>
                   <div className="rcu-call-time">{!!item ? item.time : ""}</div>
@@ -121,7 +124,7 @@ const RecentCall = () => {
                     <img src="/assets/images/missed-call-icon.png" alt="audio" />
                   </figure>
                 </div>
-              </div> : ""
+              </div> 
             })}
           </div>
 
@@ -129,26 +132,26 @@ const RecentCall = () => {
           <div id="rcall-matched" className="tab-pane fade" role="tabpanel" aria-labelledby="tab-matched-call">
             {allcalls.map((item, i) => {
 
-              return item.type === "Received Call" ? <div className="rc-history-card d-flex flex-wrap align-items-center">
+              return<div className="rc-history-card d-flex flex-wrap align-items-center">
                 <figure className="rc-user-avtar mb-0 mr-3">
-                  <img src={!!item ? item.from_user_profile_image : ""} alt="Augugsta Castro" />
+                  <img src={!!item ? item.profile_file : ""} alt="Augugsta Castro" />
                 </figure>
                 <div className="rc-user-details d-flex flex-wrap">
                   <div className="rcu-name mr-3">
-                    <h5 className="mb-1">{!!item ? item.from_user_data : ""} <span className="age">20</span></h5>
+                    <h5 className="mb-1">{!!item ? item.name : ""} <span className="age">{item.age}</span></h5>
                     <div className="rcu-date-time">
                       <span className="time">{!!item ? item.time : ""} </span>
-                      <span className="date">{moment(!!item ? item.date : "").format('l')}</span>
+                      <span className="date">{!!item.call_created_date ? moment(!!item ? item.call_created_date : "").format('l') : ""}</span>
                     </div>
                   </div>
                   <div className="rcu-call-time">{!!item ? item.time : ""}</div>
                 </div>
                 <div className="rcu-call-type ml-auto">
                   <figure className="mb-0 bg-grd-clr">
-                    <img src="/assets/images/video-icon.png" alt="Video" />
+                    <img src="/assets/images/love.svg" alt="Video" />
                   </figure>
                 </div>
-              </div> : ""
+              </div>
             })}
           </div>
         </div>
