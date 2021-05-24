@@ -173,6 +173,7 @@ const Home = (props) => {
     );
     if (cardsLeft.length) {
       const toBeRemoved = cardsLeft[cardsLeft.length - 1].user_id; // Find the card object to be removed
+      console.log(toBeRemoved , "toberemoved...")
       const index = fetchedProfile
         .map((person) => person.user_id)
         .indexOf(toBeRemoved); // Find the index of which to make the reference to

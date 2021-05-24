@@ -212,11 +212,6 @@ console.log(pageloading , "pageloading..")
     // setHobbies(obj);
   }
 
-
-
-  console.log(hobbies, "hobbies...");
-  console.log(profileData.interest_hobbies);
-  console.log(selectedCheck.join(","), "selectedCheck...");
   //update profile data
 
   const updateProfile = (e) => {

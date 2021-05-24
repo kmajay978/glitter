@@ -674,7 +674,6 @@ console.log(statusPrice ,"statusPrice...")
                   console.log(onlineUsers[k].user_id, countryCode, onlineUsers[k].blocked_countries, "onlineUsers[k].user_id")
                   for (let f in frd_blocked_countries) {
                   if (countryCode == (frd_blocked_countries[f].replace("+", ""))) {
-                    // alert(countryCode)
                     is_live = false
                   }
                 }

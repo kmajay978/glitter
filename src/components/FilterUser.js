@@ -133,7 +133,6 @@ const FilterUser = ({fetchedProfile}) => {
   childRefs = useRef(filters);
 
   const swipe = (dir, userId) => {
-    // if (allData.length > 0) {
       const cardsLeft = allData.filter(
         (currentUser) => !alreadyRemoved.includes(currentUser.user_id)
       );
