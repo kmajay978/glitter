@@ -289,7 +289,7 @@ const AudioChat = () => {
     audioManageCoinsTimeViews()
     manageCoinsTimeViewsInterval = window.setInterval(() => {
       // if ((is_host && checkIntervalHostTimeoutCount > 24 && frdAcknowledgedCall) || !is_host) {
-        console.log(manageCoinsTimeViewsCounter, "manageCoinsTimeViewsCounter...")
+        
         audioManageCoinsTimeViews()
         manageCoinsTimeViewsCounter = manageCoinsTimeViewsCounter + 10
       // }

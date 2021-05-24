@@ -107,11 +107,9 @@ const SearchHome = () => {
   const countries = getNameList();
   // const countries = getCountries();
 
-  console.log(countrieList);
   const shareUrl = !!userData ? 'https://glittersapp.com/' + userData.user_id + '/single-profile' : "";
   const title = 'https://glittersapp.com';
 
-  console.log(countries, "countries");
   const option = {
     loop: false,
     margin: 20,
@@ -141,7 +139,7 @@ const SearchHome = () => {
   }, [countries])
 
   useEffect(() => {
-    console.log(countrieBlock, "countrieBlock..")
+    
   }, [countrieBlock])
 
   const customCollapsedComponent = ({ totalviews, status_id, total_likes, is_liked , paid_status }) => {
@@ -187,7 +185,7 @@ const SearchHome = () => {
   useEffect(() => {
     if (!!storyData) {
       for (let i in storyData) {
-        console.log(storyData[i]);
+        
         storyData[i].header.heading = storyData[i].header.heading + " - " + storyData[i].header.age
         storyData[i].header.subheading = storyData[i].header.subheading.replace("Posted: ", "")
       }
@@ -211,12 +209,12 @@ const SearchHome = () => {
   }
 
   const stories = !!storyData ? storyData : []
-console.log(stories)
+
   const seeStatus = (stories, e) => {
     isLikedStatus = stories[e].is_liked;
     TLikesStatus = stories[e].total_likes;
     MLikesStatus = stories[e].total_likes;
-    console.log(e, "start...")
+    
     let status_id = stories[e].status_id
     if (!stories[e].is_seen && stories[e].paid_status) {
       const bodyParameters = {
@@ -353,7 +351,7 @@ console.log(stories)
 
       });
   }
-console.log(statusPrice ,"statusPrice...")
+
   const handleStatus = (user_id) => {
     setStatusLoading(true);
     const bodyParameters = {
@@ -656,7 +654,7 @@ console.log(statusPrice ,"statusPrice...")
         let frdList = friendLists;
         const totalLiveFrds = data.live;
         const onlineUsers = data.online;
-        console.log(onlineUsers, "onlineUsers..")
+        
         for (let i in frdList) {
           frdList[i].is_live = false;
           frdList[i].online = false;
@@ -671,7 +669,7 @@ console.log(statusPrice ,"statusPrice...")
               for (let k in onlineUsers) {
                 if (frdList[i].user_id == onlineUsers[k].user_id) {
                   const frd_blocked_countries = !!onlineUsers[k].blocked_countries ? onlineUsers[k].blocked_countries.split(",") : [];
-                  console.log(onlineUsers[k].user_id, countryCode, onlineUsers[k].blocked_countries, "onlineUsers[k].user_id")
+                  
                   for (let f in frd_blocked_countries) {
                   if (countryCode == (frd_blocked_countries[f].replace("+", ""))) {
                     is_live = false
@@ -709,8 +707,6 @@ console.log(statusPrice ,"statusPrice...")
     return () => {  componentWillUnmount() }
   }, [])
 
-  
-  console.log(myLiveLoadData, "myLiveLoadingData..")
   const makeMeLive = () => {
     const bodyParameters = {user_id: userData.user_id}
         checkIfIamBusy(bodyParameters, (iAmAvailable) => {
@@ -728,9 +724,8 @@ console.log(statusPrice ,"statusPrice...")
       blocked_list_data.push(countrieBlock[i].phone)
     }
     const modified_block_countries = blocked_list_data.join(",");
-    console.log(countrieBlock, "countrieBlock...")
     const call_type = 1, user_id = userData.user_id, block_countries = modified_block_countries.slice(0, modified_block_countries.length);
-    console.log(block_countries, "block_countries..")
+
     generateLiveVideoChatToken(dispatch, history, bodyParameters, call_type, user_id, uuidv4(), block_countries, SOCKET);
   }
 })
@@ -785,7 +780,6 @@ console.log(statusPrice ,"statusPrice...")
   //   }, 1000)
   //   return <video id= {video} src={video} alt="status" />
   // }
-console.log(friendList, "friendList...")
 
   return (
     <section className="home-wrapper">

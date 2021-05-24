@@ -50,7 +50,6 @@ const FilterUser = ({fetchedProfile}) => {
   const [disliked_clicked, setDislike] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const filters = useSelector(filterDataUser); //using redux useSelector here
-  console.log(filters , " filters...");
 
   const handleUserData = () => {
     setIsLoaded(true);
@@ -126,8 +125,6 @@ const FilterUser = ({fetchedProfile}) => {
       );
     }
   };
- 
-  console.log(allData , "allData...");
   // const childRefs = userData;
   // let childRefs = allData.length > 0 ? useRef(allData) : useRef([])
   childRefs = useRef(filters);
@@ -165,8 +162,6 @@ const FilterUser = ({fetchedProfile}) => {
     //   }
     // }
   };
-
-console.log(childRefs , "childref..")
   useEffect(() => {
     if (!!cardClick) {
       history.push('/' + glitterUid + '/single-profile')
@@ -176,8 +171,6 @@ console.log(childRefs , "childref..")
   useEffect(() => {
     // handleUserData();
   }, [])
-
-  console.log(allData, "nnnnnnn")
  
   useEffect(() => {
     if (!!fetchedProfile) {

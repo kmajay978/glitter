@@ -316,7 +316,7 @@ const ChatBox = (props) => {
             const imageMedia = document.getElementById("image-media");
 
             let photoInterval = window.setInterval(() => {
-                console.log(count, baseMultipleImage, "test...man")
+                
                 if (count > baseMultipleImage.length - 1) {
                     clearPhotoState()
                     clearInterval(photoInterval);
@@ -457,14 +457,13 @@ const ChatBox = (props) => {
         SOCKET.off('get_frds_last_messages').on('get_frds_last_messages', (data) => {
             const last_messages = data.friends_list;
             if (!!userData && data.user_id == userData.user_id) {
-                console.log(my_friends_list, data, "here....")
+                
                 for (let i in my_friends_list) {
                     if (my_friends_list[i].user_id == last_messages[i].user_id) {
                         my_friends_list[i].last_message = last_messages[i].message;
                         my_friends_list[i].last_message_type = last_messages[i].type
                     }
                 }
-                console.log(my_friends_list, "test...")
                 setFriendlist(my_friends_list)
                 setLastMessageRandomNumberRandomNumber(Math.random())
             }
@@ -638,9 +637,7 @@ const ChatBox = (props) => {
 
             });
         }
-        console.log(FriendUserId, "FriendUserId..")
         if (!!FriendUserId) {
-            console.log("FriendUserId.. in...")
             setData('');
             messageList = []
             setMessages([]);
