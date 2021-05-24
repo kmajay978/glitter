@@ -182,7 +182,6 @@ const Home = (props) => {
         childRefs[index].current.swipe(direction); // Swipe the card!
         console.log( childRefs[index].current , "direction..")
       } else {
-        alert("no child ref")
       }
     }
   };
