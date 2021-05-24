@@ -12,7 +12,7 @@ import OwlCarousel from 'react-owl-carousel2';
 import { SOCKET } from '../components/Config';
 import { useDispatch, useSelector } from "react-redux";
 import { userProfile, myLiveLoadingData, myLiveLoading } from "../features/userSlice";
-import { generateLiveVideoChatToken } from "../api/videoApi";
+import { checkIfIamBusy, generateLiveVideoChatToken } from "../api/videoApi";
 import { addDefaultSrc, openNewWindow, returnDefaultImage } from "../commonFunctions";
 import useToggle, { removeDublicateFrds } from '../components/CommonFunction';
 import { SyncLoader, ClipLoader } from "react-spinners";
@@ -712,6 +712,10 @@ console.log(statusPrice ,"statusPrice...")
   
   console.log(myLiveLoadData, "myLiveLoadingData..")
   const makeMeLive = () => {
+    const bodyParameters = {user_id: userData.user_id}
+        checkIfIamBusy(bodyParameters, (iAmAvailable) => {
+            if (iAmAvailable) {
+
     // setMyLiveLoading(true)
     dispatch(myLiveLoading(true))
     const bodyParameters = {
@@ -728,6 +732,8 @@ console.log(statusPrice ,"statusPrice...")
     const call_type = 1, user_id = userData.user_id, block_countries = modified_block_countries.slice(0, modified_block_countries.length);
     console.log(block_countries, "block_countries..")
     generateLiveVideoChatToken(dispatch, history, bodyParameters, call_type, user_id, uuidv4(), block_countries, SOCKET);
+  }
+})
   }
 
   const watchLive = () => {

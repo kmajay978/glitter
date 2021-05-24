@@ -24,7 +24,7 @@ export const REPORT_USER_API = getApiUrl("report_user");
 export const GIFT_LIST_API = getApiUrl("all_gifts");
 export const GET_GIFT_API = getApiUrl("single_gift");
 export const GIFT_PURCHASE_API = getApiUrl("purchaseGifts");
-export const GET_ALL_CALL = getApiUrl("all_calls");
+export const GET_ALL_CALL = getApiUrl("calls");
 export const GET_SINGLE_STATUS = getApiUrl("all_status");
 export const ADD_STATUS = getApiUrl("add_status");
 export const GET_STATUS = getApiUrl("limit_status");
@@ -52,3 +52,5 @@ export const TOKEN_AGORA_FORLIVE_API = getApiUrl("liveUserToken");
 export const ENDLIVE_API = getApiUrl("disconnectLive");
 export const GET_LIVE_USER_TOKEN_API = getApiUrl("getLiveUserToken");
 export const VISITOR_API = getApiUrl("view");
+
+export const CHECK_I_AM_BUSY_API = getApiUrl("checkIfImBusy");

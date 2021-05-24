@@ -16,6 +16,7 @@ import { useHistory } from "react-router-dom";
 import { addDefaultSrc, openNewWindow, returnDefaultImage, useForceUpdate } from "../commonFunctions";
 import { setWeekYear } from "date-fns";
 import { Modal } from 'react-bootstrap';
+import { checkIfIamBusy } from "../api/videoApi";
 
 let checkLastFrdsMsgInterval, my_friends_list = [];
 
@@ -718,6 +719,9 @@ const ChatBox = (props) => {
     /*=============================== Video Call ========================================================*/
 
     const handleVideo = (image) => {
+        const bodyParameters = {user_id: userData.user_id}
+        checkIfIamBusy(bodyParameters, (iAmAvailable) => {
+            if (iAmAvailable) {
         var secondUserDataId = FriendUserId;
         const video_data = {
             user_from_id: userData.user_id,
@@ -733,25 +737,32 @@ const ChatBox = (props) => {
         );
         openNewWindow("/searching-profile")
         // history.push("/searching-profile");
+            }
+        })
     }
 
 
     const handleCall = (image) => {
-        var secondUserDataId = FriendUserId;
-        const audio_data = {
-            user_from_id: userData.user_id,
-            user_to_id: secondUserDataId,
-            user_to_image: image,
-            channel_id: uuidv4(),
-            channel_name: null,
-            channel_token: null
-        }
-        localStorage.setItem("audio_call", JSON.stringify(audio_data))
-        dispatch(
-            audioCall(audio_data)
-        );
-        openNewWindow("/searching-profile-call")
-        // history.push("/searching-profile-call");
+        const bodyParameters = {user_id: userData.user_id}
+        checkIfIamBusy(bodyParameters, (iAmAvailable) => {
+            if (iAmAvailable) {
+                var secondUserDataId = FriendUserId;
+                const audio_data = {
+                    user_from_id: userData.user_id,
+                    user_to_id: secondUserDataId,
+                    user_to_image: image,
+                    channel_id: uuidv4(),
+                    channel_name: null,
+                    channel_token: null
+                }
+                localStorage.setItem("audio_call", JSON.stringify(audio_data))
+                dispatch(
+                    audioCall(audio_data)
+                );
+                openNewWindow("/searching-profile-call")
+                // history.push("/searching-profile-call");
+            }
+        });
     }
 
 
