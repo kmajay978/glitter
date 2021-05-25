@@ -10,7 +10,7 @@ import { changeImageLinkDomain, checkLiveDomain, returnDefaultImage } from "../c
 import NotificationManager from "react-notifications/lib/NotificationManager";
 
 let videoCallStatus = 0, videoCallParams, interval,
-  manageCoinsTimeViewsInterval, manageCoinsTimeViewsCounter = 0, manageTimeInterval, goHost = false, goAud = false, hostCallCheck = true;
+  manageCoinsTimeViewsInterval, manageCoinsTimeViewsCounter = 0, manageTimeInterval, goHost = false, goAud = false, hostCallCheck = true,
    checkIntervalHostTimeout, checkIntervalHostTimeoutCount = 0, frdAcknowledgedCall = false;
 
 const clearChatState = (dispatch) => {
@@ -289,13 +289,17 @@ const AudioChat = () => {
     audioManageCoinsTimeViews()
     manageCoinsTimeViewsInterval = window.setInterval(() => {
        if ((is_host && checkIntervalHostTimeoutCount > 24 && frdAcknowledgedCall) || !is_host) {
-        
         audioManageCoinsTimeViews()
         manageCoinsTimeViewsCounter = manageCoinsTimeViewsCounter + 10
        }
        if (is_host && checkIntervalHostTimeoutCount > 24 && !frdAcknowledgedCall) {
-        // decline call
-        document.getElementById("endCall").click()
+        // call not picked.. reason: receiver is online but the application is forced closed without signout...
+        SOCKET.emit("receiver_not_answered_the_call", {
+          user_from_id: videoCallParams.user_from_id,
+          user_to_id: videoCallParams.user_to_id,
+          channel_name: videoCallParams.channel_name,
+          type: 1
+        })        
       }
     }, 10000)
   }
