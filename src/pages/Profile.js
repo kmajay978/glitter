@@ -134,8 +134,6 @@ const Profile = (props) => {
     interests_hobbie: ""
   });
 
-  console.log(Dob, "heheh")
-
   const handleChange = e => {
     setForm({
       ...form,
@@ -147,7 +145,6 @@ const Profile = (props) => {
     var value = target.value;
     target.checked = target.checked
     if (target.checked) {
-      console.log(target.checked);
       let selectedArray = selectedCheck;
       selectedArray.push(value);
       setSlelected(selectedArray);
@@ -174,7 +171,6 @@ const Profile = (props) => {
   //   $('.react-date-picker__inputGroup__year').val('1997');
   // }, 2000)
   //   },[show])
-console.log(pageloading , "pageloading..")
   // Fetching profile Data
   var sessionId = localStorage.getItem("session_id");
   const ProfileData = async (interests_list) => {
@@ -200,8 +196,6 @@ console.log(pageloading , "pageloading..")
 
     var obj = [...Object.values(Object.keys(form.interests_hobbie))]
     setHobbies(obj);
-    console.log(interests_list, "hjhjhjh")
-    console.log(obj)
     setProfile(data);
     dispatch(
       profile({
@@ -224,7 +218,6 @@ console.log(pageloading , "pageloading..")
     }
 
     var textinputs = document.querySelectorAll('input[class=hobbie]:checked');
-    console.log(textinputs, "textinputs...")
     let selectedCheck = []
     for (let i in textinputs) {
       selectedCheck.push(textinputs[i].value)
@@ -301,7 +294,6 @@ console.log(pageloading , "pageloading..")
 
   const changeStep = () => {
     setStep(step + 1);
-    console.log(interestData, "interestData..")
     window.setTimeout(() => {
       for (let i in interestData) {
         CheckedItem(interestData[i].id)
@@ -615,14 +607,12 @@ console.log(pageloading , "pageloading..")
   const CheckedItem = (id) => {
     let checkId = false;
     const elm = document.getElementById("interests_hobbie" + id);
-    console.log(hobbies, "asdf")
     for (let i in hobbies) {
       if (hobbies[i] == id) {
         checkId = true
       }
     }
   
-    console.log(elm, "elm...")
     if (!!elm) {
       elm.checked = checkId;
     }

@@ -34,7 +34,6 @@ const ProfileData = async (dispatch, sessionId) => {
 }
 const stripePromise = loadStripe('pk_test_51HYm96CCuLYI2aV0fK3RrIAT8wXVzKScEtomL2gzY9XCMrgBa4KMPmhWmsCorW2cqL2MLSJ45GKAAZW7WxEmytDs009WzuDby2');
 function App(props) {
-  console.log("check live")
   //  const {latitude, longitude, error} = usePosition();
   const new_history = useHistory();
   const [currentPathname, setCurrentPathname] = useState(null);

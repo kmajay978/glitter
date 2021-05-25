@@ -173,14 +173,13 @@ const Home = (props) => {
     );
     if (cardsLeft.length) {
       const toBeRemoved = cardsLeft[cardsLeft.length - 1].user_id; // Find the card object to be removed
-      console.log(toBeRemoved , "toberemoved...")
+      
       const index = fetchedProfile
         .map((person) => person.user_id)
         .indexOf(toBeRemoved); // Find the index of which to make the reference to
       alreadyRemoved.push(toBeRemoved); // Make sure the next card gets removed next time if this card do not have time to exit the screen
       if (!!childRefs && childRefs[index] && !!childRefs[index].current) {
         childRefs[index].current.swipe(direction); // Swipe the card!
-        console.log( childRefs[index].current , "direction..")
       } else {
       }
     }

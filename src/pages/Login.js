@@ -302,7 +302,6 @@ const Login = () => {
   // Testing here
   //login with google here
   const responseGoogle = (response) => {
-    console.log(response);
   }
   //End here
 
