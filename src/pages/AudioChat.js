@@ -11,7 +11,7 @@ import NotificationManager from "react-notifications/lib/NotificationManager";
 
 let videoCallStatus = 0, videoCallParams, interval,
   manageCoinsTimeViewsInterval, manageCoinsTimeViewsCounter = 0, manageTimeInterval, goHost = false, goAud = false, hostCallCheck = true;
-  // checkIntervalHostTimeout, checkIntervalHostTimeoutCount = 0, frdAcknowledgedCall = false;
+   checkIntervalHostTimeout, checkIntervalHostTimeoutCount = 0, frdAcknowledgedCall = false;
 
 const clearChatState = (dispatch) => {
   dispatch(audioCall(null))
@@ -42,7 +42,7 @@ const AudioChat = () => {
     }
     // localStorage.removeItem("videoCallPageRefresh");
     clearChatState(dispatch);
-    // clearInterval(checkIntervalHostTimeout);
+    clearInterval(checkIntervalHostTimeout);
     clearInterval(manageCoinsTimeViewsInterval);
     clearInterval(manageTimeInterval);
     window.location.href = "/chat";
@@ -90,9 +90,9 @@ const AudioChat = () => {
         videoCallState: params.receiver == "false" ? videoCallState : null
       });
 
-      // checkIntervalHostTimeout = window.setInterval(() => {
-      //   checkIntervalHostTimeoutCount += 1 
-      // }, 1000)
+      checkIntervalHostTimeout = window.setInterval(() => {
+        checkIntervalHostTimeoutCount += 1 
+      }, 1000)
     }
     SOCKET.off('unauthorize_video_call').on('unauthorize_video_call', (data) => {
       if ((data.user_from_id == videoCallParams.user_from_id && data.user_to_id == videoCallParams.user_to_id)
@@ -237,9 +237,9 @@ const AudioChat = () => {
             status: 1
           });
         }
-        // if (data.user_to_id == videoCallParams.user_to_id) {
-        //   frdAcknowledgedCall = true;
-        // }
+        if (data.user_to_id == videoCallParams.user_to_id) {
+          frdAcknowledgedCall = true;
+        }
 
         if (!!userData && (data.user_from_id == userData.user_id)) {
           if (hostCallCheck) {
@@ -268,7 +268,7 @@ const AudioChat = () => {
             }
             joinChannelAudio('host', option)
             hostCallCheck = false
-            // frdAcknowledgedCall = false;
+            frdAcknowledgedCall = false;
           }
         }
       }
@@ -288,15 +288,15 @@ const AudioChat = () => {
   const manageAudienceHostDetails = (is_host) => {
     audioManageCoinsTimeViews()
     manageCoinsTimeViewsInterval = window.setInterval(() => {
-      // if ((is_host && checkIntervalHostTimeoutCount > 24 && frdAcknowledgedCall) || !is_host) {
+       if ((is_host && checkIntervalHostTimeoutCount > 24 && frdAcknowledgedCall) || !is_host) {
         
         audioManageCoinsTimeViews()
         manageCoinsTimeViewsCounter = manageCoinsTimeViewsCounter + 10
-      // }
-      // if (is_host && checkIntervalHostTimeoutCount > 24 && !frdAcknowledgedCall) {
-      //   // decline call
-      //   document.getElementById("endCall").click()
-      // }
+       }
+       if (is_host && checkIntervalHostTimeoutCount > 24 && !frdAcknowledgedCall) {
+        // decline call
+        document.getElementById("endCall").click()
+      }
     }, 10000)
   }
 
