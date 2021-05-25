@@ -16,7 +16,8 @@ import { GIFT_LIST_API } from "../components/Api";
 
 let videoCallStatus = 0, videoCallParams, interval, callType = 0,
   messageList = [], allGifts = [], removeGiftInterval,
-  manageCoinsTimeViewsInterval, manageCoinsTimeViewsCounter = 0, manageTimeInterval, hostCallCheck = true
+  manageCoinsTimeViewsInterval, manageCoinsTimeViewsCounter = 0, manageTimeInterval, hostCallCheck = true,
+  checkIntervalHostTimeout, checkIntervalHostTimeoutCount = 0, frdAcknowledgedCall = false;
 
 const clearChatState = (dispatch) => {
   dispatch(videoCall(null))
@@ -65,6 +66,7 @@ const SearchProfile = () => {
     }
     localStorage.removeItem("videoCallPageRefresh");
     clearChatState(dispatch);
+    clearInterval(checkIntervalHostTimeout);
     clearInterval(removeGiftInterval);
     clearInterval(manageCoinsTimeViewsInterval);
     clearInterval(manageTimeInterval);
@@ -116,6 +118,11 @@ const SearchProfile = () => {
         type: callType,
         videoCallState: params.receiver == "false" ? videoCallState : null
       });
+      
+      checkIntervalHostTimeout = window.setInterval(() => {
+        checkIntervalHostTimeoutCount += 1 
+      }, 1000)
+
       SOCKET.emit("authenticate_one_to_one_video_message", {
         sender_id: Number(videoCallParams.user_from_id),
         user_id: Number(userData.user_id),
@@ -301,13 +308,24 @@ const SearchProfile = () => {
       })
     }
 
-    const manageLiveAudienceHostDetails = () => {
+    const manageLiveAudienceHostDetails = (is_host) => {
       liveVideoManageCoinsTimeViews()
       manageCoinsTimeViewsInterval = window.setInterval(() => {
+      if ((is_host && checkIntervalHostTimeoutCount > 24 && frdAcknowledgedCall) || !is_host) {
         liveVideoManageCoinsTimeViews()
         manageCoinsTimeViewsCounter = manageCoinsTimeViewsCounter + 10
-      }, 10000)
-    }
+       }
+       if (is_host && checkIntervalHostTimeoutCount > 24 && !frdAcknowledgedCall) {
+        // call not picked.. reason: receiver is online but the application is forced closed without signout...
+        SOCKET.emit("receiver_not_answered_the_call", {
+          user_from_id: videoCallParams.user_from_id,
+          user_to_id: videoCallParams.user_to_id,
+          channel_name: videoCallParams.channel_name,
+          type: callType
+        })        
+      }
+    })
+  }
 
     SOCKET.off('authorize_video_call').on('authorize_video_call', (data) => {
       if ((data.user_from_id == videoCallParams.user_from_id && data.user_to_id == videoCallParams.user_to_id)
@@ -317,8 +335,12 @@ const SearchProfile = () => {
 
         // change backend status === 1 if loggedIn user is "user_to"
 
+        if (data.user_to_id == videoCallParams.user_to_id) {
+          frdAcknowledgedCall = true;
+        }
+
         if (!!userData && (data.user_to_id == userData.user_id)) {
-          manageLiveAudienceHostDetails()
+          manageLiveAudienceHostDetails(false)
           SOCKET.emit("acknowledged_video_call", {
             sender: { user_from_id: videoCallParams.user_from_id, session_id: localStorage.getItem("session_id") },
             reciever_id: videoCallParams.user_to_id,
@@ -360,7 +382,7 @@ const SearchProfile = () => {
         else {
           // initate video call for sender...
           if (hostCallCheck) {
-            manageLiveAudienceHostDetails()
+            manageLiveAudienceHostDetails(true)
             manageTimeInterval = window.setInterval(() => {
               SOCKET.emit("one_to_one_video_manage_time", {
                 channel_name: videoCallState.channel_name
@@ -376,6 +398,7 @@ const SearchProfile = () => {
             }
             joinChannel('host', option);
             hostCallCheck = false;
+            frdAcknowledgedCall = false;
           }
 
           interval = window.setInterval(() => {
