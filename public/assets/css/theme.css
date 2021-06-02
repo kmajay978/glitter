@@ -5330,3 +5330,11 @@ div.heart i {
     max-height: 600px !important;
     overflow: hidden;
 }
+
+img.lush {
+    left: 10px;
+    margin-left: 10px;
+    height: 40px;
+    cursor: pointer;
+    border-radius: 25px;
+}

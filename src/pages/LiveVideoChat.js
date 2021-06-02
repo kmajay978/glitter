@@ -352,10 +352,23 @@ const LiveVideoChat = () => {
                             }, 500)
                             // animate heart
                         }
+                        if (message.message.chat_type === 3) {
+                            const gift = {
+                                user: message.message.sender_image,
+                                gift: "/assets/images/lush.jpg",
+                                f_name: message.message.message_sender_name,
+                                l_name: "",
+                                gift_name: "Lush",
+                                dateTime: new Date()
+                            }
+                            let newGift = friendGift;
+                            newGift.unshift(gift);
+                            setFriendGift(newGift);
+                            allGifts = newGift;
+                            setRandomNumberGift(Math.random());
+                        }
                     }
-
                 }
-
             });
 
             SOCKET.off('get_messages_live_video').on('get_messages_live_video', (messages) => { // only one time
@@ -494,7 +507,8 @@ const LiveVideoChat = () => {
                 "gift_id": null,
                 "is_send_heart": 0,
                 "coins": 0,
-                "message_sender_name": userData.first_name + " " + userData.last_name
+                "message_sender_name": userData.first_name + " " + userData.last_name,
+                "lovesense": false
             }
             SOCKET.emit("send_live_video_item", message);
             setuserMessage(''); //Empty user input here
@@ -521,10 +535,29 @@ const LiveVideoChat = () => {
             "gift_id": null,
             "is_send_heart": 1,
             "coins": 0,
-            "message_sender_name": userData.first_name + " " + userData.last_name
+            "message_sender_name": userData.first_name + " " + userData.last_name,
+            "lovesense": false
         }
         SOCKET.emit("send_live_video_item", message);
     }
+
+    const lovesenseHer = () => {
+        var message = {
+            "user_id": Number(videoCallState.user_id),
+            "text_message": "",
+            "channel_name": videoCallParams.channel_name,
+            "sender_id": Number(videoCallParams.user_id),
+            "type": 3, // lovesense
+            "gift_id": null,
+            "is_send_heart": 0,
+            "coins": 0,
+            "lovesense": true,
+            "message_sender_name": userData.first_name + " " + userData.last_name,
+            "sender_image": userData.profile_images.length > 0 ? userData.profile_images[0] : ""
+        }
+        SOCKET.emit("send_live_video_item", message);
+    }
+
     //all gift
     const handleGift = async () => {
         toggleIsOn(true);
@@ -550,7 +583,8 @@ const LiveVideoChat = () => {
             "gift_id": giftId,
             "is_send_heart": 0,
             "coins": 0,
-            "message_sender_name": userData.first_name + " " + userData.last_name
+            "message_sender_name": userData.first_name + " " + userData.last_name,
+            "lovesense": false
         }
 
         SOCKET.emit('send_live_video_item', message);
@@ -587,8 +621,6 @@ const LiveVideoChat = () => {
                                         <figure>
                                             <img onError={(e) => addDefaultSrc(e)} src={!!user ? user.profile_images[0] : returnDefaultImage()} alt="Augusta Castro" />
                                         </figure>
-
-
                                         {
                                             !!user &&
                                             <div className="name ml-2">
@@ -681,7 +713,7 @@ const LiveVideoChat = () => {
                                             <span>Sent a {item.gift_name}</span>
                                         </div>
                                         <div className="gifter__media">
-                                            <img src={item.gift} alt="gift" />
+                                            <img style={{borderRadius: "25px"}} src={item.gift} alt="gift" />
                                         </div>
                                     </div>
                                 ))
@@ -797,6 +829,7 @@ const LiveVideoChat = () => {
                             <div className="remaining-coins">
                                 <img src="/assets/images/diamond-coin.png" alt="Coins" />
                                 <span> {totalCoinsLeft !== null && totalCoinsLeft}</span>
+                                <img className="lush" src="/assets/images/lush.jpg" onClick={lovesenseHer} />
                             </div>
                         </div>
                         <div className="all-gift-body">
