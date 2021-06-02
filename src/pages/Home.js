@@ -88,7 +88,7 @@ const Home = (props) => {
   const [disliked_clicked, setDislike] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   // const filters = useSelector(filterDataUser); //using redux useSelector here
-  // console.log(filters , " filters...");
+
 
   const handleUserData = () => {
     setIsLoaded(true);

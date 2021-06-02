@@ -5350,4 +5350,33 @@ img.lush {
 
 .vc-options li:first-child {
     z-index: 99999 !important;
+
+}
+.css-2b097c-container {
+    color: #504A4A;
+}
+
+.css-yk16xz-control{
+    background: transparent !important;
+}
+
+#react-select-2-input{
+    border: none !important;
+    background: none !important;
+}
+
+.css-yk16xz-control {
+    border-color: #F3C661 !important;
+}
+.css-1pahdxg-control {
+    border-color: #F3C661 !important;
+    box-shadow: none !important;
+    background: none !important;
+}
+.live_share svg{
+    width: 35px;
+}
+
+#react-select-2-input {
+    color: #fff !important;
 }
