@@ -5356,3 +5356,7 @@ div.heart i {
 .live_share svg{
     width: 35px;
 }
+
+.react-select-2-input {
+    color: white !important;
+}
