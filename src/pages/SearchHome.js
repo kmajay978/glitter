@@ -1043,7 +1043,7 @@ const SearchHome = () => {
       </Modal>
 
       {/* Live video screen Pop up */}
-      <Modal className="live-modals" id="upload-media-modal" id="live-modal" show={showLivePopup} onHide={() => setLivePopup(false)} backdrop="static" keyboard={false} style={{ display: 'block', paddingLeft: '17px' }}>
+      <Modal className="live-modals"  show={showLivePopup} onHide={() => setLivePopup(false)} backdrop="static" keyboard={false} style={{ display: 'block', paddingLeft: '17px' }}>
         {/* <div className="modal-dialog" role="document">  */}
         {/* <div className="modal-content"> */}
         {/* <div className="modal-body p-0"> */}
@@ -1065,29 +1065,10 @@ const SearchHome = () => {
                 <FacebookShareButton size={13} url={shareUrl} quote={title} >
                   <FacebookIcon round />
                 </FacebookShareButton>
-                {/* <li><a href="javascript:void(0)"><i className="fab fa-instagram" /></a></li> */}
               </ul>
             </div>
             <div className="block_countries">
               <p>Block countries</p>
-              <div className="block_countries__list">
-                <img src="/assets/images/add-countries.svg" alt="add countries" />
-              </div>
-
-              {/* <div className="block_countries__list">
-                <img src="/assets/images/india-flag.svg" alt="india" />
-                <div className="block_countries__info">
-                  <span>India</span>
-                  <a href="javascript:void(0)" className="del-country"><img src="/assets/images/country-close.svg" alt="close" /></a>
-                </div>                                    
-              </div>
-              <div className="block_countries__list">
-                <img src="/assets/images/nigeria.svg" alt="nigeria" />
-                <div className="block_countries__info">
-                  <span>India</span>
-                  <a href="javascript:void(0)" className="del-country"><img src="/assets/images/country-close.svg" alt="close" /></a>
-                </div>                                    
-              </div> */}
             </div>
 
             <Select
@@ -1096,14 +1077,6 @@ const SearchHome = () => {
               options={countrieList}
               isMulti={true}
             />
-
-            {/* <Select
-              multi
-              options={countries}
-              placeholder="select countries"
-              onChange={(value) => setCountrieBlock(value)}
-              style={{ color: "#6c757d" }}
-            /> */}
           </div>
           <div className="live_rightblk  text-center">
             <h5 className="mb-4">Select Tag</h5>
@@ -1170,8 +1143,6 @@ const SearchHome = () => {
 
       </Modal>
       {/* End live video screen */}
-      {/* <canvas id='textCanvas' height={465} width={380} />
-            <img id='image' /> */}
     </section>
 
 

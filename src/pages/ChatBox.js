@@ -101,7 +101,6 @@ const ChatBox = (props) => {
 
         // // Destructing response and getting data part
         // const visitor = await axios.post(VISITOR_LIST_API, bodyParameters)
-        // console.log(visitor.data.result, "kuch ni.....")
         // setVisitors(removeDublicateFrds(visitor.data.result));
 
         const friend = await axios.post(FRIENDLIST_API, bodyParameters)
@@ -162,7 +161,6 @@ const ChatBox = (props) => {
                     friends_list.push({ user_id: friendList[i].user_id })
                 }
                 checkLastFrdsMsgInterval = window.setInterval(() => {
-                    // console.log(friends_list, "friends_list..")
                     // if (!!userData && userData.user_id !== null && userData.user_id !== undefined && friendList.length > 0) {
 
                     //     SOCKET.emit("get_frds_last_messages", {
