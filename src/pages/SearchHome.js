@@ -708,8 +708,11 @@ const SearchHome = () => {
   }, [])
 
   const makeMeLive = () => {
+    const makeMeLiveBtn = document.getElementById("makemelive");
+    makeMeLiveBtn.disabled = true;
     const bodyParameters = {user_id: userData.user_id}
         checkIfIamBusy(bodyParameters, (iAmAvailable) => {
+          makeMeLiveBtn.disabled = false;
             if (iAmAvailable) {
 
     // setMyLiveLoading(true)
@@ -1151,7 +1154,7 @@ const SearchHome = () => {
             </div>
           </div>
           <div className="live-option w-100 text-center">
-            <button className="btn bg-grd-clr" disabled={myLiveLoadData ? true : false} onClick={makeMeLive}>{myLiveLoadData ? "Creating Live..." : "Go live"}</button>
+            <button className="btn bg-grd-clr" id="makemelive" disabled={myLiveLoadData ? true : false} onClick={makeMeLive}>{myLiveLoadData ? "Creating Live..." : "Go live"}</button>
             <div className="live-type mt-4">
               <span className="active">Group Chat Live</span>
               <span>Live</span>

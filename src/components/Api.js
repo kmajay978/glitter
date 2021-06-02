@@ -54,3 +54,5 @@ export const GET_LIVE_USER_TOKEN_API = getApiUrl("getLiveUserToken");
 export const VISITOR_API = getApiUrl("view");
 
 export const CHECK_I_AM_BUSY_API = getApiUrl("checkIfImBusy");
+
+export const TARGET_DEVICE_API = getApiUrl("target_device");

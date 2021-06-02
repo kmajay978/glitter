@@ -593,14 +593,13 @@ const SearchProfile = () => {
             </div>
 
             <div className="col-lg-7 p-3">
-              <div className="tab-top d-flex flex-wrap-wrap align-items-center">
+              <div className="video-call tab-top d-flex flex-wrap-wrap align-items-center">
                 <div className="vc-action-tab ml-auto mr-4 position-relative">
                 </div>
                 <NavLinks />
-                {
-                  (!!userData && !!videoCallParams && userData.user_id == videoCallParams.user_from_id) &&
-<a href="javascript:void(0)" className="end-video bg-grd-clr" onClick={() => endCall(true)}>End Video</a>
-                }
+                
+                  <a href="javascript:void(0)" className="end-video bg-grd-clr" onClick={() => endCall(true)}>End Video</a>
+                
               </div>
             </div>
           </div>

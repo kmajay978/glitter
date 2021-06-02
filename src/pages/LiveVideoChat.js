@@ -5,14 +5,14 @@ import axios from "axios";
 import Logo from '../components/Logo';
 import { SOCKET } from '../components/Config';
 import NavLinks from '../components/Nav';
-import {joinChannel} from "../components/VideoComponent";
+import { joinChannel } from "../components/VideoComponent";
 import { useSelector, useDispatch } from "react-redux";
-import {css} from "@emotion/core";
+import { css } from "@emotion/core";
 import BarLoader from "react-spinners/BarLoader";
 import { userProfile, liveVideoCall, liveVideoCallUser } from "../features/userSlice";
 import { func } from "prop-types";
 import { addDefaultSrc, checkLiveDomain, returnDefaultImage } from "../commonFunctions";
-import { GIFT_LIST_API, GIFT_PURCHASE_API } from "../components/Api";
+import { GIFT_LIST_API, GIFT_PURCHASE_API, TARGET_DEVICE_API } from "../components/Api";
 import useToggle from "../components/CommonFunction";
 import { changeImageLinkDomain, changeGiftLinkDomain } from "../commonFunctions"
 import { Number } from "core-js";
@@ -358,7 +358,7 @@ const LiveVideoChat = () => {
                                 gift: "/assets/images/lush.jpg",
                                 f_name: message.message.message_sender_name,
                                 l_name: "",
-                                gift_name: "Lush",
+                                gift_name: "Lush - (Lovense APP is offline!)",
                                 dateTime: new Date()
                             }
                             let newGift = friendGift;
@@ -541,8 +541,8 @@ const LiveVideoChat = () => {
         SOCKET.emit("send_live_video_item", message);
     }
 
-    const lovesenseHer = () => {
-        var message = {
+    const lovesenseSend = () => {
+        var obj_data = {
             "user_id": Number(videoCallState.user_id),
             "text_message": "",
             "channel_name": videoCallParams.channel_name,
@@ -555,7 +555,23 @@ const LiveVideoChat = () => {
             "message_sender_name": userData.first_name + " " + userData.last_name,
             "sender_image": userData.profile_images.length > 0 ? userData.profile_images[0] : ""
         }
-        SOCKET.emit("send_live_video_item", message);
+        SOCKET.emit("send_live_video_item", obj_data);
+    }
+
+    const lovesenseHer = async () => {
+        const bodyParameters = { session_id: localStorage.getItem("session_id"), to_user_id: Number(videoCallParams.user_id)}
+        const { data: { message, status, error } } = await axios.post(TARGET_DEVICE_API, bodyParameters)
+        if (status == 200 && !error) {
+            lovesenseSend()
+        }
+        else {
+            if (message == "Lovense APP is offline!") {
+                lovesenseSend()
+            }
+            else {
+                alert(!!message ? message : "Something went wrong!!")
+            }
+        }
     }
 
     //all gift
@@ -606,7 +622,7 @@ const LiveVideoChat = () => {
         <section className="home-wrapper">
             {/* <div class="hearts"></div> */}
             <img className="bg-mask" src="/assets/images/mask-bg.png" alt="Mask" />
-            <div className="header-bar">
+            <div className="header-bar" style={{zIndex: 99999}}>
                 <div className="container-fluid p-0">
                     <div className="row no-gutters">
                         <div className="col-lg-5 p-3">
@@ -667,7 +683,7 @@ const LiveVideoChat = () => {
                         </div>
 
                         <div className="col-lg-7 p-3">
-                            <div className="tab-top d-flex flex-wrap-wrap align-items-center">
+                            <div className="video-live tab-top d-flex flex-wrap-wrap align-items-center">
                                 <div className="vc-action-tab ml-auto mr-4 position-relative">
                                     {/* <div className="vc-action-btn">
                                         <span />
@@ -710,10 +726,10 @@ const LiveVideoChat = () => {
                                         <img src={item.user} alt="gifter" />
                                         <div className="gifter__info">
                                             <h6>{item.f_name + " " + item.l_name}</h6>
-                                            <span>Sent a {item.gift_name}</span>
+                                            <span className={item.gift_name.match("Lush") ? "lush-class" : ""}>Sent a {item.gift_name}</span>
                                         </div>
                                         <div className="gifter__media">
-                                            <img style={{borderRadius: "25px"}} src={item.gift} alt="gift" />
+                                            <img style={{ borderRadius: "25px" }} src={item.gift} alt="gift" />
                                         </div>
                                     </div>
                                 ))
@@ -823,7 +839,7 @@ const LiveVideoChat = () => {
 
                 <div className={isOn ? 'video-streaming-gift all-gifts-wrapper active' : 'all-gifts-wrapper video-streaming-gift'} >
                     <div className="all-gift-inner">
-                        <a href="javascript:void(0)" className="close-gift-btn modal-close" onClick={toggleIsOn}><img src="/assets/images/btn_close.png" /></a>
+                        <a href="javascript:void(0)" style={{zIndex: 999999}} className="close-gift-btn modal-close" onClick={toggleIsOn}><img src="/assets/images/btn_close.png" /></a>
                         <div className="all-gift-header d-flex flex-wrap align-items-center mb-3">
                             <h5 className="mb-0 mr-4">Send Gift</h5>
                             <div className="remaining-coins">

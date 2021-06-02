@@ -1770,7 +1770,7 @@ small.story__time {
 .modal-close {
     position: absolute;
     top: 10px;
-    right: 10px;
+    right: 80px;
 }
 
 /* END EDIT PROFILE MODAL */
@@ -5103,6 +5103,7 @@ div.heart i {
 
     }
 
+    
     .tab-top {        
         position: fixed;
         bottom: 0;
@@ -5111,6 +5112,10 @@ div.heart i {
         right: 0;
         margin: 0 auto;
         height: auto;
+    }
+    .audio-call.tab-top, .video-call.tab-top, .video-live.tab-top {
+        top: 0px;
+        bottom: inherit;
     }
     .feature-menu{
         width: 100%;
@@ -5337,4 +5342,12 @@ img.lush {
     height: 40px;
     cursor: pointer;
     border-radius: 25px;
+}
+
+.lush-class {
+    color: red;
+}
+
+.vc-options li:first-child {
+    z-index: 99999 !important;
 }

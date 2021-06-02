@@ -578,7 +578,6 @@ const ChatBox = (props) => {
 
                     }
                     else {
-
                         setWarningMessage('');
                         messagesList.push(arrayBuffer.obj);
                         messageList = messagesList;
@@ -716,8 +715,14 @@ const ChatBox = (props) => {
     /*=============================== Video Call ========================================================*/
 
     const handleVideo = (image) => {
+        const handleCallBtn = document.getElementById("handlecall");
+        const handleVideoBtn = document.getElementById("handlevideo");
+        handleCallBtn.style.pointerEvents = "none";
+        handleVideoBtn.style.pointerEvents = "none";
         const bodyParameters = {user_id: userData.user_id}
         checkIfIamBusy(bodyParameters, (iAmAvailable) => {
+            handleCallBtn.style.pointerEvents = "all";
+            handleVideoBtn.style.pointerEvents = "all";
             if (iAmAvailable) {
         var secondUserDataId = FriendUserId;
         const video_data = {
@@ -740,8 +745,14 @@ const ChatBox = (props) => {
 
 
     const handleCall = (image) => {
+        const handleCallBtn = document.getElementById("handlecall");
+        const handleVideoBtn = document.getElementById("handlevideo");
+        handleCallBtn.style.pointerEvents = "none";
+        handleVideoBtn.style.pointerEvents = "none";
         const bodyParameters = {user_id: userData.user_id}
         checkIfIamBusy(bodyParameters, (iAmAvailable) => {
+            handleCallBtn.style.pointerEvents = "all";
+            handleVideoBtn.style.pointerEvents = "all";
             if (iAmAvailable) {
                 var secondUserDataId = FriendUserId;
                 const audio_data = {
@@ -1015,10 +1026,10 @@ const ChatBox = (props) => {
                                         {
                                             !loading &&
                                             <div className="chat-call-opt d-flex">
-                                                <a className="bg-grd-clr mr-3" onClick={() => handleCall(AllData.profile_images[0])} href="javascript:void(0)">
+                                                <a className="bg-grd-clr mr-3" id="handlecall" onClick={() => handleCall(AllData.profile_images[0])} href="javascript:void(0)">
 
                                                     <i className="fas fa-phone-alt" /></a>
-                                                <a className="bg-grd-clr" onClick={() => handleVideo(AllData.profile_images[0])} href="javascript:void(0)">
+                                                <a className="bg-grd-clr" id="handlevideo" onClick={() => handleVideo(AllData.profile_images[0])} href="javascript:void(0)">
 
                                                     <i className="fas fa-video" />
 

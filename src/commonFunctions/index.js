@@ -35,7 +35,7 @@ export const openNewWindow = (page) => {
         window.open('https://glittersapp.com' + page, 'PoP_Up', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,' + `height=${screen.height},width=${screen.width}`)
     }
     else {
-        window.open('http://localhost:3000' + page, 'PoP_Up', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,' + `height=${screen.height},width=${screen.width}`)
+        window.open('http://localhost:3001' + page, 'PoP_Up', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,' + `height=${screen.height},width=${screen.width}`)
     }
 
 }

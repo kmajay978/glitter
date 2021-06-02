@@ -373,7 +373,7 @@ const AudioChat = () => {
             </div>
 
             <div className="col-lg-7 p-3">
-              <div className="tab-top d-flex flex-wrap-wrap align-items-center">
+              <div className="audio-call tab-top d-flex flex-wrap-wrap align-items-center">
                 <div className="vc-action-tab ml-auto mr-4 position-relative">
                   {/* <div className="vc-action-btn">
                 <span />
@@ -393,10 +393,7 @@ const AudioChat = () => {
               </ul> */}
                 </div>
                 <NavLinks />
-                {
-                  (!!userData && !!videoCallParams && userData.user_id == videoCallParams.user_from_id) &&
                   <a href="javascript:void(0)" id="endCall" className="end-video bg-grd-clr" onClick={() => endCall(true)}>End Audio</a>
-                }
               </div>
             </div>
           </div>
